@@ -1,0 +1,484 @@
+/* Portal Dashboard Layout */
+.portal-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #F8FAFC;
+  font-family: 'Inter', sans-serif;
+  color: var(--deep-navy);
+}
+
+/* Sidebar */
+.portal-sidebar {
+  width: 260px;
+  background-color: var(--white);
+  border-right: 1px solid var(--light-gray);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+  transition: transform 0.3s ease;
+}
+
+.portal-sidebar-header {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-4);
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.portal-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  text-decoration: none;
+}
+
+.portal-logo img {
+  height: 28px;
+}
+
+.portal-logo span {
+  color: var(--deep-navy);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  font-size: 1.1rem;
+}
+
+.portal-close-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--slate-text);
+  cursor: pointer;
+}
+
+.portal-nav {
+  flex: 1;
+  padding: var(--spacing-4) var(--spacing-3);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.portal-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  color: var(--slate-text);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.portal-nav-item:hover {
+  background-color: var(--light-gray);
+  color: var(--deep-navy);
+}
+
+.portal-nav-item.active {
+  background-color: var(--primary-blue);
+  color: var(--white);
+}
+
+.portal-sidebar-footer {
+  padding: var(--spacing-4) var(--spacing-3);
+  border-top: 1px solid var(--light-gray);
+}
+
+.portal-logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  color: var(--slate-text);
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.portal-logout-btn:hover {
+  background-color: #FEE2E2;
+  color: #EF4444;
+}
+
+/* Main Content */
+.portal-main {
+  flex: 1;
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Topbar */
+.portal-topbar {
+  height: 70px;
+  background-color: var(--white);
+  border-bottom: 1px solid var(--light-gray);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-5);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.portal-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  flex: 1;
+}
+
+.portal-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--slate-text);
+  cursor: pointer;
+}
+
+.portal-search {
+  display: flex;
+  align-items: center;
+  background-color: var(--light-gray);
+  border-radius: var(--radius-full);
+  padding: 8px 16px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.portal-search .search-icon {
+  color: var(--slate-text);
+  margin-right: 8px;
+}
+
+.portal-search input {
+  border: none;
+  background: none;
+  outline: none;
+  width: 100%;
+  font-size: 0.9rem;
+  color: var(--deep-navy);
+}
+
+.portal-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.portal-icon-btn {
+  background: none;
+  border: none;
+  color: var(--slate-text);
+  cursor: pointer;
+  position: relative;
+}
+
+.portal-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #EF4444;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.portal-avatar {
+  width: 36px;
+  height: 36px;
+  background-color: var(--primary-blue);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Dashboard Content */
+.portal-content {
+  padding: var(--spacing-6) var(--spacing-5);
+}
+
+.portal-welcome h1 {
+  font-size: 1.75rem;
+  margin-bottom: 4px;
+}
+
+.portal-welcome p {
+  color: var(--slate-text);
+  margin-bottom: var(--spacing-6);
+}
+
+.portal-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+}
+
+.portal-stat-card {
+  background-color: var(--white);
+  border: 1px solid var(--light-gray);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-4);
+}
+
+.portal-stat-card h3 {
+  font-size: 0.9rem;
+  color: var(--slate-text);
+  font-weight: 500;
+  margin-bottom: var(--spacing-2);
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--deep-navy);
+  margin-bottom: 4px;
+}
+
+.stat-trend {
+  font-size: 0.85rem;
+  color: var(--slate-text);
+}
+
+.stat-trend.positive {
+  color: #10B981;
+  font-weight: 500;
+}
+
+/* Grid Layout */
+.portal-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--spacing-4);
+}
+
+.portal-card {
+  background-color: var(--white);
+  border: 1px solid var(--light-gray);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.portal-card-header {
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--light-gray);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.portal-card-header h2 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.portal-card-body {
+  padding: var(--spacing-4);
+}
+
+.portal-card-body.p-0 {
+  padding: 0;
+}
+
+.status-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+
+.status-badge.in-progress {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: var(--primary-blue);
+}
+
+.status-badge.paid {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10B981;
+}
+
+/* Progress Section */
+.progress-section {
+  margin-bottom: var(--spacing-5);
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.progress-bar-bg {
+  height: 8px;
+  background-color: var(--light-gray);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: var(--primary-blue);
+  border-radius: 4px;
+}
+
+/* Milestone List */
+.milestone-item {
+  display: flex;
+  gap: 16px;
+  margin-bottom: var(--spacing-4);
+  position: relative;
+}
+
+.milestone-item:last-child {
+  margin-bottom: 0;
+}
+
+.milestone-item::after {
+  content: '';
+  position: absolute;
+  top: 24px;
+  bottom: -16px;
+  left: 9px;
+  width: 1px;
+  background-color: var(--light-gray);
+}
+
+.milestone-item:last-child::after {
+  display: none;
+}
+
+.milestone-item.completed {
+  color: #10B981;
+}
+
+.milestone-item.current {
+  color: var(--primary-blue);
+}
+
+.milestone-details h4 {
+  font-size: 0.95rem;
+  color: var(--deep-navy);
+  margin-bottom: 2px;
+}
+
+.milestone-details p {
+  font-size: 0.85rem;
+  color: var(--slate-text);
+  margin: 0;
+}
+
+/* Invoice List */
+.invoice-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.invoice-item:last-child {
+  border-bottom: none;
+}
+
+.invoice-info h4 {
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+}
+
+.invoice-info p {
+  font-size: 0.8rem;
+  color: var(--slate-text);
+  margin: 0;
+}
+
+.invoice-amount {
+  text-align: right;
+  margin-right: var(--spacing-3);
+}
+
+.invoice-amount h4 {
+  font-size: 1rem;
+  margin-bottom: 2px;
+}
+
+.invoice-download {
+  background: none;
+  border: none;
+  color: var(--slate-text);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+}
+
+.invoice-download:hover {
+  background-color: var(--light-gray);
+  color: var(--deep-navy);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .portal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .portal-sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .portal-sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .portal-main {
+    margin-left: 0;
+  }
+  
+  .portal-menu-btn, .portal-close-btn {
+    display: block;
+  }
+  
+  .portal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 45;
+  }
+  
+  .portal-search {
+    display: none;
+  }
+}

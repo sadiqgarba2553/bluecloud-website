@@ -1,0 +1,217 @@
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import SEO from '../components/SEO';
+import { 
+  LayoutDashboard, 
+  FolderKanban, 
+  Receipt, 
+  LifeBuoy, 
+  Settings, 
+  LogOut,
+  CheckCircle2,
+  Clock,
+  Menu,
+  X,
+  Bell,
+  Search,
+  Download
+} from 'lucide-react';
+import './PortalDashboard.css';
+
+const PortalDashboard = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate('/portal/login');
+  };
+
+  return (
+    <div className="portal-layout">
+      <SEO 
+        title="Dashboard — BlueCloud Portal" 
+        description="Client portal dashboard." 
+        path="/portal/dashboard" 
+      />
+
+      {/* Sidebar Overlay for Mobile */}
+      {isSidebarOpen && (
+        <div className="portal-overlay" onClick={() => setIsSidebarOpen(false)}></div>
+      )}
+
+      {/* Sidebar */}
+      <aside className={`portal-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+        <div className="portal-sidebar-header">
+          <Link to="/" className="portal-logo">
+            <img src="/icon_no_background.PNG" alt="BlueCloud" />
+            <span>BLUECLOUD</span>
+          </Link>
+          <button className="portal-close-btn" onClick={() => setIsSidebarOpen(false)}>
+            <X size={24} />
+          </button>
+        </div>
+
+        <nav className="portal-nav">
+          <a href="#" className="portal-nav-item active" onClick={(e) => e.preventDefault()}>
+            <LayoutDashboard size={20} />
+            <span>Overview</span>
+          </a>
+          <a href="#" className="portal-nav-item" onClick={(e) => e.preventDefault()}>
+            <FolderKanban size={20} />
+            <span>Active Projects</span>
+          </a>
+          <a href="#" className="portal-nav-item" onClick={(e) => e.preventDefault()}>
+            <Receipt size={20} />
+            <span>Invoices</span>
+          </a>
+          <a href="#" className="portal-nav-item" onClick={(e) => e.preventDefault()}>
+            <LifeBuoy size={20} />
+            <span>Support Tickets</span>
+          </a>
+          <a href="#" className="portal-nav-item" onClick={(e) => e.preventDefault()}>
+            <Settings size={20} />
+            <span>Settings</span>
+          </a>
+        </nav>
+
+        <div className="portal-sidebar-footer">
+          <button className="portal-logout-btn" onClick={handleLogout}>
+            <LogOut size={20} />
+            <span>Sign Out</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="portal-main">
+        {/* Top Header */}
+        <header className="portal-topbar">
+          <div className="portal-topbar-left">
+            <button className="portal-menu-btn" onClick={() => setIsSidebarOpen(true)}>
+              <Menu size={24} />
+            </button>
+            <div className="portal-search">
+              <Search size={18} className="search-icon" />
+              <input type="text" placeholder="Search projects, invoices..." />
+            </div>
+          </div>
+          <div className="portal-topbar-right">
+            <button className="portal-icon-btn">
+              <Bell size={20} />
+              <span className="portal-badge">2</span>
+            </button>
+            <div className="portal-avatar">
+              AC
+            </div>
+          </div>
+        </header>
+
+        {/* Dashboard Content */}
+        <div className="portal-content">
+          <div className="portal-welcome">
+            <h1>Welcome back, Acme Corporation</h1>
+            <p>Here is what's happening with your projects today.</p>
+          </div>
+
+          <div className="portal-stats-grid">
+            <div className="portal-stat-card">
+              <h3>Active Projects</h3>
+              <div className="stat-value">2</div>
+              <p className="stat-trend positive">On track</p>
+            </div>
+            <div className="portal-stat-card">
+              <h3>Next Milestone</h3>
+              <div className="stat-value">Oct 15</div>
+              <p className="stat-trend">UI Deployment</p>
+            </div>
+            <div className="portal-stat-card">
+              <h3>Outstanding Balance</h3>
+              <div className="stat-value">$0.00</div>
+              <p className="stat-trend positive">All paid</p>
+            </div>
+          </div>
+
+          <div className="portal-grid">
+            {/* Project Progress */}
+            <div className="portal-card col-span-2">
+              <div className="portal-card-header">
+                <h2>AI Data Integration Platform</h2>
+                <span className="status-badge in-progress">In Progress</span>
+              </div>
+              <div className="portal-card-body">
+                <div className="progress-section">
+                  <div className="progress-info">
+                    <span>Overall Progress</span>
+                    <span>75%</span>
+                  </div>
+                  <div className="progress-bar-bg">
+                    <div className="progress-bar-fill" style={{ width: '75%' }}></div>
+                  </div>
+                </div>
+
+                <div className="milestone-list">
+                  <div className="milestone-item completed">
+                    <CheckCircle2 size={18} />
+                    <div className="milestone-details">
+                      <h4>Phase 1: Architecture Design</h4>
+                      <p>Completed on Sep 10</p>
+                    </div>
+                  </div>
+                  <div className="milestone-item completed">
+                    <CheckCircle2 size={18} />
+                    <div className="milestone-details">
+                      <h4>Phase 2: Database Migration</h4>
+                      <p>Completed on Sep 28</p>
+                    </div>
+                  </div>
+                  <div className="milestone-item current">
+                    <Clock size={18} />
+                    <div className="milestone-details">
+                      <h4>Phase 3: UI Implementation</h4>
+                      <p>Target: Oct 15</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Recent Invoices */}
+            <div className="portal-card">
+              <div className="portal-card-header">
+                <h2>Recent Invoices</h2>
+              </div>
+              <div className="portal-card-body p-0">
+                <div className="invoice-list">
+                  <div className="invoice-item">
+                    <div className="invoice-info">
+                      <h4>INV-2026-042</h4>
+                      <p>Sep 01, 2026</p>
+                    </div>
+                    <div className="invoice-amount">
+                      <h4>$4,500</h4>
+                      <span className="status-badge paid">Paid</span>
+                    </div>
+                    <button className="invoice-download"><Download size={16} /></button>
+                  </div>
+                  <div className="invoice-item">
+                    <div className="invoice-info">
+                      <h4>INV-2026-038</h4>
+                      <p>Aug 01, 2026</p>
+                    </div>
+                    <div className="invoice-amount">
+                      <h4>$4,500</h4>
+                      <span className="status-badge paid">Paid</span>
+                    </div>
+                    <button className="invoice-download"><Download size={16} /></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default PortalDashboard;

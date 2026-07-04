@@ -45,14 +45,22 @@ const Header = () => {
           ))}
           {/* Mobile CTA (only shows when menu open on small screens) */}
           {isMenuOpen && (
-            <Link to="/contact" className="btn-primary" onClick={() => setIsMenuOpen(false)}>
-              Get a Quote
-            </Link>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)', marginTop: 'var(--spacing-3)' }}>
+              <Link to="/portal/login" className="btn-secondary" onClick={() => setIsMenuOpen(false)} style={{ textAlign: 'center' }}>
+                Client Login
+              </Link>
+              <Link to="/contact" className="btn-primary" onClick={() => setIsMenuOpen(false)} style={{ textAlign: 'center' }}>
+                Get a Quote
+              </Link>
+            </div>
           )}
         </nav>
 
         {/* Desktop CTA */}
-        <div className="header-cta">
+        <div className="header-cta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+          <Link to="/portal/login" style={{ color: 'var(--slate-text)', fontWeight: '600', fontSize: '0.9rem', textDecoration: 'none' }}>
+            Client Login
+          </Link>
           <Link to="/contact" className="btn-primary">
             Contact Us
           </Link>

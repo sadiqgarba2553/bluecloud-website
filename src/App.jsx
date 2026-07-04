@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -11,10 +11,17 @@ import AISolutions from './pages/AISolutions';
 import Careers from './pages/Careers';
 import Contact from './pages/Contact';
 
+// Portal Imports
+import PortalLogin from './pages/PortalLogin';
+import PortalDashboard from './pages/PortalDashboard';
+
 function App() {
+  const location = useLocation();
+  const isPortalRoute = location.pathname.startsWith('/portal');
+
   return (
     <div className="app-container">
-      <Header />
+      {!isPortalRoute && <Header />}
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -24,9 +31,13 @@ function App() {
           <Route path="/ai-solutions" element={<AISolutions />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/contact" element={<Contact />} />
+          
+          {/* Portal Routes */}
+          <Route path="/portal/login" element={<PortalLogin />} />
+          <Route path="/portal/dashboard" element={<PortalDashboard />} />
         </Routes>
       </main>
-      <Footer />
+      {!isPortalRoute && <Footer />}
     </div>
   );
 }
