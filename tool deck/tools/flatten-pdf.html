@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flatten PDF - Make Form Fields Uneditable | ToolDeck</title>
+  <meta name="description" content="Flatten interactive PDF forms and annotations into permanent document content. Free and private.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../tool.css">
+</head>
+<body>
+  <div class="tool-layout">
+    <header class="tool-nav">
+      <a href="../index.html" class="back-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Tools
+      </a>
+      <div class="tool-title">Flatten PDF</div>
+      <div style="width:100px"></div>
+    </header>
+
+    <main class="tool-main">
+      <div id="upload-zone" class="upload-zone">
+        <svg class="upl-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        <h2 class="upl-title">Select Fillable PDF</h2>
+        <p class="upl-sub">Or drag and drop it here</p>
+        <button class="upl-btn" id="btn-select">Select PDF</button>
+        <input type="file" id="file-input" accept="application/pdf" style="display:none">
+        <p class="upl-note">Forms will be permanently embedded into the page and locked from editing.</p>
+      </div>
+
+      <div id="workspace" class="workspace" style="display:none; max-width: 600px; margin: 40px auto; width: 100%; text-align: center;">
+        <div class="ws-panel" style="padding: 40px;">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="1.5" style="margin-bottom: 20px;"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <h3 style="margin-bottom: 15px; font-size: 1.5rem;" id="ws-filename">document.pdf</h3>
+          <p style="color: var(--text-muted); margin-bottom: 30px;">This will lock all form fields, checkboxes, and signatures to make them permanent and uneditable.</p>
+          
+          <div style="display: flex; gap: 10px; max-width: 400px; margin: 0 auto;">
+            <button class="sec-btn" id="btn-cancel" style="flex: 1;">Cancel</button>
+            <button class="cta-btn" id="btn-start" style="flex: 2; justify-content: center;">Flatten PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="progress-wrap" class="progress-wrap" style="display:none">
+        <h3 id="progress-text">Flattening Form Fields...</h3>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      </div>
+
+      <div id="result-zone" class="result-zone" style="display:none">
+        <div class="res-card">
+          <div class="res-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <h3 class="res-title">PDF Flattened Successfully!</h3>
+          <p class="res-sub">All interactive elements have been permanently baked into the document.</p>
+          <a href="#" id="btn-download" class="cta-btn" download>Download Flattened PDF</a>
+          <button class="sec-btn" onclick="location.reload()" style="margin-top:15px">Process Another</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="flatten-pdf.js"></script>
+</body>
+</html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>08 Error Handling — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Language Specification — Error Handling</h1>
+<p><strong>Version:</strong> 0.1.0-draft<br />
+<strong>Status:</strong> Draft</p>
+<hr />
+<h2>1. Overview</h2>
+<p>Flux uses <strong>errors as values</strong> as its primary error handling strategy. Errors are represented by the <code>Result&lt;T, E&gt;</code> and <code>Option&lt;T&gt;</code> types, making error paths explicit and impossible to ignore.</p>
+<p><strong>Design principles:</strong>
+- Errors are not exceptional — they are expected and handled as values
+- The type system enforces error handling (you cannot accidentally ignore an error)
+- Error propagation is ergonomic with the <code>?</code> operator
+- <code>try</code>/<code>catch</code> provides familiar syntax as sugar over pattern matching
+- Panics exist for truly unrecoverable situations only</p>
+<hr />
+<h2>2. Result\&lt;T, E&gt;</h2>
+<h3>2.1 Definition</h3>
+<pre><code class="language-flux">enum Result&lt;T, E&gt; {
+    Ok(T),
+    Err(E),
+}
+</code></pre>
+<p><code>Result</code> is the standard return type for operations that can fail:</p>
+<pre><code class="language-flux">fn parse_int(s: String) -&gt; Result&lt;Int, ParseError&gt; {
+    // ... parsing logic ...
+    if valid {
+        return Ok(value)
+    }
+    return Err(ParseError.InvalidFormat(s))
+}
+</code></pre>
+<h3>2.2 Working with Result</h3>
+<pre><code class="language-flux">let result = parse_int(&quot;42&quot;)
+
+// Pattern matching
+match result {
+    Ok(value) -&gt; print(&quot;Parsed: {value}&quot;)
+    Err(error) -&gt; print(&quot;Error: {error}&quot;)
+}
+
+// Methods
+let value = result.unwrap()               // Panics on Err
+let value = result.unwrap_or(0)           // Default on Err
+let value = result.unwrap_or_else(fn(e) { log(e); 0 })
+let value = result.expect(&quot;must parse&quot;)   // Panics with message on Err
+let mapped = result.map(fn(v) { v * 2 })  // Transform Ok value
+let mapped = result.map_err(fn(e) { AppError.from(e) })  // Transform Err
+let flat = result.and_then(fn(v) { validate(v) })  // Chain operations
+let is_ok = result.is_ok()
+let is_err = result.is_err()
+
+// If-let
+if let Ok(value) = parse_int(&quot;42&quot;) {
+    print(&quot;Got: {value}&quot;)
+}
+</code></pre>
+<hr />
+<h2>3. Option\&lt;T&gt;</h2>
+<h3>3.1 Definition</h3>
+<pre><code class="language-flux">enum Option&lt;T&gt; {
+    Some(T),
+    None,
+}
+</code></pre>
+<p><code>Option</code> represents a value that may or may not exist. It replaces null/nil entirely.</p>
+<h3>3.2 Working with Option</h3>
+<pre><code class="language-flux">fn find(items: List&lt;Int&gt;, target: Int) -&gt; Option&lt;Int&gt; {
+    for (index, item) in items.enumerate() {
+        if item == target {
+            return Some(index)
+        }
+    }
+    return None
+}
+
+let index = find([10, 20, 30], 20)
+
+// Pattern matching
+match index {
+    Some(i) -&gt; print(&quot;Found at index {i}&quot;)
+    None    -&gt; print(&quot;Not found&quot;)
+}
+
+// Shorthand type syntax
+let name: String? = get_name()   // String? == Option&lt;String&gt;
+
+// Methods
+let value = name.unwrap()
+let value = name.unwrap_or(&quot;Anonymous&quot;)
+let value = name ?? &quot;Anonymous&quot;            // None-coalescing operator
+let upper = name.map(fn(n) { n.to_upper() })
+let flat = name.and_then(fn(n) { validate_name(n) })
+
+// Optional chaining
+let city = user?.address?.city             // Returns Option&lt;String&gt;
+let length = user?.name?.length ?? 0
+
+// If-let
+if let Some(n) = name {
+    print(&quot;Name: {n}&quot;)
+}
+
+// While-let
+while let Some(item) = iterator.next() {
+    process(item)
+}
+</code></pre>
+<hr />
+<h2>4. Error Propagation (<code>?</code>)</h2>
+<p>The <code>?</code> operator provides ergonomic error propagation. When applied to a <code>Result</code>, it:
+- Unwraps <code>Ok(value)</code> and continues execution
+- Returns <code>Err(error)</code> early from the current function (with automatic error conversion)</p>
+<pre><code class="language-flux">fn read_config(path: String) -&gt; Result&lt;Config, AppError&gt; {
+    let content = File.read(path)?          // Returns Err if file read fails
+    let parsed = json.parse(content)?       // Returns Err if parsing fails
+    let config = Config.from(parsed)?       // Returns Err if conversion fails
+    return Ok(config)
+}
+
+// Without `?` — equivalent but verbose:
+fn read_config_verbose(path: String) -&gt; Result&lt;Config, AppError&gt; {
+    let content = match File.read(path) {
+        Ok(c) -&gt; c
+        Err(e) -&gt; return Err(AppError.from(e))
+    }
+    let parsed = match json.parse(content) {
+        Ok(p) -&gt; p
+        Err(e) -&gt; return Err(AppError.from(e))
+    }
+    let config = match Config.from(parsed) {
+        Ok(c) -&gt; c
+        Err(e) -&gt; return Err(AppError.from(e))
+    }
+    return Ok(config)
+}
+</code></pre>
+<h3>4.1 <code>?</code> on Option</h3>
+<p>The <code>?</code> operator also works on <code>Option</code>, returning <code>None</code> early:</p>
+<pre><code class="language-flux">fn get_user_city(users: HashMap&lt;Int, User&gt;, id: Int) -&gt; Option&lt;String&gt; {
+    let user = users.get(id)?          // Returns None if user not found
+    let address = user.address?        // Returns None if no address
+    return Some(address.city)
+}
+</code></pre>
+<h3>4.2 Automatic Error Conversion</h3>
+<p>The <code>?</code> operator automatically converts errors using the <code>From</code> trait:</p>
+<pre><code class="language-flux">enum AppError {
+    Io(IoError),
+    Parse(ParseError),
+    Validation(String),
+}
+
+impl From&lt;IoError&gt; for AppError {
+    fn from(e: IoError) -&gt; AppError = AppError.Io(e)
+}
+
+impl From&lt;ParseError&gt; for AppError {
+    fn from(e: ParseError) -&gt; AppError = AppError.Parse(e)
+}
+
+// Now `?` automatically converts IoError and ParseError to AppError
+fn process() -&gt; Result&lt;Data, AppError&gt; {
+    let content = File.read(&quot;data.txt&quot;)?     // IoError → AppError
+    let parsed = json.parse(content)?        // ParseError → AppError
+    return Ok(parsed)
+}
+</code></pre>
+<hr />
+<h2>5. Try-Catch</h2>
+<p><code>try</code>/<code>catch</code> provides familiar exception-style syntax as sugar over <code>Result</code> matching:</p>
+<pre><code class="language-flux">try {
+    let file = File.open(&quot;data.txt&quot;)?
+    let content = file.read_all()?
+    let data = json.parse(content)?
+    process(data)
+} catch IoError.NotFound {
+    print(&quot;File not found — using defaults&quot;)
+    use_defaults()
+} catch IoError.PermissionDenied {
+    print(&quot;Permission denied&quot;)
+} catch ParseError as e {
+    print(&quot;Parse error: {e.message}&quot;)
+} catch error {
+    print(&quot;Unexpected error: {error}&quot;)
+}
+</code></pre>
+<h3>5.1 Try-Catch with Value</h3>
+<pre><code class="language-flux">let config = try {
+    load_config(&quot;config.toml&quot;)?
+} catch {
+    Config.default()   // Fallback value
+}
+</code></pre>
+<h3>5.2 Desugaring</h3>
+<p>The <code>try</code>/<code>catch</code> block desugars to a match expression:</p>
+<pre><code class="language-flux">// This try/catch:
+try {
+    let x = operation()?
+    use(x)
+} catch SomeError as e {
+    handle(e)
+}
+
+// Desugars to:
+match (fn() -&gt; Result&lt;Void, Error&gt; {
+    let x = operation()?
+    use(x)
+    return Ok(())
+})() {
+    Ok(()) -&gt; {}
+    Err(e) if e is SomeError -&gt; handle(e as SomeError)
+    Err(e) -&gt; panic(&quot;Unhandled error: {e}&quot;)
+}
+</code></pre>
+<hr />
+<h2>6. Custom Error Types</h2>
+<h3>6.1 Error Enums</h3>
+<pre><code class="language-flux">enum DatabaseError {
+    ConnectionFailed(host: String, port: Int),
+    QueryFailed(query: String, reason: String),
+    NotFound(table: String, id: Int),
+    Timeout(duration: Duration),
+}
+
+impl Display for DatabaseError {
+    fn to_string(self) -&gt; String {
+        match self {
+            ConnectionFailed(host, port) -&gt; &quot;Failed to connect to {host}:{port}&quot;
+            QueryFailed(query, reason)   -&gt; &quot;Query failed: {reason}\nQuery: {query}&quot;
+            NotFound(table, id)          -&gt; &quot;Record not found: {table}#{id}&quot;
+            Timeout(duration)            -&gt; &quot;Operation timed out after {duration}&quot;
+        }
+    }
+}
+</code></pre>
+<h3>6.2 Error Trait</h3>
+<pre><code class="language-flux">trait Error: Display {
+    fn source(self) -&gt; Option&lt;&amp;Error&gt; {
+        return None
+    }
+}
+
+impl Error for DatabaseError {}
+</code></pre>
+<h3>6.3 Error Chaining</h3>
+<pre><code class="language-flux">enum AppError {
+    Database(DatabaseError),
+    Config(ConfigError),
+    Internal(String),
+}
+
+impl Error for AppError {
+    fn source(self) -&gt; Option&lt;&amp;Error&gt; {
+        match self {
+            AppError.Database(e) -&gt; Some(&amp;e)
+            AppError.Config(e)   -&gt; Some(&amp;e)
+            AppError.Internal(_) -&gt; None
+        }
+    }
+}
+
+// Adding context to errors
+fn load_user(id: Int) -&gt; Result&lt;User, AppError&gt; {
+    let data = db.query(&quot;SELECT * FROM users WHERE id = {id}&quot;)
+        .map_err(fn(e) { AppError.Database(e) })?
+
+    return Ok(User.from(data))
+}
+</code></pre>
+<h3>6.4 The <code>context</code> Extension</h3>
+<pre><code class="language-flux">// Add human-readable context to any error
+fn setup() -&gt; Result&lt;Void, AppError&gt; {
+    File.read(&quot;config.toml&quot;)
+        .context(&quot;Failed to read configuration file&quot;)?
+
+    db.connect(config.db_url)
+        .context(&quot;Failed to connect to database&quot;)?
+
+    return Ok(())
+}
+</code></pre>
+<hr />
+<h2>7. Panic</h2>
+<h3>7.1 When to Panic</h3>
+<p>Panics are for <strong>unrecoverable</strong> errors — situations that indicate a programming bug, not an expected failure:</p>
+<pre><code class="language-flux">fn get(self, index: Int) -&gt; T {
+    if index &lt; 0 or index &gt;= self.length {
+        panic(&quot;Index out of bounds: {index} (length: {self.length})&quot;)
+    }
+    return self.data[index]
+}
+</code></pre>
+<h3>7.2 Panic Behavior</h3>
+<ol>
+<li>Prints error message with stack trace to stderr</li>
+<li>Unwinds the stack, running <code>Drop</code> implementations</li>
+<li>Exits the process with non-zero exit code</li>
+</ol>
+<pre><code>thread 'main' panicked at 'Index out of bounds: 5 (length: 3)'
+  at src/collections/list.flux:42:9
+
+Stack trace:
+  0: flux.collections.List&lt;Int&gt;.get (src/collections/list.flux:42)
+  1: main (src/main.flux:15)
+</code></pre>
+<h3>7.3 Catching Panics</h3>
+<p>In rare cases, panics can be caught (e.g., in test runners or server frameworks):</p>
+<pre><code class="language-flux">let result = panic.catch(fn() {
+    dangerous_operation()
+})
+
+match result {
+    Ok(value)  -&gt; print(&quot;Success: {value}&quot;)
+    Err(panic) -&gt; print(&quot;Caught panic: {panic.message}&quot;)
+}
+</code></pre>
+<h3>7.4 Assert</h3>
+<pre><code class="language-flux">assert(x &gt; 0)                           // Panics if false
+assert(x &gt; 0, &quot;x must be positive&quot;)     // With message
+debug_assert(expensive_check())          // Only in debug builds
+</code></pre>
+<hr />
+<h2>8. Error Handling Patterns</h2>
+<h3>8.1 The "?" Chain Pattern</h3>
+<pre><code class="language-flux">fn process_request(req: Request) -&gt; Result&lt;Response, AppError&gt; {
+    let user = authenticate(req)?
+    let data = fetch_data(user)?
+    let result = transform(data)?
+    return Ok(Response.json(result))
+}
+</code></pre>
+<h3>8.2 The "Match and Handle" Pattern</h3>
+<pre><code class="language-flux">fn resilient_operation() -&gt; Data {
+    match try_primary() {
+        Ok(data) -&gt; return data
+        Err(e) -&gt; {
+            log.warn(&quot;Primary failed: {e}, trying fallback&quot;)
+            match try_fallback() {
+                Ok(data) -&gt; return data
+                Err(e) -&gt; {
+                    log.error(&quot;Fallback also failed: {e}&quot;)
+                    return Data.default()
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<h3>8.3 The "Collect Results" Pattern</h3>
+<pre><code class="language-flux">fn process_all(items: List&lt;Item&gt;) -&gt; Result&lt;List&lt;Output&gt;, AppError&gt; {
+    // Collect all results, failing on the first error
+    let results: Result&lt;List&lt;Output&gt;, AppError&gt; = items
+        .map(fn(item) { process(item) })
+        .collect()
+
+    return results
+}
+
+// Or collect errors separately:
+fn process_all_lenient(items: List&lt;Item&gt;) -&gt; (List&lt;Output&gt;, List&lt;AppError&gt;) {
+    mut successes = List&lt;Output&gt;.new()
+    mut errors = List&lt;AppError&gt;.new()
+
+    for item in items {
+        match process(item) {
+            Ok(output) -&gt; successes.append(output)
+            Err(error) -&gt; errors.append(error)
+        }
+    }
+
+    return (successes, errors)
+}
+</code></pre>
+<hr />
+<h2>9. Comparison with Other Languages</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Flux</th>
+<th>Rust</th>
+<th>Go</th>
+<th>Swift</th>
+<th>Kotlin</th>
+<th>Python</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary mechanism</td>
+<td><code>Result&lt;T,E&gt;</code></td>
+<td><code>Result&lt;T,E&gt;</code></td>
+<td>Multi-return</td>
+<td><code>throws</code></td>
+<td>Exceptions</td>
+<td>Exceptions</td>
+</tr>
+<tr>
+<td>Null safety</td>
+<td><code>Option&lt;T&gt;</code></td>
+<td><code>Option&lt;T&gt;</code></td>
+<td>nil</td>
+<td>Optionals</td>
+<td>Nullable</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Propagation</td>
+<td><code>?</code> operator</td>
+<td><code>?</code> operator</td>
+<td><code>if err != nil</code></td>
+<td><code>try</code></td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Familiar syntax</td>
+<td><code>try</code>/<code>catch</code></td>
+<td>No</td>
+<td>No</td>
+<td><code>do</code>/<code>catch</code></td>
+<td><code>try</code>/<code>catch</code></td>
+<td><code>try</code>/<code>except</code></td>
+</tr>
+<tr>
+<td>Panics</td>
+<td><code>panic!</code></td>
+<td><code>panic!</code></td>
+<td><code>panic</code></td>
+<td><code>fatalError</code></td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Type-enforced</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Stack traces</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

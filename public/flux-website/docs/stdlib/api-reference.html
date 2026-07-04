@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Api Reference — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Standard Library — API Reference</h1>
+<p><strong>Version:</strong> 0.1.0-draft</p>
+<p>This document provides a comprehensive overview of every module in the Flux standard library. Each module lists its purpose, key types, and primary functions.</p>
+<hr />
+<h2>Core Modules</h2>
+<h3><code>flux.io</code></h3>
+<p>Input/output operations for console, streams, and buffered I/O.</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Signature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>print(args...)</code></td>
+<td><code>fn print(args: any...)</code></td>
+<td>Print to stdout with newline</td>
+</tr>
+<tr>
+<td><code>eprint(args...)</code></td>
+<td><code>fn eprint(args: any...)</code></td>
+<td>Print to stderr with newline</td>
+</tr>
+<tr>
+<td><code>read_line(prompt?)</code></td>
+<td><code>fn read_line(prompt: String = "") -&gt; String</code></td>
+<td>Read line from stdin</td>
+</tr>
+<tr>
+<td><code>Stdin</code></td>
+<td><code>struct Stdin</code></td>
+<td>Standard input stream</td>
+</tr>
+<tr>
+<td><code>Stdout</code></td>
+<td><code>struct Stdout</code></td>
+<td>Standard output stream</td>
+</tr>
+<tr>
+<td><code>Stderr</code></td>
+<td><code>struct Stderr</code></td>
+<td>Standard error stream</td>
+</tr>
+<tr>
+<td><code>BufReader&lt;R&gt;</code></td>
+<td><code>struct BufReader&lt;R: Read&gt;</code></td>
+<td>Buffered reader wrapper</td>
+</tr>
+<tr>
+<td><code>BufWriter&lt;W&gt;</code></td>
+<td><code>struct BufWriter&lt;W: Write&gt;</code></td>
+<td>Buffered writer wrapper</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Traits:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Trait</th>
+<th>Methods</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Read</code></td>
+<td><code>read(buf: &amp;mut [Byte]) -&gt; Result&lt;Int, IoError&gt;</code></td>
+<td>Read bytes</td>
+</tr>
+<tr>
+<td><code>Write</code></td>
+<td><code>write(buf: &amp;[Byte]) -&gt; Result&lt;Int, IoError&gt;</code></td>
+<td>Write bytes</td>
+</tr>
+<tr>
+<td><code>Seek</code></td>
+<td><code>seek(pos: SeekPos) -&gt; Result&lt;Int, IoError&gt;</code></td>
+<td>Seek to position</td>
+</tr>
+<tr>
+<td><code>BufRead</code></td>
+<td><code>read_line() -&gt; Result&lt;String, IoError&gt;</code></td>
+<td>Read a line</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3><code>flux.filesystem</code></h3>
+<p>File and directory operations.</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Signature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>File.open(path)</code></td>
+<td><code>fn open(path: String) -&gt; Result&lt;File, IoError&gt;</code></td>
+<td>Open a file for reading</td>
+</tr>
+<tr>
+<td><code>File.create(path)</code></td>
+<td><code>fn create(path: String) -&gt; Result&lt;File, IoError&gt;</code></td>
+<td>Create/truncate a file</td>
+</tr>
+<tr>
+<td><code>File.read(path)</code></td>
+<td><code>fn read(path: String) -&gt; Result&lt;String, IoError&gt;</code></td>
+<td>Read entire file to string</td>
+</tr>
+<tr>
+<td><code>File.read_bytes(path)</code></td>
+<td><code>fn read_bytes(path: String) -&gt; Result&lt;Bytes, IoError&gt;</code></td>
+<td>Read entire file to bytes</td>
+</tr>
+<tr>
+<td><code>File.write(path, data)</code></td>
+<td><code>fn write(path: String, data: String) -&gt; Result&lt;Void, IoError&gt;</code></td>
+<td>Write string to file</td>
+</tr>
+<tr>
+<td><code>File.append(path, data)</code></td>
+<td><code>fn append(path: String, data: String) -&gt; Result&lt;Void, IoError&gt;</code></td>
+<td>Append to file</td>
+</tr>
+<tr>
+<td><code>File.exists(path)</code></td>
+<td><code>fn exists(path: String) -&gt; Bool</code></td>
+<td>Check if file exists</td>
+</tr>
+<tr>
+<td><code>File.delete(path)</code></td>
+<td><code>fn delete(path: String) -&gt; Result&lt;Void, IoError&gt;</code></td>
+<td>Delete a file</td>
+</tr>
+<tr>
+<td><code>Dir.create(path)</code></td>
+<td><code>fn create(path: String) -&gt; Result&lt;Void, IoError&gt;</code></td>
+<td>Create directory</td>
+</tr>
+<tr>
+<td><code>Dir.create_all(path)</code></td>
+<td><code>fn create_all(path: String) -&gt; Result&lt;Void, IoError&gt;</code></td>
+<td>Create directory tree</td>
+</tr>
+<tr>
+<td><code>Dir.list(path)</code></td>
+<td><code>fn list(path: String) -&gt; Result&lt;List&lt;DirEntry&gt;, IoError&gt;</code></td>
+<td>List directory entries</td>
+</tr>
+<tr>
+<td><code>Dir.remove(path)</code></td>
+<td><code>fn remove(path: String) -&gt; Result&lt;Void, IoError&gt;</code></td>
+<td>Remove empty directory</td>
+</tr>
+<tr>
+<td><code>Dir.remove_all(path)</code></td>
+<td><code>fn remove_all(path: String) -&gt; Result&lt;Void, IoError&gt;</code></td>
+<td>Remove directory tree</td>
+</tr>
+<tr>
+<td><code>Path.join(parts...)</code></td>
+<td><code>fn join(parts: String...) -&gt; String</code></td>
+<td>Join path components</td>
+</tr>
+<tr>
+<td><code>Path.extension(path)</code></td>
+<td><code>fn extension(path: String) -&gt; Option&lt;String&gt;</code></td>
+<td>Get file extension</td>
+</tr>
+<tr>
+<td><code>Path.parent(path)</code></td>
+<td><code>fn parent(path: String) -&gt; Option&lt;String&gt;</code></td>
+<td>Get parent directory</td>
+</tr>
+<tr>
+<td><code>Path.filename(path)</code></td>
+<td><code>fn filename(path: String) -&gt; String</code></td>
+<td>Get filename component</td>
+</tr>
+<tr>
+<td><code>Path.absolute(path)</code></td>
+<td><code>fn absolute(path: String) -&gt; Result&lt;String, IoError&gt;</code></td>
+<td>Resolve to absolute path</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3><code>flux.collections</code></h3>
+<p>Data structures beyond built-in arrays and maps.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List&lt;T&gt;</code></td>
+<td>Growable dynamic array</td>
+</tr>
+<tr>
+<td><code>HashMap&lt;K, V&gt;</code></td>
+<td>Hash-based key-value map</td>
+</tr>
+<tr>
+<td><code>HashSet&lt;T&gt;</code></td>
+<td>Hash-based unique value set</td>
+</tr>
+<tr>
+<td><code>TreeMap&lt;K, V&gt;</code></td>
+<td>Sorted key-value map (B-tree)</td>
+</tr>
+<tr>
+<td><code>TreeSet&lt;T&gt;</code></td>
+<td>Sorted unique value set</td>
+</tr>
+<tr>
+<td><code>LinkedList&lt;T&gt;</code></td>
+<td>Doubly-linked list</td>
+</tr>
+<tr>
+<td><code>Deque&lt;T&gt;</code></td>
+<td>Double-ended queue</td>
+</tr>
+<tr>
+<td><code>PriorityQueue&lt;T&gt;</code></td>
+<td>Min/max heap</td>
+</tr>
+<tr>
+<td><code>RingBuffer&lt;T&gt;</code></td>
+<td>Fixed-size circular buffer</td>
+</tr>
+<tr>
+<td><code>BitSet</code></td>
+<td>Efficient bit vector</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>List&lt;T&gt;</code> Methods:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>new() -&gt; List&lt;T&gt;</code></td>
+<td>Create empty list</td>
+</tr>
+<tr>
+<td><code>with_capacity(n) -&gt; List&lt;T&gt;</code></td>
+<td>Pre-allocate capacity</td>
+</tr>
+<tr>
+<td><code>append(item: T)</code></td>
+<td>Add to end</td>
+</tr>
+<tr>
+<td><code>insert(index, item)</code></td>
+<td>Insert at index</td>
+</tr>
+<tr>
+<td><code>remove(index) -&gt; T</code></td>
+<td>Remove at index</td>
+</tr>
+<tr>
+<td><code>pop() -&gt; Option&lt;T&gt;</code></td>
+<td>Remove and return last</td>
+</tr>
+<tr>
+<td><code>get(index) -&gt; Option&lt;&amp;T&gt;</code></td>
+<td>Get by index</td>
+</tr>
+<tr>
+<td><code>length -&gt; Int</code></td>
+<td>Element count</td>
+</tr>
+<tr>
+<td><code>is_empty() -&gt; Bool</code></td>
+<td>Check if empty</td>
+</tr>
+<tr>
+<td><code>contains(item) -&gt; Bool</code></td>
+<td>Check containment</td>
+</tr>
+<tr>
+<td><code>sort()</code></td>
+<td>Sort in place</td>
+</tr>
+<tr>
+<td><code>reverse()</code></td>
+<td>Reverse in place</td>
+</tr>
+<tr>
+<td><code>filter(fn) -&gt; List&lt;T&gt;</code></td>
+<td>Filter elements</td>
+</tr>
+<tr>
+<td><code>map(fn) -&gt; List&lt;U&gt;</code></td>
+<td>Transform elements</td>
+</tr>
+<tr>
+<td><code>flat_map(fn) -&gt; List&lt;U&gt;</code></td>
+<td>Map and flatten</td>
+</tr>
+<tr>
+<td><code>reduce(fn) -&gt; Option&lt;T&gt;</code></td>
+<td>Reduce to single value</td>
+</tr>
+<tr>
+<td><code>iter() -&gt; Iterator&lt;T&gt;</code></td>
+<td>Get iterator</td>
+</tr>
+<tr>
+<td><code>enumerate() -&gt; Iterator&lt;(Int, T)&gt;</code></td>
+<td>Index-value pairs</td>
+</tr>
+<tr>
+<td><code>zip(other) -&gt; Iterator&lt;(T, U)&gt;</code></td>
+<td>Combine two lists</td>
+</tr>
+<tr>
+<td><code>chunks(size) -&gt; Iterator&lt;List&lt;T&gt;&gt;</code></td>
+<td>Split into chunks</td>
+</tr>
+<tr>
+<td><code>join(sep) -&gt; String</code></td>
+<td>Join to string</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3><code>flux.math</code></h3>
+<p>Mathematical functions and constants.</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PI</code></td>
+<td>π (3.14159265358979...)</td>
+</tr>
+<tr>
+<td><code>E</code></td>
+<td>Euler's number (2.71828...)</td>
+</tr>
+<tr>
+<td><code>TAU</code></td>
+<td>2π</td>
+</tr>
+<tr>
+<td><code>INFINITY</code></td>
+<td>Positive infinity</td>
+</tr>
+<tr>
+<td><code>NAN</code></td>
+<td>Not a Number</td>
+</tr>
+<tr>
+<td><code>abs(x)</code></td>
+<td>Absolute value</td>
+</tr>
+<tr>
+<td><code>min(a, b)</code></td>
+<td>Minimum</td>
+</tr>
+<tr>
+<td><code>max(a, b)</code></td>
+<td>Maximum</td>
+</tr>
+<tr>
+<td><code>clamp(x, min, max)</code></td>
+<td>Clamp to range</td>
+</tr>
+<tr>
+<td><code>sqrt(x)</code></td>
+<td>Square root</td>
+</tr>
+<tr>
+<td><code>cbrt(x)</code></td>
+<td>Cube root</td>
+</tr>
+<tr>
+<td><code>pow(base, exp)</code></td>
+<td>Power</td>
+</tr>
+<tr>
+<td><code>log(x)</code></td>
+<td>Natural logarithm</td>
+</tr>
+<tr>
+<td><code>log2(x)</code></td>
+<td>Base-2 logarithm</td>
+</tr>
+<tr>
+<td><code>log10(x)</code></td>
+<td>Base-10 logarithm</td>
+</tr>
+<tr>
+<td><code>sin(x)</code>, <code>cos(x)</code>, <code>tan(x)</code></td>
+<td>Trigonometric functions</td>
+</tr>
+<tr>
+<td><code>asin(x)</code>, <code>acos(x)</code>, <code>atan(x)</code></td>
+<td>Inverse trig</td>
+</tr>
+<tr>
+<td><code>atan2(y, x)</code></td>
+<td>Two-argument arctangent</td>
+</tr>
+<tr>
+<td><code>floor(x)</code>, <code>ceil(x)</code>, <code>round(x)</code></td>
+<td>Rounding</td>
+</tr>
+<tr>
+<td><code>gcd(a, b)</code></td>
+<td>Greatest common divisor</td>
+</tr>
+<tr>
+<td><code>lcm(a, b)</code></td>
+<td>Least common multiple</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3><code>flux.time</code></h3>
+<p>Date, time, duration, and timer utilities.</p>
+<table>
+<thead>
+<tr>
+<th>Type/Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DateTime</code></td>
+<td>Date and time with timezone</td>
+</tr>
+<tr>
+<td><code>Date</code></td>
+<td>Calendar date</td>
+</tr>
+<tr>
+<td><code>Time</code></td>
+<td>Time of day</td>
+</tr>
+<tr>
+<td><code>Duration</code></td>
+<td>Time span</td>
+</tr>
+<tr>
+<td><code>Instant</code></td>
+<td>Monotonic timestamp (for measuring)</td>
+</tr>
+<tr>
+<td><code>DateTime.now()</code></td>
+<td>Current date/time</td>
+</tr>
+<tr>
+<td><code>Instant.now()</code></td>
+<td>Current monotonic time</td>
+</tr>
+<tr>
+<td><code>Duration.seconds(n)</code></td>
+<td>Create duration</td>
+</tr>
+<tr>
+<td><code>Duration.milliseconds(n)</code></td>
+<td>Create duration</td>
+</tr>
+<tr>
+<td><code>DateTime.parse(s, format)</code></td>
+<td>Parse from string</td>
+</tr>
+<tr>
+<td><code>DateTime.format(format)</code></td>
+<td>Format to string</td>
+</tr>
+<tr>
+<td><code>sleep(duration)</code></td>
+<td>Block current thread</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3><code>flux.string</code></h3>
+<p>String utilities (extension methods on <code>String</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>length -&gt; Int</code></td>
+<td>Character count</td>
+</tr>
+<tr>
+<td><code>byte_length -&gt; Int</code></td>
+<td>Byte count (UTF-8)</td>
+</tr>
+<tr>
+<td><code>is_empty() -&gt; Bool</code></td>
+<td>Check if empty</td>
+</tr>
+<tr>
+<td><code>contains(sub) -&gt; Bool</code></td>
+<td>Check for substring</td>
+</tr>
+<tr>
+<td><code>starts_with(s) -&gt; Bool</code></td>
+<td>Prefix check</td>
+</tr>
+<tr>
+<td><code>ends_with(s) -&gt; Bool</code></td>
+<td>Suffix check</td>
+</tr>
+<tr>
+<td><code>to_upper() -&gt; String</code></td>
+<td>Uppercase</td>
+</tr>
+<tr>
+<td><code>to_lower() -&gt; String</code></td>
+<td>Lowercase</td>
+</tr>
+<tr>
+<td><code>trim() -&gt; String</code></td>
+<td>Strip whitespace</td>
+</tr>
+<tr>
+<td><code>split(sep) -&gt; List&lt;String&gt;</code></td>
+<td>Split by separator</td>
+</tr>
+<tr>
+<td><code>replace(old, new) -&gt; String</code></td>
+<td>Replace occurrences</td>
+</tr>
+<tr>
+<td><code>chars() -&gt; Iterator&lt;Char&gt;</code></td>
+<td>Character iterator</td>
+</tr>
+<tr>
+<td><code>bytes() -&gt; Iterator&lt;Byte&gt;</code></td>
+<td>Byte iterator</td>
+</tr>
+<tr>
+<td><code>repeat(n) -&gt; String</code></td>
+<td>Repeat n times</td>
+</tr>
+<tr>
+<td><code>pad_left(width, char)</code></td>
+<td>Left-pad</td>
+</tr>
+<tr>
+<td><code>pad_right(width, char)</code></td>
+<td>Right-pad</td>
+</tr>
+<tr>
+<td><code>parse_int() -&gt; Result&lt;Int, ParseError&gt;</code></td>
+<td>Parse integer</td>
+</tr>
+<tr>
+<td><code>parse_float() -&gt; Result&lt;Float64, ParseError&gt;</code></td>
+<td>Parse float</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Networking Modules</h2>
+<h3><code>flux.net</code></h3>
+<p>Low-level networking: TCP, UDP, DNS.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TcpListener</code></td>
+<td>TCP server socket</td>
+</tr>
+<tr>
+<td><code>TcpStream</code></td>
+<td>TCP client connection</td>
+</tr>
+<tr>
+<td><code>UdpSocket</code></td>
+<td>UDP socket</td>
+</tr>
+<tr>
+<td><code>IpAddr</code></td>
+<td>IP address (v4/v6)</td>
+</tr>
+<tr>
+<td><code>SocketAddr</code></td>
+<td>IP + port</td>
+</tr>
+<tr>
+<td><code>dns.lookup(host)</code></td>
+<td>DNS resolution</td>
+</tr>
+</tbody>
+</table>
+<h3><code>flux.http</code></h3>
+<p>HTTP client and server.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Client</code></td>
+<td>HTTP client</td>
+</tr>
+<tr>
+<td><code>Server</code></td>
+<td>HTTP server</td>
+</tr>
+<tr>
+<td><code>Request</code></td>
+<td>HTTP request</td>
+</tr>
+<tr>
+<td><code>Response</code></td>
+<td>HTTP response</td>
+</tr>
+<tr>
+<td><code>Status</code></td>
+<td>HTTP status codes</td>
+</tr>
+<tr>
+<td><code>Headers</code></td>
+<td>Header map</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-flux">// Client
+let response = await http.get(&quot;https://api.example.com/data&quot;)
+let data: MyType = response.json()?
+
+// POST
+let response = await http.post(&quot;https://api.example.com/data&quot;)
+    .header(&quot;Content-Type&quot;, &quot;application/json&quot;)
+    .json({&quot;key&quot;: &quot;value&quot;})
+    .send()?
+</code></pre>
+<h3><code>flux.networking</code></h3>
+<p>High-level networking utilities.</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>download(url, path)</code></td>
+<td>Download file</td>
+</tr>
+<tr>
+<td><code>upload(path, url)</code></td>
+<td>Upload file</td>
+</tr>
+<tr>
+<td><code>ping(host)</code></td>
+<td>ICMP ping</td>
+</tr>
+<tr>
+<td><code>port_scan(host, ports)</code></td>
+<td>Check open ports</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Serialization Modules</h2>
+<h3><code>flux.json</code></h3>
+<p>JSON parsing and generation.</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>parse&lt;T&gt;(s) -&gt; Result&lt;T, JsonError&gt;</code></td>
+<td>Parse JSON string</td>
+</tr>
+<tr>
+<td><code>stringify(value) -&gt; String</code></td>
+<td>Serialize to JSON</td>
+</tr>
+<tr>
+<td><code>stringify_pretty(value) -&gt; String</code></td>
+<td>Pretty-printed JSON</td>
+</tr>
+<tr>
+<td><code>JsonValue</code></td>
+<td>Dynamic JSON value type</td>
+</tr>
+</tbody>
+</table>
+<h3><code>flux.xml</code></h3>
+<p>XML parsing and generation.</p>
+<h3><code>flux.yaml</code></h3>
+<p>YAML parsing and generation.</p>
+<hr />
+<h2>Security Modules</h2>
+<h3><code>flux.crypto</code></h3>
+<p>Cryptographic operations.</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sha256(data) -&gt; Hash</code></td>
+<td>SHA-256 hash</td>
+</tr>
+<tr>
+<td><code>sha512(data) -&gt; Hash</code></td>
+<td>SHA-512 hash</td>
+</tr>
+<tr>
+<td><code>md5(data) -&gt; Hash</code></td>
+<td>MD5 hash (legacy)</td>
+</tr>
+<tr>
+<td><code>hmac_sha256(key, data)</code></td>
+<td>HMAC-SHA256</td>
+</tr>
+<tr>
+<td><code>aes_encrypt(key, data)</code></td>
+<td>AES-256-GCM encrypt</td>
+</tr>
+<tr>
+<td><code>aes_decrypt(key, data)</code></td>
+<td>AES-256-GCM decrypt</td>
+</tr>
+<tr>
+<td><code>rsa_generate_keypair()</code></td>
+<td>Generate RSA key pair</td>
+</tr>
+<tr>
+<td><code>random_bytes(n) -&gt; Bytes</code></td>
+<td>Cryptographic random bytes</td>
+</tr>
+<tr>
+<td><code>bcrypt_hash(password)</code></td>
+<td>Bcrypt password hash</td>
+</tr>
+<tr>
+<td><code>bcrypt_verify(password, hash)</code></td>
+<td>Verify bcrypt hash</td>
+</tr>
+<tr>
+<td><code>jwt.encode(claims, key)</code></td>
+<td>Create JWT</td>
+</tr>
+<tr>
+<td><code>jwt.decode(token, key)</code></td>
+<td>Verify and decode JWT</td>
+</tr>
+</tbody>
+</table>
+<h3><code>flux.security</code></h3>
+<p>Security utilities.</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sanitize_html(s)</code></td>
+<td>Remove dangerous HTML</td>
+</tr>
+<tr>
+<td><code>escape_sql(s)</code></td>
+<td>Escape SQL injection</td>
+</tr>
+<tr>
+<td><code>csrf_token()</code></td>
+<td>Generate CSRF token</td>
+</tr>
+<tr>
+<td><code>rate_limiter(config)</code></td>
+<td>Rate limiting</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>System Modules</h2>
+<h3><code>flux.os</code></h3>
+<p>Operating system interface.</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>env(name) -&gt; Option&lt;String&gt;</code></td>
+<td>Get environment variable</td>
+</tr>
+<tr>
+<td><code>set_env(name, value)</code></td>
+<td>Set environment variable</td>
+</tr>
+<tr>
+<td><code>args() -&gt; List&lt;String&gt;</code></td>
+<td>Command-line arguments</td>
+</tr>
+<tr>
+<td><code>exit(code)</code></td>
+<td>Exit process</td>
+</tr>
+<tr>
+<td><code>pid() -&gt; Int</code></td>
+<td>Current process ID</td>
+</tr>
+<tr>
+<td><code>cwd() -&gt; String</code></td>
+<td>Current working directory</td>
+</tr>
+<tr>
+<td><code>home_dir() -&gt; String</code></td>
+<td>User home directory</td>
+</tr>
+</tbody>
+</table>
+<h3><code>flux.system</code></h3>
+<p>System information.</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cpu_count() -&gt; Int</code></td>
+<td>Number of CPU cores</td>
+</tr>
+<tr>
+<td><code>total_memory() -&gt; Int</code></td>
+<td>Total RAM in bytes</td>
+</tr>
+<tr>
+<td><code>available_memory() -&gt; Int</code></td>
+<td>Available RAM</td>
+</tr>
+<tr>
+<td><code>os_name() -&gt; String</code></td>
+<td>OS name</td>
+</tr>
+<tr>
+<td><code>os_version() -&gt; String</code></td>
+<td>OS version</td>
+</tr>
+<tr>
+<td><code>hostname() -&gt; String</code></td>
+<td>Machine hostname</td>
+</tr>
+<tr>
+<td><code>arch() -&gt; String</code></td>
+<td>CPU architecture</td>
+</tr>
+</tbody>
+</table>
+<h3><code>flux.cli</code></h3>
+<p>Command-line argument parsing and terminal utilities.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ArgParser</code></td>
+<td>Argument parser builder</td>
+</tr>
+<tr>
+<td><code>Command</code></td>
+<td>Subcommand definition</td>
+</tr>
+<tr>
+<td><code>Flag</code></td>
+<td>Boolean flag</td>
+</tr>
+<tr>
+<td><code>Option</code></td>
+<td>Named option with value</td>
+</tr>
+<tr>
+<td><code>Arg</code></td>
+<td>Positional argument</td>
+</tr>
+<tr>
+<td><code>Terminal</code></td>
+<td>Terminal manipulation (colors, cursor)</td>
+</tr>
+<tr>
+<td><code>ProgressBar</code></td>
+<td>Progress bar widget</td>
+</tr>
+<tr>
+<td><code>Table</code></td>
+<td>Table formatter</td>
+</tr>
+<tr>
+<td><code>Spinner</code></td>
+<td>Loading spinner</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Concurrency Modules</h2>
+<h3><code>flux.async</code></h3>
+<p>Async runtime and utilities.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Future&lt;T&gt;</code></td>
+<td>Asynchronous computation</td>
+</tr>
+<tr>
+<td><code>Task</code></td>
+<td>Spawned async task handle</td>
+</tr>
+<tr>
+<td><code>TaskGroup&lt;T&gt;</code></td>
+<td>Group of concurrent tasks</td>
+</tr>
+<tr>
+<td><code>Runtime</code></td>
+<td>Async runtime</td>
+</tr>
+<tr>
+<td><code>Timer</code></td>
+<td>Async timer</td>
+</tr>
+<tr>
+<td><code>Interval</code></td>
+<td>Recurring timer</td>
+</tr>
+</tbody>
+</table>
+<h3><code>flux.concurrent</code></h3>
+<p>Synchronization primitives.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Mutex&lt;T&gt;</code></td>
+<td>Mutual exclusion lock</td>
+</tr>
+<tr>
+<td><code>RwLock&lt;T&gt;</code></td>
+<td>Reader-writer lock</td>
+</tr>
+<tr>
+<td><code>Semaphore</code></td>
+<td>Counting semaphore</td>
+</tr>
+<tr>
+<td><code>Barrier</code></td>
+<td>Thread barrier</td>
+</tr>
+<tr>
+<td><code>Channel&lt;T&gt;</code></td>
+<td>MPMC channel</td>
+</tr>
+<tr>
+<td><code>AtomicInt</code></td>
+<td>Atomic integer</td>
+</tr>
+<tr>
+<td><code>AtomicBool</code></td>
+<td>Atomic boolean</td>
+</tr>
+<tr>
+<td><code>OnceCell&lt;T&gt;</code></td>
+<td>Lazy initialization</td>
+</tr>
+</tbody>
+</table>
+<h3><code>flux.parallel</code></h3>
+<p>Parallel computation.</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>par_iter(items)</code></td>
+<td>Parallel iterator</td>
+</tr>
+<tr>
+<td><code>par_map(items, fn)</code></td>
+<td>Parallel map</td>
+</tr>
+<tr>
+<td><code>par_filter(items, fn)</code></td>
+<td>Parallel filter</td>
+</tr>
+<tr>
+<td><code>par_reduce(items, fn)</code></td>
+<td>Parallel reduce</td>
+</tr>
+<tr>
+<td><code>par_sort(items)</code></td>
+<td>Parallel sort</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Data Modules</h2>
+<h3><code>flux.database</code></h3>
+<p>Database access.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Connection</code></td>
+<td>Database connection</td>
+</tr>
+<tr>
+<td><code>Pool</code></td>
+<td>Connection pool</td>
+</tr>
+<tr>
+<td><code>Query</code></td>
+<td>SQL query builder</td>
+</tr>
+<tr>
+<td><code>Row</code></td>
+<td>Query result row</td>
+</tr>
+<tr>
+<td><code>Transaction</code></td>
+<td>Database transaction</td>
+</tr>
+</tbody>
+</table>
+<p>Supported databases: PostgreSQL, MySQL, SQLite, SQL Server.</p>
+<h3><code>flux.cloud</code></h3>
+<p>Cloud service integrations.</p>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cloud.aws</code></td>
+<td>AWS SDK (S3, DynamoDB, Lambda, etc.)</td>
+</tr>
+<tr>
+<td><code>cloud.gcp</code></td>
+<td>Google Cloud SDK</td>
+</tr>
+<tr>
+<td><code>cloud.azure</code></td>
+<td>Azure SDK</td>
+</tr>
+<tr>
+<td><code>cloud.storage</code></td>
+<td>Unified cloud storage interface</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Testing Module</h2>
+<h3><code>flux.testing</code></h3>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>assert(condition, message?)</code></td>
+<td>Assert truthfulness</td>
+</tr>
+<tr>
+<td><code>assert_eq(a, b, message?)</code></td>
+<td>Assert equality</td>
+</tr>
+<tr>
+<td><code>assert_ne(a, b, message?)</code></td>
+<td>Assert inequality</td>
+</tr>
+<tr>
+<td><code>assert_throws(fn, error_type?)</code></td>
+<td>Assert function panics</td>
+</tr>
+<tr>
+<td><code>assert_approx(a, b, epsilon)</code></td>
+<td>Assert approximate equality</td>
+</tr>
+<tr>
+<td><code>mock&lt;T&gt;() -&gt; Mock&lt;T&gt;</code></td>
+<td>Create a mock</td>
+</tr>
+<tr>
+<td><code>spy(fn) -&gt; Spy</code></td>
+<td>Create a spy</td>
+</tr>
+<tr>
+<td><code>fixture(name, setup, teardown)</code></td>
+<td>Test fixture</td>
+</tr>
+<tr>
+<td><code>benchmark(name, fn)</code></td>
+<td>Benchmark function</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Media Modules</h2>
+<h3><code>flux.graphics</code></h3>
+<p>2D graphics, image manipulation.</p>
+<h3><code>flux.audio</code></h3>
+<p>Audio playback, recording, processing.</p>
+<h3><code>flux.video</code></h3>
+<p>Video playback, encoding, streaming.</p>
+<hr />
+<h2>Domain Modules</h2>
+<h3><code>flux.ai</code> / <code>flux.ml</code></h3>
+<p>See <a href="../frameworks/ai-framework.md">AI Framework</a>.</p>
+<h3><code>flux.ui</code></h3>
+<p>See <a href="../frameworks/gui-framework.md">GUI Framework</a>.</p>
+<h3><code>flux.web</code></h3>
+<p>See <a href="../frameworks/web-framework.md">Web Framework</a>.</p>
+<h3><code>flux.game</code> / <code>flux.physics</code></h3>
+<p>See <a href="../frameworks/game-engine.md">Game Engine</a>.</p>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

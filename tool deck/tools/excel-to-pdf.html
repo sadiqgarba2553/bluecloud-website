@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Convert Excel spreadsheets to PDF online. Free, private, no signup." />
+  <title>Excel to PDF — ToolDeck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../tool.css" />
+  <style>
+    #hidden-render-container {
+      position: absolute; left: -9999px; top: 0; width: 1000px;
+      color: #000; padding: 20px; font-family: sans-serif;
+    }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="tool-nav">
+    <div class="tool-nav-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="9" height="9" rx="2" fill="currentColor"/><rect x="13" y="2" width="9" height="9" rx="2" fill="currentColor" opacity=".55"/><rect x="2" y="13" width="9" height="9" rx="2" fill="currentColor" opacity=".55"/><rect x="13" y="13" width="9" height="9" rx="2" fill="currentColor" opacity=".25"/></svg></div>
+        <span>ToolDeck</span>
+      </a>
+      <div class="tool-nav-actions">
+        <a href="../index.html" class="back-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          All Tools
+        </a>
+        <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">
+          <svg class="ic-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          <svg class="ic-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="tool-container">
+
+    <!-- HEADER -->
+    <div class="tool-header">
+      <div class="tool-icon" >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>
+        </svg>
+      </div>
+      <h1>Excel to PDF</h1>
+      <p>Convert Excel spreadsheets into PDF format directly in your browser.</p>
+    </div>
+
+    <!-- UPLOAD ZONE -->
+    <div class="upload-zone" id="upload-zone">
+      <div class="upload-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
+      <h3>Drop Excel file here</h3>
+      <p class="upload-sub">or click to browse · Supports .xlsx, .xls, .csv</p>
+      <input type="file" id="file-input" accept=".xlsx, .xls, .csv" />
+    </div>
+
+    <!-- FILE INFO -->
+    <div class="file-list-container" id="file-list-container" style="display:none">
+      <div class="upload-zone has-files" style="display:flex;align-items:center;justify-content:space-between">
+        <div class="file-info" style="display:flex;align-items:center;gap:12px">
+          <div class="file-thumb" style="width:42px;height:42px;background:rgba(22,163,74,0.1)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          </div>
+          <div>
+            <div class="file-name" id="file-name" style="font-size:.9rem">sheet.xlsx</div>
+            <div class="file-size" id="file-size">0 KB</div>
+          </div>
+        </div>
+        <button class="add-more-btn" id="change-file-btn" style="margin:0">Change file</button>
+      </div>
+    </div>
+
+    <!-- ACTION -->
+    <div class="action-row" id="action-row" style="display:none">
+      <button class="action-btn" id="convert-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Convert to PDF
+      </button>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <p class="progress-text" id="progress-text">Reading Spreadsheet...</p>
+    </div>
+
+    <!-- RESULT -->
+    <div class="result-zone" id="result-zone">
+      <div class="result-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="result-title">Conversion complete!</div>
+      <div class="result-sub">Your spreadsheet has been converted to PDF.</div>
+      <button class="download-btn" id="download-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download PDF
+      </button>
+      <button class="reset-btn" id="reset-btn">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        Process another
+      </button>
+    </div>
+
+  </div>
+
+  <footer class="tool-footer">
+    <p>Processed 100% in your browser · No data leaves your device · <a href="../index.html">ToolDeck</a></p>
+  </footer>
+
+  <div id="hidden-render-container"></div>
+
+  <!-- SheetJS -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <!-- jspdf + html2canvas for HTML to PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="excel-to-pdf.js"></script>
+</body>
+</html>

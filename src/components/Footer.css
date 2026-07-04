@@ -1,0 +1,97 @@
+.footer {
+  background-color: var(--deep-navy);
+  color: var(--light-gray);
+  padding: var(--spacing-6) 0 var(--spacing-4);
+  margin-top: auto;
+}
+
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+}
+
+.footer-brand .logo-text {
+  color: var(--white);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-2);
+  display: block;
+}
+
+.footer-brand p {
+  color: var(--slate-text); /* Slightly darker for contrast or keep light-gray? let's use slate text but lighter for dark bg */
+  color: #94A3B8;
+  margin-bottom: var(--spacing-3);
+  max-width: 300px;
+}
+
+.footer-socials {
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+.social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  color: var(--white);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.social-icon:hover {
+  background-color: var(--primary-blue);
+  color: var(--white);
+}
+
+.footer-links h4,
+.footer-contact h4 {
+  color: var(--white);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  margin-bottom: var(--spacing-3);
+}
+
+.footer-links ul {
+  list-style: none;
+}
+
+.footer-links li {
+  margin-bottom: var(--spacing-2);
+}
+
+.footer-links a {
+  color: #94A3B8;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: var(--cyan-accent);
+}
+
+.footer-contact .contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
+  color: #94A3B8;
+}
+
+.footer-contact .contact-item svg {
+  color: var(--cyan-accent);
+  margin-top: 4px;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: var(--spacing-4);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94A3B8;
+  font-size: 0.875rem;
+}

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Framework — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Web Framework</h1>
+<hr />
+<h2>1. Overview</h2>
+<p>Flux includes a built-in web framework for creating web applications and APIs. It provides both a <strong>declarative page syntax</strong> for full-stack web apps and a <strong>programmatic API</strong> for REST/GraphQL servers.</p>
+<hr />
+<h2>2. Declarative Pages</h2>
+<h3>2.1 Page Syntax</h3>
+<pre><code class="language-flux">use flux.web.{page, component}
+
+page &quot;/&quot; {
+    title &quot;Home — My App&quot;
+    meta description: &quot;Welcome to my Flux web application&quot;
+
+    nav {
+        link &quot;/&quot; { text &quot;Home&quot; }
+        link &quot;/about&quot; { text &quot;About&quot; }
+        link &quot;/contact&quot; { text &quot;Contact&quot; }
+    }
+
+    main {
+        h1 &quot;Welcome to Flux Web&quot;
+        p &quot;Build fast, modern web applications with Flux.&quot;
+
+        button &quot;Get Started&quot; {
+            on_click -&gt; navigate(&quot;/docs&quot;)
+        }
+    }
+
+    footer {
+        text &quot;© 2026 My App&quot;
+    }
+}
+</code></pre>
+<h3>2.2 Dynamic Pages</h3>
+<pre><code class="language-flux">page &quot;/users/{id}&quot; {
+    let user = await fetch_user(id)?
+
+    title &quot;{user.name} — Profile&quot;
+
+    main {
+        h1 user.name
+        p user.bio
+
+        if user.posts.length &gt; 0 {
+            h2 &quot;Posts&quot;
+            for post in user.posts {
+                article {
+                    h3 post.title
+                    p post.excerpt
+                    link &quot;/posts/{post.id}&quot; { text &quot;Read more&quot; }
+                }
+            }
+        } else {
+            p &quot;No posts yet.&quot;
+        }
+    }
+}
+</code></pre>
+<h3>2.3 Components</h3>
+<pre><code class="language-flux">component Card(title: String, children: Content) {
+    div class: &quot;card&quot; {
+        h3 class: &quot;card-title&quot; { text title }
+        div class: &quot;card-body&quot; {
+            children
+        }
+    }
+}
+
+component UserCard(user: User) {
+    Card(title: user.name) {
+        p user.email
+        p &quot;Joined: {user.created_at.format('MMM d, yyyy')}&quot;
+    }
+}
+
+page &quot;/team&quot; {
+    title &quot;Our Team&quot;
+    main {
+        h1 &quot;Team Members&quot;
+        for member in team_members {
+            UserCard(user: member)
+        }
+    }
+}
+</code></pre>
+<hr />
+<h2>3. HTTP Server API</h2>
+<h3>3.1 Basic Server</h3>
+<pre><code class="language-flux">use flux.http.{Server, Request, Response, Status}
+
+fn main() {
+    let server = Server.new(&quot;0.0.0.0:8080&quot;)
+
+    server.get(&quot;/&quot;, fn(req: Request) -&gt; Response {
+        return Response.html(&quot;&lt;h1&gt;Hello, Flux!&lt;/h1&gt;&quot;)
+    })
+
+    server.get(&quot;/api/health&quot;, fn(req: Request) -&gt; Response {
+        return Response.json({&quot;status&quot;: &quot;ok&quot;, &quot;version&quot;: &quot;1.0&quot;})
+    })
+
+    server.post(&quot;/api/users&quot;, fn(req: Request) -&gt; Response {
+        let body: CreateUserInput = req.json()?
+        let user = create_user(body)?
+        return Response.json(user).status(Status.Created)
+    })
+
+    print(&quot;Server running on http://localhost:8080&quot;)
+    server.start()
+}
+</code></pre>
+<h3>3.2 Routing</h3>
+<pre><code class="language-flux">use flux.web.{Router, Request, Response}
+
+fn api_routes() -&gt; Router {
+    let router = Router.new()
+
+    router.group(&quot;/api/v1&quot;, fn(r) {
+        r.get(&quot;/users&quot;, list_users)
+        r.get(&quot;/users/{id}&quot;, get_user)
+        r.post(&quot;/users&quot;, create_user)
+        r.put(&quot;/users/{id}&quot;, update_user)
+        r.delete(&quot;/users/{id}&quot;, delete_user)
+
+        r.group(&quot;/posts&quot;, fn(r) {
+            r.get(&quot;/&quot;, list_posts)
+            r.get(&quot;/{id}&quot;, get_post)
+            r.post(&quot;/&quot;, create_post)
+        })
+    })
+
+    return router
+}
+</code></pre>
+<h3>3.3 Middleware</h3>
+<pre><code class="language-flux">use flux.web.{Middleware, Request, Response, Next}
+
+fn logging_middleware(req: Request, next: Next) -&gt; Response {
+    let start = Time.now()
+    let response = next(req)
+    let duration = Time.now() - start
+    print(&quot;{req.method} {req.path} → {response.status} ({duration}ms)&quot;)
+    return response
+}
+
+fn auth_middleware(req: Request, next: Next) -&gt; Response {
+    let token = req.header(&quot;Authorization&quot;)
+    match token {
+        Some(t) -&gt; {
+            match verify_token(t) {
+                Ok(user) -&gt; {
+                    req.set(&quot;user&quot;, user)
+                    return next(req)
+                }
+                Err(_) -&gt; return Response.status(401).json({&quot;error&quot;: &quot;Invalid token&quot;})
+            }
+        }
+        None -&gt; return Response.status(401).json({&quot;error&quot;: &quot;Missing authorization&quot;})
+    }
+}
+
+// Apply middleware
+server.use(logging_middleware)
+server.group(&quot;/api&quot;, fn(r) {
+    r.use(auth_middleware)
+    r.get(&quot;/protected&quot;, protected_handler)
+})
+</code></pre>
+<hr />
+<h2>4. Rendering Modes</h2>
+<h3>4.1 Server-Side Rendering (SSR)</h3>
+<p>Pages are rendered on the server and sent as HTML:</p>
+<pre><code class="language-flux">#[render(mode: &quot;ssr&quot;)]
+page &quot;/products/{id}&quot; {
+    let product = await db.get_product(id)?
+    // HTML is generated on the server
+    main {
+        h1 product.name
+        p product.description
+    }
+}
+</code></pre>
+<h3>4.2 Client-Side Rendering (CSR)</h3>
+<p>Pages are rendered in the browser via WebAssembly:</p>
+<pre><code class="language-flux">#[render(mode: &quot;csr&quot;)]
+page &quot;/dashboard&quot; {
+    mut data = State.new(List&lt;DataPoint&gt;.new())
+
+    on_mount {
+        data.set(await fetch_dashboard_data())
+    }
+
+    main {
+        h1 &quot;Dashboard&quot;
+        Chart(data: data.get())
+    }
+}
+</code></pre>
+<h3>4.3 Hydration</h3>
+<p>SSR with client-side hydration — the page is rendered on the server, then the client-side code takes over:</p>
+<pre><code class="language-flux">#[render(mode: &quot;hydrate&quot;)]
+page &quot;/interactive&quot; {
+    mut count = State.new(0)
+
+    main {
+        h1 &quot;Counter: {count.get()}&quot;
+        button &quot;Increment&quot; {
+            on_click -&gt; count.set(count.get() + 1)
+        }
+    }
+}
+</code></pre>
+<hr />
+<h2>5. Database ORM</h2>
+<pre><code class="language-flux">use flux.web.db.{Model, migrate, query}
+
+#[model(table: &quot;users&quot;)]
+struct User {
+    #[primary_key(auto_increment)]
+    id: Int
+
+    #[unique]
+    email: String
+
+    name: String
+
+    #[default(&quot;now()&quot;)]
+    created_at: DateTime
+}
+
+// Queries
+async fn get_users() -&gt; Result&lt;List&lt;User&gt;, DbError&gt; {
+    return await User.all()
+}
+
+async fn find_user(id: Int) -&gt; Result&lt;Option&lt;User&gt;, DbError&gt; {
+    return await User.find(id)
+}
+
+async fn create_user(name: String, email: String) -&gt; Result&lt;User, DbError&gt; {
+    return await User.create(User {
+        name: name
+        email: email
+    })
+}
+
+async fn search_users(query: String) -&gt; Result&lt;List&lt;User&gt;, DbError&gt; {
+    return await User.where(&quot;name LIKE ?&quot;, &quot;%{query}%&quot;)
+        .order_by(&quot;created_at&quot;, &quot;desc&quot;)
+        .limit(20)
+        .execute()
+}
+</code></pre>
+<hr />
+<h2>6. WebSocket Support</h2>
+<pre><code class="language-flux">use flux.web.{WebSocket, WsMessage}
+
+server.ws(&quot;/chat&quot;, fn(ws: WebSocket) {
+    print(&quot;Client connected: {ws.id}&quot;)
+
+    ws.on_message(fn(msg: WsMessage) {
+        match msg {
+            WsMessage.Text(text) -&gt; {
+                // Broadcast to all connected clients
+                ws.broadcast(WsMessage.Text(&quot;User: {text}&quot;))
+            }
+            WsMessage.Binary(data) -&gt; {
+                // Handle binary data
+            }
+            WsMessage.Close -&gt; {
+                print(&quot;Client disconnected: {ws.id}&quot;)
+            }
+        }
+    })
+})
+</code></pre>
+<hr />
+<h2>7. Authentication</h2>
+<pre><code class="language-flux">use flux.web.auth.{Auth, Session, OAuth}
+
+// Session-based auth
+let auth = Auth.session(SessionConfig {
+    secret: env(&quot;SESSION_SECRET&quot;)
+    cookie_name: &quot;flux_session&quot;
+    max_age: Duration.days(7)
+})
+
+// OAuth
+let google_auth = OAuth.google(OAuthConfig {
+    client_id: env(&quot;GOOGLE_CLIENT_ID&quot;)
+    client_secret: env(&quot;GOOGLE_CLIENT_SECRET&quot;)
+    redirect_uri: &quot;http://localhost:8080/auth/callback&quot;
+})
+
+server.get(&quot;/auth/google&quot;, google_auth.login_handler())
+server.get(&quot;/auth/callback&quot;, google_auth.callback_handler())
+</code></pre>
+<hr />
+<h2>8. Compilation</h2>
+<p>The web framework compiles Flux pages to optimized output:</p>
+<pre><code class="language-bash"># Build for production
+flux web build --output dist/
+
+# Development server with hot reload
+flux web dev --port 3000
+</code></pre>
+<p>Output structure:</p>
+<pre><code>dist/
+├── index.html
+├── about/index.html
+├── assets/
+│   ├── app.js          # Bundled JavaScript (from WASM bridge)
+│   ├── app.wasm        # WebAssembly module (CSR/hydration)
+│   ├── styles.css      # Extracted and minified CSS
+│   └── images/
+├── api/                # Server-side API routes
+└── _flux/
+    └── manifest.json   # Build manifest
+</code></pre>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

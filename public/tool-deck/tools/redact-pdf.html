@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Redact PDF online. Hide sensitive information permanently. Free, private, no signup." />
+  <title>Redact PDF — ToolDeck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../tool.css" />
+  <style>
+    .workspace-split { display: flex; gap: 24px; margin-top: 24px; align-items: flex-start; }
+    .options-col { width: 320px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r-md); padding: 16px; flex-shrink: 0; }
+    .preview-col { flex: 1; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r-md); padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; }
+    
+    .opt-group { margin-bottom: 16px; }
+    .opt-group label { display: block; font-size: .8rem; font-weight: 500; color: var(--t2); margin-bottom: 6px; }
+    .opt-input { width: 100%; padding: 8px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; color: var(--t1); font-family: inherit; font-size: .9rem; }
+    
+    .redact-container { position: relative; display: inline-block; box-shadow: 0 4px 12px rgba(0,0,0,0.1); user-select: none; cursor: crosshair; }
+    .redact-canvas { display: block; max-width: 100%; height: auto; }
+    .drawing-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    
+    .redact-box { position: absolute; border: 1px solid #ff0000; opacity: 0.8; }
+    .redact-box .del-btn { position: absolute; top: -10px; right: -10px; color: #fff; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: auto; }
+    
+    .page-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .page-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--t1); padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+    .page-btn:hover:not(:disabled) { background: var(--bg4); }
+    .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    .toggle-wrap { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+    .toggle-switch { position: relative; width: 36px; height: 20px; background: var(--bg4); border-radius: 10px; cursor: pointer; transition: 0.3s; }
+    .toggle-switch.active { background: var(--blue); }
+    .toggle-thumb { position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; transition: 0.3s; }
+    .toggle-switch.active .toggle-thumb { transform: translateX(16px); }
+    
+    .info-box { background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); padding: 12px; border-radius: 4px; font-size: 0.8rem; color: var(--t2); line-height: 1.5; margin-top: 16px; }
+    
+    @media (max-width: 768px) {
+      .workspace-split { flex-direction: column; }
+      .options-col { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="tool-nav">
+    <div class="tool-nav-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="9" height="9" rx="2" fill="currentColor"/><rect x="13" y="2" width="9" height="9" rx="2" fill="currentColor" opacity=".55"/><rect x="2" y="13" width="9" height="9" rx="2" fill="currentColor" opacity=".55"/><rect x="13" y="13" width="9" height="9" rx="2" fill="currentColor" opacity=".25"/></svg></div>
+        <span>ToolDeck</span>
+      </a>
+      <div class="tool-nav-actions">
+        <a href="../index.html" class="back-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg> All Tools</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="tool-container">
+    <div class="tool-header">
+      <div class="tool-icon" >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line>
+        </svg>
+      </div>
+      <h1>Redact PDF</h1>
+      <p>Draw black boxes to hide sensitive information. Processing runs locally.</p>
+    </div>
+
+    <!-- UPLOAD ZONE -->
+    <div class="upload-zone" id="upload-zone">
+      <div class="upload-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+      <h3>Drop PDF file here</h3>
+      <p class="upload-sub">or click to browse · Supports .pdf</p>
+      <input type="file" id="file-input" accept=".pdf" />
+    </div>
+
+    <!-- WORKSPACE -->
+    <div id="workspace" style="display:none; width:100%;">
+      <div class="upload-zone has-files" style="display:flex;align-items:center;justify-content:space-between;">
+        <div class="file-info" style="display:flex;align-items:center;gap:12px">
+          <div class="file-thumb" style="width:42px;height:42px;background:rgba(239,68,68,0.1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div>
+            <div class="file-name" id="file-name" style="font-size:.9rem">document.pdf</div>
+            <div class="file-size" id="file-size">0 KB</div>
+          </div>
+        </div>
+        <button class="add-more-btn" id="change-file-btn" style="margin:0">Change file</button>
+      </div>
+
+      <div class="workspace-split">
+        <div class="options-col">
+          <div class="opt-group">
+            <label>Color</label>
+            <input type="color" id="redact-color" value="#000000" class="opt-input" style="padding:2px 4px; height:36px;" />
+          </div>
+          
+          <div class="opt-group" style="margin-top:20px;">
+            <label>Permanent Mode (Rasterize)</label>
+            <div class="toggle-wrap">
+              <div class="toggle-switch active" id="mode-toggle"><div class="toggle-thumb"></div></div>
+              <span style="font-size:0.8rem; color:var(--t2)" id="mode-label">Enabled</span>
+            </div>
+            <p style="font-size:0.75rem; color:var(--t2); margin-top:8px;">When enabled, pages are converted to images. This guarantees underlying text cannot be extracted, but removes text searchability.</p>
+          </div>
+          
+          <div class="info-box">
+            <b>How to use:</b><br/>
+            Click and drag on the document preview to draw redaction boxes. Use the page controls to navigate through the document.
+          </div>
+          
+          <!-- ACTION -->
+          <div class="action-row" style="margin-top:24px; display:block;">
+            <button class="action-btn" id="apply-btn" style="width:100%">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Apply Redactions
+            </button>
+          </div>
+        </div>
+        
+        <div class="preview-col">
+          <div class="page-nav">
+            <button class="page-btn" id="prev-page">Prev</button>
+            <span style="font-size:0.9rem; font-weight:500;">Page <span id="page-num">1</span> of <span id="page-count">1</span></span>
+            <button class="page-btn" id="next-page">Next</button>
+          </div>
+          
+          <div class="redact-container" id="redact-container">
+            <canvas class="redact-canvas" id="preview-canvas"></canvas>
+            <div class="drawing-layer" id="drawing-layer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <p class="progress-text" id="progress-text">Applying redactions...</p>
+    </div>
+
+    <!-- RESULT -->
+    <div class="result-zone" id="result-zone">
+      <div class="result-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="result-title">Success!</div>
+      <div class="result-sub">Your PDF has been redacted.</div>
+      <button class="download-btn" id="download-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download PDF</button>
+      <button class="reset-btn" id="reset-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg> Redact another</button>
+    </div>
+
+  </div>
+
+  <footer class="tool-footer">
+    <p>Processed 100% in your browser · No data leaves your device · <a href="../index.html">ToolDeck</a></p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="redact-pdf.js"></script>
+</body>
+</html>

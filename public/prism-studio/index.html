@@ -1,0 +1,3222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prism Studio — Design Toolkit</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <meta name="description" content="Professional design toolkit for graphic designers. Color, typography, gradients, shadows, AI assistant.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <style>
+    /* ── RESET ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── DESIGN TOKENS ─────────────────────── */
+    :root {
+      --bg:          #1E1E1E;
+      --bg-sidebar:  #2C2C2C;
+      --bg-panel:    #252526;
+      --bg-input:    #333333;
+      --bg-hover:    #2A2D2E;
+      --bg-active:   #37373D;
+
+      --border:      #444444;
+      --border-md:   #555555;
+
+      --text:        #CCCCCC;
+      --text-muted:  #969696;
+      --text-dim:    #757575;
+
+      --accent:      #0D99FF;
+      --accent-h:    #007BE5;
+      --accent-dim:  rgba(13,153,255,0.15);
+      --accent-dim2: rgba(13,153,255,0.25);
+
+      --green:       #4CAF50;
+      --green-dim:   rgba(76,175,80,0.12);
+      --red:         #F44336;
+      --red-dim:     rgba(244,67,54,0.12);
+      --yellow:      #FFC107;
+
+      --radius:      3px;
+      --radius-md:   5px;
+      --sidebar-w:   220px;
+      --header-h:    40px;
+    }
+
+    body[data-theme="light"] {
+      --bg:          #F4F5F7;
+      --bg-sidebar:  #FFFFFF;
+      --bg-panel:    #FFFFFF;
+      --bg-input:    #F1F3F5;
+      --bg-hover:    #E9ECEF;
+      --bg-active:   #DEE2E6;
+      --border:      #D9DEE5;
+      --border-md:   #B8C0CC;
+      --text:        #1D2430;
+      --text-muted:  #5F6B7A;
+      --text-dim:    #8A94A3;
+      --green-dim:   rgba(46,125,50,0.12);
+      --red-dim:     rgba(211,47,47,0.12);
+    }
+
+    /* ── BASE ──────────────────────────────── */
+    html, body {
+      height: 100%;
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.5;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── APP SHELL ─────────────────────────── */
+    .app { display: flex; height: 100vh; }
+
+    /* ── SIDEBAR ───────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo {
+      padding: 14px 14px 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .logo-mark {
+      width: 28px; height: 28px;
+      background: transparent;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .logo-mark img { width: 100%; height: 100%; object-fit: contain; }
+
+    .logo-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .logo-ver {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .nav { flex: 1; padding: 8px 6px; overflow-y: auto; scrollbar-width: none; }
+    .nav::-webkit-scrollbar { display: none; }
+
+    .nav-section {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 10px 8px 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 8px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 500;
+      transition: background 0.12s, color 0.12s;
+      user-select: none;
+      position: relative;
+    }
+
+    .nav-item:hover { background: var(--bg-hover); color: var(--text); }
+    .nav-item.active { background: var(--accent-dim); color: var(--accent); }
+
+    .nav-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+    .sidebar-foot {
+      padding: 10px 14px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ── MAIN ──────────────────────────────── */
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+    .header {
+      height: var(--header-h);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 10px;
+      flex-shrink: 0;
+      background: var(--bg);
+    }
+
+    .header-title { font-size: 13px; font-weight: 600; color: var(--text); }
+
+    .header-spacer { flex: 1; }
+    .header-actions { display: flex; align-items: center; gap: 6px; }
+    .icon-btn {
+      width: 30px; height: 30px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+    }
+    .icon-btn:hover { background: var(--bg-hover); color: var(--text); border-color: var(--border); }
+    .icon-btn svg { width: 15px; height: 15px; }
+    .cmd-chip {
+      height: 30px;
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-input);
+      color: var(--text-muted);
+      font-size: 11.5px;
+      cursor: pointer;
+    }
+    .cmd-chip:hover { color: var(--text); border-color: var(--border-md); }
+    .kbd {
+      padding: 1px 5px;
+      border: 1px solid var(--border-md);
+      border-radius: 3px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    .header-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .content::-webkit-scrollbar { width: 4px; }
+    .content::-webkit-scrollbar-thumb { background: var(--border); }
+
+    /* ── PANELS ────────────────────────────── */
+    .panel { display: none; }
+    .panel.active { display: block; animation: in 0.2s ease; }
+
+    @keyframes in {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── PAGE HEADING ──────────────────────── */
+    .page-head { margin-bottom: 18px; }
+    .page-head h1 { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+    .page-head p  { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+
+    /* ── CARD ──────────────────────────────── */
+    .card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+
+    .card-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 12px;
+    }
+
+    /* ── GRID ──────────────────────────────── */
+    .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+    /* ── FORM ELEMENTS ─────────────────────── */
+    .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+    .field label { font-size: 11.5px; font-weight: 500; color: var(--text-muted); }
+
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      padding: 7px 10px;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.12s;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus { border-color: var(--accent); }
+
+    input[type="color"] {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      height: 36px;
+      padding: 2px 4px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+      height: 4px;
+    }
+
+    select { cursor: pointer; }
+    textarea { resize: vertical; }
+
+    /* ── BUTTONS ───────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background 0.12s, opacity 0.12s;
+      line-height: 1;
+    }
+
+    .btn svg { width: 13px; height: 13px; }
+
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-h); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-secondary {
+      background: var(--bg-input);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--border-md); background: var(--bg-hover); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+    .btn-ghost:hover { background: var(--bg-hover); color: var(--text); }
+
+    .btn-sm { padding: 5px 10px; font-size: 11.5px; }
+    .btn-xs { padding: 3px 8px; font-size: 11px; }
+    .btn-fav.active { color: var(--yellow); border-color: rgba(255,193,7,0.45); }
+
+    /* ── COLOR SWATCH STRIP ────────────────── */
+    .strip {
+      display: flex;
+      height: 48px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+
+    .strip-c { flex: 1; transition: flex 0.2s; }
+    .strip-c:hover { flex: 2; }
+
+    /* ── COLOR GRID ────────────────────────── */
+    .cg { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 8px; }
+
+    .ct {
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.12s, transform 0.12s;
+    }
+
+    .ct:hover { border-color: var(--border-md); transform: translateY(-2px); }
+    .ct-sw { height: 56px; }
+    .ct-info { background: var(--bg-input); padding: 6px 8px; }
+    .ct-hex { font-size: 11px; font-family: 'JetBrains Mono', monospace; font-weight: 500; color: var(--text); }
+    .ct-sub { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+
+    /* ── CODE BLOCK ────────────────────────── */
+    .code {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      color: #818CF8;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.7;
+    }
+
+    /* ── UPLOAD ZONE ───────────────────────── */
+    .upload {
+      border: 1.5px dashed var(--border-md);
+      border-radius: var(--radius-md);
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .upload:hover, .upload.over {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .upload-icon {
+      width: 36px; height: 36px;
+      color: var(--text-muted);
+      margin: 0 auto 10px;
+    }
+
+    .upload p { color: var(--text-muted); font-size: 12.5px; line-height: 1.6; }
+    .upload strong { color: var(--accent); font-weight: 600; }
+
+    /* ── GRADIENT PREVIEW ──────────────────── */
+    .grad-prev {
+      height: 112px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .stop-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+    .stop-row input[type="color"] { width: 36px; height: 30px; flex-shrink: 0; }
+    .stop-row input[type="range"] { flex: 1; }
+    .stop-label { font-size: 10.5px; font-family: monospace; color: var(--text-muted); width: 28px; }
+
+    /* ── SHADOW STAGE ──────────────────────── */
+    .shadow-stage {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 48px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .shadow-box {
+      width: 110px; height: 70px;
+      background: var(--accent);
+      border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      transition: box-shadow 0.2s;
+    }
+
+    .shadow-text-demo { display: none; font-size: 26px; font-weight: 800; color: var(--text); }
+
+    /* ── FONT PREVIEW ──────────────────────── */
+    .fp {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 12px;
+    }
+
+    #fp-h { font-size: 30px; font-weight: 700; line-height: 1.2; margin-bottom: 10px; color: var(--text); }
+    #fp-b { font-size: 14px; color: var(--text-muted); line-height: 1.75; }
+
+    /* ── CONTRAST ──────────────────────────── */
+    .contrast-card {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 24px 16px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .cr-score { font-size: 48px; font-weight: 800; letter-spacing: -0.03em; }
+    .cr-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+    .wcag-row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 14px; }
+
+    .wb {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 8px; border-radius: 3px;
+      font-size: 11px; font-weight: 600;
+    }
+
+    .wb-pass { background: var(--green-dim); color: var(--green); }
+    .wb-fail { background: var(--red-dim); color: var(--red); }
+
+    /* ── TYPE SCALE ────────────────────────── */
+    .ts-row {
+      display: flex; align-items: baseline; gap: 14px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ts-label { font-size: 10.5px; font-family: monospace; color: var(--text-muted); width: 50px; flex-shrink: 0; }
+
+    /* ── AI CHAT ───────────────────────────── */
+    .chat-msgs {
+      height: 360px;
+      overflow-y: auto;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .msg {
+      max-width: 88%;
+      padding: 9px 13px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .msg.user {
+      align-self: flex-end;
+      background: var(--accent);
+      color: #fff;
+      border-bottom-right-radius: 3px;
+    }
+
+    .msg.ai {
+      align-self: flex-start;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 3px;
+    }
+
+    .msg.thinking { color: var(--text-muted); font-style: italic; }
+
+    .chat-row { display: flex; gap: 8px; align-items: flex-end; }
+    #chat-in { flex: 1; resize: none; height: 38px; }
+
+    /* ── SLIDER GROUP ──────────────────────── */
+    .slider-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+    .slider-lbl { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--text-muted); }
+    .slider-lbl span:last-child { font-family: monospace; color: var(--text); }
+
+    /* ── SCROLLBOX ─────────────────────────── */
+    .scroll-box { overflow-y: auto; max-height: 220px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+
+    /* APP LAYER */
+    .drawer-overlay, .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.16s ease;
+      z-index: 9000;
+    }
+    .drawer-overlay.show, .modal-overlay.show { opacity: 1; pointer-events: auto; }
+
+    .settings-drawer {
+      position: fixed; top: 0; right: 0; bottom: 0;
+      width: min(420px, 92vw);
+      background: var(--bg-panel);
+      border-left: 1px solid var(--border);
+      z-index: 9100;
+      transform: translateX(100%);
+      transition: transform 0.2s ease;
+      display: flex; flex-direction: column;
+      box-shadow: -18px 0 40px rgba(0,0,0,0.35);
+    }
+    .settings-drawer.show { transform: translateX(0); }
+    .drawer-head, .modal-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .drawer-title, .modal-title { font-size: 14px; font-weight: 700; color: var(--text); }
+    .drawer-body { padding: 16px; overflow-y: auto; }
+    .settings-section { margin-bottom: 20px; }
+    .settings-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 12px;
+    }
+    .settings-row .field { flex: 1; margin-bottom: 0; }
+    .switch-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 12px;
+      color: var(--text-muted);
+      font-size: 12.5px;
+    }
+
+    .modal {
+      position: fixed; left: 50%; top: 50%;
+      width: min(760px, calc(100vw - 28px));
+      max-height: min(720px, calc(100vh - 36px));
+      transform: translate(-50%, -48%) scale(0.98);
+      opacity: 0; pointer-events: none;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-md);
+      border-radius: var(--radius-md);
+      z-index: 9200;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.5);
+      transition: opacity 0.16s, transform 0.16s;
+      overflow: hidden;
+    }
+    .modal.show { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
+    .modal-body { padding: 16px; overflow-y: auto; max-height: calc(min(720px, calc(100vh - 36px)) - 55px); }
+    .command-modal { width: min(680px, calc(100vw - 28px)); }
+    .cmd-list { display: grid; gap: 6px; margin-top: 12px; max-height: 420px; overflow-y: auto; }
+    .cmd-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg);
+      cursor: pointer;
+    }
+    .cmd-item:hover { border-color: var(--accent); background: var(--accent-dim); }
+    .cmd-name { color: var(--text); font-size: 12.5px; font-weight: 600; }
+    .cmd-meta { color: var(--text-muted); font-size: 11px; }
+    .export-preview {
+      min-height: 220px;
+      max-height: 360px;
+      overflow: auto;
+      white-space: pre;
+      word-break: normal;
+    }
+    .library-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 12px;
+    }
+    .library-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: flex; flex-direction: column; gap: 10px;
+      min-height: 132px;
+    }
+    .library-top { display: flex; justify-content: space-between; gap: 8px; }
+    .library-title { font-weight: 700; font-size: 12.5px; color: var(--text); }
+    .library-meta { font-size: 10.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .library-preview { height: 44px; border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; }
+    .empty-state {
+      border: 1px dashed var(--border-md);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      text-align: center;
+      color: var(--text-muted);
+      background: var(--bg-panel);
+    }
+
+    /* ── TOAST ─────────────────────────────── */
+    #toast {
+      position: fixed; bottom: 20px; right: 20px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-md);
+      border-radius: var(--radius-md);
+      padding: 10px 16px;
+      font-size: 12.5px; font-weight: 500;
+      z-index: 9999;
+      transform: translateY(60px); opacity: 0;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+
+    #toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── SEPARATOR ─────────────────────────── */
+    .sep { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+
+    /* ── UTILITIES ─────────────────────────── */
+    .mt1{margin-top:4px} .mt2{margin-top:10px} .mt3{margin-top:16px} .mt4{margin-top:22px}
+    .mb1{margin-bottom:4px} .mb2{margin-bottom:10px} .mb3{margin-bottom:16px}
+    .w100{width:100%}
+    .flex{display:flex} .col{flex-direction:column}
+    .gap1{gap:4px} .gap2{gap:8px} .gap3{gap:12px} .gap4{gap:16px}
+    .ai-c{align-items:center} .jb{justify-content:space-between}
+    .wrap{flex-wrap:wrap}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    /* ── MOBILE RESPONSIVENESS ──────────────── */
+    .menu-btn { display: none; }
+    .sidebar-overlay { display: none; }
+
+    @media (max-width: 768px) {
+      .app { flex-direction: column; }
+      .header { padding-left: 12px; }
+      .menu-btn { 
+        display: flex; align-items: center; justify-content: center;
+        background: transparent; border: none; color: var(--text);
+        cursor: pointer; padding: 6px; margin-right: 4px;
+      }
+      .sidebar {
+        position: fixed; top: 0; left: 0; height: 100vh;
+        z-index: 100; transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+      }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay {
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5); z-index: 99;
+        opacity: 0; pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      .sidebar-overlay.show { opacity: 1; pointer-events: auto; }
+      .g2, .g3 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMenu()"></div>
+<div class="app">
+
+  <!-- ════════════════ SIDEBAR ════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <img src="icon.png" alt="Prism Studio Logo">
+      </div>
+      <div>
+        <div class="logo-name">Prism Studio</div>
+        <div class="logo-ver">Design Toolkit Pro</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Color</div>
+      <div class="nav-item active" id="n-extractor" onclick="go('extractor')">
+        <i data-lucide="pipette"></i> Color Extractor
+      </div>
+      <div class="nav-item" id="n-harmony" onclick="go('harmony')">
+        <i data-lucide="circle-dot"></i> Color Harmony
+      </div>
+      <div class="nav-item" id="n-contrast" onclick="go('contrast')">
+        <i data-lucide="contrast"></i> Contrast Checker
+      </div>
+
+      <div class="nav-section">Visual</div>
+      <div class="nav-item" id="n-mockup" onclick="go('mockup')">
+        <i data-lucide="smartphone"></i> Mockup Generator
+      </div>
+      <div class="nav-item" id="n-pattern" onclick="go('pattern')">
+        <i data-lucide="grid-3x3"></i> Pattern Builder
+      </div>
+      <div class="nav-item" id="n-gradient" onclick="go('gradient')">
+        <i data-lucide="layers"></i> Gradient Builder
+      </div>
+      <div class="nav-item" id="n-shadow" onclick="go('shadow')">
+        <i data-lucide="blend"></i> Shadow Generator
+      </div>
+
+      <div class="nav-section">Typography</div>
+      <div class="nav-item" id="n-fonts" onclick="go('fonts')">
+        <i data-lucide="type"></i> Font Pairing
+      </div>
+      <div class="nav-item" id="n-typescale" onclick="go('typescale')">
+        <i data-lucide="ruler"></i> Type Scale
+      </div>
+
+      <div class="nav-section">New Tools</div>
+      <div class="nav-item" id="n-blob" onclick="go('blob')">
+        <i data-lucide="shapes"></i> Blob Generator
+      </div>
+      <div class="nav-item" id="n-anim" onclick="go('anim')">
+        <i data-lucide="film"></i> Animation Builder
+      </div>
+      <div class="nav-item" id="n-icon" onclick="go('icon')">
+        <i data-lucide="library"></i> Icon Manager
+      </div>
+      <div class="nav-item" id="n-grid" onclick="go('grid')">
+        <i data-lucide="layout-grid"></i> Layout Playground
+      </div>
+      <div class="nav-item" id="n-opt" onclick="go('opt')">
+        <i data-lucide="image-minus"></i> Image Optimizer
+      </div>
+      <div class="nav-item" id="n-sys" onclick="go('sys')">
+        <i data-lucide="package-export"></i> Design System Exporter
+      </div>
+
+      <div class="nav-section">Workspace</div>
+      <div class="nav-item" id="n-library" onclick="go('library')">
+        <i data-lucide="star"></i> Library
+      </div>
+
+      <div class="nav-section">AI</div>
+      <div class="nav-item" id="n-ai" onclick="go('ai')">
+        <i data-lucide="bot"></i> AI Assistant
+      </div>
+    </nav>
+
+    <div class="sidebar-foot">Prism Studio v1.0</div>
+  </aside>
+
+  <!-- ════════════════ MAIN ════════════════ -->
+  <main class="main">
+    <div class="header">
+      <button class="menu-btn" onclick="toggleMenu()"><i data-lucide="menu"></i></button>
+      <span id="h-title" class="header-title">Color Extractor</span>
+      <span id="h-badge" class="header-badge">Color</span>
+      <div class="header-spacer"></div>
+      <div class="header-actions">
+        <button class="cmd-chip" onclick="openCommandPalette()"><i data-lucide="search"></i><span>Command</span><span class="kbd">Ctrl K</span></button>
+        <button class="icon-btn" title="Add current tool to Library" onclick="favoriteCurrentTool()"><i data-lucide="star"></i></button>
+        <button class="icon-btn" title="Export Center" onclick="openExportCenter()"><i data-lucide="package-export"></i></button>
+        <button class="icon-btn" title="Toggle Theme" onclick="toggleTheme()"><i data-lucide="sun-moon"></i></button>
+        <button class="icon-btn" title="Settings" onclick="openSettings()"><i data-lucide="settings"></i></button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ░░ COLOR EXTRACTOR ░░ -->
+      <div class="panel active" id="p-extractor">
+        <div class="page-head">
+          <h1>Color Extractor</h1>
+          <p>Upload any image to extract a color palette ready for export</p>
+        </div>
+
+        <div class="g2" style="margin-bottom:16px">
+          <div>
+            <div class="upload" id="upload-z" onclick="document.getElementById('img-file').click()">
+              <input type="file" id="img-file" accept="image/*" style="display:none" onchange="onImgUpload(event)">
+              <div class="upload-icon"><i data-lucide="image-up" style="width:100%;height:100%"></i></div>
+              <p><strong>Click to upload</strong> or drag and drop<br>PNG · JPG · SVG · WEBP · GIF</p>
+            </div>
+            <div id="img-wrap" style="display:none;margin-top:10px">
+              <img id="prev-img" style="width:100%;border-radius:6px;max-height:260px;object-fit:cover;border:1px solid var(--border)">
+              <button class="btn btn-ghost w100 mt2" onclick="resetUpload()">Reset</button>
+            </div>
+          </div>
+
+          <div class="card" style="min-height:180px">
+            <div class="card-label">Extracted Palette</div>
+            <div class="strip" id="ext-strip" style="background:var(--bg-input)"></div>
+            <div class="cg" id="ext-grid">
+              <div style="color:var(--text-muted);font-size:12px;grid-column:1/-1">Upload an image to begin</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="ext-export" style="display:none" class="card">
+          <div class="card-label">Export</div>
+          <div class="g3">
+            <div>
+              <div class="card-label" style="font-size:10px;margin-bottom:6px">CSS Variables</div>
+              <div class="code" id="ext-css"></div>
+              <button class="btn btn-secondary btn-sm w100 mt2" onclick="cp('ext-css')">Copy CSS</button>
+            </div>
+            <div>
+              <div class="card-label" style="font-size:10px;margin-bottom:6px">HEX</div>
+              <div class="code" id="ext-hex"></div>
+              <button class="btn btn-secondary btn-sm w100 mt2" onclick="cp('ext-hex')">Copy HEX</button>
+            </div>
+            <div>
+              <div class="card-label" style="font-size:10px;margin-bottom:6px">RGB</div>
+              <div class="code" id="ext-rgb"></div>
+              <button class="btn btn-secondary btn-sm w100 mt2" onclick="cp('ext-rgb')">Copy RGB</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ░░ COLOR HARMONY ░░ -->
+      <div class="panel" id="p-harmony">
+        <div class="page-head">
+          <h1>Color Harmony</h1>
+          <p>Generate color schemes based on color theory principles</p>
+        </div>
+
+        <div class="g2">
+          <div class="card">
+            <div class="card-label">Settings</div>
+            <div class="field">
+              <label>Base Color</label>
+              <input type="color" id="h-base" value="#5E6AD2" oninput="genHarmony()">
+            </div>
+            <div class="field">
+              <label>Harmony Type</label>
+              <select id="h-type" onchange="genHarmony()">
+                <option value="complementary">Complementary</option>
+                <option value="triadic">Triadic</option>
+                <option value="analogous">Analogous</option>
+                <option value="split">Split-Complementary</option>
+                <option value="tetradic">Tetradic (Square)</option>
+                <option value="mono">Monochromatic</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Tones</label>
+              <select id="h-tones" onchange="genHarmony()">
+                <option value="5">5 tones</option>
+                <option value="7" selected>7 tones</option>
+                <option value="9">9 tones</option>
+              </select>
+            </div>
+            <button class="btn btn-primary w100" onclick="genHarmony()">Generate</button>
+          </div>
+
+          <div class="card">
+            <div class="card-label">Generated Scheme</div>
+            <div class="strip" id="h-strip"></div>
+            <div class="cg mt2" id="h-grid"></div>
+          </div>
+        </div>
+
+        <div class="card mt3">
+          <div class="card-label">CSS Variables</div>
+          <div class="code" id="h-css"></div>
+          <div class="flex gap2 mt2 wrap">
+            <button class="btn btn-secondary btn-sm" onclick="cp('h-css')">Copy CSS</button>
+            <button class="btn btn-ghost btn-sm" onclick="cpHex('h-strip')">Copy HEX List</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ░░ CONTRAST CHECKER ░░ -->
+      <div class="panel" id="p-contrast">
+        <div class="page-head">
+          <h1>Contrast Checker</h1>
+          <p>Verify WCAG AA and AAA accessibility compliance</p>
+        </div>
+
+        <div class="g2">
+          <div class="card">
+            <div class="card-label">Color Pair</div>
+            <div class="field">
+              <label>Foreground (Text)</label>
+              <input type="color" id="cc-fg" value="#FFFFFF" oninput="calcContrast()">
+            </div>
+            <div class="field">
+              <label>Background</label>
+              <input type="color" id="cc-bg" value="#5E6AD2" oninput="calcContrast()">
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="swapCC()">Swap Colors</button>
+
+            <hr class="sep">
+            <div class="card-label">Presets</div>
+            <div class="two-col">
+              <button class="btn btn-ghost btn-sm" onclick="setCC('#fff','#000')">White / Black</button>
+              <button class="btn btn-ghost btn-sm" onclick="setCC('#000','#fff')">Black / White</button>
+              <button class="btn btn-ghost btn-sm" onclick="setCC('#fff','#5E6AD2')">White / Indigo</button>
+              <button class="btn btn-ghost btn-sm" onclick="setCC('#fff','#EF4444')">White / Red</button>
+              <button class="btn btn-ghost btn-sm" onclick="setCC('#1A1A1E','#E5E5F0')">Dark / Light</button>
+              <button class="btn btn-ghost btn-sm" onclick="setCC('#fff','#0F172A')">White / Navy</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="contrast-card" id="cc-card">
+              <div class="cr-score" id="cc-ratio">—</div>
+              <div class="cr-label">Contrast Ratio</div>
+              <div class="wcag-row" id="cc-badges"></div>
+            </div>
+
+            <div class="card mt2">
+              <div class="card-label">Preview</div>
+              <div id="cc-prev" style="padding:18px;border-radius:5px">
+                <div style="font-size:22px;font-weight:700;margin-bottom:6px">The quick brown fox</div>
+                <div style="font-size:13px;line-height:1.6;opacity:0.88">Jumps over the lazy dog. Accessible design ensures everyone can read your content clearly.</div>
+                <div style="font-size:11px;margin-top:8px;opacity:0.65">Small text — requires higher contrast for WCAG AAA</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ░░ MOCKUP GENERATOR ░░ -->
+      <div class="panel" id="p-mockup">
+        <div class="page-head">
+          <h1>Mockup Generator</h1>
+          <p>Instantly map your designs into minimal device frames.</p>
+        </div>
+        <div class="g2" style="margin-bottom:16px">
+          <div>
+            <div class="upload" id="mk-upload-z" onclick="document.getElementById('mk-file').click()">
+              <input type="file" id="mk-file" accept="image/*" style="display:none" onchange="onMkUpload(event)">
+              <div class="upload-icon"><i data-lucide="image-up" style="width:100%;height:100%"></i></div>
+              <p><strong>Click to upload</strong> or drag and drop</p>
+            </div>
+            <div id="mk-wrap" style="display:none;margin-top:10px">
+              <button class="btn btn-ghost w100" onclick="resetMk()">Upload Different Image</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-label">Settings</div>
+            <div class="field">
+              <label>Device Frame</label>
+              <select id="mk-device" onchange="drawMockup()">
+                <option value="browser">Browser Window</option>
+                <option value="phone">Smartphone</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Background Color</label>
+              <input type="color" id="mk-bg" value="#5E6AD2" oninput="drawMockup()">
+            </div>
+            <div class="slider-row">
+              <div class="slider-lbl"><span>Padding</span><span id="mk-pv">60px</span></div>
+              <input type="range" id="mk-pad" min="0" max="120" value="60" oninput="document.getElementById('mk-pv').textContent=this.value+'px';drawMockup()">
+            </div>
+            <button class="btn btn-primary w100 mt3" onclick="exportMk()">Download Mockup</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-label">Preview</div>
+          <div style="background:var(--bg-input);border:1px dashed var(--border);border-radius:var(--radius);padding:20px;display:flex;justify-content:center;overflow:hidden">
+            <canvas id="mk-canvas" style="max-width:100%;border-radius:6px;box-shadow:0 4px 20px rgba(0,0,0,0.3)"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- ░░ PATTERN BUILDER ░░ -->
+      <div class="panel" id="p-pattern">
+        <div class="page-head">
+          <h1>Seamless Pattern Builder</h1>
+          <p>Generate minimal, seamless background patterns for your designs.</p>
+        </div>
+        <div class="g2" style="margin-bottom:16px">
+          <div class="card">
+            <div class="card-label">Settings</div>
+            <div class="field">
+              <label>Pattern Type</label>
+              <select id="pb-type" onchange="drawPattern()">
+                <option value="dots">Polka Dots</option>
+                <option value="stripes">Stripes</option>
+                <option value="checker">Checkerboard</option>
+              </select>
+            </div>
+            <div class="two-col">
+              <div class="field">
+                <label>Foreground</label>
+                <input type="color" id="pb-fg" value="#FFFFFF" oninput="drawPattern()">
+              </div>
+              <div class="field">
+                <label>Background</label>
+                <input type="color" id="pb-bg" value="#5E6AD2" oninput="drawPattern()">
+              </div>
+            </div>
+            <div class="slider-row mt1">
+              <div class="slider-lbl"><span>Scale</span><span id="pb-sv">20px</span></div>
+              <input type="range" id="pb-scale" min="4" max="100" value="20" oninput="document.getElementById('pb-sv').textContent=this.value+'px';drawPattern()">
+            </div>
+            <div class="slider-row">
+              <div class="slider-lbl"><span>Spacing / Density</span><span id="pb-dv">40px</span></div>
+              <input type="range" id="pb-dense" min="4" max="200" value="40" oninput="document.getElementById('pb-dv').textContent=this.value+'px';drawPattern()">
+            </div>
+            <div class="slider-row" id="pb-ang-g" style="display:none">
+              <div class="slider-lbl"><span>Angle</span><span id="pb-av">45°</span></div>
+              <input type="range" id="pb-angle" min="0" max="180" value="45" oninput="document.getElementById('pb-av').textContent=this.value+'°';drawPattern()">
+            </div>
+            <button class="btn btn-primary w100 mt3" onclick="exportPb()">Download High-Res Pattern</button>
+          </div>
+          <div class="card">
+            <div class="card-label">Preview</div>
+            <div style="width:100%;height:100%;min-height:280px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)">
+              <canvas id="pb-canvas" style="width:100%;height:100%"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ░░ GRADIENT BUILDER ░░ -->
+      <div class="panel" id="p-gradient">
+        <div class="page-head">
+          <h1>Gradient Builder</h1>
+          <p>Build custom gradients with stops and export ready CSS</p>
+        </div>
+
+        <div class="grad-prev" id="grad-prev"></div>
+
+        <div class="g2">
+          <div class="card">
+            <div class="card-label">Settings</div>
+            <div class="field">
+              <label>Type</label>
+              <select id="g-type" onchange="updGrad()">
+                <option value="linear">Linear</option>
+                <option value="radial">Radial</option>
+                <option value="conic">Conic</option>
+              </select>
+            </div>
+            <div class="slider-row" id="g-angle-g">
+              <div class="slider-lbl"><span>Angle</span><span id="g-ang-v">135°</span></div>
+              <input type="range" id="g-angle" min="0" max="360" value="135"
+                oninput="document.getElementById('g-ang-v').textContent=this.value+'°';updGrad()">
+            </div>
+
+            <div class="card-label mt2">Color Stops</div>
+            <div id="g-stops">
+              <div class="stop-row">
+                <input type="color" value="#5E6AD2" onchange="updGrad()" class="sc">
+                <input type="range" min="0" max="100" value="0" oninput="updSL(this);updGrad()" class="sp">
+                <span class="stop-label">0%</span>
+                <button class="btn btn-ghost btn-xs" onclick="rmStop(this)">Remove</button>
+              </div>
+              <div class="stop-row">
+                <input type="color" value="#06B6D4" onchange="updGrad()" class="sc">
+                <input type="range" min="0" max="100" value="100" oninput="updSL(this);updGrad()" class="sp">
+                <span class="stop-label">100%</span>
+                <button class="btn btn-ghost btn-xs" onclick="rmStop(this)">Remove</button>
+              </div>
+            </div>
+            <button class="btn btn-ghost btn-sm w100 mt1" onclick="addStop()">+ Add Stop</button>
+          </div>
+
+          <div class="card">
+            <div class="card-label">Presets</div>
+            <div id="g-presets" style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:16px"></div>
+
+            <div class="card-label">CSS Output</div>
+            <div class="code" id="g-css"></div>
+            <button class="btn btn-primary w100 mt2" onclick="cp('g-css')">Copy CSS</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ░░ SHADOW GENERATOR ░░ -->
+      <div class="panel" id="p-shadow">
+        <div class="page-head">
+          <h1>Shadow Generator</h1>
+          <p>Design box and text shadows with real-time preview</p>
+        </div>
+
+        <div class="shadow-stage">
+          <div class="shadow-box" id="sh-box">
+            <span class="shadow-text-demo" id="sh-txt">Aa</span>
+          </div>
+        </div>
+
+        <div class="g2">
+          <div class="card">
+            <div class="card-label">Settings</div>
+
+            <div class="field">
+              <label>Shadow Type</label>
+              <select id="sh-type" onchange="updShadow()">
+                <option value="box">Box Shadow</option>
+                <option value="text">Text Shadow</option>
+              </select>
+            </div>
+
+            <div class="slider-row">
+              <div class="slider-lbl"><span>X Offset</span><span id="sh-xv">0px</span></div>
+              <input type="range" id="sh-x" min="-60" max="60" value="0" oninput="updShadow()">
+            </div>
+            <div class="slider-row">
+              <div class="slider-lbl"><span>Y Offset</span><span id="sh-yv">8px</span></div>
+              <input type="range" id="sh-y" min="-60" max="60" value="8" oninput="updShadow()">
+            </div>
+            <div class="slider-row">
+              <div class="slider-lbl"><span>Blur</span><span id="sh-bv">24px</span></div>
+              <input type="range" id="sh-b" min="0" max="120" value="24" oninput="updShadow()">
+            </div>
+            <div class="slider-row" id="sh-sg">
+              <div class="slider-lbl"><span>Spread</span><span id="sh-sv">0px</span></div>
+              <input type="range" id="sh-s" min="-20" max="40" value="0" oninput="updShadow()">
+            </div>
+            <div class="field">
+              <label>Shadow Color</label>
+              <input type="color" id="sh-col" value="#000000" oninput="updShadow()">
+            </div>
+            <div class="slider-row">
+              <div class="slider-lbl"><span>Opacity</span><span id="sh-ov">40%</span></div>
+              <input type="range" id="sh-o" min="0" max="100" value="40" oninput="updShadow()">
+            </div>
+            <div class="field" id="sh-ig">
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+                <input type="checkbox" id="sh-inset" onchange="updShadow()"> Inset
+              </label>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label">Presets</div>
+            <div class="flex col gap2 mb3">
+              <button class="btn btn-secondary btn-sm" onclick="shPreset('soft')">Soft Lift</button>
+              <button class="btn btn-secondary btn-sm" onclick="shPreset('hard')">Hard Drop</button>
+              <button class="btn btn-secondary btn-sm" onclick="shPreset('glow')">Color Glow</button>
+              <button class="btn btn-secondary btn-sm" onclick="shPreset('deep')">Deep Depth</button>
+              <button class="btn btn-secondary btn-sm" onclick="shPreset('inner')">Inner Shadow</button>
+              <button class="btn btn-secondary btn-sm" onclick="shPreset('flat')">Flat Card</button>
+            </div>
+
+            <div class="card-label">CSS Output</div>
+            <div class="code" id="sh-css"></div>
+            <button class="btn btn-primary w100 mt2" onclick="cp('sh-css')">Copy CSS</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ░░ FONT PAIRING ░░ -->
+      <div class="panel" id="p-fonts">
+        <div class="page-head">
+          <h1>Font Pairing Studio</h1>
+          <p>Find and preview professional font combinations</p>
+        </div>
+
+        <div class="g2">
+          <div class="card">
+            <div class="card-label">Fonts</div>
+            <div class="field">
+              <label>Heading Font</label>
+              <select id="f-head" onchange="updFonts()">
+                <optgroup label="Modern Sans">
+                  <option value="Inter">Inter</option>
+                  <option value="Outfit">Outfit</option>
+                  <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
+                  <option value="DM Sans">DM Sans</option>
+                  <option value="Sora">Sora</option>
+                  <option value="Nunito">Nunito</option>
+                  <option value="Poppins">Poppins</option>
+                  <option value="Raleway">Raleway</option>
+                  <option value="Urbanist">Urbanist</option>
+                </optgroup>
+                <optgroup label="Serif & Display">
+                  <option value="Playfair Display">Playfair Display</option>
+                  <option value="Lora">Lora</option>
+                  <option value="Merriweather">Merriweather</option>
+                  <option value="Cormorant Garamond">Cormorant Garamond</option>
+                  <option value="DM Serif Display">DM Serif Display</option>
+                  <option value="Libre Baskerville">Libre Baskerville</option>
+                </optgroup>
+                <optgroup label="Geometric">
+                  <option value="Montserrat">Montserrat</option>
+                  <option value="Josefin Sans">Josefin Sans</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="field">
+              <label>Body Font</label>
+              <select id="f-body" onchange="updFonts()">
+                <optgroup label="Readable">
+                  <option value="Inter" selected>Inter</option>
+                  <option value="Source Sans 3">Source Sans 3</option>
+                  <option value="Open Sans">Open Sans</option>
+                  <option value="Lato">Lato</option>
+                  <option value="Roboto">Roboto</option>
+                  <option value="Nunito Sans">Nunito Sans</option>
+                  <option value="Mulish">Mulish</option>
+                  <option value="Manrope">Manrope</option>
+                </optgroup>
+                <optgroup label="Editorial">
+                  <option value="Lora">Lora</option>
+                  <option value="Merriweather">Merriweather</option>
+                  <option value="Libre Baskerville">Libre Baskerville</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="field">
+              <label>Heading Text</label>
+              <input type="text" id="f-ht" value="Design that speaks">
+            </div>
+            <div class="field">
+              <label>Body Text</label>
+              <textarea id="f-bt" style="height:60px">Great typography is invisible. It guides the reader through content with rhythm and clarity.</textarea>
+            </div>
+            <button class="btn btn-primary w100" onclick="updFonts()">Apply</button>
+
+            <hr class="sep">
+            <div class="card-label">Popular Pairings</div>
+            <div class="flex col gap1">
+              <button class="btn btn-ghost btn-sm" onclick="setFP('Playfair Display','Lato')">Playfair Display + Lato</button>
+              <button class="btn btn-ghost btn-sm" onclick="setFP('Montserrat','Open Sans')">Montserrat + Open Sans</button>
+              <button class="btn btn-ghost btn-sm" onclick="setFP('Outfit','Lora')">Outfit + Lora</button>
+              <button class="btn btn-ghost btn-sm" onclick="setFP('DM Serif Display','DM Sans')">DM Serif Display + DM Sans</button>
+              <button class="btn btn-ghost btn-sm" onclick="setFP('Cormorant Garamond','Raleway')">Cormorant Garamond + Raleway</button>
+              <button class="btn btn-ghost btn-sm" onclick="setFP('Plus Jakarta Sans','Manrope')">Plus Jakarta Sans + Manrope</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="fp">
+              <div id="fp-h">Design that speaks</div>
+              <div id="fp-b">Great typography is invisible. It guides the reader through content with rhythm and clarity.</div>
+            </div>
+            <div class="card mt2">
+              <div class="card-label">CSS Import</div>
+              <div class="code" id="f-css"></div>
+              <button class="btn btn-primary w100 mt2" onclick="cp('f-css')">Copy CSS</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ░░ TYPE SCALE ░░ -->
+      <div class="panel" id="p-typescale">
+        <div class="page-head">
+          <h1>Type Scale Generator</h1>
+          <p>Generate a modular typographic scale for your design system</p>
+        </div>
+
+        <div class="g2" style="margin-bottom:16px">
+          <div class="card">
+            <div class="card-label">Scale Settings</div>
+            <div class="field">
+              <label>Base Size (px)</label>
+              <input type="number" id="ts-base" value="16" min="10" max="24" oninput="genScale()">
+            </div>
+            <div class="field">
+              <label>Ratio</label>
+              <select id="ts-ratio" onchange="genScale()">
+                <option value="1.067">Minor Second — 1.067</option>
+                <option value="1.125">Major Second — 1.125</option>
+                <option value="1.200" selected>Minor Third — 1.200</option>
+                <option value="1.250">Major Third — 1.250</option>
+                <option value="1.333">Perfect Fourth — 1.333</option>
+                <option value="1.414">Augmented Fourth — 1.414</option>
+                <option value="1.500">Perfect Fifth — 1.500</option>
+                <option value="1.618">Golden Ratio — 1.618</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Preview Font</label>
+              <select id="ts-font" onchange="genScale()">
+                <option value="Inter">Inter</option>
+                <option value="Outfit">Outfit</option>
+                <option value="Playfair Display">Playfair Display</option>
+                <option value="Montserrat">Montserrat</option>
+                <option value="Poppins">Poppins</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label">CSS Variables</div>
+            <div class="code scroll-box" id="ts-css"></div>
+            <button class="btn btn-primary w100 mt2" onclick="cp('ts-css')">Copy CSS</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Preview</div>
+          <div id="ts-prev"></div>
+        </div>
+      </div>
+
+      <!-- ░░ AI ASSISTANT ░░ -->
+      <div class="panel" id="p-ai">
+        <div class="page-head">
+          <h1>AI Design Assistant</h1>
+          <p>Powered by Gemini — your professional design partner</p>
+        </div>
+
+        <div class="g2">
+          <div class="card">
+            <div class="card-label">Quick Prompts</div>
+            <div class="flex col gap2">
+              <button class="btn btn-ghost btn-sm" onclick="qp('Generate a professional dark color palette for a fintech startup. Include HEX codes.')">Fintech Dark Palette</button>
+              <button class="btn btn-ghost btn-sm" onclick="qp('Create a color scheme for a creative design agency. Include HEX codes with usage guidance.')">Creative Agency Colors</button>
+              <button class="btn btn-ghost btn-sm" onclick="qp('Recommend font pairings for a luxury fashion brand with reasoning.')">Luxury Fashion Fonts</button>
+              <button class="btn btn-ghost btn-sm" onclick="qp('What color palette works best for a healthcare mobile app?')">Healthcare App Palette</button>
+              <button class="btn btn-ghost btn-sm" onclick="qp('Generate a calming pastel palette for a wellness app. Include HEX codes.')">Wellness App Colors</button>
+              <button class="btn btn-ghost btn-sm" onclick="qp('What are the most important UI design trends in 2025?')">2025 Design Trends</button>
+              <button class="btn btn-ghost btn-sm" onclick="qp('Tips for improving typography on dark mode interfaces.')">Dark Mode Typography</button>
+              <button class="btn btn-ghost btn-sm" onclick="qp('Explain WCAG 2.1 contrast requirements clearly with examples.')">WCAG Contrast Guide</button>
+              <button class="btn btn-ghost btn-sm" onclick="qp('Explain the 60-30-10 color rule and how to apply it in branding.')">60-30-10 Color Rule</button>
+              <button class="btn btn-ghost btn-sm" onclick="qp('Suggest a complete brand color system for an eco-tech company.')">Eco Brand System</button>
+            </div>
+          </div>
+
+          <div class="flex col" style="gap:0">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em">Chat</span>
+              <select id="model-sel" onchange="updateSetting('model', this.value)" style="font-size:11px;padding:3px 6px;width:auto;height:auto">
+              </select>
+            </div>
+            <div class="chat-msgs" id="chat-msgs">
+              <div class="msg ai">Hello, I am your AI design assistant powered by Gemini.<br><br>I can help with color palettes, typography, accessibility, design trends, and creative direction. Ask me anything about design.</div>
+            </div>
+            <div id="ai-status" style="font-size:11.5px;color:var(--text-muted);margin-bottom:6px;min-height:18px"></div>
+            <div class="chat-row">
+              <textarea id="chat-in" placeholder="Ask about colors, typography, design principles..." onkeydown="chatKey(event)"></textarea>
+              <button class="btn btn-primary" id="send-btn" onclick="sendChat()">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ░░ BLOB GENERATOR ░░ -->
+      <div class="panel" id="p-blob">
+        <div class="page-head">
+          <h1>SVG Blob Generator</h1>
+          <p>Generate organic shapes for backgrounds and illustrations.</p>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <div class="card-label">Settings</div>
+            <div class="field">
+              <label>Color</label>
+              <input type="color" id="blob-col" value="#0D99FF" oninput="drawBlob()">
+            </div>
+            <div class="slider-row">
+              <div class="slider-lbl"><span>Complexity</span><span id="blob-cv">5</span></div>
+              <input type="range" id="blob-comp" min="3" max="12" value="5" oninput="document.getElementById('blob-cv').textContent=this.value;drawBlob()">
+            </div>
+            <div class="slider-row">
+              <div class="slider-lbl"><span>Contrast (Randomness)</span><span id="blob-rv">5</span></div>
+              <input type="range" id="blob-rand" min="1" max="10" value="5" oninput="document.getElementById('blob-rv').textContent=this.value;drawBlob()">
+            </div>
+            <button class="btn btn-secondary w100 mt2" onclick="drawBlob()">Shuffle Shape</button>
+            <button class="btn btn-primary w100 mt2" onclick="cp('blob-code')">Copy SVG</button>
+          </div>
+          <div>
+            <div class="card mb2" style="display:flex;align-items:center;justify-content:center;height:240px;background:var(--bg-input)">
+              <div id="blob-prev" style="width:200px;height:200px"></div>
+            </div>
+            <div class="card code" id="blob-code" style="max-height:120px;overflow-y:auto"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ░░ ANIMATION BUILDER ░░ -->
+      <div class="panel" id="p-anim">
+        <div class="page-head">
+          <h1>CSS Animation Builder</h1>
+          <p>Create keyframe animations and export CSS.</p>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <div class="card-label">Settings</div>
+            <div class="field">
+              <label>Animation Preset</label>
+              <select id="anim-type" onchange="updAnim()">
+                <option value="bounce">Bounce</option>
+                <option value="pulse">Pulse</option>
+                <option value="spin">Spin</option>
+                <option value="shake">Shake</option>
+                <option value="fade-in">Fade In</option>
+              </select>
+            </div>
+            <div class="slider-row">
+              <div class="slider-lbl"><span>Duration</span><span id="anim-dv">1.0s</span></div>
+              <input type="range" id="anim-dur" min="0.1" max="5.0" step="0.1" value="1.0" oninput="document.getElementById('anim-dv').textContent=this.value+'s';updAnim()">
+            </div>
+            <div class="field">
+              <label>Easing</label>
+              <select id="anim-ease" onchange="updAnim()">
+                <option value="ease">ease</option>
+                <option value="linear">linear</option>
+                <option value="ease-in">ease-in</option>
+                <option value="ease-out">ease-out</option>
+                <option value="ease-in-out">ease-in-out</option>
+              </select>
+            </div>
+            <div class="field mt2">
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="anim-inf" checked onchange="updAnim()"> Infinite Loop</label>
+            </div>
+            <button class="btn btn-secondary w100 mt2" onclick="playAnim()">Replay Animation</button>
+            <button class="btn btn-primary w100 mt2" onclick="cp('anim-code')">Copy CSS</button>
+          </div>
+          <div>
+            <div class="card mb2" style="display:flex;align-items:center;justify-content:center;height:240px;background:var(--bg-input)">
+              <div id="anim-box" style="width:80px;height:80px;background:var(--accent);border-radius:var(--radius-md)"></div>
+            </div>
+            <div class="card code" id="anim-code" style="max-height:160px;overflow-y:auto"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ░░ ICON MANAGER ░░ -->
+      <div class="panel" id="p-icon">
+        <div class="page-head">
+          <h1>Unified Icon Manager</h1>
+          <p>Search and copy Lucide icons directly to your clipboard.</p>
+        </div>
+        <div class="card">
+          <div class="field mb3">
+            <input type="text" id="icon-search" placeholder="Search icons (e.g., user, home, heart)..." oninput="searchIcons()">
+          </div>
+          <div id="icon-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:10px;max-height:400px;overflow-y:auto"></div>
+        </div>
+      </div>
+
+      <!-- ░░ LAYOUT PLAYGROUND ░░ -->
+      <div class="panel" id="p-grid">
+        <div class="page-head">
+          <h1>Layout Playground</h1>
+          <p>Visual builder for Flexbox and CSS Grid.</p>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <div class="card-label">Container Settings</div>
+            <div class="field">
+              <label>Display</label>
+              <select id="lay-disp" onchange="updLayout()">
+                <option value="flex">Flexbox</option>
+                <option value="grid">Grid</option>
+              </select>
+            </div>
+            <div class="field" id="lay-dir-f">
+              <label>Flex Direction</label>
+              <select id="lay-dir" onchange="updLayout()">
+                <option value="row">Row</option>
+                <option value="column">Column</option>
+              </select>
+            </div>
+            <div class="field" id="lay-col-f" style="display:none">
+              <label>Grid Columns</label>
+              <input type="text" id="lay-col" value="repeat(3, 1fr)" oninput="updLayout()">
+            </div>
+            <div class="field">
+              <label>Justify Content</label>
+              <select id="lay-jc" onchange="updLayout()">
+                <option value="flex-start">flex-start</option>
+                <option value="center">center</option>
+                <option value="flex-end">flex-end</option>
+                <option value="space-between">space-between</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Align Items</label>
+              <select id="lay-ai" onchange="updLayout()">
+                <option value="stretch">stretch</option>
+                <option value="center">center</option>
+                <option value="flex-start">flex-start</option>
+                <option value="flex-end">flex-end</option>
+              </select>
+            </div>
+            <div class="slider-row">
+              <div class="slider-lbl"><span>Gap</span><span id="lay-gv">16px</span></div>
+              <input type="range" id="lay-gap" min="0" max="64" value="16" oninput="document.getElementById('lay-gv').textContent=this.value+'px';updLayout()">
+            </div>
+            <button class="btn btn-secondary w100 mt2" onclick="addLayItem()">Add Item</button>
+            <button class="btn btn-primary w100 mt2" onclick="cp('lay-code')">Copy CSS</button>
+          </div>
+          <div>
+            <div class="card mb2" id="lay-stage" style="min-height:300px;background:var(--bg-input);padding:10px;resize:both;overflow:auto">
+              <div class="lay-item" style="padding:15px;background:var(--accent);color:#fff;border-radius:4px;text-align:center">1</div>
+              <div class="lay-item" style="padding:15px;background:var(--accent);color:#fff;border-radius:4px;text-align:center">2</div>
+              <div class="lay-item" style="padding:15px;background:var(--accent);color:#fff;border-radius:4px;text-align:center">3</div>
+            </div>
+            <div class="card code" id="lay-code"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ░░ IMAGE OPTIMIZER ░░ -->
+      <div class="panel" id="p-opt">
+        <div class="page-head">
+          <h1>Image Optimizer</h1>
+          <p>Compress images locally into WebP format.</p>
+        </div>
+        <div class="g2">
+          <div>
+            <div class="upload" id="opt-upload" onclick="document.getElementById('opt-file').click()">
+              <input type="file" id="opt-file" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="onOptUpload(event)">
+              <div class="upload-icon"><i data-lucide="image" style="width:100%;height:100%"></i></div>
+              <p><strong>Click to upload</strong> or drag and drop<br>PNG, JPG</p>
+            </div>
+            <div class="card mt2" id="opt-controls" style="display:none">
+              <div class="slider-row">
+                <div class="slider-lbl"><span>Quality</span><span id="opt-qv">80%</span></div>
+                <input type="range" id="opt-qual" min="10" max="100" value="80" oninput="document.getElementById('opt-qv').textContent=this.value+'%';optImage()">
+              </div>
+              <div style="font-size:12px;color:var(--text-muted);margin:10px 0" id="opt-stats"></div>
+              <button class="btn btn-primary w100" onclick="dlOpt()">Download WebP</button>
+            </div>
+          </div>
+          <div class="card" style="display:flex;align-items:center;justify-content:center;background:var(--bg-input);overflow:hidden">
+            <img id="opt-prev" style="max-width:100%;max-height:300px;border-radius:var(--radius)">
+          </div>
+        </div>
+      </div>
+
+      <!-- ░░ DESIGN SYSTEM EXPORTER ░░ -->
+      <div class="panel" id="p-sys">
+        <div class="page-head">
+          <h1>Design System Exporter</h1>
+          <p>Generate a complete configuration file.</p>
+        </div>
+        <div class="card mb2">
+          <div class="flex gap2">
+            <button class="btn btn-secondary" onclick="genSys('css')">Export as CSS Variables</button>
+            <button class="btn btn-secondary" onclick="genSys('tailwind')">Export for Tailwind config</button>
+          </div>
+        </div>
+        <div class="card code" id="sys-code" style="height:400px;overflow-y:auto;white-space:pre">Click an export option above.</div>
+      </div>
+
+      <!-- WORKSPACE LIBRARY -->
+      <div class="panel" id="p-library">
+        <div class="page-head">
+          <h1>Library</h1>
+          <p>Saved palettes, gradients, shadows, type systems, and recent exports.</p>
+        </div>
+        <div class="card mb2">
+          <div class="flex jb ai-c gap2 wrap">
+            <div class="flex gap2 wrap">
+              <button class="btn btn-secondary btn-sm" onclick="renderLibrary('all')">All</button>
+              <button class="btn btn-ghost btn-sm" onclick="renderLibrary('favorite')">Favorites</button>
+              <button class="btn btn-ghost btn-sm" onclick="renderLibrary('recent')">Recent</button>
+            </div>
+            <div class="flex gap2 wrap">
+              <button class="btn btn-secondary btn-sm" onclick="exportProject()">Download Project JSON</button>
+              <button class="btn btn-ghost btn-sm" onclick="clearLibrary()">Clear Library</button>
+            </div>
+          </div>
+        </div>
+        <div id="library-grid" class="library-grid"></div>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeSettings()"></div>
+<aside class="settings-drawer" id="settings-drawer">
+  <div class="drawer-head">
+    <div class="drawer-title">Settings</div>
+    <button class="icon-btn" onclick="closeSettings()"><i data-lucide="x"></i></button>
+  </div>
+  <div class="drawer-body">
+    <div class="settings-section">
+      <div class="card-label">Appearance</div>
+      <div class="settings-row">
+        <div class="field">
+          <label>Theme</label>
+          <select id="set-theme" onchange="updateSetting('theme', this.value)">
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+            <option value="system">System</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Accent</label>
+          <input type="color" id="set-accent" value="#0D99FF" oninput="updateSetting('accent', this.value)">
+        </div>
+      </div>
+      <label class="switch-row"><span>Remember last opened tool</span><input type="checkbox" id="set-last-tool" onchange="updateSetting('rememberLastTool', this.checked)"></label>
+    </div>
+
+    <div class="settings-section">
+      <div class="card-label">Export Defaults</div>
+      <div class="field">
+        <label>Preferred Format</label>
+        <select id="set-export-format" onchange="updateSetting('exportFormat', this.value)">
+          <option value="css">CSS Variables</option>
+          <option value="tailwind">Tailwind Config</option>
+          <option value="json">JSON Tokens</option>
+          <option value="scss">SCSS Variables</option>
+        </select>
+      </div>
+      <label class="switch-row"><span>Save generated outputs to Recents</span><input type="checkbox" id="set-recents" onchange="updateSetting('saveRecents', this.checked)"></label>
+    </div>
+
+    <div class="settings-section">
+      <div class="card-label">AI</div>
+      <div class="field">
+        <label>Gemini API Key</label>
+        <input type="text" id="set-api-key" placeholder="Paste your API key" oninput="updateSetting('geminiKey', this.value)">
+      </div>
+      <div class="field">
+        <label>Default Model</label>
+        <select id="set-model" onchange="updateSetting('model', this.value)"></select>
+      </div>
+      <label class="switch-row"><span>Let AI include current tool context</span><input type="checkbox" id="set-ai-context" onchange="updateSetting('aiContext', this.checked)"></label>
+    </div>
+
+    <div class="settings-section">
+      <div class="card-label">Advanced</div>
+      <button class="btn btn-secondary w100" onclick="resetPreferences()">Reset Preferences</button>
+    </div>
+  </div>
+</aside>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModals()"></div>
+
+<section class="modal command-modal" id="command-modal">
+  <div class="modal-head">
+    <div class="modal-title">Command Palette</div>
+    <button class="icon-btn" onclick="closeModals()"><i data-lucide="x"></i></button>
+  </div>
+  <div class="modal-body">
+    <input type="text" id="cmd-input" placeholder="Search tools, actions, and exports..." oninput="renderCommands(this.value)" onkeydown="commandKey(event)">
+    <div id="cmd-list" class="cmd-list"></div>
+  </div>
+</section>
+
+<section class="modal" id="export-modal">
+  <div class="modal-head">
+    <div class="modal-title">Export Center</div>
+    <button class="icon-btn" onclick="closeModals()"><i data-lucide="x"></i></button>
+  </div>
+  <div class="modal-body">
+    <div class="g2 mb3">
+      <div class="field">
+        <label>Source</label>
+        <select id="export-source" onchange="updateExportPreview()"></select>
+      </div>
+      <div class="field">
+        <label>Format</label>
+        <select id="export-format" onchange="updateExportPreview()">
+          <option value="css">CSS Variables</option>
+          <option value="tailwind">Tailwind Config</option>
+          <option value="json">JSON Tokens</option>
+          <option value="scss">SCSS Variables</option>
+        </select>
+      </div>
+    </div>
+    <div class="code export-preview" id="export-preview"></div>
+    <div class="flex gap2 mt3 wrap">
+      <button class="btn btn-primary" onclick="copyExport()">Copy Export</button>
+      <button class="btn btn-secondary" onclick="downloadExport()">Download File</button>
+      <button class="btn btn-ghost" onclick="saveCurrentExport()">Save to Library</button>
+    </div>
+  </div>
+</section>
+
+<script>
+'use strict';
+
+// ── GEMINI CONFIG ────────────────────────────────────
+const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
+const GEMINI_MODELS = [
+  { id: 'gemini-2.0-flash-lite', label: 'Gemini 2.0 Flash Lite (recommended)' },
+  { id: 'gemini-2.0-flash',      label: 'Gemini 2.0 Flash' },
+  { id: 'gemini-1.5-flash-8b',   label: 'Gemini 1.5 Flash 8B' },
+];
+let activeModel = GEMINI_MODELS[0].id;
+function geminiURL() { return `${GEMINI_BASE}/${activeModel}:generateContent?key=${encodeURIComponent(appState.settings.geminiKey || '')}`; }
+const SYSTEM_PROMPT = `You are a professional graphic design consultant. You specialise in color theory (always include HEX codes when discussing palettes), typography, UI/UX design, brand identity, accessibility (WCAG), and design trends. Keep responses concise and actionable. Use clear structure with line breaks. Do not use markdown headers. Aim for under 280 words unless more detail is requested.`;
+
+const STORE_KEY = 'prism-studio-state-v2';
+const DEFAULT_STATE = {
+  settings: {
+    theme: 'dark',
+    accent: '#0D99FF',
+    exportFormat: 'css',
+    geminiKey: '',
+    model: GEMINI_MODELS[0].id,
+    rememberLastTool: true,
+    saveRecents: true,
+    aiContext: true,
+    lastTool: 'extractor'
+  },
+  library: [],
+  recents: []
+};
+
+let appState = loadState();
+let currentTool = appState.settings.lastTool || 'extractor';
+
+function loadState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+    return {
+      settings: { ...DEFAULT_STATE.settings, ...(saved.settings || {}) },
+      library: Array.isArray(saved.library) ? saved.library : [],
+      recents: Array.isArray(saved.recents) ? saved.recents : []
+    };
+  } catch {
+    return structuredClone(DEFAULT_STATE);
+  }
+}
+
+function saveState() {
+  localStorage.setItem(STORE_KEY, JSON.stringify(appState));
+}
+
+const TOOL_META = {
+  extractor: { title: 'Color Extractor',     badge: 'Color' },
+  harmony:   { title: 'Color Harmony',        badge: 'Color' },
+  contrast:  { title: 'Contrast Checker',     badge: 'Color' },
+  mockup:    { title: 'Mockup Generator',     badge: 'Visual' },
+  pattern:   { title: 'Pattern Builder',      badge: 'Visual' },
+  gradient:  { title: 'Gradient Builder',     badge: 'Visual' },
+  shadow:    { title: 'Shadow Generator',     badge: 'Visual' },
+  fonts:     { title: 'Font Pairing Studio',  badge: 'Typography' },
+  typescale: { title: 'Type Scale Generator', badge: 'Typography' },
+  blob:      { title: 'SVG Blob Generator',   badge: 'Tool' },
+  anim:      { title: 'CSS Animation Builder',badge: 'Tool' },
+  icon:      { title: 'Unified Icon Manager', badge: 'Tool' },
+  grid:      { title: 'Layout Playground',    badge: 'Tool' },
+  opt:       { title: 'Image Optimizer',      badge: 'Tool' },
+  sys:       { title: 'Design System Exporter',badge: 'Export' },
+  library:   { title: 'Library',              badge: 'Workspace' },
+  ai:        { title: 'AI Design Assistant',  badge: 'AI' },
+};
+
+// ── NAVIGATION ───────────────────────────────────────
+function toggleMenu() {
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('show');
+}
+
+function go(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('p-' + id).classList.add('active');
+  document.getElementById('n-' + id).classList.add('active');
+  document.getElementById('h-title').textContent = TOOL_META[id].title;
+  document.getElementById('h-badge').textContent = TOOL_META[id].badge;
+  currentTool = id;
+  if (appState.settings.rememberLastTool) {
+    appState.settings.lastTool = id;
+    saveState();
+  }
+  if (id === 'library') renderLibrary();
+  
+  if (window.innerWidth <= 768) {
+    document.querySelector('.sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('show');
+  }
+}
+
+// ── UTILITIES ────────────────────────────────────────
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function cp(id) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => toast('Copied to clipboard'));
+}
+
+function setRootAccent(hex) {
+  document.documentElement.style.setProperty('--accent', hex);
+  document.documentElement.style.setProperty('--accent-h', shadeHex(hex, -18));
+  document.documentElement.style.setProperty('--accent-dim', hexToRgba(hex, 0.15));
+  document.documentElement.style.setProperty('--accent-dim2', hexToRgba(hex, 0.25));
+}
+
+function shadeHex(hex, pct) {
+  const { r, g, b } = hexToRgb(hex);
+  const f = pct < 0 ? 0 : 255;
+  const p = Math.abs(pct) / 100;
+  return rgbToHex(r + (f - r) * p, g + (f - g) * p, b + (f - b) * p);
+}
+
+function hexToRgba(hex, alpha) {
+  const { r, g, b } = hexToRgb(hex);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function hexToRgb(hex) {
+  const n = parseInt(hex.replace('#', ''), 16);
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+}
+
+function rgbToHex(r, g, b) {
+  return '#' + [r, g, b].map(v =>
+    Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')
+  ).join('');
+}
+
+function hexToHsl(hex) {
+  let { r, g, b } = hexToRgb(hex);
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h = 0, s = 0, l = (max + min) / 2;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+      case g: h = ((b - r) / d + 2) / 6; break;
+      case b: h = ((r - g) / d + 4) / 6; break;
+    }
+  }
+  return { h: h * 360, s: s * 100, l: l * 100 };
+}
+
+function hslToHex(h, s, l) {
+  s /= 100; l /= 100;
+  const k = n => (n + h / 30) % 12;
+  const a = s * Math.min(l, 1 - l);
+  const f = n => Math.round((l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)))) * 255);
+  return rgbToHex(f(0), f(8), f(4));
+}
+
+function luminance(hex) {
+  const lin = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  const { r, g, b } = hexToRgb(hex);
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+}
+
+function contrastRatio(a, b) {
+  const l1 = Math.max(luminance(a), luminance(b));
+  const l2 = Math.min(luminance(a), luminance(b));
+  return (l1 + 0.05) / (l2 + 0.05);
+}
+
+function isLight(hex) { return luminance(hex) > 0.35; }
+
+function copyHex(hex) {
+  navigator.clipboard.writeText(hex).then(() => toast('Copied ' + hex));
+}
+
+function loadGFont(name) {
+  if (!document.querySelector(`link[data-gf="${name}"]`)) {
+    const l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(name)}:wght@400;700&display=swap`;
+    l.dataset.gf = name;
+    document.head.appendChild(l);
+  }
+}
+
+function ctHTML(hex) {
+  const { r, g, b } = hexToRgb(hex);
+  const hsl = hexToHsl(hex);
+  return `<div class="ct" onclick="copyHex('${hex}')">
+    <div class="ct-sw" style="background:${hex}"></div>
+    <div class="ct-info">
+      <div class="ct-hex">${hex.toUpperCase()}</div>
+      <div class="ct-sub">rgb(${r},${g},${b})</div>
+    </div>
+  </div>`;
+}
+
+function stripHTML(colors) {
+  return colors.map(c =>
+    `<div class="strip-c" style="background:${c}" onclick="copyHex('${c}')"></div>`
+  ).join('');
+}
+
+function cpHex(stripId) {
+  const hexes = [...document.getElementById(stripId).querySelectorAll('.strip-c')]
+    .map(el => { const m = el.style.background.match(/#[a-fA-F0-9]{6}/i); return m ? m[0] : ''; })
+    .filter(Boolean);
+  navigator.clipboard.writeText(hexes.join('\n')).then(() => toast('Copied HEX list'));
+}
+
+// APP SETTINGS, EXPORTS, LIBRARY
+function applySettingsToUI() {
+  const s = appState.settings;
+  const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  document.body.dataset.theme = s.theme === 'system' ? (prefersLight ? 'light' : 'dark') : s.theme;
+  setRootAccent(s.accent);
+  activeModel = s.model || GEMINI_MODELS[0].id;
+
+  const set = (id, prop, value) => { const el = document.getElementById(id); if (el) el[prop] = value; };
+  set('set-theme', 'value', s.theme);
+  set('set-accent', 'value', s.accent);
+  set('set-export-format', 'value', s.exportFormat);
+  set('set-api-key', 'value', s.geminiKey);
+  set('set-last-tool', 'checked', s.rememberLastTool);
+  set('set-recents', 'checked', s.saveRecents);
+  set('set-ai-context', 'checked', s.aiContext);
+
+  populateModelSelects();
+}
+
+function populateModelSelects() {
+  ['model-sel', 'set-model'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = GEMINI_MODELS.map(m => `<option value="${m.id}">${m.label}</option>`).join('');
+    el.value = activeModel;
+  });
+}
+
+function updateSetting(key, value) {
+  appState.settings[key] = value;
+  if (key === 'model') activeModel = value;
+  if (key === 'accent' || key === 'theme' || key === 'model') applySettingsToUI();
+  saveState();
+  if (key === 'exportFormat') {
+    const fmt = document.getElementById('export-format');
+    if (fmt) fmt.value = value;
+    updateExportPreview();
+  }
+}
+
+function toggleTheme() {
+  const next = document.body.dataset.theme === 'light' ? 'dark' : 'light';
+  updateSetting('theme', next);
+  toast(`${next[0].toUpperCase() + next.slice(1)} theme`);
+}
+
+function openSettings() {
+  document.getElementById('drawer-overlay').classList.add('show');
+  document.getElementById('settings-drawer').classList.add('show');
+}
+
+function closeSettings() {
+  document.getElementById('drawer-overlay').classList.remove('show');
+  document.getElementById('settings-drawer').classList.remove('show');
+}
+
+function resetPreferences() {
+  appState.settings = { ...DEFAULT_STATE.settings };
+  saveState();
+  applySettingsToUI();
+  toast('Preferences reset');
+}
+
+function closeModals() {
+  document.getElementById('modal-overlay').classList.remove('show');
+  document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
+}
+
+function showModal(id) {
+  document.getElementById('modal-overlay').classList.add('show');
+  document.getElementById(id).classList.add('show');
+}
+
+function currentPaletteFromStrip(stripId) {
+  const el = document.getElementById(stripId);
+  if (!el) return [];
+  return [...el.querySelectorAll('.strip-c')].map(c => {
+    const bg = c.style.background;
+    const hex = bg.match(/#[a-fA-F0-9]{6}/i);
+    if (hex) return hex[0].toUpperCase();
+    const rgb = bg.match(/\d+/g);
+    return rgb ? rgbToHex(+rgb[0], +rgb[1], +rgb[2]).toUpperCase() : '';
+  }).filter(Boolean);
+}
+
+function getCurrentAsset(source = currentTool) {
+  const title = TOOL_META[source]?.title || 'Prism Studio Export';
+  const asset = { source, title, colors: [], css: '', code: '', meta: {} };
+  if (source === 'extractor') {
+    asset.colors = currentPaletteFromStrip('ext-strip');
+    asset.css = document.getElementById('ext-css')?.textContent || '';
+  } else if (source === 'harmony') {
+    asset.colors = currentPaletteFromStrip('h-strip');
+    asset.css = document.getElementById('h-css')?.textContent || '';
+  } else if (source === 'gradient') {
+    asset.css = document.getElementById('g-css')?.textContent || '';
+    asset.colors = [...document.querySelectorAll('#g-stops .sc')].map(i => i.value.toUpperCase());
+  } else if (source === 'shadow') {
+    asset.css = document.getElementById('sh-css')?.textContent || '';
+  } else if (source === 'fonts') {
+    asset.css = document.getElementById('f-css')?.textContent || '';
+    asset.meta = { heading: document.getElementById('f-head')?.value, body: document.getElementById('f-body')?.value };
+  } else if (source === 'typescale') {
+    asset.css = document.getElementById('ts-css')?.textContent || '';
+  } else if (source === 'blob') {
+    asset.code = document.getElementById('blob-code')?.textContent || '';
+  } else if (source === 'anim') {
+    asset.css = document.getElementById('anim-code')?.textContent || '';
+  } else if (source === 'grid') {
+    asset.css = document.getElementById('lay-code')?.textContent || '';
+  } else if (source === 'sys') {
+    asset.code = document.getElementById('sys-code')?.textContent || '';
+  } else {
+    asset.css = buildDesignTokens('css');
+  }
+  asset.code = asset.code || asset.css || buildDesignTokens('css');
+  return asset;
+}
+
+function buildDesignTokens(format = 'css', asset = getCurrentAsset()) {
+  const colors = asset.colors.length ? asset.colors : [appState.settings.accent, '#1E1E1E', '#CCCCCC'];
+  const name = (asset.title || 'Prism Studio').replace(/\s+/g, '-').toLowerCase();
+  const tokens = {
+    name,
+    source: asset.source,
+    colors: Object.fromEntries(colors.map((c, i) => [`color-${i + 1}`, c])),
+    typography: asset.meta || {},
+    code: asset.code || asset.css || ''
+  };
+  if (format === 'json') return JSON.stringify(tokens, null, 2);
+  if (format === 'scss') return colors.map((c, i) => `$${name}-color-${i + 1}: ${c};`).join('\n') + (tokens.code ? `\n\n${tokens.code}` : '');
+  if (format === 'tailwind') {
+    return `module.exports = {\n  theme: {\n    extend: {\n      colors: {\n${colors.map((c, i) => `        '${name}-${i + 1}': '${c}',`).join('\n')}\n      }\n    }\n  }\n}`;
+  }
+  if (asset.css && format === 'css') return asset.css;
+  return `:root {\n${colors.map((c, i) => `  --${name}-color-${i + 1}: ${c};`).join('\n')}\n}`;
+}
+
+function exportSources() {
+  return Object.keys(TOOL_META).filter(id => !['ai', 'library', 'mockup', 'pattern', 'opt', 'icon'].includes(id));
+}
+
+function openExportCenter() {
+  const src = document.getElementById('export-source');
+  src.innerHTML = exportSources().map(id => `<option value="${id}">${TOOL_META[id].title}</option>`).join('');
+  src.value = exportSources().includes(currentTool) ? currentTool : 'sys';
+  document.getElementById('export-format').value = appState.settings.exportFormat;
+  updateExportPreview();
+  showModal('export-modal');
+}
+
+function updateExportPreview() {
+  const source = document.getElementById('export-source')?.value || currentTool;
+  const format = document.getElementById('export-format')?.value || appState.settings.exportFormat;
+  const preview = document.getElementById('export-preview');
+  if (!preview) return;
+  preview.textContent = buildDesignTokens(format, getCurrentAsset(source));
+}
+
+function copyExport() {
+  const text = document.getElementById('export-preview').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    toast('Export copied');
+    addRecentExport();
+  });
+}
+
+function downloadExport() {
+  const source = document.getElementById('export-source').value;
+  const format = document.getElementById('export-format').value;
+  const ext = format === 'tailwind' ? 'js' : format;
+  const blob = new Blob([document.getElementById('export-preview').textContent], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `prism-${source}.${ext}`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  addRecentExport();
+}
+
+function saveCurrentExport() {
+  const source = document.getElementById('export-source')?.value || currentTool;
+  const format = document.getElementById('export-format')?.value || appState.settings.exportFormat;
+  addLibraryItem({
+    kind: 'favorite',
+    source,
+    title: `${TOOL_META[source].title} Export`,
+    format,
+    code: buildDesignTokens(format, getCurrentAsset(source)),
+    colors: getCurrentAsset(source).colors
+  });
+}
+
+function favoriteCurrentTool() {
+  const asset = getCurrentAsset(currentTool);
+  addLibraryItem({
+    kind: 'favorite',
+    source: currentTool,
+    title: asset.title,
+    format: appState.settings.exportFormat,
+    code: buildDesignTokens(appState.settings.exportFormat, asset),
+    colors: asset.colors
+  });
+}
+
+function addRecentExport() {
+  if (!appState.settings.saveRecents) return;
+  const source = document.getElementById('export-source')?.value || currentTool;
+  const format = document.getElementById('export-format')?.value || appState.settings.exportFormat;
+  appState.recents.unshift({
+    id: uid(),
+    source,
+    title: `${TOOL_META[source]?.title || 'Export'} (${format})`,
+    format,
+    code: buildDesignTokens(format, getCurrentAsset(source)),
+    colors: getCurrentAsset(source).colors,
+    created: new Date().toISOString()
+  });
+  appState.recents = appState.recents.slice(0, 12);
+  saveState();
+}
+
+function addLibraryItem(item) {
+  appState.library.unshift({ id: uid(), created: new Date().toISOString(), ...item });
+  saveState();
+  renderLibrary();
+  toast('Saved to Library');
+}
+
+function renderLibrary(filter = 'all') {
+  const grid = document.getElementById('library-grid');
+  if (!grid) return;
+  const items = filter === 'recent' ? appState.recents : filter === 'favorite' ? appState.library : [...appState.library, ...appState.recents];
+  if (!items.length) {
+    grid.innerHTML = `<div class="empty-state">Your saved design assets will appear here. Use the star button or Export Center to add one.</div>`;
+    return;
+  }
+  grid.innerHTML = items.map(item => {
+    const colors = (item.colors || []).length ? item.colors : [appState.settings.accent, '#555555'];
+    const bg = `linear-gradient(90deg, ${colors.map((c, i) => `${c} ${(i / colors.length) * 100}% ${((i + 1) / colors.length) * 100}%`).join(', ')})`;
+    return `<div class="library-card">
+      <div class="library-top">
+        <div>
+          <div class="library-title">${item.title}</div>
+          <div class="library-meta">${item.source || 'project'} · ${item.format || 'asset'}</div>
+        </div>
+        <button class="icon-btn" onclick="removeLibraryItem('${item.id}')"><i data-lucide="trash-2"></i></button>
+      </div>
+      <div class="library-preview" style="background:${bg}"></div>
+      <div class="flex gap2 wrap">
+        <button class="btn btn-secondary btn-sm" onclick="copyLibraryItem('${item.id}')">Copy</button>
+        <button class="btn btn-ghost btn-sm" onclick="loadLibraryItem('${item.id}')">Open Tool</button>
+      </div>
+    </div>`;
+  }).join('');
+  lucide.createIcons();
+}
+
+function findLibraryItem(id) {
+  return [...appState.library, ...appState.recents].find(item => item.id === id);
+}
+
+function copyLibraryItem(id) {
+  const item = findLibraryItem(id);
+  if (!item) return;
+  navigator.clipboard.writeText(item.code || '').then(() => toast('Library item copied'));
+}
+
+function loadLibraryItem(id) {
+  const item = findLibraryItem(id);
+  if (item?.source && TOOL_META[item.source]) go(item.source);
+}
+
+function removeLibraryItem(id) {
+  appState.library = appState.library.filter(item => item.id !== id);
+  appState.recents = appState.recents.filter(item => item.id !== id);
+  saveState();
+  renderLibrary();
+}
+
+function clearLibrary() {
+  appState.library = [];
+  appState.recents = [];
+  saveState();
+  renderLibrary();
+  toast('Library cleared');
+}
+
+function exportProject() {
+  const blob = new Blob([JSON.stringify({ settings: appState.settings, library: appState.library, recents: appState.recents }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'prism-studio-project.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+const COMMANDS = [
+  ...Object.keys(TOOL_META).map(id => ({ name: `Open ${TOOL_META[id].title}`, meta: TOOL_META[id].badge, action: () => go(id) })),
+  { name: 'Open Export Center', meta: 'Export', action: openExportCenter },
+  { name: 'Open Settings', meta: 'Preferences', action: openSettings },
+  { name: 'Save Current Tool to Library', meta: 'Library', action: favoriteCurrentTool },
+  { name: 'Toggle Theme', meta: 'Appearance', action: toggleTheme },
+  { name: 'Copy Current Export', meta: 'Export', action: () => { openExportCenter(); copyExport(); } }
+];
+
+function openCommandPalette() {
+  showModal('command-modal');
+  renderCommands('');
+  setTimeout(() => document.getElementById('cmd-input').focus(), 20);
+}
+
+function renderCommands(query = '') {
+  const q = query.toLowerCase();
+  const list = document.getElementById('cmd-list');
+  const matches = COMMANDS.filter(c => `${c.name} ${c.meta}`.toLowerCase().includes(q)).slice(0, 18);
+  list.innerHTML = matches.map((c, i) => `<div class="cmd-item" onclick="runCommand(${i})">
+    <div>
+      <div class="cmd-name">${c.name}</div>
+      <div class="cmd-meta">${c.meta}</div>
+    </div>
+    <span class="kbd">Enter</span>
+  </div>`).join('');
+  list.dataset.matches = JSON.stringify(matches.map(c => COMMANDS.indexOf(c)));
+}
+
+function runCommand(index) {
+  const ids = JSON.parse(document.getElementById('cmd-list').dataset.matches || '[]');
+  const cmd = COMMANDS[ids[index]];
+  if (!cmd) return;
+  closeModals();
+  cmd.action();
+}
+
+function commandKey(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    runCommand(0);
+  }
+}
+
+// ── 1. COLOR EXTRACTOR ───────────────────────────────
+function onImgUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = document.getElementById('prev-img');
+    img.src = ev.target.result;
+    img.onload = () => {
+      document.getElementById('img-wrap').style.display = 'block';
+      document.getElementById('upload-z').style.display = 'none';
+      extractColors(img);
+    };
+  };
+  reader.readAsDataURL(file);
+}
+
+function resetUpload() {
+  document.getElementById('img-wrap').style.display = 'none';
+  document.getElementById('upload-z').style.display = 'block';
+  document.getElementById('ext-export').style.display = 'none';
+  document.getElementById('ext-grid').innerHTML = '<div style="color:var(--text-muted);font-size:12px;grid-column:1/-1">Upload an image to begin</div>';
+  document.getElementById('ext-strip').innerHTML = '';
+  document.getElementById('img-file').value = '';
+}
+
+function extractColors(img) {
+  const canvas = document.createElement('canvas');
+  const MAX = 200;
+  const s = Math.min(MAX / img.naturalWidth, MAX / img.naturalHeight, 1);
+  canvas.width  = Math.round(img.naturalWidth  * s);
+  canvas.height = Math.round(img.naturalHeight * s);
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+  const buckets = {};
+  for (let i = 0; i < data.length; i += 4) {
+    if (data[i + 3] < 100) continue;
+    const r = Math.round(data[i]     / 18) * 18;
+    const g = Math.round(data[i + 1] / 18) * 18;
+    const b = Math.round(data[i + 2] / 18) * 18;
+    if (r > 248 && g > 248 && b > 248) continue;
+    if (r <   8 && g <   8 && b <   8) continue;
+    buckets[`${r},${g},${b}`] = (buckets[`${r},${g},${b}`] || 0) + 1;
+  }
+
+  const sorted = Object.entries(buckets).sort((a, b) => b[1] - a[1]);
+  const picked = [];
+  for (const [key] of sorted) {
+    const [r, g, b] = key.split(',').map(Number);
+    const hex = rgbToHex(r, g, b);
+    const distinct = picked.every(ph => {
+      const { r: pr, g: pg, b: pb } = hexToRgb(ph);
+      return Math.abs(r - pr) + Math.abs(g - pg) + Math.abs(b - pb) > 55;
+    });
+    if (distinct) picked.push(hex);
+    if (picked.length >= 8) break;
+  }
+
+  document.getElementById('ext-strip').innerHTML = stripHTML(picked);
+  document.getElementById('ext-grid').innerHTML  = picked.map(ctHTML).join('');
+
+  const css = `:root {\n${picked.map((c, i) => `  --color-${i + 1}: ${c};`).join('\n')}\n}`;
+  const hex  = picked.join('\n');
+  const rgb  = picked.map(c => { const { r, g, b } = hexToRgb(c); return `rgb(${r}, ${g}, ${b})`; }).join('\n');
+
+  document.getElementById('ext-css').textContent = css;
+  document.getElementById('ext-hex').textContent = hex;
+  document.getElementById('ext-rgb').textContent = rgb;
+  document.getElementById('ext-export').style.display = 'block';
+}
+
+const uz = document.getElementById('upload-z');
+uz.addEventListener('dragover', e => { e.preventDefault(); uz.classList.add('over'); });
+uz.addEventListener('dragleave', () => uz.classList.remove('over'));
+uz.addEventListener('drop', e => {
+  e.preventDefault(); uz.classList.remove('over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) onImgUpload({ target: { files: [file] } });
+});
+
+// ── 2. COLOR HARMONY ─────────────────────────────────
+function genHarmony() {
+  const base  = document.getElementById('h-base').value;
+  const type  = document.getElementById('h-type').value;
+  const count = parseInt(document.getElementById('h-tones').value);
+  const { h, s, l } = hexToHsl(base);
+
+  let hues = [h];
+  if (type === 'complementary') hues = [h, (h + 180) % 360];
+  if (type === 'triadic')       hues = [h, (h + 120) % 360, (h + 240) % 360];
+  if (type === 'analogous')     hues = [h, (h + 30) % 360, (h - 30 + 360) % 360];
+  if (type === 'split')         hues = [h, (h + 150) % 360, (h + 210) % 360];
+  if (type === 'tetradic')      hues = [h, (h + 90) % 360, (h + 180) % 360, (h + 270) % 360];
+
+  const colors = [];
+  if (type === 'mono') {
+    for (let i = 0; i < count; i++) {
+      colors.push(hslToHex(h, s, 15 + (i / (count - 1)) * 65));
+    }
+  } else {
+    const saturations = [Math.min(s, 72), Math.min(s * 0.6, 52)];
+    const lightnesses = [Math.max(l, 38), Math.min(l + 22, 76)];
+    hues.forEach(hu => {
+      saturations.forEach((sat, i) => {
+        if (colors.length < count) colors.push(hslToHex(hu, sat, lightnesses[i]));
+      });
+    });
+    while (colors.length < count) colors.push(hslToHex(hues[0], s * 0.25, 86));
+  }
+  const final = colors.slice(0, count);
+
+  document.getElementById('h-strip').innerHTML = stripHTML(final);
+  document.getElementById('h-grid').innerHTML  = final.map(ctHTML).join('');
+  document.getElementById('h-css').textContent =
+    `:root {\n${final.map((c, i) => `  --harmony-${i + 1}: ${c};`).join('\n')}\n}`;
+}
+
+// ── 3. CONTRAST CHECKER ──────────────────────────────
+function calcContrast() {
+  const fg  = document.getElementById('cc-fg').value;
+  const bg  = document.getElementById('cc-bg').value;
+  const ratio = contrastRatio(fg, bg);
+
+  document.getElementById('cc-ratio').textContent = ratio.toFixed(2) + ':1';
+  const card = document.getElementById('cc-card');
+  card.style.background = bg;
+  card.style.color       = fg;
+
+  const checks = [
+    { label: 'AA Normal (4.5:1)',  pass: ratio >= 4.5 },
+    { label: 'AA Large (3:1)',     pass: ratio >= 3   },
+    { label: 'AAA Normal (7:1)',   pass: ratio >= 7   },
+    { label: 'AAA Large (4.5:1)', pass: ratio >= 4.5 },
+  ];
+
+  document.getElementById('cc-badges').innerHTML = checks.map(c =>
+    `<span class="wb ${c.pass ? 'wb-pass' : 'wb-fail'}">${c.pass ? 'Pass' : 'Fail'} ${c.label}</span>`
+  ).join('');
+
+  const prev = document.getElementById('cc-prev');
+  prev.style.background = bg;
+  prev.querySelectorAll('div').forEach(el => el.style.color = fg);
+}
+
+function swapCC() {
+  const fg = document.getElementById('cc-fg').value;
+  const bg = document.getElementById('cc-bg').value;
+  document.getElementById('cc-fg').value = bg;
+  document.getElementById('cc-bg').value = fg;
+  calcContrast();
+}
+
+function setCC(fg, bg) {
+  document.getElementById('cc-fg').value = fg;
+  document.getElementById('cc-bg').value = bg;
+  calcContrast();
+}
+
+// ── 4. GRADIENT BUILDER ──────────────────────────────
+const GRAD_PRESETS = [
+  { n:'Indigo Blue', stops:[['#6366F1',0],['#06B6D4',100]], a:135 },
+  { n:'Sunset',      stops:[['#F43F5E',0],['#F97316',50],['#FCD34D',100]], a:135 },
+  { n:'Forest',      stops:[['#064E3B',0],['#10B981',100]], a:135 },
+  { n:'Slate',       stops:[['#0F172A',0],['#334155',100]], a:180 },
+  { n:'Candy',       stops:[['#EC4899',0],['#8B5CF6',100]], a:135 },
+  { n:'Blaze',       stops:[['#7F1D1D',0],['#EF4444',100]], a:180 },
+  { n:'Gold',        stops:[['#92400E',0],['#FBBF24',100]], a:135 },
+  { n:'Midnight',    stops:[['#0F0C29',0],['#24243E',100]], a:45  },
+  { n:'Aqua',        stops:[['#0EA5E9',0],['#06B6D4',100]], a:135 },
+  { n:'Mono',        stops:[['#111827',0],['#6B7280',100]], a:135 },
+];
+
+function buildGradPresets() {
+  document.getElementById('g-presets').innerHTML = GRAD_PRESETS.map((p, i) => {
+    const gr = `linear-gradient(135deg, ${p.stops.map(s => `${s[0]} ${s[1]}%`).join(', ')})`;
+    return `<button onclick="applyGradPreset(${i})" style="height:36px;border-radius:4px;background:${gr};border:1px solid var(--border);cursor:pointer;font-size:11px;font-weight:600;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.6);transition:opacity 0.12s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">${p.n}</button>`;
+  }).join('');
+}
+
+function applyGradPreset(i) {
+  const p = GRAD_PRESETS[i];
+  document.getElementById('g-angle').value = p.a;
+  document.getElementById('g-ang-v').textContent = p.a + '°';
+  document.getElementById('g-stops').innerHTML = p.stops.map(([c, pos]) => `
+    <div class="stop-row">
+      <input type="color" value="${c}" onchange="updGrad()" class="sc">
+      <input type="range" min="0" max="100" value="${pos}" oninput="updSL(this);updGrad()" class="sp">
+      <span class="stop-label">${pos}%</span>
+      <button class="btn btn-ghost btn-xs" onclick="rmStop(this)">Remove</button>
+    </div>`).join('');
+  updGrad();
+}
+
+function addStop() {
+  const row = document.createElement('div');
+  row.className = 'stop-row';
+  row.innerHTML = `
+    <input type="color" value="#EC4899" onchange="updGrad()" class="sc">
+    <input type="range" min="0" max="100" value="50" oninput="updSL(this);updGrad()" class="sp">
+    <span class="stop-label">50%</span>
+    <button class="btn btn-ghost btn-xs" onclick="rmStop(this)">Remove</button>`;
+  document.getElementById('g-stops').appendChild(row);
+  updGrad();
+}
+
+function rmStop(btn) {
+  if (document.querySelectorAll('.stop-row').length <= 2) { toast('Minimum 2 stops required'); return; }
+  btn.closest('.stop-row').remove();
+  updGrad();
+}
+
+function updSL(input) { input.nextElementSibling.textContent = input.value + '%'; }
+
+function updGrad() {
+  const type  = document.getElementById('g-type').value;
+  const angle = document.getElementById('g-angle').value;
+  document.getElementById('g-angle-g').style.display = type === 'radial' ? 'none' : 'flex';
+
+  const stops = [...document.querySelectorAll('.stop-row')].map(r =>
+    `${r.querySelector('.sc').value} ${r.querySelector('.sp').value}%`
+  ).join(', ');
+
+  let css;
+  if (type === 'linear') css = `linear-gradient(${angle}deg, ${stops})`;
+  else if (type === 'radial') css = `radial-gradient(ellipse at center, ${stops})`;
+  else css = `conic-gradient(from ${angle}deg, ${stops})`;
+
+  document.getElementById('grad-prev').style.background = css;
+  document.getElementById('g-css').textContent = `background: ${css};`;
+}
+
+// ── 5. SHADOW GENERATOR ──────────────────────────────
+function updShadow() {
+  const type = document.getElementById('sh-type').value;
+  const x    = +document.getElementById('sh-x').value;
+  const y    = +document.getElementById('sh-y').value;
+  const b    = +document.getElementById('sh-b').value;
+  const s    = +document.getElementById('sh-s').value;
+  const col  = document.getElementById('sh-col').value;
+  const opa  = document.getElementById('sh-o').value / 100;
+  const ins  = document.getElementById('sh-inset').checked;
+
+  document.getElementById('sh-xv').textContent = x + 'px';
+  document.getElementById('sh-yv').textContent = y + 'px';
+  document.getElementById('sh-bv').textContent = b + 'px';
+  document.getElementById('sh-sv').textContent = s + 'px';
+  document.getElementById('sh-ov').textContent = Math.round(opa * 100) + '%';
+
+  const { r, g } = hexToRgb(col);
+  const bv = hexToRgb(col).b;
+  const rgba = `rgba(${hexToRgb(col).r},${hexToRgb(col).g},${bv},${opa.toFixed(2)})`;
+
+  const box = document.getElementById('sh-box');
+  const txt = document.getElementById('sh-txt');
+
+  if (type === 'box') {
+    document.getElementById('sh-sg').style.display = 'flex';
+    document.getElementById('sh-ig').style.display = 'block';
+    txt.style.display = 'none';
+    box.style.background = 'var(--accent)';
+    box.style.width = '110px'; box.style.height = '70px';
+    const val = `${ins ? 'inset ' : ''}${x}px ${y}px ${b}px ${s}px ${rgba}`;
+    box.style.boxShadow  = val;
+    box.style.textShadow = 'none';
+    document.getElementById('sh-css').textContent = `box-shadow: ${val};`;
+  } else {
+    document.getElementById('sh-sg').style.display = 'none';
+    document.getElementById('sh-ig').style.display = 'none';
+    txt.style.display = 'block';
+    box.style.background = 'transparent';
+    box.style.boxShadow  = 'none';
+    box.style.width = 'auto'; box.style.height = 'auto';
+    const val = `${x}px ${y}px ${b}px ${rgba}`;
+    txt.style.textShadow = val;
+    document.getElementById('sh-css').textContent = `text-shadow: ${val};`;
+  }
+}
+
+function shPreset(name) {
+  const P = {
+    soft:  { x:0,  y:8,  b:24, s:0,   col:'#000000', o:30, ins:false },
+    hard:  { x:5,  y:5,  b:0,  s:0,   col:'#000000', o:80, ins:false },
+    glow:  { x:0,  y:0,  b:28, s:4,   col:'#5E6AD2', o:65, ins:false },
+    deep:  { x:0,  y:20, b:60, s:-10, col:'#000000', o:50, ins:false },
+    inner: { x:0,  y:4,  b:10, s:0,   col:'#000000', o:45, ins:true  },
+    flat:  { x:0,  y:1,  b:4,  s:0,   col:'#000000', o:12, ins:false },
+  };
+  const p = P[name];
+  document.getElementById('sh-x').value     = p.x;
+  document.getElementById('sh-y').value     = p.y;
+  document.getElementById('sh-b').value     = p.b;
+  document.getElementById('sh-s').value     = p.s;
+  document.getElementById('sh-col').value   = p.col;
+  document.getElementById('sh-o').value     = p.o;
+  document.getElementById('sh-inset').checked = p.ins;
+  document.getElementById('sh-type').value  = 'box';
+  updShadow();
+}
+
+// ── 6. FONT PAIRING ──────────────────────────────────
+function updFonts() {
+  const hf = document.getElementById('f-head').value;
+  const bf = document.getElementById('f-body').value;
+  const ht = document.getElementById('f-ht').value;
+  const bt = document.getElementById('f-bt').value;
+
+  loadGFont(hf); loadGFont(bf);
+
+  document.getElementById('fp-h').style.fontFamily = `'${hf}', sans-serif`;
+  document.getElementById('fp-b').style.fontFamily = `'${bf}', sans-serif`;
+  document.getElementById('fp-h').textContent = ht;
+  document.getElementById('fp-b').textContent = bt;
+
+  const fams = hf === bf
+    ? `family=${encodeURIComponent(hf)}:ital,wght@0,400;0,700;1,400`
+    : `family=${encodeURIComponent(hf)}:wght@400;700;900&family=${encodeURIComponent(bf)}:wght@400;500;600`;
+
+  const css = `@import url('https://fonts.googleapis.com/css2?${fams}&display=swap');\n\nh1, h2, h3, h4, h5, h6 {\n  font-family: '${hf}', sans-serif;\n}\n\nbody, p, li {\n  font-family: '${bf}', sans-serif;\n}`;
+  document.getElementById('f-css').textContent = css;
+}
+
+function setFP(h, b) {
+  document.getElementById('f-head').value = h;
+  document.getElementById('f-body').value = b;
+  updFonts();
+}
+
+// ── 7. TYPE SCALE ────────────────────────────────────
+const TS_NAMES = ['xs', 'sm', 'base', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'];
+
+function genScale() {
+  const base  = parseFloat(document.getElementById('ts-base').value) || 16;
+  const ratio = parseFloat(document.getElementById('ts-ratio').value);
+  const font  = document.getElementById('ts-font').value;
+  loadGFont(font);
+
+  const steps = [];
+  for (let i = -4; i <= 4; i++) {
+    const px = base * Math.pow(ratio, i);
+    steps.push({ name: TS_NAMES[i + 4], px, rem: (px / 16).toFixed(3) });
+  }
+
+  document.getElementById('ts-css').textContent =
+    `:root {\n${steps.map(s => `  --text-${s.name}: ${s.rem}rem;  /* ${s.px.toFixed(1)}px */`).join('\n')}\n}`;
+
+  document.getElementById('ts-prev').innerHTML = [...steps].reverse().map(s =>
+    `<div class="ts-row">
+      <span class="ts-label">${s.name}</span>
+      <span style="font-family:'${font}',sans-serif;font-size:${s.px}px;font-weight:${s.px > 24 ? 600 : 400};color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+        The quick brown fox — ${s.px.toFixed(1)}px / ${s.rem}rem
+      </span>
+    </div>`
+  ).join('');
+}
+
+// ── 8. AI ASSISTANT ──────────────────────────────────
+let chatHistory = [];
+
+// Parse retry-after seconds from a Gemini 429 error message
+function parseRetryAfter(msg) {
+  const m = msg.match(/retry[^\d]*(\d+(?:\.\d+)?)/i);
+  return m ? Math.ceil(parseFloat(m[1])) : 60;
+}
+
+// Countdown timer shown in status bar
+function startCountdown(secs, onDone) {
+  const status = document.getElementById('ai-status');
+  let remaining = secs;
+  status.textContent = `Rate limited — retrying in ${remaining}s`;
+  const iv = setInterval(() => {
+    remaining--;
+    if (remaining <= 0) {
+      clearInterval(iv);
+      status.textContent = 'Retrying...';
+      onDone();
+    } else {
+      status.textContent = `Rate limited — retrying in ${remaining}s`;
+    }
+  }, 1000);
+}
+
+async function callGemini(contents, attempt = 1) {
+  if (!appState.settings.geminiKey) {
+    throw new Error('Add your Gemini API key in Settings before using the AI assistant.');
+  }
+  const res = await fetch(geminiURL(), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      contents,
+      generationConfig: { temperature: 0.7, maxOutputTokens: 1024, topP: 0.9 },
+      safetySettings: [
+        { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' }
+      ]
+    })
+  });
+
+  const data = await res.json();
+
+  // 429 rate limit — auto retry with countdown
+  if (res.status === 429 || data?.error?.code === 429) {
+    if (attempt > 3) throw new Error('Rate limit persists after 3 retries. Try again in a few minutes.');
+    const wait = parseRetryAfter(data?.error?.message || '');
+    return new Promise((resolve, reject) => {
+      startCountdown(wait, () => callGemini(contents, attempt + 1).then(resolve).catch(reject));
+    });
+  }
+
+  if (data.error) throw new Error(data.error.message || 'API error');
+
+  const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!reply) throw new Error('Empty response from AI. The model may have filtered your message.');
+  return reply;
+}
+
+async function sendChat() {
+  const input  = document.getElementById('chat-in');
+  const btn    = document.getElementById('send-btn');
+  const status = document.getElementById('ai-status');
+  const msg    = input.value.trim();
+  if (!msg) return;
+
+  if (!appState.settings.geminiKey) {
+    addMsg('ai', 'Error: Add your Gemini API key in Settings before using the AI assistant.');
+    openSettings();
+    return;
+  }
+
+  addMsg('user', msg);
+  input.value = '';
+  btn.disabled = true;
+  status.textContent = 'Thinking...';
+
+  const context = appState.settings.aiContext ? `\n\nCurrent Prism Studio context:\n${buildDesignTokens('json', getCurrentAsset(currentTool))}` : '';
+  const contents = chatHistory.concat([{ role: 'user', parts: [{ text: msg + context }] }]);
+
+  try {
+    const reply = await callGemini(contents);
+
+    chatHistory.push({ role: 'user',  parts: [{ text: msg }] });
+    chatHistory.push({ role: 'model', parts: [{ text: reply }] });
+    if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+
+    addMsg('ai', reply);
+    status.textContent = '';
+
+  } catch (err) {
+    addMsg('ai', 'Error: ' + err.message);
+    status.textContent = '';
+  }
+
+  btn.disabled = false;
+  scrollChat();
+}
+
+function fmtAI(text) {
+  return text
+    .replace(/(#[a-fA-F0-9]{6})\b/g, hex => {
+      const tc = isLight(hex) ? '#111' : '#fff';
+      return `<span style="display:inline-block;background:${hex};color:${tc};padding:1px 6px;border-radius:3px;font-family:monospace;font-size:11px;font-weight:600">${hex}</span>`;
+    })
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>');
+}
+
+function addMsg(role, content) {
+  const wrap = document.getElementById('chat-msgs');
+  const div  = document.createElement('div');
+  div.className = 'msg ' + role;
+  if (role === 'ai') div.innerHTML = typeof content === 'string' && content.startsWith('Error:') ? content : fmtAI(content);
+  else div.textContent = content;
+  wrap.appendChild(div);
+  scrollChat();
+}
+
+function scrollChat() {
+  const w = document.getElementById('chat-msgs');
+  w.scrollTop = w.scrollHeight;
+}
+
+function chatKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+}
+
+function qp(prompt) {
+  go('ai');
+  setTimeout(() => {
+    document.getElementById('chat-in').value = prompt;
+    sendChat();
+  }, 80);
+}
+
+// ── 9. MOCKUP GENERATOR ──────────────────────────────
+let mkImg = null;
+
+function resetMk() {
+  document.getElementById('mk-file').value = '';
+  document.getElementById('mk-upload-z').style.display = 'block';
+  document.getElementById('mk-wrap').style.display = 'none';
+  mkImg = null;
+  drawMockup();
+}
+
+function onMkUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.src = ev.target.result;
+    img.onload = () => {
+      mkImg = img;
+      document.getElementById('mk-upload-z').style.display = 'none';
+      document.getElementById('mk-wrap').style.display = 'block';
+      drawMockup();
+    };
+  };
+  reader.readAsDataURL(file);
+}
+
+function drawMockup() {
+  const canvas = document.getElementById('mk-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const type = document.getElementById('mk-device').value;
+  const bgCol = document.getElementById('mk-bg').value;
+  const pad = parseInt(document.getElementById('mk-pad').value);
+  
+  let contentW = mkImg ? mkImg.width : 800;
+  let contentH = mkImg ? mkImg.height : 600;
+  
+  const maxW = 1200;
+  if (contentW > maxW) {
+    contentH = contentH * (maxW / contentW);
+    contentW = maxW;
+  }
+
+  let frameW = contentW;
+  let frameH = contentH;
+  let topBarH = 0;
+  
+  if (type === 'browser') {
+    topBarH = 40;
+    frameH += topBarH;
+  } else if (type === 'phone') {
+    if (frameW > frameH) {
+      frameW = 400;
+      frameH = 800;
+    }
+  }
+
+  canvas.width = frameW + (pad * 2);
+  canvas.height = frameH + (pad * 2);
+
+  ctx.fillStyle = bgCol;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.shadowColor = 'rgba(0,0,0,0.2)';
+  ctx.shadowBlur = 30;
+  ctx.shadowOffsetY = 15;
+
+  const fx = pad;
+  const fy = pad;
+
+  ctx.save();
+  ctx.fillStyle = '#FFFFFF';
+  ctx.beginPath();
+  const radius = type === 'phone' ? 30 : 10;
+  ctx.roundRect(fx, fy, frameW, frameH, radius);
+  ctx.fill();
+  ctx.clip(); 
+
+  ctx.shadowColor = 'transparent'; 
+
+  if (type === 'browser') {
+    ctx.fillStyle = '#E5E7EB';
+    ctx.fillRect(fx, fy, frameW, topBarH);
+    ctx.fillStyle = '#EF4444';
+    ctx.beginPath(); ctx.arc(fx + 20, fy + 20, 6, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#F59E0B';
+    ctx.beginPath(); ctx.arc(fx + 40, fy + 20, 6, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#10B981';
+    ctx.beginPath(); ctx.arc(fx + 60, fy + 20, 6, 0, Math.PI*2); ctx.fill();
+  }
+
+  if (mkImg) {
+    if (type === 'browser') {
+      ctx.drawImage(mkImg, fx, fy + topBarH, frameW, frameH - topBarH);
+    } else {
+      ctx.drawImage(mkImg, fx, fy, frameW, frameH);
+      ctx.fillStyle = '#000000';
+      ctx.beginPath();
+      ctx.roundRect(fx + frameW/2 - 60, fy, 120, 25, [0,0,12,12]);
+      ctx.fill();
+    }
+  } else {
+    ctx.fillStyle = '#F3F4F6';
+    if (type === 'browser') ctx.fillRect(fx, fy + topBarH, frameW, frameH - topBarH);
+    else ctx.fillRect(fx, fy, frameW, frameH);
+    ctx.fillStyle = '#9CA3AF';
+    ctx.font = '20px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Upload an image', fx + frameW/2, fy + frameH/2 + (type==='browser'?topBarH/2:0));
+  }
+  ctx.restore();
+}
+
+function exportMk() {
+  const canvas = document.getElementById('mk-canvas');
+  const a = document.createElement('a');
+  a.download = 'mockup.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+const mz = document.getElementById('mk-upload-z');
+if (mz) {
+  mz.addEventListener('dragover', e => { e.preventDefault(); mz.classList.add('over'); });
+  mz.addEventListener('dragleave', () => mz.classList.remove('over'));
+  mz.addEventListener('drop', e => {
+    e.preventDefault(); mz.classList.remove('over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      document.getElementById('mk-file').files = dt.files;
+      onMkUpload({ target: document.getElementById('mk-file') });
+    }
+  });
+}
+
+// ── 10. PATTERN BUILDER ──────────────────────────────
+function drawPattern(exportSize = 0) {
+  const type = document.getElementById('pb-type').value;
+  const fg = document.getElementById('pb-fg').value;
+  const bg = document.getElementById('pb-bg').value;
+  const scale = parseInt(document.getElementById('pb-scale').value);
+  const dense = parseInt(document.getElementById('pb-dense').value);
+  const angle = parseInt(document.getElementById('pb-angle').value);
+
+  document.getElementById('pb-ang-g').style.display = type === 'stripes' ? 'flex' : 'none';
+
+  const ptCanvas = document.createElement('canvas');
+  const ptx = ptCanvas.getContext('2d');
+  
+  if (type === 'dots') {
+    ptCanvas.width = dense;
+    ptCanvas.height = dense;
+    ptx.fillStyle = fg;
+    ptx.beginPath();
+    ptx.arc(dense/2, dense/2, scale/2, 0, Math.PI*2);
+    ptx.fill();
+  } else if (type === 'checker') {
+    ptCanvas.width = dense * 2;
+    ptCanvas.height = dense * 2;
+    ptx.fillStyle = fg;
+    ptx.fillRect(0, 0, dense, dense);
+    ptx.fillRect(dense, dense, dense, dense);
+  } else if (type === 'stripes') {
+    ptCanvas.width = dense;
+    ptCanvas.height = dense;
+    ptx.fillStyle = fg;
+    ptx.fillRect(0, 0, scale, dense);
+  }
+
+  const canvas = exportSize ? document.createElement('canvas') : document.getElementById('pb-canvas');
+  if (!canvas) return;
+  if (exportSize) {
+    canvas.width = exportSize;
+    canvas.height = exportSize;
+  } else {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    if(rect.width === 0) return; // Not visible yet
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+  }
+
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const pattern = ctx.createPattern(ptCanvas, 'repeat');
+  ctx.fillStyle = pattern;
+
+  if (type === 'stripes' && angle > 0) {
+    ctx.save();
+    const maxDim = Math.max(canvas.width, canvas.height) * 2;
+    ctx.translate(canvas.width/2, canvas.height/2);
+    ctx.rotate(angle * Math.PI / 180);
+    ctx.translate(-maxDim/2, -maxDim/2);
+    ctx.fillRect(0, 0, maxDim, maxDim);
+    ctx.restore();
+  } else {
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  if (exportSize) {
+    const a = document.createElement('a');
+    a.download = 'pattern.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  }
+}
+
+function exportPb() {
+  drawPattern(2000);
+}
+
+
+
+// ── BLOB GENERATOR ───────────────────────────────────
+function drawBlob() {
+  const col = document.getElementById('blob-col').value;
+  const comp = parseInt(document.getElementById('blob-comp').value);
+  const rand = parseInt(document.getElementById('blob-rand').value);
+  
+  const points = [];
+  const radius = 80;
+  const cx = 100, cy = 100;
+  const angleStep = (Math.PI * 2) / comp;
+  
+  for(let i=0; i<comp; i++) {
+    const r = radius - (Math.random() * (rand * 5));
+    const a = angleStep * i;
+    points.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r });
+  }
+  
+  // Create smooth SVG path
+  let path = `M ${points[0].x} ${points[0].y}`;
+  for (let i = 0; i < points.length; i++) {
+    const p1 = points[i];
+    const p2 = points[(i + 1) % points.length];
+    const mx = (p1.x + p2.x) / 2;
+    const my = (p1.y + p2.y) / 2;
+    path += ` Q ${p1.x} ${p1.y} ${mx} ${my}`;
+  }
+  
+  const svg = `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">\n  <path fill="${col}" d="${path}" />\n</svg>`;
+  document.getElementById('blob-prev').innerHTML = svg;
+  document.getElementById('blob-code').textContent = svg;
+}
+
+// ── ANIMATION BUILDER ────────────────────────────────
+function updAnim() {
+  const type = document.getElementById('anim-type').value;
+  const dur = document.getElementById('anim-dur').value;
+  const ease = document.getElementById('anim-ease').value;
+  const inf = document.getElementById('anim-inf').checked ? 'infinite' : 'forwards';
+  
+  let keyframes = '';
+  if(type === 'bounce') keyframes = `@keyframes bounce {\n  0%, 100% { transform: translateY(0); }\n  50% { transform: translateY(-20px); }\n}`;
+  if(type === 'pulse') keyframes = `@keyframes pulse {\n  0%, 100% { transform: scale(1); }\n  50% { transform: scale(1.1); }\n}`;
+  if(type === 'spin') keyframes = `@keyframes spin {\n  100% { transform: rotate(360deg); }\n}`;
+  if(type === 'shake') keyframes = `@keyframes shake {\n  0%, 100% { transform: translateX(0); }\n  25% { transform: translateX(-10px); }\n  75% { transform: translateX(10px); }\n}`;
+  if(type === 'fade-in') keyframes = `@keyframes fade-in {\n  0% { opacity: 0; }\n  100% { opacity: 1; }\n}`;
+  
+  const css = `${keyframes}\n\n.anim-element {\n  animation: ${type} ${dur}s ${ease} ${inf};\n}`;
+  document.getElementById('anim-code').textContent = css;
+  
+  let style = document.getElementById('dyn-anim');
+  if(!style) { style = document.createElement('style'); style.id='dyn-anim'; document.head.appendChild(style); }
+  style.textContent = css;
+  playAnim();
+}
+function playAnim() {
+  const box = document.getElementById('anim-box');
+  const type = document.getElementById('anim-type').value;
+  const dur = document.getElementById('anim-dur').value;
+  const ease = document.getElementById('anim-ease').value;
+  const inf = document.getElementById('anim-inf').checked ? 'infinite' : 'forwards';
+  
+  box.style.animation = 'none';
+  void box.offsetWidth;
+  box.style.animation = `${type} ${dur}s ${ease} ${inf}`;
+}
+
+// ── ICON MANAGER ─────────────────────────────────────
+const iconList = Object.keys(lucide.icons);
+function searchIcons() {
+  const q = document.getElementById('icon-search').value.toLowerCase();
+  const res = iconList.filter(i => i.includes(q)).slice(0, 100);
+  document.getElementById('icon-grid').innerHTML = res.map(i => `
+    <div style="background:var(--bg-panel);border:1px solid var(--border);border-radius:4px;padding:12px;display:flex;flex-direction:column;align-items:center;cursor:pointer;gap:6px" onclick="cpIcon('${i}')" title="${i}">
+      <i data-lucide="${i}"></i>
+      <span style="font-size:9px;color:var(--text-muted);text-overflow:ellipsis;overflow:hidden;white-space:nowrap;width:100%;text-align:center">${i}</span>
+    </div>`).join('');
+  lucide.createIcons();
+}
+function cpIcon(name) {
+  const svg = document.querySelector(`[data-lucide="${name}"]`).outerHTML;
+  navigator.clipboard.writeText(svg).then(() => toast('Copied ' + name + ' SVG'));
+}
+
+// ── LAYOUT PLAYGROUND ────────────────────────────────
+function updLayout() {
+  const disp = document.getElementById('lay-disp').value;
+  const dir = document.getElementById('lay-dir').value;
+  const jc = document.getElementById('lay-jc').value;
+  const ai = document.getElementById('lay-ai').value;
+  const gap = document.getElementById('lay-gap').value;
+  const cols = document.getElementById('lay-col').value;
+  
+  document.getElementById('lay-dir-f').style.display = disp === 'flex' ? 'block' : 'none';
+  document.getElementById('lay-col-f').style.display = disp === 'grid' ? 'block' : 'none';
+  
+  const stage = document.getElementById('lay-stage');
+  stage.style.display = disp;
+  stage.style.gap = gap + 'px';
+  stage.style.justifyContent = jc;
+  stage.style.alignItems = ai;
+  
+  let css = `.container {\n  display: ${disp};\n  gap: ${gap}px;\n  justify-content: ${jc};\n  align-items: ${ai};\n`;
+  
+  if (disp === 'flex') {
+    stage.style.flexDirection = dir;
+    css += `  flex-direction: ${dir};\n`;
+    stage.style.gridTemplateColumns = '';
+  } else {
+    stage.style.flexDirection = '';
+    stage.style.gridTemplateColumns = cols;
+    css += `  grid-template-columns: ${cols};\n`;
+  }
+  css += `}`;
+  document.getElementById('lay-code').textContent = css;
+}
+function addLayItem() {
+  const stage = document.getElementById('lay-stage');
+  const cnt = stage.children.length + 1;
+  const d = document.createElement('div');
+  d.className = 'lay-item';
+  d.style.cssText = 'padding:15px;background:var(--accent);color:#fff;border-radius:4px;text-align:center';
+  d.textContent = cnt;
+  stage.appendChild(d);
+}
+
+// ── IMAGE OPTIMIZER ──────────────────────────────────
+let optCanvas = document.createElement('canvas');
+let optOriginal = null;
+let optOriginalSize = 0;
+function onOptUpload(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  optOriginalSize = file.size;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      optOriginal = img;
+      document.getElementById('opt-controls').style.display = 'block';
+      optImage();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function optImage() {
+  if(!optOriginal) return;
+  optCanvas.width = optOriginal.width;
+  optCanvas.height = optOriginal.height;
+  const ctx = optCanvas.getContext('2d');
+  ctx.drawImage(optOriginal, 0, 0);
+  const q = document.getElementById('opt-qual').value / 100;
+  const data = optCanvas.toDataURL('image/webp', q);
+  document.getElementById('opt-prev').src = data;
+  const newSize = Math.round((data.length * 3 / 4) / 1024);
+  const oldSize = Math.round(optOriginalSize / 1024);
+  document.getElementById('opt-stats').textContent = `Original: ${oldSize}KB | Optimized (WebP): ${newSize}KB`;
+}
+function dlOpt() {
+  const q = document.getElementById('opt-qual').value / 100;
+  const data = optCanvas.toDataURL('image/webp', q);
+  const a = document.createElement('a');
+  a.download = 'optimized.webp';
+  a.href = data;
+  a.click();
+}
+
+// ── DESIGN SYSTEM EXPORTER ───────────────────────────
+function genSys(format) {
+  const asset = {
+    source: 'sys',
+    title: 'Prism Design System',
+    colors: [appState.settings.accent, '#1E1E1E', '#252526', '#CCCCCC', '#969696'],
+    meta: {
+      radius: getComputedStyle(document.documentElement).getPropertyValue('--radius').trim(),
+      font: 'Inter'
+    }
+  };
+  document.getElementById('sys-code').textContent = buildDesignTokens(format, asset);
+}
+
+// ── INIT ─────────────────────────────────────────────
+applySettingsToUI();
+lucide.createIcons();
+genHarmony();
+calcContrast();
+updGrad();
+buildGradPresets();
+updShadow();
+updFonts();
+genScale();
+drawBlob();
+updAnim();
+searchIcons();
+updLayout();
+genSys(appState.settings.exportFormat === 'tailwind' ? 'tailwind' : 'css');
+renderLibrary();
+
+if (TOOL_META[currentTool] && currentTool !== 'extractor') go(currentTool);
+
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    openCommandPalette();
+  }
+  if (e.key === 'Escape') {
+    closeModals();
+    closeSettings();
+  }
+});
+
+if (window.matchMedia) {
+  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+    if (appState.settings.theme === 'system') applySettingsToUI();
+  });
+}
+
+// Need a small timeout so the DOM layout computes dimensions for Pattern Builder
+setTimeout(() => {
+  drawMockup();
+  drawPattern();
+}, 100);
+</script>
+</body>
+</html>

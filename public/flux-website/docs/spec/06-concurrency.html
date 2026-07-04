@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>06 Concurrency — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Language Specification — Concurrency</h1>
+<p><strong>Version:</strong> 0.1.0-draft<br />
+<strong>Status:</strong> Draft</p>
+<hr />
+<h2>1. Overview</h2>
+<p>Flux provides first-class concurrency support through <strong>async/await</strong>, <strong>structured concurrency</strong>, <strong>channels</strong>, and an <strong>actor model</strong>. All concurrency primitives are designed to be safe, composable, and efficient.</p>
+<p><strong>Design goals:</strong>
+- Prevent data races at compile time (via <code>Send</code> and <code>Sync</code> traits)
+- Make concurrent code look and feel like sequential code (via async/await)
+- Provide structured concurrency (no orphaned tasks)
+- Support both cooperative (async) and preemptive (thread) concurrency
+- Zero-cost abstractions for concurrency patterns</p>
+<hr />
+<h2>2. Async/Await</h2>
+<h3>2.1 Async Functions</h3>
+<p>An <code>async</code> function returns a <code>Future&lt;T&gt;</code> that can be awaited:</p>
+<pre><code class="language-flux">async fn fetch_data(url: String) -&gt; Result&lt;String, HttpError&gt; {
+    let response = await http.get(url)?
+    return Ok(response.body)
+}
+</code></pre>
+<p>Async functions are <strong>lazy</strong> — calling an async function returns a <code>Future</code> but does not start execution. Execution begins only when the future is awaited.</p>
+<pre><code class="language-flux">let future = fetch_data(&quot;https://api.example.com&quot;)  // Not started yet
+let result = await future                            // Starts and waits
+</code></pre>
+<h3>2.2 Await Expressions</h3>
+<p>The <code>await</code> keyword suspends the current task until the future completes:</p>
+<pre><code class="language-flux">async fn process() {
+    // Sequential awaits
+    let a = await fetch(&quot;url1&quot;)
+    let b = await fetch(&quot;url2&quot;)
+
+    // Concurrent awaits (both futures start simultaneously)
+    let (a, b) = await (fetch(&quot;url1&quot;), fetch(&quot;url2&quot;))
+
+    // Await with timeout
+    let result = await fetch(&quot;url&quot;).timeout(Duration.seconds(5))
+}
+</code></pre>
+<h3>2.3 Async Blocks</h3>
+<p>Anonymous async blocks create futures inline:</p>
+<pre><code class="language-flux">let future = async {
+    let data = await fetch_data(&quot;url&quot;)
+    return process(data)
+}
+
+let result = await future
+</code></pre>
+<hr />
+<h2>3. Structured Concurrency</h2>
+<h3>3.1 Task Groups</h3>
+<p>Task groups ensure all spawned tasks complete before the group exits. No orphaned tasks are possible.</p>
+<pre><code class="language-flux">async fn fetch_all_users(ids: List&lt;Int&gt;) -&gt; List&lt;User&gt; {
+    let group = TaskGroup&lt;User&gt;.new()
+
+    for id in ids {
+        group.spawn(async {
+            return await fetch_user(id)
+        })
+    }
+
+    // All tasks must complete before collect() returns
+    return await group.collect()
+}
+</code></pre>
+<h3>3.2 Spawn</h3>
+<p><code>spawn</code> creates a new concurrent task within the current scope:</p>
+<pre><code class="language-flux">async fn main() {
+    // Spawn a background task
+    let handle = spawn async {
+        await long_running_operation()
+        return 42
+    }
+
+    // Do other work...
+    print(&quot;Working...&quot;)
+
+    // Wait for the spawned task
+    let result = await handle
+    print(&quot;Result: {result}&quot;)
+}
+</code></pre>
+<h3>3.3 Task Cancellation</h3>
+<p>Tasks support cooperative cancellation:</p>
+<pre><code class="language-flux">async fn main() {
+    let handle = spawn async {
+        loop {
+            if Task.is_cancelled() {
+                print(&quot;Task cancelled&quot;)
+                return
+            }
+            await do_work()
+        }
+    }
+
+    await Task.sleep(Duration.seconds(5))
+    handle.cancel()
+    await handle
+}
+</code></pre>
+<h3>3.4 Scoped Tasks</h3>
+<p>Scoped tasks guarantee that all child tasks complete before the scope exits:</p>
+<pre><code class="language-flux">async fn process_batch(items: List&lt;Item&gt;) -&gt; List&lt;Result&gt; {
+    return await Task.scope(async |scope| {
+        mut results = List&lt;Future&lt;Result&gt;&gt;.new()
+
+        for item in items {
+            let future = scope.spawn(async {
+                return await process_item(item)
+            })
+            results.append(future)
+        }
+
+        return await Future.all(results)
+    })
+}
+</code></pre>
+<hr />
+<h2>4. Channels</h2>
+<p>Channels provide message-passing communication between concurrent tasks.</p>
+<h3>4.1 Bounded Channels</h3>
+<pre><code class="language-flux">async fn producer_consumer() {
+    // Create a channel with buffer size 10
+    let (tx, rx) = Channel&lt;Int&gt;.bounded(10)
+
+    // Producer
+    spawn async {
+        for i in 0..100 {
+            await tx.send(i)
+        }
+        tx.close()
+    }
+
+    // Consumer
+    while let Some(value) = await rx.receive() {
+        print(&quot;Got: {value}&quot;)
+    }
+    print(&quot;Channel closed&quot;)
+}
+</code></pre>
+<h3>4.2 Unbounded Channels</h3>
+<pre><code class="language-flux">let (tx, rx) = Channel&lt;String&gt;.unbounded()
+</code></pre>
+<h3>4.3 Multi-producer Multi-consumer</h3>
+<pre><code class="language-flux">async fn fan_out_fan_in() {
+    let (tx, rx) = Channel&lt;WorkItem&gt;.bounded(100)
+
+    // Multiple producers
+    for i in 0..4 {
+        let tx = tx.clone()
+        spawn async {
+            for item in generate_work(i) {
+                await tx.send(item)
+            }
+        }
+    }
+
+    // Multiple consumers
+    for _ in 0..8 {
+        let rx = rx.clone()
+        spawn async {
+            while let Some(item) = await rx.receive() {
+                process(item)
+            }
+        }
+    }
+}
+</code></pre>
+<h3>4.4 Select</h3>
+<p>Wait on multiple channels simultaneously:</p>
+<pre><code class="language-flux">async fn multiplexer() {
+    let (tx1, rx1) = Channel&lt;Int&gt;.bounded(10)
+    let (tx2, rx2) = Channel&lt;String&gt;.bounded(10)
+
+    loop {
+        match select {
+            value from rx1 -&gt; print(&quot;Int: {value}&quot;)
+            message from rx2 -&gt; print(&quot;String: {message}&quot;)
+            timeout Duration.seconds(5) -&gt; {
+                print(&quot;Timeout!&quot;)
+                break
+            }
+        }
+    }
+}
+</code></pre>
+<hr />
+<h2>5. Thread Safety</h2>
+<h3>5.1 Send and Sync Traits</h3>
+<p>Flux prevents data races at compile time through two marker traits:</p>
+<table>
+<thead>
+<tr>
+<th>Trait</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Send</code></td>
+<td>Type can be safely transferred between threads</td>
+</tr>
+<tr>
+<td><code>Sync</code></td>
+<td>Type can be safely shared between threads (via <code>&amp;T</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>These traits are <strong>automatically implemented</strong> by the compiler when safe to do so. A type is <code>Send</code> if all its fields are <code>Send</code>. A type is <code>Sync</code> if all its fields are <code>Sync</code>.</p>
+<pre><code class="language-flux">// Rc&lt;T&gt; is NOT Send (not thread-safe reference counting)
+let shared = Rc.new(42)
+// spawn async { print(shared) }  // Compile error: Rc&lt;Int&gt; is not Send
+
+// Arc&lt;T&gt; IS Send and Sync (atomic reference counting)
+let shared = Arc.new(42)
+spawn async { print(shared) }     // OK
+</code></pre>
+<h3>5.2 Types That Are Not Send/Sync</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Send</th>
+<th>Sync</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Rc&lt;T&gt;</code></td>
+<td>❌</td>
+<td>❌</td>
+<td>Non-atomic reference counting</td>
+</tr>
+<tr>
+<td><code>Cell&lt;T&gt;</code></td>
+<td>✅</td>
+<td>❌</td>
+<td>Interior mutability without synchronization</td>
+</tr>
+<tr>
+<td><code>RefCell&lt;T&gt;</code></td>
+<td>✅</td>
+<td>❌</td>
+<td>Runtime borrow checking, not thread-safe</td>
+</tr>
+<tr>
+<td><code>*mut T</code></td>
+<td>❌</td>
+<td>❌</td>
+<td>Raw pointers have no safety guarantees</td>
+</tr>
+<tr>
+<td><code>Arc&lt;T&gt;</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>Atomic reference counting</td>
+</tr>
+<tr>
+<td><code>Mutex&lt;T&gt;</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>Synchronized access</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>6. Synchronization Primitives</h2>
+<h3>6.1 Mutex</h3>
+<pre><code class="language-flux">use flux.concurrent.Mutex
+
+let counter = Arc.new(Mutex.new(0))
+
+let handles = (0..10).map(fn(i) {
+    let counter = counter.clone()
+    return spawn async {
+        mut lock = counter.lock()
+        *lock += 1
+    }
+})
+
+await Future.all(handles)
+let final_count = counter.lock()
+print(&quot;Count: {*final_count}&quot;)   // 10
+</code></pre>
+<h3>6.2 RwLock</h3>
+<pre><code class="language-flux">use flux.concurrent.RwLock
+
+let data = Arc.new(RwLock.new(HashMap&lt;String, Int&gt;.new()))
+
+// Multiple readers
+spawn async {
+    let read = data.read()
+    print(read.get(&quot;key&quot;))
+}
+
+// Exclusive writer
+spawn async {
+    let mut write = data.write()
+    write.insert(&quot;key&quot;, 42)
+}
+</code></pre>
+<h3>6.3 Semaphore</h3>
+<pre><code class="language-flux">use flux.concurrent.Semaphore
+
+let sem = Arc.new(Semaphore.new(3))  // Allow 3 concurrent accesses
+
+for i in 0..10 {
+    let sem = sem.clone()
+    spawn async {
+        let permit = await sem.acquire()
+        await process(i)
+        // permit dropped — releases the semaphore
+    }
+}
+</code></pre>
+<h3>6.4 Atomic Types</h3>
+<pre><code class="language-flux">use flux.concurrent.{AtomicInt, AtomicBool, Ordering}
+
+let counter = AtomicInt.new(0)
+counter.fetch_add(1, Ordering.SeqCst)
+
+let flag = AtomicBool.new(false)
+flag.store(true, Ordering.Release)
+
+if flag.load(Ordering.Acquire) {
+    print(&quot;Flag is set&quot;)
+}
+</code></pre>
+<h3>6.5 Barrier</h3>
+<pre><code class="language-flux">use flux.concurrent.Barrier
+
+let barrier = Arc.new(Barrier.new(4))  // Wait for 4 tasks
+
+for i in 0..4 {
+    let barrier = barrier.clone()
+    spawn async {
+        // Phase 1
+        do_work_phase1(i)
+
+        // Wait for all tasks to finish phase 1
+        await barrier.wait()
+
+        // Phase 2 — all tasks proceed together
+        do_work_phase2(i)
+    }
+}
+</code></pre>
+<hr />
+<h2>7. Actor Model</h2>
+<p>Actors encapsulate state and communicate exclusively through messages:</p>
+<pre><code class="language-flux">actor Counter {
+    mut count: Int = 0
+
+    fn increment(mut self) {
+        self.count += 1
+    }
+
+    fn decrement(mut self) {
+        self.count -= 1
+    }
+
+    fn get_count(self) -&gt; Int {
+        return self.count
+    }
+}
+
+async fn main() {
+    let counter = Counter.new()
+
+    // Messages are sent asynchronously
+    await counter.increment()
+    await counter.increment()
+    await counter.increment()
+
+    let count = await counter.get_count()
+    print(&quot;Count: {count}&quot;)   // 3
+}
+</code></pre>
+<p>Actor methods are processed sequentially — no data races are possible within an actor. Communication between actors happens via message passing.</p>
+<hr />
+<h2>8. Parallel Iterators</h2>
+<pre><code class="language-flux">use flux.parallel
+
+let results = items
+    .par_iter()               // Parallel iterator
+    .filter((item) =&gt; item.is_valid())
+    .map((item) =&gt; expensive_transform(item))
+    .collect()
+
+// Control parallelism
+let results = items
+    .par_iter()
+    .with_threads(4)
+    .map(process)
+    .collect()
+</code></pre>
+<hr />
+<h2>9. Async Runtime</h2>
+<h3>9.1 Executor</h3>
+<p>Flux includes a built-in async executor that manages task scheduling:</p>
+<pre><code class="language-flux">// The runtime is started automatically when main is async
+async fn main() {
+    await my_async_code()
+}
+
+// Manual runtime control (advanced)
+fn main() {
+    let runtime = Runtime.new(RuntimeConfig {
+        worker_threads: 4
+        max_blocking_threads: 512
+    })
+
+    runtime.block_on(async {
+        await my_async_code()
+    })
+}
+</code></pre>
+<h3>9.2 Timer and Sleep</h3>
+<pre><code class="language-flux">async fn example() {
+    // Sleep
+    await Task.sleep(Duration.seconds(1))
+
+    // Timeout
+    let result = await fetch(&quot;url&quot;).timeout(Duration.seconds(5))
+
+    // Interval
+    let mut interval = Interval.new(Duration.milliseconds(100))
+    for _ in 0..10 {
+        await interval.tick()
+        do_periodic_work()
+    }
+}
+</code></pre>
+<hr />
+<h2>10. Memory Ordering</h2>
+<p>For low-level concurrent programming, Flux exposes memory ordering guarantees:</p>
+<table>
+<thead>
+<tr>
+<th>Ordering</th>
+<th>Guarantee</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Relaxed</code></td>
+<td>No ordering guarantees (fastest)</td>
+</tr>
+<tr>
+<td><code>Acquire</code></td>
+<td>Reads cannot be reordered after this</td>
+</tr>
+<tr>
+<td><code>Release</code></td>
+<td>Writes cannot be reordered before this</td>
+</tr>
+<tr>
+<td><code>AcqRel</code></td>
+<td>Both Acquire and Release</td>
+</tr>
+<tr>
+<td><code>SeqCst</code></td>
+<td>Total sequential consistency (default, safest)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-flux">use flux.concurrent.{AtomicBool, Ordering}
+
+let ready = AtomicBool.new(false)
+let data = Arc.new(Mutex.new(0))
+
+// Writer thread
+spawn async {
+    let mut lock = data.lock()
+    *lock = 42
+    ready.store(true, Ordering.Release)
+}
+
+// Reader thread
+spawn async {
+    while not ready.load(Ordering.Acquire) {
+        Task.yield()
+    }
+    let lock = data.lock()
+    assert(*lock == 42)
+}
+</code></pre>
+<hr />
+<h2>11. Deadlock Prevention</h2>
+<p>Flux provides tools to prevent and detect deadlocks:</p>
+<h3>11.1 Lock Ordering</h3>
+<p>The linter can enforce a consistent lock ordering to prevent deadlocks:</p>
+<pre><code class="language-flux">#[lock_order(1)]
+let lock_a = Mutex.new(0)
+
+#[lock_order(2)]
+let lock_b = Mutex.new(0)
+
+// OK: acquiring in order
+let a = lock_a.lock()
+let b = lock_b.lock()
+
+// Warning: acquiring in reverse order (potential deadlock)
+// let b = lock_b.lock()
+// let a = lock_a.lock()
+</code></pre>
+<h3>11.2 Try-Lock</h3>
+<pre><code class="language-flux">// Non-blocking lock attempt
+match mutex.try_lock() {
+    Some(guard) -&gt; {
+        // Got the lock
+        *guard += 1
+    }
+    None -&gt; {
+        // Lock is held by someone else
+        print(&quot;Could not acquire lock&quot;)
+    }
+}
+</code></pre>
+<h3>11.3 Timeout Lock</h3>
+<pre><code class="language-flux">match await mutex.lock_timeout(Duration.seconds(5)) {
+    Some(guard) -&gt; { /* got it */ }
+    None -&gt; { /* timed out */ }
+}
+</code></pre>
+<hr />
+<h2>12. Concurrency Patterns</h2>
+<h3>12.1 Fan-Out/Fan-In</h3>
+<pre><code class="language-flux">async fn fan_out_fan_in(items: List&lt;Item&gt;) -&gt; List&lt;Result&gt; {
+    let group = TaskGroup&lt;Result&gt;.new()
+    for item in items {
+        group.spawn(async { return await process(item) })
+    }
+    return await group.collect()
+}
+</code></pre>
+<h3>12.2 Pipeline</h3>
+<pre><code class="language-flux">async fn pipeline(input: Channel.Receiver&lt;Data&gt;) -&gt; Channel.Receiver&lt;Output&gt; {
+    let (tx, rx) = Channel&lt;Output&gt;.bounded(100)
+
+    spawn async {
+        while let Some(data) = await input.receive() {
+            let processed = await transform(data)
+            await tx.send(processed)
+        }
+        tx.close()
+    }
+
+    return rx
+}
+</code></pre>
+<h3>12.3 Rate Limiting</h3>
+<pre><code class="language-flux">async fn rate_limited_requests(urls: List&lt;String&gt;) {
+    let limiter = RateLimiter.new(requests_per_second: 10)
+
+    for url in urls {
+        await limiter.wait()
+        spawn async {
+            await fetch(url)
+        }
+    }
+}
+</code></pre>
+<h3>12.4 Worker Pool</h3>
+<pre><code class="language-flux">async fn worker_pool(items: List&lt;WorkItem&gt;, concurrency: Int) {
+    let sem = Semaphore.new(concurrency)
+
+    let group = TaskGroup&lt;Void&gt;.new()
+    for item in items {
+        let permit = await sem.acquire()
+        group.spawn(async {
+            defer permit.release()
+            await process_item(item)
+        })
+    }
+
+    await group.wait()
+}
+</code></pre>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

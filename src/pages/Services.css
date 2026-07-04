@@ -1,0 +1,123 @@
+.services-header {
+  background-color: var(--light-gray);
+  padding: var(--spacing-8) 0 var(--spacing-6);
+  text-align: center;
+}
+
+.services-header h1 {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-2);
+}
+
+.services-header p {
+  font-size: 1.25rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.service-detail-section {
+  padding: var(--spacing-6) 0;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.service-detail-section:last-child {
+  border-bottom: none;
+}
+
+.service-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-5);
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .service-detail-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .service-detail-section:nth-child(even) .service-detail-content {
+    order: 2;
+  }
+  .service-detail-section:nth-child(even) .service-detail-visual {
+    order: 1;
+  }
+}
+
+.service-icon-large {
+  width: 80px;
+  height: 80px;
+  background-color: var(--primary-blue);
+  color: var(--white);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-3);
+}
+
+.service-detail-content h2 {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-2);
+}
+
+.service-detail-content p {
+  margin-bottom: var(--spacing-3);
+  font-size: 1.1rem;
+}
+
+.capabilities-list {
+  list-style: none;
+}
+
+.capabilities-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
+  font-weight: 500;
+}
+
+.capabilities-list li svg {
+  color: var(--primary-blue);
+  flex-shrink: 0;
+}
+
+.service-detail-visual {
+  background-color: var(--light-gray);
+  border-radius: var(--radius-lg);
+  height: 100%;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--slate-text);
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Abstract visual elements to avoid gradients */
+.service-detail-visual::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  width: 100px;
+  height: 100px;
+  background-color: var(--cyan-accent);
+  opacity: 0.2;
+  border-radius: 50%;
+}
+
+.service-detail-visual::after {
+  content: '';
+  position: absolute;
+  bottom: -40px;
+  right: -20px;
+  width: 150px;
+  height: 150px;
+  background-color: var(--primary-blue);
+  opacity: 0.1;
+  transform: rotate(45deg);
+}

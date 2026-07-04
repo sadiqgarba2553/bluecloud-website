@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign PDF - E-sign PDF Documents | ToolDeck</title>
+  <meta name="description" content="Sign PDF documents online for free. Draw your signature, type it, or upload an image.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../tool.css">
+  <style>
+    /* Signature Pad specific styles */
+    .sign-tabs { display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    .sign-tab { padding: 8px 16px; border-radius: 6px; cursor: pointer; color: var(--text-muted); font-weight: 500; }
+    .sign-tab.active { background: var(--bg-hover); color: var(--text); }
+    
+    .sign-panel { display: none; }
+    .sign-panel.active { display: block; }
+    
+    #sig-canvas { border: 1px dashed var(--border); border-radius: 8px; cursor: crosshair; touch-action: none; display: block; width: 100%; height: 200px; }
+    #sig-text { width: 100%; padding: 15px; font-family: 'Brush Script MT', 'Caveat', cursive, serif; font-size: 2.5rem; border: 1px dashed var(--border); border-radius: 8px; color: #000; text-align: center; }
+    .sig-actions { display: flex; justify-content: space-between; margin-top: 10px; }
+    
+    .overlay-item {
+      position: absolute;
+      border: 2px dashed #3b82f6;
+      cursor: move;
+      touch-action: none;
+      user-select: none;
+    }
+    .overlay-item::after {
+      content: '';
+      position: absolute;
+      bottom: -6px; right: -6px;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      cursor: se-resize;
+    }
+    .overlay-item img {
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="tool-layout">
+    <header class="tool-nav">
+      <a href="../index.html" class="back-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Tools
+      </a>
+      <div class="tool-title">Sign PDF</div>
+      <div style="width:100px"></div>
+    </header>
+
+    <main class="tool-main">
+      <div id="upload-zone" class="upload-zone">
+        <svg class="upl-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>
+        <h2 class="upl-title">Select PDF file</h2>
+        <p class="upl-sub">Or drag and drop it here</p>
+        <button class="upl-btn" id="btn-select">Select PDF</button>
+        <input type="file" id="file-input" accept="application/pdf" style="display:none">
+      </div>
+
+      <div id="workspace" class="workspace" style="display:none">
+        
+        <!-- Sidebar for Signature Settings -->
+        <aside class="sidebar">
+          <h3>Create Signature</h3>
+          <div class="sign-tabs">
+            <div class="sign-tab active" data-target="panel-draw">Draw</div>
+            <div class="sign-tab" data-target="panel-type">Type</div>
+            <div class="sign-tab" data-target="panel-upload">Image</div>
+          </div>
+          
+          <div id="panel-draw" class="sign-panel active">
+            <canvas id="sig-canvas" width="300" height="150"></canvas>
+            <div class="sig-actions">
+              <button class="sec-btn" id="btn-clear-sig" style="padding: 6px 12px; font-size: 0.85rem;">Clear</button>
+              <button class="cta-btn" id="btn-add-drawn" style="padding: 6px 12px; font-size: 0.85rem;">Add Signature</button>
+            </div>
+          </div>
+          
+          <div id="panel-type" class="sign-panel">
+            <input type="text" id="sig-text" placeholder="Your Name" autocomplete="off">
+            <div class="sig-actions" style="justify-content: flex-end;">
+              <button class="cta-btn" id="btn-add-typed" style="padding: 6px 12px; font-size: 0.85rem;">Add Signature</button>
+            </div>
+          </div>
+
+          <div id="panel-upload" class="sign-panel">
+            <input type="file" id="sig-image-input" accept="image/png, image/jpeg, image/webp" style="margin-bottom: 10px; width:100%;">
+            <img id="sig-image-preview" style="max-width: 100%; display: none; border-radius: 4px; margin-bottom: 10px;">
+            <div class="sig-actions" style="justify-content: flex-end;">
+              <button class="cta-btn" id="btn-add-img" style="padding: 6px 12px; font-size: 0.85rem;" disabled>Add Signature</button>
+            </div>
+          </div>
+
+          <hr style="border:0; border-top:1px solid var(--border); margin: 20px 0;">
+
+          <h3>Document</h3>
+          <div style="margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between;">
+            <button class="sec-btn" id="btn-prev" style="padding: 6px 12px;">Prev</button>
+            <span id="page-num">Page 1 of 1</span>
+            <button class="sec-btn" id="btn-next" style="padding: 6px 12px;">Next</button>
+          </div>
+
+          <button class="cta-btn" id="btn-sign" style="width: 100%; justify-content: center; padding: 14px; font-size: 1rem; margin-top: auto;">Sign &amp; Save PDF</button>
+        </aside>
+
+        <!-- Main Preview Area -->
+        <div class="preview-area" id="preview-area" style="position: relative; overflow: auto; background: var(--bg-hover); display: flex; justify-content: center; align-items: center;">
+          <div id="pdf-container" style="position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+            <canvas id="pdf-preview"></canvas>
+            <div id="overlay-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="progress-wrap" class="progress-wrap" style="display:none">
+        <h3 id="progress-text">Signing PDF...</h3>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      </div>
+
+      <div id="result-zone" class="result-zone" style="display:none">
+        <div class="res-card">
+          <div class="res-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg></div>
+          <h3 class="res-title">PDF Signed Successfully!</h3>
+          <p class="res-sub">Your document has been signed.</p>
+          <a href="#" id="btn-download" class="cta-btn" download>Download Signed PDF</a>
+          <button class="sec-btn" onclick="location.reload()" style="margin-top:15px">Sign another PDF</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';</script>
+  <script src="sign-pdf.js"></script>
+</body>
+</html>

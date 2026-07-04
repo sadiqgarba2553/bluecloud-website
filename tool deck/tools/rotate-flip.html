@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rotate & Flip Image | ToolDeck</title>
+  <meta name="description" content="Rotate images left/right or flip them horizontally/vertically. Batch process multiple photos easily.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../tool.css">
+  <style>
+    .img-list { list-style: none; padding: 0; margin: 0; }
+    .img-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: var(--bg-hover); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 10px; }
+    .img-info { display: flex; align-items: center; gap: 15px; }
+    .img-thumb { width: 40px; height: 40px; object-fit: cover; background: rgba(0,0,0,0.1); border-radius: 4px; transition: transform 0.2s; }
+    .img-name { font-weight: 500; font-size: 0.95rem; }
+    .img-size { font-size: 0.8rem; color: var(--text-muted); }
+    
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .action-btn {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .action-btn:hover { background: var(--bg-hover); }
+    .action-btn:active { transform: scale(0.98); }
+    .action-btn svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; }
+  </style>
+</head>
+<body>
+  <div class="tool-layout">
+    <header class="tool-nav">
+      <a href="../index.html" class="back-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Tools
+      </a>
+      <div class="tool-title">Rotate & Flip</div>
+      <div style="width:100px"></div>
+    </header>
+
+    <main class="tool-main">
+      <div id="upload-zone" class="upload-zone">
+        <svg class="upl-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        <h2 class="upl-title">Select Images</h2>
+        <p class="upl-sub">Or drag and drop them here</p>
+        <button class="upl-btn" id="btn-select">Select Images</button>
+        <input type="file" id="file-input" accept="image/*" multiple style="display:none">
+        <p class="upl-note">Batch processing supported. Changes happen entirely in your browser.</p>
+      </div>
+
+      <div id="workspace" class="workspace" style="display:none; max-width: 800px; margin: 40px auto; width: 100%;">
+        <div class="ws-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0;" id="file-count">0 images selected</h3>
+            <button class="sec-btn" id="btn-add-more">Add More</button>
+          </div>
+          
+          <div style="background: var(--bg-hover); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border);">
+            <div class="action-grid">
+              <button class="action-btn" id="btn-rot-left">
+                <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Rotate Left
+              </button>
+              <button class="action-btn" id="btn-rot-right">
+                <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                Rotate Right
+              </button>
+              <button class="action-btn" id="btn-flip-h">
+                <svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M8 8l-4 4 4 4"/><path d="M16 8l4 4-4 4"/></svg>
+                Flip Horizontally
+              </button>
+              <button class="action-btn" id="btn-flip-v">
+                <svg viewBox="0 0 24 24"><path d="M3 12h18"/><path d="M8 8l4-4 4 4"/><path d="M8 16l4 4 4-4"/></svg>
+                Flip Vertically
+              </button>
+            </div>
+            <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin: 0;">Clicking these buttons will apply the transformation to all images below.</p>
+          </div>
+
+          <div style="max-height: 400px; overflow-y: auto; margin-bottom: 20px; padding-right: 5px;">
+            <ul class="img-list" id="img-list">
+              <!-- Items injected here -->
+            </ul>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button class="sec-btn" id="btn-cancel" style="flex: 1;">Cancel</button>
+            <button class="cta-btn" id="btn-start" style="flex: 2; justify-content: center;">Apply & Download</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="progress-wrap" class="progress-wrap" style="display:none">
+        <h3 id="progress-text">Processing Images...</h3>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      </div>
+
+      <div id="result-zone" class="result-zone" style="display:none">
+        <div class="res-card">
+          <div class="res-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <h3 class="res-title">Processing Complete!</h3>
+          <p class="res-sub">All images have been rotated and flipped.</p>
+          
+          <div style="display: flex; gap: 10px; justify-content: center;">
+            <a href="#" id="btn-download" class="cta-btn" download>Download ZIP</a>
+          </div>
+          <button class="sec-btn" onclick="location.reload()" style="margin-top:15px; border:none; background:transparent;">Process More</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="rotate-flip.js"></script>
+</body>
+</html>

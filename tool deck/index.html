@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ToolDeck — All your PDF, image and developer tools in one place. Free, private, no signup." />
+  <title>ToolDeck — All Your Tools in One Place</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <a href="#" class="logo" id="logo-link">
+        <div class="logo-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="9" height="9" rx="2" fill="currentColor"/><rect x="13" y="2" width="9" height="9" rx="2" fill="currentColor" opacity=".55"/><rect x="2" y="13" width="9" height="9" rx="2" fill="currentColor" opacity=".55"/><rect x="13" y="13" width="9" height="9" rx="2" fill="currentColor" opacity=".25"/></svg></div>
+        <span>ToolDeck</span>
+      </a>
+
+      <nav class="nav" id="nav">
+
+        <!-- Core -->
+        <div class="nav-item" id="nav-core">
+          <button class="nav-btn" id="btn-core">Core<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="panel" id="panel-core">
+            <a href="tools/merge-pdf.html" class="panel-link" id="dl-merge"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6H5a2 2 0 00-2 2v8a2 2 0 002 2h3M16 6h3a2 2 0 012 2v8a2 2 0 01-2 2h-3M12 3v18"/></svg></span><div><b>Merge PDF</b><small>Combine multiple PDFs</small></div></a>
+            <a href="tools/split-pdf.html" class="panel-link" id="dl-split"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></span><div><b>Split PDF</b><small>Split into separate files</small></div></a>
+            <a href="tools/compress-pdf.html" class="panel-link" id="dl-compress"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></span><div><b>Compress PDF</b><small>Reduce file size</small></div></a>
+          </div>
+        </div>
+
+        <!-- Convert to PDF -->
+        <div class="nav-item" id="nav-topdf">
+          <button class="nav-btn" id="btn-topdf">Convert to PDF<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="panel panel-wide" id="panel-topdf">
+            <a href="tools/jpg-to-pdf.html" class="panel-link" id="dl-jpg-pdf"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span><div><b>JPG to PDF</b><small>Images to PDF</small></div></a>
+            <a href="tools/word-to-pdf.html" class="panel-link" id="dl-word-pdf"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 8l2 8 2-4 2 4 2-8"/></svg></span><div><b>Word to PDF</b><small>DOCX to PDF</small></div></a>
+            <a href="tools/ppt-to-pdf.html" class="panel-link" id="dl-ppt-pdf"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg></span><div><b>PPT to PDF</b><small>Slides to PDF</small></div></a>
+            <a href="tools/excel-to-pdf.html" class="panel-link" id="dl-excel-pdf"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg></span><div><b>Excel to PDF</b><small>Spreadsheets to PDF</small></div></a>
+            <a href="tools/html-to-pdf.html" class="panel-link" id="dl-html-pdf"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span><div><b>HTML to PDF</b><small>Webpages to PDF</small></div></a>
+          </div>
+        </div>
+
+        <!-- Convert from PDF -->
+        <div class="nav-item" id="nav-frompdf">
+          <button class="nav-btn" id="btn-frompdf">Convert from PDF<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="panel panel-wide" id="panel-frompdf">
+            <a href="tools/pdf-to-jpg.html" class="panel-link" id="dl-pdf-jpg"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M20 14L15 9l-3 3-2-2-6 6"/></svg></span><div><b>PDF to JPG</b><small>PDF to images</small></div></a>
+            <a href="tools/pdf-to-word.html" class="panel-link" id="dl-pdf-word"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span><div><b>PDF to Word</b><small>PDF to DOCX</small></div></a>
+            <a href="tools/pdf-to-ppt.html" class="panel-link" id="dl-pdf-ppt"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H4z"/><path d="M12 16v6M8 22h8"/></svg></span><div><b>PDF to PPT</b><small>PDF to slides</small></div></a>
+            <a href="tools/pdf-to-excel.html" class="panel-link" id="dl-pdf-excel"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg></span><div><b>PDF to Excel</b><small>PDF to spreadsheet</small></div></a>
+            <a href="tools/pdf-to-pdfa.html" class="panel-link" id="dl-pdf-pdfa"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><div><b>PDF to PDF/A</b><small>Archival format</small></div></a>
+          </div>
+        </div>
+
+        <!-- Edit -->
+        <div class="nav-item" id="nav-edit">
+          <button class="nav-btn" id="btn-edit">Edit<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="panel panel-wide" id="panel-edit">
+            <a href="tools/rotate-pdf.html" class="panel-link" id="dl-rotate"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M21 13a9 9 0 1 1-3-7.7L21 8"/></svg></span><div><b>Rotate PDF</b><small>Rotate pages</small></div></a>
+            <a href="tools/watermark-pdf.html" class="panel-link" id="dl-watermark"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94"/></svg></span><div><b>Watermark</b><small>Add watermarks</small></div></a>
+            <a href="tools/page-numbers.html" class="panel-link" id="dl-pagenums"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg></span><div><b>Page Numbers</b><small>Number pages</small></div></a>
+            <a href="tools/organize-pdf.html" class="panel-link" id="dl-organize"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span><div><b>Organize</b><small>Reorder pages</small></div></a>
+            <a href="tools/crop-pdf.html" class="panel-link" id="dl-crop"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.13 1L6 16a2 2 0 0 0 2 2h15"/><path d="M1 6.13L16 6a2 2 0 0 0 2-2V1"/></svg></span><div><b>Crop PDF</b><small>Trim margins</small></div></a>
+            <a href="tools/redact-pdf.html" class="panel-link" id="dl-redact"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></span><div><b>Redact PDF</b><small>Black out content</small></div></a>
+          </div>
+        </div>
+
+        <!-- Security -->
+        <div class="nav-item" id="nav-sec">
+          <button class="nav-btn" id="btn-sec">Security<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="panel" id="panel-sec">
+            <a href="tools/protect-pdf.html" class="panel-link" id="dl-protect"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><div><b>Protect PDF</b><small>Add password</small></div></a>
+            <a href="tools/unlock-pdf.html" class="panel-link" id="dl-unlock"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></span><div><b>Unlock PDF</b><small>Remove password</small></div></a>
+            <a href="tools/sign-pdf.html" class="panel-link" id="dl-sign"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span><div><b>Sign PDF</b><small>E-signatures</small></div></a>
+          </div>
+        </div>
+
+        <!-- More -->
+        <div class="nav-item" id="nav-more">
+          <button class="nav-btn" id="btn-more">More<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="panel" id="panel-more">
+            <a href="tools/ocr-pdf.html" class="panel-link" id="dl-ocr"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M8 16h8M8 8h2"/></svg></span><div><b>OCR PDF</b><small>Extract text from scans</small></div></a>
+            <a href="tools/scan-to-pdf.html" class="panel-link" id="dl-scan"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/></svg></span><div><b>Scan to PDF</b><small>Images to clean PDF</small></div></a>
+            <a href="tools/repair-pdf.html" class="panel-link" id="dl-repair"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span><div><b>Repair PDF</b><small>Fix broken PDFs</small></div></a>
+            <a href="tools/compare-pdf.html" class="panel-link" id="dl-compare"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><div><b>Compare PDF</b><small>Find differences</small></div></a>
+            <a href="tools/flatten-pdf.html" class="panel-link" id="dl-flatten"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></span><div><b>Flatten PDF</b><small>Flatten form fields</small></div></a>
+          </div>
+        </div>
+
+        <!-- Images -->
+        <div class="nav-item" id="nav-img">
+          <button class="nav-btn" id="btn-img">Images<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="panel panel-wide" id="panel-img">
+            <a href="#" class="panel-link" id="dl-cpng"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span><div><b>Compress PNG</b><small>Reduce PNG size</small></div></a>
+            <a href="#" class="panel-link" id="dl-cjpg"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span><div><b>Compress JPG</b><small>Reduce JPG size</small></div></a>
+            <a href="#" class="panel-link" id="dl-cwebp"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg></span><div><b>Compress WebP</b><small>Reduce WebP size</small></div></a>
+            <a href="#" class="panel-link" id="dl-png2webp"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></span><div><b>PNG to WebP</b><small>PNG to WebP</small></div></a>
+            <a href="#" class="panel-link" id="dl-jpg2webp"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></span><div><b>JPG to WebP</b><small>JPG to WebP</small></div></a>
+            <a href="#" class="panel-link" id="dl-png2jpg"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></span><div><b>PNG to JPG</b><small>PNG to JPG</small></div></a>
+            <a href="#" class="panel-link" id="dl-webp2png"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></span><div><b>WebP to PNG</b><small>WebP to PNG</small></div></a>
+            <a href="#" class="panel-link" id="dl-svg2png"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></span><div><b>SVG to PNG</b><small>SVG to PNG</small></div></a>
+            <a href="#" class="panel-link" id="dl-ico"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg></span><div><b>Image to ICO</b><small>Create favicons</small></div></a>
+            <a href="#" class="panel-link" id="dl-icrop"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.13 1L6 16a2 2 0 002 2h15"/><path d="M1 6.13L16 6"/></svg></span><div><b>Crop Image</b><small>Crop to size</small></div></a>
+            <a href="#" class="panel-link" id="dl-iresize"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></span><div><b>Resize Image</b><small>Change dimensions</small></div></a>
+            <a href="#" class="panel-link" id="dl-irotate"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></span><div><b>Rotate &amp; Flip</b><small>Rotate or flip</small></div></a>
+            <a href="#" class="panel-link" id="dl-iwm"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><div><b>Watermark</b><small>Add watermark</small></div></a>
+            <a href="#" class="panel-link" id="dl-rmbg"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></span><div><b>Remove BG</b><small>Remove background</small></div></a>
+          </div>
+        </div>
+
+        <!-- Utilities -->
+        <div class="nav-item" id="nav-util">
+          <button class="nav-btn" id="btn-util">Utilities<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="panel panel-wide" id="panel-util">
+            <a href="tools/qr-generator.html" class="panel-link" id="dl-qr"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span><div><b>QR Generator</b><small>Generate QR codes</small></div></a>
+            <a href="tools/password-gen.html" class="panel-link" id="dl-pass"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><div><b>Password Gen</b><small>Secure passwords</small></div></a>
+            <a href="tools/hash-generator.html" class="panel-link" id="dl-hash"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg></span><div><b>Hash Generator</b><small>MD5, SHA-256</small></div></a>
+            <a href="tools/base64-encode.html" class="panel-link" id="dl-b64"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span><div><b>Base64</b><small>Encode &amp; decode</small></div></a>
+            <a href="tools/color-picker.html" class="panel-link" id="dl-color"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 4.2c.57.43 1.34.43 1.91 0L22 4.2V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4.2l2.43 2.69c.57.43 1.34.43 1.91 0L12 2.69z"/></svg></span><div><b>Color Picker</b><small>Pick &amp; convert colors</small></div></a>
+            <a href="tools/uuid-generator.html" class="panel-link" id="dl-uuid"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span><div><b>UUID Generator</b><small>Unique identifiers</small></div></a>
+            <a href="tools/json-formatter.html" class="panel-link" id="dl-json"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/></svg></span><div><b>JSON Formatter</b><small>Format &amp; validate</small></div></a>
+            <a href="tools/word-counter.html" class="panel-link" id="dl-wc"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg></span><div><b>Word Counter</b><small>Count words &amp; chars</small></div></a>
+            <a href="tools/case-converter.html" class="panel-link" id="dl-case"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></span><div><b>Case Converter</b><small>UPPER, lower, Title</small></div></a>
+            <a href="tools/text-diff.html" class="panel-link" id="dl-diff"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><div><b>Diff Checker</b><small>Compare two texts</small></div></a>
+            <a href="tools/lorem-ipsum.html" class="panel-link" id="dl-lorem"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 8l2 8 2-4 2 4 2-8"/></svg></span><div><b>Lorem Ipsum</b><small>Placeholder text</small></div></a>
+            <a href="tools/regex-tester.html" class="panel-link" id="dl-regex"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><circle cx="12" cy="12" r="3"/></svg></span><div><b>Regex Tester</b><small>Test regex patterns</small></div></a>
+            <a href="tools/code-minify.html" class="panel-link" id="dl-minify"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg></span><div><b>CSS/JS Minify</b><small>Minify code</small></div></a>
+            <a href="tools/markdown-html.html" class="panel-link" id="dl-markdown"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><div><b>Markdown Preview</b><small>Preview markdown</small></div></a>
+            <a href="tools/epoch-converter.html" class="panel-link" id="dl-epoch"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><div><b>Epoch Converter</b><small>Unix timestamps</small></div></a>
+            <a href="tools/url-encode.html" class="panel-link" id="dl-urlencode"><span class="ic" ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><div><b>URL Encode</b><small>Encode/decode URLs</small></div></a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">
+          <svg class="ic-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          <svg class="ic-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a href="#popular" class="cta-btn" id="cta-get-started">Get Started <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+    <div class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
+      <a href="#" class="mdl">PDF Core</a>
+      <a href="#" class="mdl">Convert to PDF</a>
+      <a href="#" class="mdl">Convert from PDF</a>
+      <a href="#" class="mdl">Edit PDF</a>
+      <a href="#" class="mdl">Security</a>
+      <a href="#" class="mdl">Images</a>
+      <a href="#" class="mdl">Utilities</a>
+      <a href="#popular" class="cta-btn mob-cta">Get Started →</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <div class="hero-dots" aria-hidden="true"></div>
+      <div class="hero-body">
+        <p class="hero-label">Free online tools — no signup required</p>
+        <h1 class="hero-h1">All your tools <span class="accent">in one place</span></h1>
+        <p class="hero-sub">Free online tools to manage your PDFs. No signup, no limits.</p>
+        <div class="search-wrap" id="search-wrap">
+          <div class="search-bar" id="search-bar">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-svg"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="search-input" placeholder="Search tools... (merge, compress, convert)" autocomplete="off" spellcheck="false"/>
+            <kbd>⌘K</kbd>
+          </div>
+          <div class="search-results" id="search-results"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- POPULAR TOOLS -->
+    <section class="section" id="popular">
+      <div class="wrap">
+        <p class="sec-label">POPULAR TOOLS</p>
+        <div class="tool-grid" id="tool-grid-pop">
+          <a href="tools/merge-pdf.html" class="tcard" id="t-merge"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6H5a2 2 0 00-2 2v8a2 2 0 002 2h3M16 6h3a2 2 0 012 2v8a2 2 0 01-2 2h-3M12 3v18"/></svg></div><span>Merge PDF</span></a>
+          <a href="tools/split-pdf.html" class="tcard" id="t-split"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5"/></svg></div><span>Split PDF</span></a>
+          <a href="tools/compress-pdf.html" class="tcard" id="t-compress"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg></div><span>Compress PDF</span></a>
+          <a href="tools/jpg-to-pdf.html" class="tcard" id="t-jpgpdf"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><span>JPG to PDF</span></a>
+          <a href="tools/word-to-pdf.html" class="tcard" id="t-wordpdf"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><span>WORD to PDF</span></a>
+          <a href="tools/pdf-to-word.html" class="tcard" id="t-pdfword"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><span>PDF to WORD</span></a>
+          <a href="tools/ppt-to-pdf.html" class="tcard" id="t-pptpdf"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><span>PPT to PDF</span></a>
+          <a href="tools/pdf-to-jpg.html" class="tcard" id="t-pdfjpg"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><span>PDF to JPG</span></a>
+          <a href="tools/rotate-pdf.html" class="tcard" id="t-rotate"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></div><span>Rotate PDF</span></a>
+          <a href="tools/protect-pdf.html" class="tcard" id="t-protect"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div><span>Protect PDF</span></a>
+          <a href="tools/watermark-pdf.html" class="tcard" id="t-watermark"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><span>Watermark PDF</span></a>
+          <a href="tools/excel-to-pdf.html" class="tcard" id="t-excelpdf"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></div><span>EXCEL to PDF</span></a>
+          <a href="tools/ocr-pdf.html" class="tcard" id="t-ocr"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg></div><span>OCR PDF</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ALL PDF TOOLS -->
+    <section class="section section-alt" id="pdf-all">
+      <div class="wrap">
+        <p class="sec-label">ALL PDF TOOLS</p>
+        <div class="tool-grid" id="tool-grid-pdf">
+          <a href="tools/merge-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6H5a2 2 0 00-2 2v8a2 2 0 002 2h3M16 6h3a2 2 0 012 2v8a2 2 0 01-2 2h-3M12 3v18"/></svg></div><span>Merge PDF</span></a>
+          <a href="tools/split-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5"/></svg></div><span>Split PDF</span></a>
+          <a href="tools/compress-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg></div><span>Compress PDF</span></a>
+          <a href="tools/jpg-to-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><span>JPG to PDF</span></a>
+          <a href="tools/word-to-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><span>Word to PDF</span></a>
+          <a href="tools/ppt-to-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><span>PPT to PDF</span></a>
+          <a href="tools/excel-to-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></div><span>Excel to PDF</span></a>
+          <a href="tools/html-to-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><span>HTML to PDF</span></a>
+          <a href="tools/pdf-to-jpg.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><span>PDF to JPG</span></a>
+          <a href="tools/pdf-to-word.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><span>PDF to Word</span></a>
+          <a href="tools/pdf-to-ppt.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><span>PDF to PPT</span></a>
+          <a href="tools/pdf-to-excel.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></div><span>PDF to Excel</span></a>
+          <a href="tools/pdf-to-pdfa.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><span>PDF to PDF/A</span></a>
+          <a href="tools/rotate-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></div><span>Rotate PDF</span></a>
+          <a href="tools/watermark-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><span>Watermark PDF</span></a>
+          <a href="tools/page-numbers.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg></div><span>Page Numbers</span></a>
+          <a href="tools/organize-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg></div><span>Organize PDF</span></a>
+          <a href="tools/crop-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.13 1L6 16a2 2 0 002 2h15"/><path d="M1 6.13L16 6"/></svg></div><span>Crop PDF</span></a>
+          <a href="tools/redact-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg></div><span>Redact PDF</span></a>
+          <a href="tools/protect-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div><span>Protect PDF</span></a>
+          <a href="tools/unlock-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 019.9-1"/></svg></div><span>Unlock PDF</span></a>
+          <a href="tools/sign-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg></div><span>Sign PDF</span></a>
+          <a href="tools/ocr-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg></div><span>OCR PDF</span></a>
+          <a href="tools/scan-to-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg></div><span>Scan to PDF</span></a>
+          <a href="tools/repair-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div><span>Repair PDF</span></a>
+          <a href="tools/compare-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><span>Compare PDF</span></a>
+          <a href="tools/flatten-pdf.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div><span>Flatten PDF</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- IMAGE TOOLS -->
+    <section class="section" id="img-all">
+      <div class="wrap">
+        <p class="sec-label">IMAGE TOOLS</p>
+        <div class="tool-grid" id="tool-grid-img">
+          <a href="tools/compress-png.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><span>Compress PNG</span></a>
+          <a href="tools/compress-jpg.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><span>Compress JPG</span></a>
+          <a href="tools/compress-webp.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg></div><span>Compress WebP</span></a>
+          <a href="tools/png-to-webp.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></div><span>PNG to WebP</span></a>
+          <a href="tools/jpg-to-webp.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></div><span>JPG to WebP</span></a>
+          <a href="tools/png-to-jpg.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></div><span>PNG to JPG</span></a>
+          <a href="tools/webp-to-png.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></div><span>WebP to PNG</span></a>
+          <a href="tools/svg-to-png.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></div><span>SVG to PNG</span></a>
+          <a href="tools/image-to-ico.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg></div><span>Image to ICO</span></a>
+          <a href="tools/crop-image.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.13 1L6 16a2 2 0 002 2h15"/><path d="M1 6.13L16 6"/></svg></div><span>Crop Image</span></a>
+          <a href="tools/resize-image.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></div><span>Resize Image</span></a>
+          <a href="tools/rotate-flip.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></div><span>Rotate &amp; Flip</span></a>
+          <a href="tools/watermark-image.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><span>Watermark</span></a>
+          <a href="tools/remove-bg.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div><span>Remove BG</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- UTILITY TOOLS -->
+    <section class="section section-alt" id="util-all">
+      <div class="wrap">
+        <p class="sec-label">DEVELOPER &amp; UTILITY TOOLS</p>
+        <div class="tool-grid" id="tool-grid-util">
+          <a href="tools/qr-generator.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><span>QR Generator</span></a>
+          <a href="tools/password-gen.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div><span>Password Gen</span></a>
+          <a href="tools/hash-generator.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg></div><span>Hash Generator</span></a>
+          <a href="tools/base64-encode.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><span>Base64</span></a>
+          <a href="tools/color-picker.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></div><span>Color Picker</span></a>
+          <a href="tools/uuid-generator.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div><span>UUID Generator</span></a>
+          <a href="tools/json-formatter.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17v2a2 2 0 002 2h2M20 17v2a2 2 0 01-2 2h-2M4 7V5a2 2 0 012-2h2m8 0h2a2 2 0 012 2v2"/></svg></div><span>JSON Formatter</span></a>
+          <a href="tools/word-counter.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="15" y2="18"/></svg></div><span>Word Counter</span></a>
+          <a href="tools/case-converter.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></div><span>Case Converter</span></a>
+          <a href="tools/text-diff.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><span>Diff Checker</span></a>
+          <a href="tools/lorem-ipsum.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><span>Lorem Ipsum</span></a>
+          <a href="tools/regex-tester.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><span>Regex Tester</span></a>
+          <a href="tools/code-minify.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg></div><span>CSS/JS Minify</span></a>
+          <a href="tools/markdown-html.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><span>Markdown Preview</span></a>
+          <a href="tools/epoch-converter.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><span>Epoch Converter</span></a>
+          <a href="tools/url-encode.html" class="tcard"><div class="tic" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div><span>URL Encode</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section cta-section" id="cta">
+      <div class="wrap cta-wrap">
+        <h2 class="cta-h">Stop switching between a dozen different sites.</h2>
+        <p class="cta-p">Everything you need is right here — free, and always will be.</p>
+        <div class="cta-row">
+          <a href="#popular" class="cta-btn">Explore All Tools</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="footer">
+    <div class="wrap footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo" id="footer-logo">
+          <div class="logo-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="9" height="9" rx="2" fill="currentColor"/><rect x="13" y="2" width="9" height="9" rx="2" fill="currentColor" opacity=".55"/><rect x="2" y="13" width="9" height="9" rx="2" fill="currentColor" opacity=".55"/><rect x="13" y="13" width="9" height="9" rx="2" fill="currentColor" opacity=".25"/></svg></div>
+          <span>ToolDeck</span>
+        </a>
+        <p class="ft-tag">Every tool you need, all in one place.</p>
+      </div>
+      <div class="ft-col"><h4>PDF Tools</h4><a href="#">Merge PDF</a><a href="#">Split PDF</a><a href="#">Compress PDF</a><a href="#">Word to PDF</a><a href="#">PDF to Word</a></div>
+      <div class="ft-col"><h4>Image Tools</h4><a href="tools/compress-png.html">Compress Image</a><a href="tools/remove-bg.html">Remove BG</a><a href="tools/resize-image.html">Resize Image</a><a href="tools/svg-to-png.html">SVG to PNG</a><a href="tools/png-to-webp.html">PNG to WebP</a></div>
+      <div class="ft-col"><h4>Utilities</h4><a href="#">QR Generator</a><a href="#">JSON Formatter</a><a href="#">Password Gen</a><a href="#">Base64</a><a href="#">Regex Tester</a></div>
+      <div class="ft-col"><h4>Company</h4><a href="#">About</a><a href="#">Blog</a><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a></div>
+    </div>
+    <div class="wrap ft-bottom">
+      <p>© 2025 ToolDeck. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

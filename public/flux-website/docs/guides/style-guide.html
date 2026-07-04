@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Style Guide — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Style Guide</h1>
+<p>This document defines the official coding conventions for Flux. The <code>flux format</code> tool enforces formatting rules automatically, and <code>flux lint</code> checks for style issues.</p>
+<hr />
+<h2>1. Naming Conventions</h2>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Convention</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Local variables</td>
+<td><code>snake_case</code></td>
+<td><code>user_count</code>, <code>max_retries</code></td>
+</tr>
+<tr>
+<td>Functions</td>
+<td><code>snake_case</code></td>
+<td><code>get_user</code>, <code>parse_config</code></td>
+</tr>
+<tr>
+<td>Methods</td>
+<td><code>snake_case</code></td>
+<td><code>to_string</code>, <code>is_empty</code></td>
+</tr>
+<tr>
+<td>Types (struct, class, enum, trait)</td>
+<td><code>PascalCase</code></td>
+<td><code>HttpClient</code>, <code>UserProfile</code></td>
+</tr>
+<tr>
+<td>Enum variants</td>
+<td><code>PascalCase</code></td>
+<td><code>Some</code>, <code>NotFound</code>, <code>ConnectionError</code></td>
+</tr>
+<tr>
+<td>Constants</td>
+<td><code>SCREAMING_SNAKE_CASE</code></td>
+<td><code>MAX_RETRIES</code>, <code>DEFAULT_PORT</code></td>
+</tr>
+<tr>
+<td>Modules</td>
+<td><code>snake_case</code></td>
+<td><code>flux.http</code>, <code>flux.collections</code></td>
+</tr>
+<tr>
+<td>Packages</td>
+<td><code>snake_case</code></td>
+<td><code>my_library</code>, <code>flux_http</code></td>
+</tr>
+<tr>
+<td>Type parameters</td>
+<td><code>PascalCase</code> or single uppercase</td>
+<td><code>T</code>, <code>K</code>, <code>V</code>, <code>Item</code>, <code>Error</code></td>
+</tr>
+<tr>
+<td>Lifetimes</td>
+<td><code>'lowercase</code></td>
+<td><code>'a</code>, <code>'src</code>, <code>'input</code></td>
+</tr>
+<tr>
+<td>File names</td>
+<td><code>snake_case.flux</code></td>
+<td><code>http_client.flux</code>, <code>user_model.flux</code></td>
+</tr>
+</tbody>
+</table>
+<h3>1.1 Prefixes and Suffixes</h3>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Convention</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Boolean getters</td>
+<td><code>is_</code>, <code>has_</code>, <code>can_</code>, <code>should_</code></td>
+<td><code>is_empty()</code>, <code>has_permission()</code></td>
+</tr>
+<tr>
+<td>Conversion</td>
+<td><code>to_</code>, <code>from_</code>, <code>into_</code></td>
+<td><code>to_string()</code>, <code>from_bytes()</code></td>
+</tr>
+<tr>
+<td>Unsafe getters</td>
+<td><code>_unchecked</code> suffix</td>
+<td><code>get_unchecked()</code></td>
+</tr>
+<tr>
+<td>Builder setters</td>
+<td><code>with_</code> prefix</td>
+<td><code>with_timeout()</code>, <code>with_header()</code></td>
+</tr>
+<tr>
+<td>Iteration</td>
+<td><code>iter</code>, <code>iter_mut</code>, <code>into_iter</code></td>
+<td><code>items.iter()</code></td>
+</tr>
+<tr>
+<td>Fallible operations</td>
+<td>Use <code>Result</code> return type</td>
+<td><code>parse()</code>, <code>connect()</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>2. Formatting</h2>
+<h3>2.1 Indentation</h3>
+<ul>
+<li>Use <strong>4 spaces</strong> per indentation level</li>
+<li>Never use tabs</li>
+<li><code>flux format</code> handles this automatically</li>
+</ul>
+<h3>2.2 Line Length</h3>
+<ul>
+<li>Maximum <strong>100 characters</strong> per line</li>
+<li>Break long lines at logical points:</li>
+</ul>
+<pre><code class="language-flux">// Good
+let result = long_function_name(
+    first_argument,
+    second_argument,
+    third_argument,
+)
+
+// Good
+if user.is_authenticated()
+    and user.has_permission(&quot;admin&quot;)
+    and not user.is_suspended() {
+    grant_access()
+}
+</code></pre>
+<h3>2.3 Braces</h3>
+<ul>
+<li>Opening brace on the <strong>same line</strong> as the declaration</li>
+<li>Closing brace on its <strong>own line</strong></li>
+<li>Always use braces for control flow, even single-line bodies</li>
+</ul>
+<pre><code class="language-flux">// Good
+fn process(data: Data) -&gt; Result&lt;Output, Error&gt; {
+    if data.is_empty() {
+        return Err(Error.EmptyInput)
+    }
+    return Ok(transform(data))
+}
+
+// Bad — no braces on single-line if
+// if data.is_empty() return Err(Error.EmptyInput)
+</code></pre>
+<h3>2.4 Blank Lines</h3>
+<ul>
+<li><strong>Two</strong> blank lines between top-level items (functions, structs, impls)</li>
+<li><strong>One</strong> blank line between logical sections within a function</li>
+<li><strong>No</strong> blank line after opening brace or before closing brace</li>
+</ul>
+<pre><code class="language-flux">struct User {
+    name: String
+    age: Int
+}
+
+
+impl User {
+    fn new(name: String, age: Int) -&gt; User {
+        return User { name: name, age: age }
+    }
+
+    fn greet(self) -&gt; String {
+        return &quot;Hello, {self.name}!&quot;
+    }
+}
+
+
+fn main() {
+    let user = User.new(&quot;Alice&quot;, 30)
+    print(user.greet())
+}
+</code></pre>
+<h3>2.5 Trailing Commas</h3>
+<p>Use trailing commas in multi-line lists:</p>
+<pre><code class="language-flux">let items = [
+    &quot;first&quot;,
+    &quot;second&quot;,
+    &quot;third&quot;,   // trailing comma
+]
+
+fn create(
+    name: String,
+    age: Int,
+    email: String,   // trailing comma
+) -&gt; User {
+    // ...
+}
+</code></pre>
+<h3>2.6 Import Ordering</h3>
+<p>Imports should be grouped and sorted:</p>
+<pre><code class="language-flux">// 1. Standard library
+use flux.io.{print, read_line}
+use flux.collections.HashMap
+
+// 2. Third-party packages
+use serde.{Serialize, Deserialize}
+use tokio.runtime.Runtime
+
+// 3. Local modules
+use self.models.User
+use self.services.auth
+</code></pre>
+<hr />
+<h2>3. Documentation</h2>
+<h3>3.1 Doc Comments</h3>
+<p>All public items must have documentation comments:</p>
+<pre><code class="language-flux">/// Creates a new HTTP client with the given configuration.
+///
+/// # Parameters
+/// - `config` — Client configuration (timeouts, headers, etc.)
+///
+/// # Returns
+/// A configured `HttpClient` ready to make requests.
+///
+/// # Examples
+/// ```flux
+/// let client = HttpClient.new(Config.default())
+/// let response = await client.get(&quot;https://example.com&quot;)
+/// ```
+pub fn new(config: Config) -&gt; HttpClient {
+    // ...
+}
+</code></pre>
+<h3>3.2 Section Headers in Doc Comments</h3>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(opening paragraph)</td>
+<td>Brief description</td>
+</tr>
+<tr>
+<td><code># Parameters</code></td>
+<td>Describe each parameter</td>
+</tr>
+<tr>
+<td><code># Returns</code></td>
+<td>Describe the return value</td>
+</tr>
+<tr>
+<td><code># Errors</code></td>
+<td>Document when errors are returned</td>
+</tr>
+<tr>
+<td><code># Panics</code></td>
+<td>Document when the function panics</td>
+</tr>
+<tr>
+<td><code># Examples</code></td>
+<td>Working code examples</td>
+</tr>
+<tr>
+<td><code># Safety</code></td>
+<td>Safety requirements for <code>unsafe</code> functions</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>4. Code Patterns</h2>
+<h3>4.1 Prefer <code>let</code> Over <code>mut</code></h3>
+<pre><code class="language-flux">// Good — compute the final value directly
+let status = if score &gt;= 90 { &quot;A&quot; } else { &quot;B&quot; }
+
+// Avoid — unnecessary mutation
+mut status = &quot;&quot;
+if score &gt;= 90 {
+    status = &quot;A&quot;
+} else {
+    status = &quot;B&quot;
+}
+</code></pre>
+<h3>4.2 Prefer <code>match</code> Over <code>if</code>-<code>else</code> Chains</h3>
+<pre><code class="language-flux">// Good
+match status_code {
+    200 -&gt; handle_ok(response)
+    404 -&gt; handle_not_found()
+    500 -&gt; handle_server_error()
+    _   -&gt; handle_unknown(status_code)
+}
+
+// Avoid
+if status_code == 200 {
+    handle_ok(response)
+} else if status_code == 404 {
+    handle_not_found()
+} else if status_code == 500 {
+    handle_server_error()
+} else {
+    handle_unknown(status_code)
+}
+</code></pre>
+<h3>4.3 Use Early Returns</h3>
+<pre><code class="language-flux">// Good — early returns reduce nesting
+fn process(data: Data) -&gt; Result&lt;Output, Error&gt; {
+    if data.is_empty() {
+        return Err(Error.EmptyInput)
+    }
+
+    if not data.is_valid() {
+        return Err(Error.InvalidData)
+    }
+
+    let result = transform(data)
+    return Ok(result)
+}
+</code></pre>
+<h3>4.4 Use the <code>?</code> Operator</h3>
+<pre><code class="language-flux">// Good
+fn load_config(path: String) -&gt; Result&lt;Config, AppError&gt; {
+    let content = File.read(path)?
+    let config = json.parse(content)?
+    return Ok(config)
+}
+
+// Avoid — verbose match chains
+fn load_config_verbose(path: String) -&gt; Result&lt;Config, AppError&gt; {
+    let content = match File.read(path) {
+        Ok(c) -&gt; c
+        Err(e) -&gt; return Err(AppError.from(e))
+    }
+    // ...
+}
+</code></pre>
+<hr />
+<h2>5. Anti-Patterns</h2>
+<h3>5.1 Don't Use <code>unwrap()</code> in Production Code</h3>
+<pre><code class="language-flux">// Bad — panics at runtime
+let value = risky_operation().unwrap()
+
+// Good — handle the error
+let value = match risky_operation() {
+    Ok(v)  -&gt; v
+    Err(e) -&gt; {
+        log.error(&quot;Operation failed: {e}&quot;)
+        return default_value
+    }
+}
+
+// Acceptable — when you have a logical guarantee
+let first = non_empty_list.first().unwrap()  // Only if you KNOW it's non-empty
+// Better:
+let first = non_empty_list.first().expect(&quot;list was verified non-empty above&quot;)
+</code></pre>
+<h3>5.2 Don't Overuse <code>any</code></h3>
+<pre><code class="language-flux">// Bad
+fn process(data: any) -&gt; any { ... }
+
+// Good
+fn process&lt;T: Processable&gt;(data: T) -&gt; ProcessResult&lt;T&gt; { ... }
+</code></pre>
+<h3>5.3 Don't Ignore Errors</h3>
+<pre><code class="language-flux">// Bad — silently ignores errors
+let _ = save_file()
+
+// Good — handle or explicitly acknowledge
+match save_file() {
+    Ok(()) -&gt; {}
+    Err(e) -&gt; log.warn(&quot;Could not save: {e}&quot;)
+}
+
+// Acceptable — when you truly don't care (use a comment)
+let _ = save_file()  // Best-effort save, failure is OK
+</code></pre>
+<hr />
+<h2>6. File Organization</h2>
+<pre><code class="language-flux">//! Module-level documentation goes first.
+
+// Imports (grouped and sorted)
+use flux.io.print
+use flux.collections.HashMap
+
+// Constants
+const MAX_SIZE = 1024
+
+// Type aliases
+type StringMap&lt;V&gt; = HashMap&lt;String, V&gt;
+
+// Types (structs, enums, classes)
+pub struct MyType {
+    // fields...
+}
+
+// Trait implementations
+impl Display for MyType {
+    // ...
+}
+
+// Methods
+impl MyType {
+    // Public methods first, then private
+    pub fn new() -&gt; MyType { ... }
+    pub fn process(self) { ... }
+
+    fn internal_helper(self) { ... }
+}
+
+// Free functions
+pub fn utility_function() { ... }
+
+// Tests at the bottom
+#[test]
+fn test_my_type() { ... }
+</code></pre>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

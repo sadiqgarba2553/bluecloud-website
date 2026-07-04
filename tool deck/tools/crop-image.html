@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crop Image - Precise Photo Cropping | ToolDeck</title>
+  <meta name="description" content="Crop images online precisely. Free, fast, and works offline in your browser.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../tool.css">
+  <style>
+    .crop-container {
+      width: 100%;
+      height: 60vh;
+      min-height: 400px;
+      background: var(--bg-hover);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .crop-container img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .tool-btn {
+      background: var(--bg-hover);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .tool-btn:hover { background: var(--border); }
+    .tool-btn.active { color: #fff; border-color: #3b82f6; }
+  </style>
+</head>
+<body>
+  <div class="tool-layout">
+    <header class="tool-nav">
+      <a href="../index.html" class="back-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Tools
+      </a>
+      <div class="tool-title">Crop Image</div>
+      <div style="width:100px"></div>
+    </header>
+
+    <main class="tool-main">
+      <div id="upload-zone" class="upload-zone">
+        <svg class="upl-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.5"><path d="M6.13 1L6 16a2 2 0 002 2h15"/><path d="M1 6.13L16 6"/></svg>
+        <h2 class="upl-title">Select an Image</h2>
+        <p class="upl-sub">Or drag and drop a photo here</p>
+        <button class="upl-btn" id="btn-select">Select Image</button>
+        <input type="file" id="file-input" accept="image/*" style="display:none">
+        <p class="upl-note">Works entirely locally. No uploads to any server.</p>
+      </div>
+
+      <div id="workspace" class="workspace" style="display:none; max-width: 900px; margin: 40px auto; width: 100%;">
+        <div class="ws-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0;" id="file-name">image.png</h3>
+            <button class="sec-btn" id="btn-cancel" style="padding: 5px 10px; font-size: 0.85rem;">Change Image</button>
+          </div>
+
+          <div class="toolbar" id="toolbar">
+            <button class="tool-btn active" data-ratio="NaN">Free</button>
+            <button class="tool-btn" data-ratio="1">1:1 (Square)</button>
+            <button class="tool-btn" data-ratio="1.33333">4:3</button>
+            <button class="tool-btn" data-ratio="1.77777">16:9</button>
+            <button class="tool-btn" data-ratio="0.66666">2:3 (Portrait)</button>
+          </div>
+
+          <div class="crop-container">
+            <img id="image" src="" alt="Picture">
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button class="cta-btn" id="btn-start" style="flex: 1; justify-content: center;">Crop & Download</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+  <script src="crop-image.js"></script>
+</body>
+</html>

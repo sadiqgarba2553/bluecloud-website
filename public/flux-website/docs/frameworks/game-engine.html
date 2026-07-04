@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Engine — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Game Engine</h1>
+<hr />
+<h2>1. Overview</h2>
+<p>Flux includes a built-in game engine with 2D and 3D capabilities, using an Entity Component System (ECS) architecture. It targets desktop, mobile, and web platforms.</p>
+<hr />
+<h2>2. Architecture</h2>
+<pre><code>┌─────────────────────────────────────────────┐
+│                 Game Loop                     │
+│  Input → Update → Physics → Render → Audio   │
+└─────────────────────────────────────────────┘
+         │          │          │         │
+    ┌────▼───┐ ┌────▼───┐ ┌───▼──┐ ┌───▼──┐
+    │  ECS   │ │Physics │ │Render│ │Audio │
+    │ World  │ │ Engine │ │Engine│ │Engine│
+    └────────┘ └────────┘ └──────┘ └──────┘
+</code></pre>
+<hr />
+<h2>3. Entity Component System</h2>
+<h3>3.1 Components</h3>
+<pre><code class="language-flux">use flux.game.*
+
+// Components are plain data
+struct Position {
+    x: Float32
+    y: Float32
+}
+
+struct Velocity {
+    dx: Float32
+    dy: Float32
+}
+
+struct Sprite {
+    texture: Texture
+    width: Float32
+    height: Float32
+}
+
+struct Health {
+    current: Int
+    max: Int
+}
+
+struct Player {}  // Tag component (no data)
+struct Enemy {}   // Tag component
+</code></pre>
+<h3>3.2 Entities</h3>
+<pre><code class="language-flux">fn spawn_player(world: &amp;mut World) -&gt; Entity {
+    return world.spawn()
+        .with(Position { x: 100.0, y: 100.0 })
+        .with(Velocity { dx: 0.0, dy: 0.0 })
+        .with(Sprite { texture: load_texture(&quot;player.png&quot;), width: 32.0, height: 32.0 })
+        .with(Health { current: 100, max: 100 })
+        .with(Player {})
+        .build()
+}
+
+fn spawn_enemy(world: &amp;mut World, x: Float32, y: Float32) -&gt; Entity {
+    return world.spawn()
+        .with(Position { x: x, y: y })
+        .with(Velocity { dx: -1.0, dy: 0.0 })
+        .with(Sprite { texture: load_texture(&quot;enemy.png&quot;), width: 24.0, height: 24.0 })
+        .with(Health { current: 50, max: 50 })
+        .with(Enemy {})
+        .build()
+}
+</code></pre>
+<h3>3.3 Systems</h3>
+<pre><code class="language-flux">// Movement system
+fn movement_system(query: Query&lt;(&amp;mut Position, &amp;Velocity)&gt;, dt: Float32) {
+    for (pos, vel) in query {
+        pos.x += vel.dx * dt
+        pos.y += vel.dy * dt
+    }
+}
+
+// Collision system
+fn collision_system(
+    players: Query&lt;(&amp;Position, &amp;Sprite), With&lt;Player&gt;&gt;,
+    enemies: Query&lt;(&amp;Position, &amp;Sprite, Entity), With&lt;Enemy&gt;&gt;,
+    commands: &amp;mut Commands,
+) {
+    for (player_pos, player_sprite) in players {
+        for (enemy_pos, enemy_sprite, enemy_entity) in enemies {
+            if check_collision(player_pos, player_sprite, enemy_pos, enemy_sprite) {
+                commands.despawn(enemy_entity)
+                // Emit event, add score, etc.
+            }
+        }
+    }
+}
+
+// Render system
+fn render_system(query: Query&lt;(&amp;Position, &amp;Sprite)&gt;, renderer: &amp;mut Renderer) {
+    for (pos, sprite) in query {
+        renderer.draw_sprite(sprite.texture, pos.x, pos.y, sprite.width, sprite.height)
+    }
+}
+</code></pre>
+<hr />
+<h2>4. Game Loop</h2>
+<pre><code class="language-flux">use flux.game.*
+
+fn main() {
+    let game = Game.new(GameConfig {
+        title: &quot;My Flux Game&quot;
+        width: 1280
+        height: 720
+        vsync: true
+        target_fps: 60
+    })
+
+    game.add_system(SystemStage.Update, movement_system)
+    game.add_system(SystemStage.Update, collision_system)
+    game.add_system(SystemStage.Update, input_system)
+    game.add_system(SystemStage.Render, render_system)
+    game.add_system(SystemStage.Render, ui_render_system)
+
+    game.add_startup_system(fn(world: &amp;mut World) {
+        spawn_player(world)
+        for i in 0..10 {
+            spawn_enemy(world, 400.0 + i as Float32 * 60.0, 200.0)
+        }
+    })
+
+    game.run()
+}
+</code></pre>
+<hr />
+<h2>5. Rendering</h2>
+<h3>5.1 2D Rendering</h3>
+<pre><code class="language-flux">fn render_2d(renderer: &amp;mut Renderer2D) {
+    // Shapes
+    renderer.draw_rect(x: 100, y: 100, width: 50, height: 50, color: Color.RED)
+    renderer.draw_circle(x: 200, y: 200, radius: 30, color: Color.BLUE)
+    renderer.draw_line(x1: 0, y1: 0, x2: 100, y2: 100, color: Color.WHITE, width: 2)
+
+    // Sprites
+    renderer.draw_sprite(texture, x: 50, y: 50)
+    renderer.draw_sprite_rotated(texture, x: 50, y: 50, rotation: 45.0)
+
+    // Text
+    renderer.draw_text(&quot;Score: 1000&quot;, x: 10, y: 10, font: game_font, size: 24)
+
+    // Tilemap
+    renderer.draw_tilemap(tilemap, camera.offset)
+}
+</code></pre>
+<h3>5.2 3D Rendering</h3>
+<pre><code class="language-flux">fn setup_3d_scene(scene: &amp;mut Scene3D) {
+    // Camera
+    scene.add_camera(Camera3D {
+        position: Vec3(0, 5, 10)
+        look_at: Vec3.ZERO
+        fov: 60.0
+    })
+
+    // Lights
+    scene.add_light(DirectionalLight {
+        direction: Vec3(0.5, -1, 0.5).normalize()
+        color: Color.WHITE
+        intensity: 1.0
+    })
+
+    scene.add_light(PointLight {
+        position: Vec3(0, 5, 0)
+        color: Color.warm_white()
+        intensity: 2.0
+        range: 20.0
+    })
+
+    // Meshes
+    scene.spawn_mesh(Mesh.cube(size: 1.0))
+        .position(Vec3(0, 0.5, 0))
+        .material(Material.pbr(
+            albedo: Color.hex(&quot;#8B4513&quot;)
+            roughness: 0.7
+            metallic: 0.0
+        ))
+
+    // Skybox
+    scene.set_skybox(Skybox.from_hdri(&quot;sky.hdr&quot;))
+}
+</code></pre>
+<hr />
+<h2>6. Physics</h2>
+<pre><code class="language-flux">use flux.game.physics.*
+
+// 2D Physics
+struct RigidBody2D {
+    body_type: BodyType  // Static, Dynamic, Kinematic
+    mass: Float32
+    friction: Float32
+    restitution: Float32  // Bounciness
+}
+
+struct Collider2D {
+    shape: ColliderShape  // Box, Circle, Polygon, Capsule
+}
+
+// Add physics to an entity
+world.spawn()
+    .with(Position { x: 100.0, y: 100.0 })
+    .with(RigidBody2D { body_type: BodyType.Dynamic, mass: 1.0, friction: 0.3, restitution: 0.5 })
+    .with(Collider2D { shape: ColliderShape.Circle(radius: 16.0) })
+    .build()
+
+// Collision events
+fn on_collision(event: CollisionEvent) {
+    match event {
+        CollisionEvent.Begin(a, b) -&gt; {
+            print(&quot;Collision between {a} and {b}&quot;)
+        }
+        CollisionEvent.End(a, b) -&gt; {
+            print(&quot;Separation between {a} and {b}&quot;)
+        }
+    }
+}
+</code></pre>
+<hr />
+<h2>7. Input Handling</h2>
+<pre><code class="language-flux">use flux.game.input.*
+
+fn input_system(input: &amp;Input, query: Query&lt;(&amp;mut Velocity), With&lt;Player&gt;&gt;) {
+    for vel in query {
+        vel.dx = 0.0
+        vel.dy = 0.0
+
+        if input.key_held(Key.Left) or input.key_held(Key.A) {
+            vel.dx = -200.0
+        }
+        if input.key_held(Key.Right) or input.key_held(Key.D) {
+            vel.dx = 200.0
+        }
+        if input.key_pressed(Key.Space) {
+            vel.dy = -400.0  // Jump
+        }
+
+        // Mouse
+        if input.mouse_pressed(MouseButton.Left) {
+            let (mx, my) = input.mouse_position()
+            shoot_at(mx, my)
+        }
+
+        // Gamepad
+        if let Some(gamepad) = input.gamepad(0) {
+            vel.dx = gamepad.left_stick_x() * 200.0
+            vel.dy = gamepad.left_stick_y() * 200.0
+        }
+    }
+}
+</code></pre>
+<hr />
+<h2>8. Audio</h2>
+<pre><code class="language-flux">use flux.game.audio.*
+
+fn setup_audio(audio: &amp;mut AudioEngine) {
+    // Background music
+    let music = audio.load(&quot;music/theme.ogg&quot;)
+    audio.play_music(music, volume: 0.5, looping: true)
+
+    // Sound effects
+    let jump_sfx = audio.load(&quot;sfx/jump.wav&quot;)
+    let explosion_sfx = audio.load(&quot;sfx/explosion.wav&quot;)
+}
+
+fn play_jump_sound(audio: &amp;AudioEngine) {
+    audio.play_sfx(jump_sfx, volume: 0.8)
+}
+
+// Spatial audio (3D)
+audio.play_spatial(sfx, position: Vec3(10, 0, 5), volume: 1.0, falloff: 10.0)
+</code></pre>
+<hr />
+<h2>9. Animation</h2>
+<pre><code class="language-flux">use flux.game.animation.*
+
+// Sprite animation
+let walk_animation = SpriteAnimation {
+    frames: load_spritesheet(&quot;player_walk.png&quot;, frame_width: 32, frame_height: 32)
+    fps: 12
+    looping: true
+}
+
+// Skeletal animation (3D)
+let model = load_model(&quot;character.gltf&quot;)
+let animator = Animator.new(model)
+animator.play(&quot;idle&quot;, blend_time: 0.2)
+
+// Tweening
+tween(entity)
+    .to(Position { x: 500.0, y: 300.0 })
+    .duration(1.0)
+    .easing(Easing.EaseInOutCubic)
+    .on_complete(fn() { print(&quot;Tween done!&quot;) })
+    .start()
+</code></pre>
+<hr />
+<h2>10. Particle System</h2>
+<pre><code class="language-flux">use flux.game.particles.*
+
+let fire_emitter = ParticleEmitter {
+    position: Vec2(200, 400)
+    emission_rate: 100        // Particles per second
+    lifetime: 0.5..=1.5       // Random lifetime range
+    speed: 50.0..=150.0
+    direction: -90.0          // Upward (degrees)
+    spread: 30.0              // Cone angle
+    start_color: Color.YELLOW
+    end_color: Color.RED.with_alpha(0)
+    start_size: 8.0
+    end_size: 2.0
+    gravity: Vec2(0, -50)
+    texture: load_texture(&quot;particle.png&quot;)
+}
+
+world.spawn()
+    .with(fire_emitter)
+    .with(Position { x: 200.0, y: 400.0 })
+    .build()
+</code></pre>
+<hr />
+<h2>11. Scene Management</h2>
+<pre><code class="language-flux">use flux.game.scene.*
+
+enum GameScene {
+    MainMenu,
+    Playing,
+    Paused,
+    GameOver,
+}
+
+fn main_menu_scene(ctx: &amp;mut SceneContext) {
+    ctx.ui(fn() {
+        VStack {
+            Text(&quot;MY GAME&quot;).font(.title)
+            Button(&quot;Play&quot;) { ctx.transition(GameScene.Playing) }
+            Button(&quot;Settings&quot;) { ctx.push(SettingsScene) }
+            Button(&quot;Quit&quot;) { ctx.quit() }
+        }
+    })
+}
+</code></pre>
+<hr />
+<h2>12. Networking (Multiplayer)</h2>
+<pre><code class="language-flux">use flux.game.net.*
+
+// Server
+let server = GameServer.new(port: 7777, max_players: 16)
+
+server.on_connect(fn(player: PlayerId) {
+    print(&quot;Player {player} connected&quot;)
+    server.send(player, SpawnMessage { ... })
+})
+
+server.on_message(fn(player: PlayerId, msg: GameMessage) {
+    match msg {
+        GameMessage.Move(direction) -&gt; {
+            update_player_position(player, direction)
+            server.broadcast(PositionUpdate { player: player, ... })
+        }
+    }
+})
+
+// Client
+let client = GameClient.connect(&quot;localhost:7777&quot;)
+
+client.on_message(fn(msg: ServerMessage) {
+    match msg {
+        ServerMessage.Spawn(data) -&gt; spawn_remote_player(data)
+        ServerMessage.Position(data) -&gt; update_remote_position(data)
+    }
+})
+
+fn send_input(client: &amp;GameClient, direction: Vec2) {
+    client.send(GameMessage.Move(direction))
+}
+</code></pre>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,205 @@
+/* Hero Section */
+.hero-section {
+  padding: var(--spacing-8) 0;
+  background-color: var(--light-gray);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -5%;
+  width: 40%;
+  height: 100%;
+  background-color: var(--white);
+  transform: skewX(-15deg);
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  line-height: 1.1;
+  margin-bottom: var(--spacing-3);
+  color: var(--deep-navy);
+}
+
+.hero-title span {
+  color: var(--primary-blue);
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: var(--slate-text);
+  margin-bottom: var(--spacing-4);
+}
+
+.hero-cta-group {
+  display: flex;
+  gap: var(--spacing-3);
+}
+
+/* Services Overview */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-5);
+}
+
+.service-card {
+  background-color: var(--white);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--light-gray);
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-blue);
+}
+
+.service-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  background-color: var(--light-gray);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-3);
+  color: var(--primary-blue);
+}
+
+.service-card h3 {
+  font-size: 1.25rem;
+  margin-bottom: var(--spacing-2);
+}
+
+/* Why BlueCloud */
+.why-section {
+  background-color: var(--deep-navy);
+  color: var(--white);
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-5);
+  margin-top: var(--spacing-5);
+}
+
+.why-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.why-icon {
+  color: var(--cyan-accent);
+}
+
+.why-item h3 {
+  color: var(--white);
+  margin-bottom: 0;
+}
+
+.why-item p {
+  color: #94A3B8;
+}
+
+/* Featured Work */
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-5);
+}
+
+.work-card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background-color: var(--white);
+}
+
+.work-img-placeholder {
+  height: 200px;
+  background-color: var(--light-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--slate-text);
+  font-weight: 500;
+}
+
+.work-content {
+  padding: var(--spacing-3);
+}
+
+.work-tags {
+  display: flex;
+  gap: var(--spacing-1);
+  margin-bottom: var(--spacing-2);
+}
+
+.work-tag {
+  background-color: var(--mint-accent);
+  color: var(--deep-navy);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Client Trust / Stats */
+.stats-section {
+  background-color: var(--primary-blue);
+  color: var(--white);
+  text-align: center;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-4);
+}
+
+.stat-item h3 {
+  font-size: 3rem;
+  color: var(--white);
+  margin-bottom: var(--spacing-1);
+}
+
+/* CTA Banner */
+.cta-banner {
+  background-color: var(--light-gray);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  text-align: center;
+  margin: var(--spacing-8) auto;
+  max-width: 800px;
+}
+
+@media (max-width: 768px) {
+  .hero-section::after {
+    display: none;
+  }
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  .hero-cta-group {
+    flex-direction: column;
+  }
+}

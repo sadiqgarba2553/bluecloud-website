@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Convert PDF documents to PowerPoint (PPTX) online. Free, private, no signup." />
+  <title>PDF to PPT — ToolDeck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../tool.css" />
+  <style>
+    .warning-box {
+      margin-top: 16px; padding: 12px; background: var(--yellow-dim); border: 1px solid var(--yellow);
+      border-radius: var(--r-md); font-size: .75rem; color: var(--t1);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="tool-nav">
+    <div class="tool-nav-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="9" height="9" rx="2" fill="currentColor"/><rect x="13" y="2" width="9" height="9" rx="2" fill="currentColor" opacity=".55"/><rect x="2" y="13" width="9" height="9" rx="2" fill="currentColor" opacity=".55"/><rect x="13" y="13" width="9" height="9" rx="2" fill="currentColor" opacity=".25"/></svg></div>
+        <span>ToolDeck</span>
+      </a>
+      <div class="tool-nav-actions">
+        <a href="../index.html" class="back-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          All Tools
+        </a>
+        <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">
+          <svg class="ic-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          <svg class="ic-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="tool-container">
+
+    <!-- HEADER -->
+    <div class="tool-header">
+      <div class="tool-icon" >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+        </svg>
+      </div>
+      <h1>PDF to PPT</h1>
+      <p>Convert your PDF document into a PowerPoint presentation.</p>
+    </div>
+
+    <!-- UPLOAD ZONE -->
+    <div class="upload-zone" id="upload-zone">
+      <div class="upload-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
+      <h3>Drop PDF file here</h3>
+      <p class="upload-sub">or click to browse · Supports .pdf</p>
+      <input type="file" id="file-input" accept=".pdf" />
+    </div>
+
+    <!-- FILE INFO -->
+    <div class="file-list-container" id="file-list-container" style="display:none">
+      <div class="upload-zone has-files" style="display:flex;align-items:center;justify-content:space-between">
+        <div class="file-info" style="display:flex;align-items:center;gap:12px">
+          <div class="file-thumb" style="width:42px;height:42px;background:rgba(239,68,68,0.1)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <div>
+            <div class="file-name" id="file-name" style="font-size:.9rem">document.pdf</div>
+            <div class="file-size" id="file-size">0 KB</div>
+          </div>
+        </div>
+        <button class="add-more-btn" id="change-file-btn" style="margin:0">Change file</button>
+      </div>
+      
+      <div class="warning-box">
+        <strong>Note:</strong> Client-side PDF to PPT conversion converts each PDF page into a high-quality image slide to perfectly preserve the original layout and fonts.
+      </div>
+    </div>
+
+    <!-- ACTION -->
+    <div class="action-row" id="action-row" style="display:none">
+      <button class="action-btn" id="convert-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Convert to PPTX
+      </button>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <p class="progress-text" id="progress-text">Rendering pages...</p>
+    </div>
+
+    <!-- RESULT -->
+    <div class="result-zone" id="result-zone">
+      <div class="result-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="result-title">Conversion complete!</div>
+      <div class="result-sub">Your PDF has been converted to a PowerPoint presentation.</div>
+      <button class="download-btn" id="download-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download PPTX
+      </button>
+      <button class="reset-btn" id="reset-btn">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        Process another
+      </button>
+    </div>
+
+  </div>
+
+  <footer class="tool-footer">
+    <p>Processed 100% in your browser · No data leaves your device · <a href="../index.html">ToolDeck</a></p>
+  </footer>
+
+  <!-- pdf.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <!-- pptxgenjs -->
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/libs/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.min.js"></script>
+  <script src="pdf-to-ppt.js"></script>
+</body>
+</html>

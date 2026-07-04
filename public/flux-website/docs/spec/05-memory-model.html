@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>05 Memory Model — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Language Specification — Memory Model</h1>
+<p><strong>Version:</strong> 0.1.0-draft<br />
+<strong>Status:</strong> Draft</p>
+<hr />
+<h2>1. Overview</h2>
+<p>Flux uses a <strong>hybrid memory management system</strong> that combines the strengths of Rust's ownership model with Swift's Automatic Reference Counting (ARC). The goal is maximum safety and performance without a traditional garbage collector.</p>
+<p><strong>Design principles:</strong>
+- No segmentation faults
+- No dangling pointers
+- No double-free errors
+- No data races
+- Deterministic resource cleanup
+- Minimal runtime overhead
+- Predictable performance (no GC pauses)</p>
+<hr />
+<h2>2. Stack vs. Heap Allocation</h2>
+<h3>2.1 Stack Allocation (Default)</h3>
+<p>Value types are allocated on the stack by default:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Allocation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primitives (<code>Int</code>, <code>Float64</code>, <code>Bool</code>, <code>Char</code>)</td>
+<td>Stack</td>
+</tr>
+<tr>
+<td>Tuples</td>
+<td>Stack</td>
+</tr>
+<tr>
+<td>Fixed-size arrays <code>[T; N]</code></td>
+<td>Stack</td>
+</tr>
+<tr>
+<td>Structs (by default)</td>
+<td>Stack</td>
+</tr>
+<tr>
+<td>Enums (without heap data)</td>
+<td>Stack</td>
+</tr>
+<tr>
+<td>References (<code>&amp;T</code>, <code>&amp;mut T</code>)</td>
+<td>Stack (pointer itself)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-flux">fn example() {
+    let x = 42              // Stack: 8 bytes
+    let point = Point { x: 1.0, y: 2.0 }  // Stack: 16 bytes
+    let pair = (10, 20)     // Stack: 16 bytes
+}   // All deallocated when function returns — zero cost
+</code></pre>
+<h3>2.2 Heap Allocation</h3>
+<p>Reference types and dynamically-sized data live on the heap:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Allocation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Classes</td>
+<td>Heap (managed by ARC)</td>
+</tr>
+<tr>
+<td><code>String</code></td>
+<td>Heap (small-string optimization for ≤23 bytes)</td>
+</tr>
+<tr>
+<td><code>List&lt;T&gt;</code></td>
+<td>Heap (growable buffer)</td>
+</tr>
+<tr>
+<td><code>HashMap&lt;K, V&gt;</code></td>
+<td>Heap</td>
+</tr>
+<tr>
+<td><code>Box&lt;T&gt;</code></td>
+<td>Heap (explicit boxing)</td>
+</tr>
+<tr>
+<td><code>Rc&lt;T&gt;</code></td>
+<td>Heap (reference counted)</td>
+</tr>
+<tr>
+<td><code>Arc&lt;T&gt;</code></td>
+<td>Heap (atomic reference counted)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-flux">fn example() {
+    let name = &quot;Hello, World!&quot;    // Heap: String buffer
+    let items = [1, 2, 3]         // Heap: List buffer
+    let dog = Dog(name: &quot;Rex&quot;)    // Heap: class instance
+}   // ARC decrements reference counts; memory freed when count reaches 0
+</code></pre>
+<hr />
+<h2>3. Ownership</h2>
+<h3>3.1 Ownership Rules</h3>
+<p>Every value in Flux has exactly <strong>one owner</strong> at any time. Ownership is the fundamental mechanism for memory safety.</p>
+<p><strong>Rules:</strong>
+1. Each value has exactly one owner
+2. When the owner goes out of scope, the value is dropped (freed)
+3. Ownership can be transferred (moved) to another variable
+4. After a move, the original variable is no longer valid</p>
+<h3>3.2 Move Semantics</h3>
+<p>By default, assigning a value or passing it to a function <strong>moves</strong> ownership:</p>
+<pre><code class="language-flux">let name = &quot;Alice&quot;       // `name` owns the String
+let greeting = name      // Ownership moves to `greeting`
+// print(name)           // Compile error: `name` has been moved
+
+fn take_ownership(s: String) {
+    print(s)
+}   // `s` is dropped here
+
+let message = &quot;Hello&quot;
+take_ownership(message)  // Ownership moves to `s`
+// print(message)        // Compile error: `message` has been moved
+</code></pre>
+<h3>3.3 Copy Types</h3>
+<p>Types that implement the <code>Copy</code> trait are copied instead of moved. All primitive types are <code>Copy</code>:</p>
+<pre><code class="language-flux">let x = 42
+let y = x       // Copy — both x and y are valid
+print(x)        // OK: Int is Copy
+print(y)        // OK
+
+// Copy types:
+// Int, Int8, Int16, Int32, Int64
+// UInt8, UInt16, UInt32, UInt64
+// Float32, Float64
+// Bool, Char, Byte
+// Tuples of Copy types
+// Fixed-size arrays of Copy types
+</code></pre>
+<h3>3.4 Clone</h3>
+<p>For non-Copy types, explicit cloning creates a deep copy:</p>
+<pre><code class="language-flux">let a = &quot;Hello&quot;
+let b = a.clone()    // Deep copy — both valid
+print(a)             // OK
+print(b)             // OK
+
+// Structs with #[derive(Clone)]
+#[derive(Clone)]
+struct Config {
+    name: String
+    values: List&lt;Int&gt;
+}
+
+let config1 = Config { name: &quot;dev&quot;, values: [1, 2, 3] }
+let config2 = config1.clone()
+</code></pre>
+<hr />
+<h2>4. Borrowing and References</h2>
+<h3>4.1 Shared References (<code>&amp;T</code>)</h3>
+<p>A shared reference borrows a value without taking ownership. Multiple shared references can exist simultaneously.</p>
+<pre><code class="language-flux">fn print_length(s: &amp;String) {
+    print(&quot;Length: {s.length}&quot;)
+}   // `s` is a reference, so the String is NOT dropped
+
+let name = &quot;Alice&quot;
+print_length(&amp;name)    // Borrow `name`
+print(name)            // OK: `name` is still valid
+</code></pre>
+<h3>4.2 Mutable References (<code>&amp;mut T</code>)</h3>
+<p>A mutable reference allows modification of the borrowed value. Only <strong>one</strong> mutable reference can exist at a time, and no shared references can coexist with it.</p>
+<pre><code class="language-flux">fn append_exclamation(s: &amp;mut String) {
+    s.push('!')
+}
+
+mut greeting = &quot;Hello&quot;
+append_exclamation(&amp;mut greeting)
+print(greeting)   // &quot;Hello!&quot;
+</code></pre>
+<h3>4.3 Borrowing Rules</h3>
+<p>The compiler enforces these rules at compile time:</p>
+<ol>
+<li><strong>At any given time, you can have either:</strong></li>
+<li>Any number of shared references (<code>&amp;T</code>), OR</li>
+<li>
+<p>Exactly one mutable reference (<code>&amp;mut T</code>)
+   — but not both simultaneously.</p>
+</li>
+<li>
+<p><strong>References must always be valid:</strong></p>
+</li>
+<li>A reference cannot outlive the data it refers to (no dangling references)</li>
+<li>The compiler tracks lifetimes to enforce this</li>
+</ol>
+<pre><code class="language-flux">mut data = [1, 2, 3]
+
+let r1 = &amp;data       // OK: shared reference
+let r2 = &amp;data       // OK: multiple shared references
+print(r1)
+print(r2)
+
+let r3 = &amp;mut data   // OK: r1 and r2 are no longer used
+r3.append(4)
+
+// let r4 = &amp;data     // ERROR if r3 is still in use
+// Cannot have shared and mutable references simultaneously
+</code></pre>
+<h3>4.4 Method Receivers</h3>
+<p>Methods declare how they borrow <code>self</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Receiver</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>self</code></td>
+<td>Takes ownership (consumes the value)</td>
+</tr>
+<tr>
+<td><code>&amp;self</code></td>
+<td>Borrows immutably (equivalent to <code>self: &amp;Self</code>)</td>
+</tr>
+<tr>
+<td><code>mut self</code></td>
+<td>Takes ownership with interior mutability</td>
+</tr>
+<tr>
+<td><code>&amp;mut self</code></td>
+<td>Borrows mutably</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-flux">impl Stack&lt;T&gt; {
+    fn is_empty(&amp;self) -&gt; Bool {        // Borrows immutably
+        return self.items.length == 0
+    }
+
+    fn push(&amp;mut self, item: T) {       // Borrows mutably
+        self.items.append(item)
+    }
+
+    fn into_list(self) -&gt; List&lt;T&gt; {     // Consumes the stack
+        return self.items
+    }
+}
+</code></pre>
+<hr />
+<h2>5. Lifetimes</h2>
+<h3>5.1 Lifetime Concept</h3>
+<p>A lifetime is the scope during which a reference is valid. The compiler infers lifetimes automatically in most cases.</p>
+<pre><code class="language-flux">fn longest(a: &amp;String, b: &amp;String) -&gt; &amp;String {
+    if a.length &gt; b.length {
+        return a
+    }
+    return b
+}
+</code></pre>
+<h3>5.2 Lifetime Annotations</h3>
+<p>When the compiler cannot infer lifetimes, explicit annotations are needed:</p>
+<pre><code class="language-flux">fn longest&lt;'a&gt;(a: &amp;'a String, b: &amp;'a String) -&gt; &amp;'a String {
+    if a.length &gt; b.length {
+        return a
+    }
+    return b
+}
+</code></pre>
+<h3>5.3 Lifetime Elision Rules</h3>
+<p>Flux has more aggressive lifetime elision than Rust, handling most cases automatically:</p>
+<ol>
+<li>Each input reference parameter gets its own lifetime</li>
+<li>If there is exactly one input lifetime, it is assigned to all output references</li>
+<li>If there is a <code>&amp;self</code> or <code>&amp;mut self</code> parameter, its lifetime is assigned to all output references</li>
+</ol>
+<pre><code class="language-flux">// These are equivalent — lifetime elision makes annotations unnecessary:
+
+fn first_word(s: &amp;String) -&gt; &amp;String { ... }
+fn first_word&lt;'a&gt;(s: &amp;'a String) -&gt; &amp;'a String { ... }
+
+// Method with &amp;self — lifetime is inferred:
+impl Config {
+    fn name(&amp;self) -&gt; &amp;String {
+        return &amp;self.name
+    }
+}
+</code></pre>
+<h3>5.4 Static Lifetime</h3>
+<p>The <code>'static</code> lifetime indicates data that lives for the entire program execution:</p>
+<pre><code class="language-flux">const GREETING: &amp;String = &quot;Hello, World!&quot;   // 'static lifetime
+
+static CONFIG: Config = Config { ... }       // 'static lifetime
+</code></pre>
+<hr />
+<h2>6. Automatic Reference Counting (ARC)</h2>
+<h3>6.1 When ARC Is Used</h3>
+<p>ARC is used for <strong>heap-allocated reference types</strong>:</p>
+<ul>
+<li><strong>Classes</strong> — all class instances are ARC-managed</li>
+<li><strong><code>Rc&lt;T&gt;</code></strong> — explicit single-threaded reference counting</li>
+<li><strong><code>Arc&lt;T&gt;</code></strong> — explicit thread-safe reference counting</li>
+</ul>
+<p>ARC is <strong>not</strong> used for:
+- Stack-allocated values (primitives, structs, tuples)
+- Values with a single owner
+- Borrowed references</p>
+<h3>6.2 How ARC Works</h3>
+<pre><code class="language-flux">class Document {
+    title: String
+    content: String
+}
+
+fn example() {
+    let doc1 = Document(title: &quot;Hello&quot;, content: &quot;World&quot;)
+    // Reference count: 1
+
+    let doc2 = doc1
+    // Reference count: 2 (doc1 and doc2 point to the same object)
+
+    // doc2 goes out of scope → reference count: 1
+    // doc1 goes out of scope → reference count: 0 → memory freed
+}
+</code></pre>
+<h3>6.3 Weak References</h3>
+<p>To break reference cycles, use <code>Weak&lt;T&gt;</code>:</p>
+<pre><code class="language-flux">class Node {
+    value: Int
+    children: List&lt;Node&gt;
+    parent: Weak&lt;Node&gt;      // Weak reference — does not increment count
+
+    init(value: Int) {
+        self.value = value
+        self.children = List.new()
+        self.parent = Weak.none()
+    }
+}
+
+fn example() {
+    let parent = Node(value: 1)
+    let child = Node(value: 2)
+
+    parent.children.append(child)
+    child.parent = Weak.from(parent)
+
+    // No reference cycle: child.parent is weak
+}
+</code></pre>
+<h3>6.4 Cycle Detection</h3>
+<p>Flux includes an optional compile-time cycle detection analysis that warns about potential reference cycles:</p>
+<pre><code class="language-flux">class A {
+    b: B?       // Warning: potential cycle — A -&gt; B -&gt; A
+}
+
+class B {
+    a: A?       // Warning suggests: make this Weak&lt;A&gt;
+}
+</code></pre>
+<p>The compiler emits a warning when two class types hold strong references to each other. The fix is to make one reference <code>Weak&lt;T&gt;</code>.</p>
+<hr />
+<h2>7. Smart Pointers</h2>
+<h3>7.1 Box\&lt;T&gt;</h3>
+<p><code>Box&lt;T&gt;</code> allocates a value on the heap with single ownership:</p>
+<pre><code class="language-flux">let boxed = Box.new(42)         // Heap-allocated Int
+let value = *boxed              // Dereference
+
+// Primary use: recursive types
+enum List&lt;T&gt; {
+    Cons(T, Box&lt;List&lt;T&gt;&gt;),
+    Nil,
+}
+</code></pre>
+<h3>7.2 Rc\&lt;T&gt; (Reference Counted)</h3>
+<p>Single-threaded shared ownership:</p>
+<pre><code class="language-flux">let shared = Rc.new(&quot;shared data&quot;)
+let clone1 = shared.clone()     // Increments reference count
+let clone2 = shared.clone()     // Increments reference count
+
+print(Rc.strong_count(&amp;shared))  // 3
+</code></pre>
+<h3>7.3 Arc\&lt;T&gt; (Atomic Reference Counted)</h3>
+<p>Thread-safe shared ownership:</p>
+<pre><code class="language-flux">let shared = Arc.new(Config { ... })
+
+spawn async {
+    let config = shared.clone()
+    // Safe to use across threads
+    print(config.name)
+}
+</code></pre>
+<h3>7.4 Weak\&lt;T&gt;</h3>
+<p>Non-owning reference that doesn't prevent deallocation:</p>
+<pre><code class="language-flux">let strong = Rc.new(42)
+let weak = Rc.downgrade(&amp;strong)
+
+// Upgrade to a strong reference (returns Option)
+if let Some(value) = weak.upgrade() {
+    print(&quot;Value: {value}&quot;)
+} else {
+    print(&quot;Value has been deallocated&quot;)
+}
+</code></pre>
+<hr />
+<h2>8. RAII and Deterministic Destruction</h2>
+<h3>8.1 Drop Trait</h3>
+<p>Types can implement <code>Drop</code> for custom cleanup:</p>
+<pre><code class="language-flux">trait Drop {
+    fn drop(mut self)
+}
+
+class FileHandle {
+    fd: Int
+
+    init(path: String) {
+        self.fd = sys_open(path)
+    }
+
+    impl Drop {
+        fn drop(mut self) {
+            sys_close(self.fd)
+            print(&quot;File closed&quot;)
+        }
+    }
+}
+
+fn example() {
+    let file = FileHandle(&quot;data.txt&quot;)
+    // ... use file ...
+}   // file.drop() called automatically here
+</code></pre>
+<h3>8.2 Drop Order</h3>
+<ul>
+<li>Local variables are dropped in <strong>reverse declaration order</strong> (LIFO)</li>
+<li>Struct fields are dropped in <strong>declaration order</strong></li>
+<li>Array elements are dropped in <strong>forward order</strong></li>
+</ul>
+<pre><code class="language-flux">fn example() {
+    let a = Resource(&quot;A&quot;)    // Dropped third
+    let b = Resource(&quot;B&quot;)    // Dropped second
+    let c = Resource(&quot;C&quot;)    // Dropped first
+}
+// Drop order: C, B, A
+</code></pre>
+<h3>8.3 Defer</h3>
+<p><code>defer</code> provides explicit control over cleanup order:</p>
+<pre><code class="language-flux">fn database_operation() {
+    let conn = db.connect()
+    defer conn.close()          // Guaranteed to run on scope exit
+
+    let tx = conn.begin()
+    defer tx.rollback()         // Runs before conn.close()
+
+    // ... operations ...
+
+    tx.commit()                 // If this succeeds, rollback is a no-op
+}
+</code></pre>
+<hr />
+<h2>9. Unsafe Code</h2>
+<h3>9.1 Unsafe Blocks</h3>
+<p><code>unsafe</code> blocks allow operations that the compiler cannot verify as safe:</p>
+<pre><code class="language-flux">unsafe {
+    let ptr = malloc(1024) as *mut Byte
+    ptr.write(0, 42)
+    let value = ptr.read(0)
+    free(ptr as *mut Byte)
+}
+</code></pre>
+<h3>9.2 Unsafe Operations</h3>
+<p>The following operations require an <code>unsafe</code> block:</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dereferencing a raw pointer</td>
+<td>May be null, dangling, or unaligned</td>
+</tr>
+<tr>
+<td>Calling an <code>unsafe fn</code></td>
+<td>Function has safety preconditions</td>
+</tr>
+<tr>
+<td>Accessing a <code>static mut</code></td>
+<td>May cause data races</td>
+</tr>
+<tr>
+<td>Calling FFI (extern) functions</td>
+<td>No safety guarantees from external code</td>
+</tr>
+<tr>
+<td>Transmuting types</td>
+<td>Can violate type safety</td>
+</tr>
+<tr>
+<td>Inline assembly</td>
+<td>Unrestricted hardware access</td>
+</tr>
+</tbody>
+</table>
+<h3>9.3 Raw Pointers</h3>
+<pre><code class="language-flux">let x = 42
+let ptr: *Int = &amp;x as *Int         // Shared raw pointer
+let mut_ptr: *mut Int = &amp;mut x as *mut Int  // Mutable raw pointer
+
+unsafe {
+    print(*ptr)          // Dereference
+    *mut_ptr = 100       // Write through pointer
+}
+</code></pre>
+<h3>9.4 Unsafe Functions</h3>
+<pre><code class="language-flux">unsafe fn dangerous_operation(ptr: *mut Byte, len: USize) {
+    // Caller must guarantee:
+    // - ptr is non-null
+    // - ptr points to at least `len` bytes of valid memory
+    // - No other references to this memory exist
+    for i in 0..len {
+        ptr.offset(i).write(0)
+    }
+}
+</code></pre>
+<hr />
+<h2>10. Memory Safety Guarantees</h2>
+<h3>10.1 What Flux Prevents (in safe code)</h3>
+<table>
+<thead>
+<tr>
+<th>Bug Class</th>
+<th>Prevention Mechanism</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Null pointer dereference</td>
+<td><code>Option&lt;T&gt;</code> — no null references</td>
+</tr>
+<tr>
+<td>Use after free</td>
+<td>Ownership — compiler tracks lifetimes</td>
+</tr>
+<tr>
+<td>Double free</td>
+<td>Ownership — each value has exactly one owner</td>
+</tr>
+<tr>
+<td>Dangling pointer</td>
+<td>Borrowing — references cannot outlive data</td>
+</tr>
+<tr>
+<td>Buffer overflow</td>
+<td>Bounds checking on array/slice access</td>
+</tr>
+<tr>
+<td>Data race</td>
+<td><code>Send</code>/<code>Sync</code> — enforced at compile time</td>
+</tr>
+<tr>
+<td>Uninitialized memory</td>
+<td>All variables must be initialized</td>
+</tr>
+<tr>
+<td>Memory leak</td>
+<td>ARC + ownership — mostly prevented (cycles are warned about)</td>
+</tr>
+</tbody>
+</table>
+<h3>10.2 What Requires <code>unsafe</code></h3>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Why It's Unsafe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FFI calls</td>
+<td>External code has no Flux safety guarantees</td>
+</tr>
+<tr>
+<td>Raw pointer operations</td>
+<td>No compiler-verified bounds or validity</td>
+</tr>
+<tr>
+<td>Global mutable state</td>
+<td>Potential data races</td>
+</tr>
+<tr>
+<td>Type transmutation</td>
+<td>Can break type invariants</td>
+</tr>
+<tr>
+<td>Inline assembly</td>
+<td>Direct hardware manipulation</td>
+</tr>
+</tbody>
+</table>
+<h3>10.3 Unsafe Does Not Mean Dangerous</h3>
+<p><code>unsafe</code> means "I, the programmer, am taking responsibility for these safety invariants." Well-written <code>unsafe</code> code should:</p>
+<ol>
+<li>Be as small as possible</li>
+<li>Be encapsulated behind a safe API</li>
+<li>Be thoroughly documented with safety comments</li>
+<li>Be extensively tested</li>
+</ol>
+<pre><code class="language-flux">// Good: unsafe implementation behind a safe API
+pub struct SafeBuffer {
+    ptr: *mut Byte
+    len: USize
+    cap: USize
+}
+
+impl SafeBuffer {
+    pub fn new(capacity: USize) -&gt; SafeBuffer {
+        let ptr = unsafe { malloc(capacity) as *mut Byte }
+        return SafeBuffer { ptr: ptr, len: 0, cap: capacity }
+    }
+
+    pub fn push(&amp;mut self, byte: Byte) {
+        if self.len &gt;= self.cap {
+            self.grow()
+        }
+        // SAFETY: we just ensured len &lt; cap, so this write is in bounds
+        unsafe {
+            self.ptr.offset(self.len).write(byte)
+        }
+        self.len += 1
+    }
+
+    impl Drop {
+        fn drop(mut self) {
+            unsafe { free(self.ptr as *mut Byte) }
+        }
+    }
+}
+</code></pre>
+<hr />
+<h2>11. Comparison with Other Languages</h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Flux</th>
+<th>Rust</th>
+<th>Swift</th>
+<th>Go</th>
+<th>C++</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ownership</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌ (manual)</td>
+</tr>
+<tr>
+<td>Borrowing</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌ (references)</td>
+</tr>
+<tr>
+<td>ARC</td>
+<td>✅ (classes)</td>
+<td>❌ (Rc/Arc)</td>
+<td>✅ (all objects)</td>
+<td>❌</td>
+<td>❌ (shared_ptr)</td>
+</tr>
+<tr>
+<td>GC</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Lifetime annotations</td>
+<td>Rarely needed</td>
+<td>Often needed</td>
+<td>Never</td>
+<td>Never</td>
+<td>Never</td>
+</tr>
+<tr>
+<td>Null safety</td>
+<td>✅ Option</td>
+<td>✅ Option</td>
+<td>✅ Optional</td>
+<td>❌ nil</td>
+<td>❌ nullptr</td>
+</tr>
+<tr>
+<td>Thread safety</td>
+<td>Compile-time</td>
+<td>Compile-time</td>
+<td>Runtime</td>
+<td>Runtime</td>
+<td>Manual</td>
+</tr>
+<tr>
+<td>Deterministic destruction</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌ (GC)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Unsafe escape hatch</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>N/A (all unsafe)</td>
+</tr>
+</tbody>
+</table>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

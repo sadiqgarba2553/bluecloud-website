@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10 Interoperability — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Language Specification — Interoperability</h1>
+<p><strong>Version:</strong> 0.1.0-draft<br />
+<strong>Status:</strong> Draft</p>
+<hr />
+<h2>1. Overview</h2>
+<p>Flux is designed to interoperate seamlessly with existing ecosystems. It provides first-class support for calling C code, and varying levels of support for C++, Python, JavaScript (via WebAssembly), and platform-native APIs.</p>
+<hr />
+<h2>2. C FFI</h2>
+<h3>2.1 Calling C Functions</h3>
+<pre><code class="language-flux">extern &quot;C&quot; {
+    fn printf(format: *Byte, ...) -&gt; Int
+    fn strlen(s: *Byte) -&gt; USize
+    fn malloc(size: USize) -&gt; *mut Byte
+    fn free(ptr: *mut Byte)
+    fn qsort(
+        base: *mut Byte
+        nmemb: USize
+        size: USize
+        compar: fn(*Byte, *Byte) -&gt; Int
+    )
+}
+
+fn main() {
+    unsafe {
+        let s = &quot;Hello from Flux!\0&quot;
+        printf(s.as_ptr(), s.len())
+    }
+}
+</code></pre>
+<h3>2.2 Linking</h3>
+<pre><code class="language-flux">// Link to a system library
+#[link(name: &quot;sqlite3&quot;)]
+extern &quot;C&quot; {
+    fn sqlite3_open(filename: *Byte, db: *mut *mut SqliteDb) -&gt; Int
+    fn sqlite3_close(db: *mut SqliteDb) -&gt; Int
+    fn sqlite3_exec(
+        db: *mut SqliteDb
+        sql: *Byte
+        callback: Option&lt;fn(*Byte, Int, *mut *Byte, *mut *Byte) -&gt; Int&gt;
+        arg: *mut Byte
+        errmsg: *mut *Byte
+    ) -&gt; Int
+}
+
+// Link to a static library
+#[link(name: &quot;mylib&quot;, kind: &quot;static&quot;)]
+extern &quot;C&quot; {
+    fn my_function(x: Int) -&gt; Int
+}
+
+// Link to a framework (macOS/iOS)
+#[link(name: &quot;CoreFoundation&quot;, kind: &quot;framework&quot;)]
+extern &quot;C&quot; {
+    fn CFRelease(cf: *Byte)
+}
+</code></pre>
+<h3>2.3 Type Mapping</h3>
+<table>
+<thead>
+<tr>
+<th>C Type</th>
+<th>Flux Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>void</code></td>
+<td><code>Void</code></td>
+</tr>
+<tr>
+<td><code>char</code> / <code>int8_t</code></td>
+<td><code>Int8</code></td>
+</tr>
+<tr>
+<td><code>unsigned char</code> / <code>uint8_t</code></td>
+<td><code>UInt8</code> / <code>Byte</code></td>
+</tr>
+<tr>
+<td><code>short</code> / <code>int16_t</code></td>
+<td><code>Int16</code></td>
+</tr>
+<tr>
+<td><code>int</code> / <code>int32_t</code></td>
+<td><code>Int32</code></td>
+</tr>
+<tr>
+<td><code>long long</code> / <code>int64_t</code></td>
+<td><code>Int64</code></td>
+</tr>
+<tr>
+<td><code>size_t</code></td>
+<td><code>USize</code></td>
+</tr>
+<tr>
+<td><code>float</code></td>
+<td><code>Float32</code></td>
+</tr>
+<tr>
+<td><code>double</code></td>
+<td><code>Float64</code></td>
+</tr>
+<tr>
+<td><code>const char*</code></td>
+<td><code>*Byte</code></td>
+</tr>
+<tr>
+<td><code>void*</code></td>
+<td><code>*Byte</code> / <code>*mut Byte</code></td>
+</tr>
+<tr>
+<td><code>T*</code></td>
+<td><code>*T</code> / <code>*mut T</code></td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td><code>Bool</code></td>
+</tr>
+</tbody>
+</table>
+<h3>2.4 Exposing Flux Functions to C</h3>
+<pre><code class="language-flux">#[no_mangle]
+pub extern &quot;C&quot; fn flux_add(a: Int32, b: Int32) -&gt; Int32 {
+    return a + b
+}
+
+#[no_mangle]
+pub extern &quot;C&quot; fn flux_process(data: *Byte, len: USize) -&gt; Int32 {
+    unsafe {
+        let slice = Slice.from_raw(data, len)
+        // Process the data...
+        return 0
+    }
+}
+</code></pre>
+<h3>2.5 Struct Layout</h3>
+<pre><code class="language-flux">// C-compatible struct layout
+#[repr(C)]
+struct CPoint {
+    x: Float64
+    y: Float64
+}
+
+// Packed struct (no padding)
+#[repr(C, packed)]
+struct PackedHeader {
+    magic: UInt32
+    version: UInt16
+    flags: UInt16
+}
+
+// Enum with specific representation
+#[repr(Int32)]
+enum CError {
+    Success = 0,
+    NotFound = -1,
+    PermissionDenied = -2,
+    IoError = -3,
+}
+</code></pre>
+<h3>2.6 Callbacks</h3>
+<pre><code class="language-flux">extern &quot;C&quot; {
+    fn register_callback(cb: extern &quot;C&quot; fn(Int32) -&gt; Int32)
+}
+
+extern &quot;C&quot; fn my_callback(value: Int32) -&gt; Int32 {
+    return value * 2
+}
+
+fn main() {
+    unsafe {
+        register_callback(my_callback)
+    }
+}
+</code></pre>
+<h3>2.7 Safe Wrappers</h3>
+<p>Best practice: wrap unsafe FFI calls in safe Flux APIs:</p>
+<pre><code class="language-flux">// Low-level FFI (private)
+#[link(name: &quot;sqlite3&quot;)]
+extern &quot;C&quot; {
+    fn sqlite3_open(filename: *Byte, db: *mut *mut RawDb) -&gt; Int32
+    fn sqlite3_close(db: *mut RawDb) -&gt; Int32
+    fn sqlite3_errmsg(db: *mut RawDb) -&gt; *Byte
+}
+
+// Safe public API
+pub struct Database {
+    handle: *mut RawDb
+}
+
+impl Database {
+    pub fn open(path: String) -&gt; Result&lt;Database, DbError&gt; {
+        let mut handle: *mut RawDb = null_mut()
+        let cpath = CString.from(path)
+
+        let result = unsafe { sqlite3_open(cpath.as_ptr(), &amp;mut handle) }
+
+        if result != 0 {
+            let msg = unsafe { CString.from_ptr(sqlite3_errmsg(handle)) }
+            return Err(DbError.OpenFailed(msg.to_string()))
+        }
+
+        return Ok(Database { handle: handle })
+    }
+
+    impl Drop {
+        fn drop(mut self) {
+            unsafe { sqlite3_close(self.handle) }
+        }
+    }
+}
+</code></pre>
+<hr />
+<h2>3. C++ Interoperability</h2>
+<h3>3.1 Calling C++ via C Wrappers</h3>
+<p>The recommended approach for C++ interop is to create C wrapper functions:</p>
+<pre><code class="language-cpp">// wrapper.h
+extern &quot;C&quot; {
+    void* create_engine();
+    void engine_process(void* engine, const float* data, int len);
+    void destroy_engine(void* engine);
+}
+</code></pre>
+<pre><code class="language-flux">extern &quot;C&quot; {
+    fn create_engine() -&gt; *mut Byte
+    fn engine_process(engine: *mut Byte, data: *Float32, len: Int32)
+    fn destroy_engine(engine: *mut Byte)
+}
+
+pub struct Engine {
+    handle: *mut Byte
+}
+
+impl Engine {
+    pub fn new() -&gt; Engine {
+        let handle = unsafe { create_engine() }
+        return Engine { handle: handle }
+    }
+
+    pub fn process(self, data: &amp;[Float32]) {
+        unsafe {
+            engine_process(self.handle, data.as_ptr(), data.len() as Int32)
+        }
+    }
+
+    impl Drop {
+        fn drop(mut self) {
+            unsafe { destroy_engine(self.handle) }
+        }
+    }
+}
+</code></pre>
+<h3>3.2 Automatic Binding Generation</h3>
+<p>The <code>flux bindgen</code> tool generates Flux bindings from C/C++ header files:</p>
+<pre><code class="language-bash">flux bindgen vendor/sqlite3.h --output src/bindings.flux
+flux bindgen vendor/engine.hpp --output src/engine_bindings.flux --language c++
+</code></pre>
+<hr />
+<h2>4. Python Interoperability</h2>
+<h3>4.1 Calling Python from Flux</h3>
+<pre><code class="language-flux">use flux.interop.python.{Python, PyObject}
+
+fn main() {
+    let py = Python.init()
+
+    // Execute Python code
+    py.run(&quot;print('Hello from Python!')&quot;)
+
+    // Import a Python module
+    let np = py.import(&quot;numpy&quot;)
+    let array = np.call(&quot;array&quot;, [[1, 2, 3], [4, 5, 6]])
+    let result = array.call(&quot;sum&quot;)
+    print(&quot;Sum: {result.to_int()}&quot;)
+
+    // Call a Python function
+    let math = py.import(&quot;math&quot;)
+    let pi = math.attr(&quot;pi&quot;).to_float()
+    print(&quot;Pi: {pi}&quot;)
+}
+</code></pre>
+<h3>4.2 Exposing Flux to Python</h3>
+<pre><code class="language-flux">// Create a Python module from Flux code
+#[pymodule]
+mod flux_math {
+    #[pyfunction]
+    fn fast_fibonacci(n: Int) -&gt; Int {
+        if n &lt;= 1 { return n }
+        mut a = 0
+        mut b = 1
+        for _ in 2..=n {
+            let temp = a + b
+            a = b
+            b = temp
+        }
+        return b
+    }
+
+    #[pyclass]
+    struct Matrix {
+        data: List&lt;List&lt;Float64&gt;&gt;
+        rows: Int
+        cols: Int
+    }
+
+    #[pymethods]
+    impl Matrix {
+        #[new]
+        fn new(rows: Int, cols: Int) -&gt; Matrix {
+            // ...
+        }
+
+        fn multiply(self, other: &amp;Matrix) -&gt; Matrix {
+            // ...
+        }
+    }
+}
+</code></pre>
+<p>Usage from Python:</p>
+<pre><code class="language-python">import flux_math
+
+result = flux_math.fast_fibonacci(40)  # Runs at native speed
+print(f&quot;Fibonacci(40) = {result}&quot;)
+
+m = flux_math.Matrix(3, 3)
+</code></pre>
+<hr />
+<h2>5. WebAssembly</h2>
+<h3>5.1 Compiling to WebAssembly</h3>
+<pre><code class="language-bash">flux build --target wasm32
+</code></pre>
+<p>This produces a <code>.wasm</code> file that can be loaded in browsers or Node.js.</p>
+<h3>5.2 WASM Exports</h3>
+<pre><code class="language-flux">#[wasm_export]
+pub fn add(a: Int32, b: Int32) -&gt; Int32 {
+    return a + b
+}
+
+#[wasm_export]
+pub fn process_data(ptr: Int32, len: Int32) -&gt; Int32 {
+    // Process data from WebAssembly linear memory
+    let data = unsafe { wasm.memory_slice(ptr as USize, len as USize) }
+    // ...
+    return 0
+}
+</code></pre>
+<h3>5.3 Calling JavaScript from WASM</h3>
+<pre><code class="language-flux">#[wasm_import(module: &quot;env&quot;)]
+extern {
+    fn console_log(ptr: Int32, len: Int32)
+    fn fetch_url(url_ptr: Int32, url_len: Int32) -&gt; Int32
+}
+
+fn log(message: String) {
+    unsafe {
+        console_log(message.as_ptr() as Int32, message.len() as Int32)
+    }
+}
+</code></pre>
+<hr />
+<h2>6. Platform-Native APIs</h2>
+<h3>6.1 Android (JNI)</h3>
+<pre><code class="language-flux">use flux.interop.jni.{JniEnv, JObject, JString}
+
+#[jni_export(class: &quot;com.example.MyApp&quot;)]
+fn nativeCompute(env: &amp;JniEnv, _this: JObject, input: JString) -&gt; JString {
+    let rust_string = env.get_string(input)
+    let result = process(rust_string)
+    return env.new_string(result)
+}
+</code></pre>
+<h3>6.2 iOS/macOS (Objective-C Bridge)</h3>
+<pre><code class="language-flux">use flux.interop.objc.{ObjcObject, selector, msg_send}
+
+fn show_alert(title: String, message: String) {
+    unsafe {
+        let alert_class = ObjcObject.class(&quot;NSAlert&quot;)
+        let alert = msg_send!(alert_class, &quot;new&quot;)
+        msg_send!(alert, &quot;setMessageText:&quot;, title)
+        msg_send!(alert, &quot;setInformativeText:&quot;, message)
+        msg_send!(alert, &quot;runModal&quot;)
+    }
+}
+</code></pre>
+<h3>6.3 Windows (Win32)</h3>
+<pre><code class="language-flux">#[link(name: &quot;user32&quot;)]
+extern &quot;C&quot; {
+    fn MessageBoxA(
+        hwnd: *Byte
+        text: *Byte
+        caption: *Byte
+        utype: UInt32
+    ) -&gt; Int32
+}
+
+fn show_message(title: String, message: String) {
+    unsafe {
+        MessageBoxA(
+            null()
+            CString.from(message).as_ptr()
+            CString.from(title).as_ptr()
+            0
+        )
+    }
+}
+</code></pre>
+<hr />
+<h2>7. ABI Stability</h2>
+<h3>7.1 Flux ABI</h3>
+<p>Flux does <strong>not</strong> guarantee a stable ABI across compiler versions (similar to Rust). Recompilation is required when updating the compiler.</p>
+<h3>7.2 C ABI</h3>
+<p>Functions marked <code>extern "C"</code> use the platform's C ABI, which is stable.</p>
+<h3>7.3 Stable Interface Files</h3>
+<p>For creating stable plugin interfaces, use the <code>#[stable_abi]</code> attribute:</p>
+<pre><code class="language-flux">#[stable_abi]
+pub trait Plugin {
+    fn name(self) -&gt; &amp;String
+    fn version(self) -&gt; (Int, Int, Int)
+    fn execute(self, input: &amp;[Byte]) -&gt; Result&lt;Vec&lt;Byte&gt;, PluginError&gt;
+}
+</code></pre>
+<hr />
+<h2>8. Inline Assembly</h2>
+<p>For the lowest level of control, Flux supports inline assembly:</p>
+<pre><code class="language-flux">fn read_cycle_counter() -&gt; UInt64 {
+    let result: UInt64
+    unsafe {
+        asm! {
+            &quot;rdtsc&quot;
+            &quot;shl rdx, 32&quot;
+            &quot;or rax, rdx&quot;
+            out(&quot;rax&quot;) result
+            clobber(&quot;rdx&quot;)
+        }
+    }
+    return result
+}
+
+fn memory_fence() {
+    unsafe {
+        asm! { &quot;mfence&quot; }
+    }
+}
+</code></pre>
+<h3>8.1 Inline Assembly Syntax</h3>
+<pre><code>asm! {
+    &quot;assembly instruction&quot;
+    in(&quot;register&quot;) value           // Input operand
+    out(&quot;register&quot;) variable       // Output operand
+    inout(&quot;register&quot;) variable     // Input and output
+    clobber(&quot;register&quot;)            // Clobbered register
+    options(nostack, nomem)        // Options
+}
+</code></pre>
+<hr />
+<h2>9. Bindgen and Tooling</h2>
+<h3>9.1 <code>flux bindgen</code></h3>
+<p>Automatically generates Flux bindings from C/C++ headers:</p>
+<pre><code class="language-bash"># Generate from C header
+flux bindgen sqlite3.h -o src/sqlite3.flux
+
+# With configuration
+flux bindgen openssl/ssl.h \
+    --allowlist-function &quot;SSL_.*&quot; \
+    --allowlist-type &quot;SSL_CTX&quot; \
+    --link &quot;ssl&quot; \
+    --link &quot;crypto&quot; \
+    -o src/openssl.flux
+</code></pre>
+<h3>9.2 <code>flux cbindgen</code></h3>
+<p>Generates C/C++ headers from Flux source:</p>
+<pre><code class="language-bash"># Generate C header from Flux library
+flux cbindgen src/ --output include/mylib.h --language c
+flux cbindgen src/ --output include/mylib.hpp --language c++
+</code></pre>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
