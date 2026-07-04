@@ -110,7 +110,7 @@ const Home = () => {
           </div>
           <div className="work-grid">
             <div className="work-card">
-              <img src="/fluxlanguageimage.png" alt="Flux Programming Language" style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
+              <img src="/fluxlanguageimage.png" alt="Flux Programming Language" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
               <div className="work-content">
                 <div className="work-tags">
                   <span className="work-tag">Language</span>

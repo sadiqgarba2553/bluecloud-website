@@ -57,7 +57,7 @@ const Projects = () => {
 
         {/* Project 3 */}
         <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--light-gray)' }}>
-          <img src="/fluxlanguageimage.png" alt="Flux Programming Language" style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
+          <img src="/fluxlanguageimage.png" alt="Flux Programming Language" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
           <div style={{ padding: 'var(--spacing-3)' }}>
             <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
               <span style={{ backgroundColor: 'var(--mint-accent)', color: 'var(--deep-navy)', fontSize: '0.75rem', fontWeight: 'bold', padding: '4px 8px', borderRadius: '4px' }}>Language</span>
