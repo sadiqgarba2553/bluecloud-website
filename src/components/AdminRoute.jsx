@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
-const ADMIN_EMAIL = 'sadiqgarba2553@gmail.com';
+const ADMIN_EMAIL = 'sadiqgarbaibrahimadeel@gmail.com';
 
 const AdminRoute = ({ children }) => {
   const [isAuthorized, setIsAuthorized] = useState(false);
