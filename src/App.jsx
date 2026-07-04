@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -18,12 +18,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminRoute from './components/AdminRoute';
 
 function App() {
-  const location = useLocation();
-  const isPortalRoute = location.pathname.startsWith('/portal');
-
   return (
     <div className="app-container">
-      {!isPortalRoute && <Header />}
+      <Header />
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -44,7 +41,7 @@ function App() {
           } />
         </Routes>
       </main>
-      {!isPortalRoute && <Footer />}
+      <Footer />
     </div>
   );
 }

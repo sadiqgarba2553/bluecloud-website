@@ -56,10 +56,7 @@ const PortalLogin = () => {
       
       <div className="portal-login-box">
         <div className="portal-login-header">
-          <Link to="/" className="portal-logo">
-            <img src="/icon_no_background.PNG" alt="BlueCloud" />
-            <span>BLUECLOUD</span>
-          </Link>
+          <div style={{ marginBottom: '20px' }}></div>
           <h2>Welcome Back</h2>
           <p>Sign in to access your project dashboard.</p>
         </div>
@@ -71,10 +68,10 @@ const PortalLogin = () => {
           Sign in with Google
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0', color: 'rgba(255,255,255,0.5)' }}>
-          <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(255,255,255,0.1)' }}></div>
+        <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0', color: '#64748b' }}>
+          <div style={{ flex: 1, height: '1px', backgroundColor: '#e2e8f0' }}></div>
           <span style={{ padding: '0 10px', fontSize: '0.85rem' }}>OR</span>
-          <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(255,255,255,0.1)' }}></div>
+          <div style={{ flex: 1, height: '1px', backgroundColor: '#e2e8f0' }}></div>
         </div>
 
         <form onSubmit={handleLogin} className="portal-form">

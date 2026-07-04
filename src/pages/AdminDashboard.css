@@ -1,14 +1,14 @@
 .admin-layout {
-  min-height: 100vh;
-  background-color: #0f172a;
-  color: #f8fafc;
+  min-height: calc(100vh - 200px);
+  background-color: #f8fafc;
+  color: var(--deep-navy);
   display: flex;
   flex-direction: column;
 }
 
 .admin-header {
-  background-color: #1e293b;
-  border-bottom: 1px solid #334155;
+  background-color: var(--white);
+  border-bottom: 1px solid #e2e8f0;
   padding: 15px 30px;
   display: flex;
   justify-content: space-between;
@@ -18,7 +18,7 @@
 .admin-header h1 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #38bdf8;
+  color: var(--primary-blue);
   margin: 0;
   display: flex;
   align-items: center;
@@ -31,8 +31,8 @@
 }
 
 .admin-btn {
-  background-color: #38bdf8;
-  color: #0f172a;
+  background-color: var(--primary-blue);
+  color: var(--white);
   border: none;
   border-radius: 6px;
   padding: 8px 16px;
@@ -45,17 +45,17 @@
 }
 
 .admin-btn:hover {
-  background-color: #0ea5e9;
+  background-color: var(--deep-navy);
 }
 
 .admin-btn.secondary {
   background-color: transparent;
-  border: 1px solid #475569;
-  color: #e2e8f0;
+  border: 1px solid #cbd5e1;
+  color: var(--deep-navy);
 }
 
 .admin-btn.secondary:hover {
-  background-color: #334155;
+  background-color: #f1f5f9;
 }
 
 .admin-content {
@@ -79,16 +79,17 @@
 }
 
 .admin-card {
-  background-color: #1e293b;
+  background-color: var(--white);
   border-radius: 12px;
-  border: 1px solid #334155;
+  border: 1px solid #e2e8f0;
   overflow: hidden;
   margin-bottom: 30px;
+  box-shadow: var(--shadow-sm);
 }
 
 .admin-card-header {
   padding: 20px;
-  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid #e2e8f0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -97,7 +98,7 @@
 .admin-card-header h2 {
   margin: 0;
   font-size: 1.25rem;
-  color: #f1f5f9;
+  color: var(--deep-navy);
 }
 
 .admin-card-body {
@@ -112,16 +113,18 @@
 .admin-table th {
   text-align: left;
   padding: 12px 20px;
-  color: #94a3b8;
-  font-weight: 500;
+  color: var(--slate-text);
+  font-weight: 600;
   font-size: 0.85rem;
-  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid #e2e8f0;
+  text-transform: uppercase;
 }
 
 .admin-table td {
   padding: 16px 20px;
-  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid #e2e8f0;
   vertical-align: middle;
+  color: var(--deep-navy);
 }
 
 .admin-table tr:last-child td {
@@ -136,7 +139,7 @@
 .icon-btn {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: var(--slate-text);
   cursor: pointer;
   padding: 5px;
   border-radius: 4px;
@@ -144,8 +147,8 @@
 }
 
 .icon-btn:hover {
-  background-color: #334155;
-  color: #f8fafc;
+  background-color: #f1f5f9;
+  color: var(--deep-navy);
 }
 
 .icon-btn.delete:hover {
@@ -160,7 +163,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(15, 23, 42, 0.8);
+  background-color: rgba(15, 23, 42, 0.5);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -169,19 +172,19 @@
 }
 
 .admin-modal {
-  background-color: #1e293b;
+  background-color: var(--white);
   border-radius: 12px;
-  border: 1px solid #334155;
+  border: 1px solid #e2e8f0;
   width: 100%;
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-lg);
 }
 
 .admin-modal-header {
   padding: 20px;
-  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid #e2e8f0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -190,17 +193,18 @@
 .admin-modal-header h2 {
   margin: 0;
   font-size: 1.25rem;
+  color: var(--deep-navy);
 }
 
 .admin-modal-close {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: var(--slate-text);
   cursor: pointer;
 }
 
 .admin-modal-close:hover {
-  color: #f8fafc;
+  color: var(--deep-navy);
 }
 
 .admin-modal-body {
@@ -214,7 +218,8 @@
 .admin-form-group label {
   display: block;
   margin-bottom: 8px;
-  color: #94a3b8;
+  color: var(--deep-navy);
+  font-weight: 600;
   font-size: 0.9rem;
 }
 
@@ -222,22 +227,23 @@
 .admin-form-group select {
   width: 100%;
   padding: 10px 12px;
-  background-color: #0f172a;
-  border: 1px solid #334155;
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
   border-radius: 6px;
-  color: #f8fafc;
+  color: var(--deep-navy);
   font-family: inherit;
 }
 
 .admin-form-group input:focus,
 .admin-form-group select:focus {
   outline: none;
-  border-color: #38bdf8;
+  border-color: var(--primary-blue);
+  background-color: var(--white);
 }
 
 .admin-modal-footer {
   padding: 20px;
-  border-top: 1px solid #334155;
+  border-top: 1px solid #e2e8f0;
   display: flex;
   justify-content: flex-end;
   gap: 15px;

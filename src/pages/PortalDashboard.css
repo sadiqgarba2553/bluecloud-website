@@ -14,11 +14,10 @@
   border-right: 1px solid var(--light-gray);
   display: flex;
   flex-direction: column;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 50;
+  position: sticky;
+  top: 76px; /* Offset for global header */
+  height: calc(100vh - 76px);
+  z-index: 30;
   transition: transform 0.3s ease;
 }
 
@@ -117,10 +116,9 @@
 /* Main Content */
 .portal-main {
   flex: 1;
-  margin-left: 260px;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: calc(100vh - 76px);
 }
 
 /* Topbar */
@@ -453,6 +451,11 @@
 
 @media (max-width: 768px) {
   .portal-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1000;
     transform: translateX(-100%);
   }
   

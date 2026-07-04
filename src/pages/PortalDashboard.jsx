@@ -96,10 +96,7 @@ const PortalDashboard = () => {
       {/* Sidebar */}
       <aside className={`portal-sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="portal-sidebar-header">
-          <Link to="/" className="portal-logo">
-            <img src="/icon_no_background.PNG" alt="BlueCloud" />
-            <span>BLUECLOUD</span>
-          </Link>
+          <h2 style={{ color: 'var(--deep-navy)', fontSize: '1.25rem', margin: 0 }}>Portal Menu</h2>
           <button className="portal-close-btn" onClick={() => setIsSidebarOpen(false)}>
             <X size={24} />
           </button>
