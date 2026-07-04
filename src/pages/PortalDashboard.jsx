@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
+import { auth, db } from '../firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { 
   LayoutDashboard, 
   FolderKanban, 
@@ -20,11 +23,54 @@ import './PortalDashboard.css';
 
 const PortalDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (!currentUser) {
+        navigate('/portal/login');
+      } else {
+        setUser(currentUser);
+        // Fetch projects from Firestore
+        try {
+          const q = query(collection(db, "projects"), where("userEmail", "==", currentUser.email));
+          const querySnapshot = await getDocs(q);
+          const projectsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          setProjects(projectsData);
+        } catch (error) {
+          console.error("Error fetching projects: ", error);
+        }
+        setLoading(false);
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
+
+  const handleLogout = async () => {
+    await signOut(auth);
     navigate('/portal/login');
   };
+
+  if (loading) {
+    return <div className="portal-layout" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>Loading Dashboard...</div>;
+  }
+
+  // Fallback to demo data if no projects found in Firestore
+  const displayProjects = projects.length > 0 ? projects : [
+    {
+      id: 'demo-1',
+      title: 'AI Data Integration Platform',
+      progress: 75,
+      milestones: [
+        { title: 'Phase 1: Architecture Design', completed: true, date: 'Sep 10' },
+        { title: 'Phase 2: Database Migration', completed: true, date: 'Sep 28' },
+        { title: 'Phase 3: UI Implementation', completed: false, date: 'Oct 15' }
+      ]
+    }
+  ];
 
   return (
     <div className="portal-layout">
@@ -84,7 +130,7 @@ const PortalDashboard = () => {
 
       {/* Main Content */}
       <main className="portal-main">
-        {/* Top Header */}
+        {/* Topbar */}
         <header className="portal-topbar">
           <div className="portal-topbar-left">
             <button className="portal-menu-btn" onClick={() => setIsSidebarOpen(true)}>
@@ -101,7 +147,7 @@ const PortalDashboard = () => {
               <span className="portal-badge">2</span>
             </button>
             <div className="portal-avatar">
-              AC
+              {user?.email?.charAt(0).toUpperCase() || 'U'}
             </div>
           </div>
         </header>
@@ -109,14 +155,14 @@ const PortalDashboard = () => {
         {/* Dashboard Content */}
         <div className="portal-content">
           <div className="portal-welcome">
-            <h1>Welcome back, Acme Corporation</h1>
+            <h1>Welcome back, {user?.displayName || user?.email?.split('@')[0] || 'Client'}</h1>
             <p>Here is what's happening with your projects today.</p>
           </div>
 
           <div className="portal-stats-grid">
             <div className="portal-stat-card">
               <h3>Active Projects</h3>
-              <div className="stat-value">2</div>
+              <div className="stat-value">{displayProjects.length}</div>
               <p className="stat-trend positive">On track</p>
             </div>
             <div className="portal-stat-card">
@@ -134,45 +180,37 @@ const PortalDashboard = () => {
           <div className="portal-grid">
             {/* Project Progress */}
             <div className="portal-card col-span-2">
-              <div className="portal-card-header">
-                <h2>AI Data Integration Platform</h2>
-                <span className="status-badge in-progress">In Progress</span>
-              </div>
-              <div className="portal-card-body">
-                <div className="progress-section">
-                  <div className="progress-info">
-                    <span>Overall Progress</span>
-                    <span>75%</span>
+              {displayProjects.map(project => (
+                <div key={project.id} style={{ marginBottom: '30px' }}>
+                  <div className="portal-card-header">
+                    <h2>{project.title}</h2>
+                    <span className="status-badge in-progress">{project.progress === 100 ? 'Completed' : 'In Progress'}</span>
                   </div>
-                  <div className="progress-bar-bg">
-                    <div className="progress-bar-fill" style={{ width: '75%' }}></div>
-                  </div>
-                </div>
+                  <div className="portal-card-body">
+                    <div className="progress-section">
+                      <div className="progress-info">
+                        <span>Overall Progress</span>
+                        <span>{project.progress}%</span>
+                      </div>
+                      <div className="progress-bar-bg">
+                        <div className="progress-bar-fill" style={{ width: `${project.progress}%` }}></div>
+                      </div>
+                    </div>
 
-                <div className="milestone-list">
-                  <div className="milestone-item completed">
-                    <CheckCircle2 size={18} />
-                    <div className="milestone-details">
-                      <h4>Phase 1: Architecture Design</h4>
-                      <p>Completed on Sep 10</p>
-                    </div>
-                  </div>
-                  <div className="milestone-item completed">
-                    <CheckCircle2 size={18} />
-                    <div className="milestone-details">
-                      <h4>Phase 2: Database Migration</h4>
-                      <p>Completed on Sep 28</p>
-                    </div>
-                  </div>
-                  <div className="milestone-item current">
-                    <Clock size={18} />
-                    <div className="milestone-details">
-                      <h4>Phase 3: UI Implementation</h4>
-                      <p>Target: Oct 15</p>
+                    <div className="milestone-list">
+                      {project.milestones && project.milestones.map((milestone, idx) => (
+                        <div key={idx} className={`milestone-item ${milestone.completed ? 'completed' : 'current'}`}>
+                          {milestone.completed ? <CheckCircle2 size={18} /> : <Clock size={18} />}
+                          <div className="milestone-details">
+                            <h4>{milestone.title}</h4>
+                            <p>{milestone.completed ? 'Completed on ' : 'Target: '}{milestone.date}</p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
 
             {/* Recent Invoices */}
