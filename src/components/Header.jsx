@@ -57,7 +57,7 @@ const Header = () => {
         </nav>
 
         {/* Desktop CTA */}
-        <div className="header-cta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+        <div className="header-cta" style={{ alignItems: 'center', gap: 'var(--spacing-3)' }}>
           <Link to="/portal/login" style={{ color: 'var(--slate-text)', fontWeight: '600', fontSize: '0.9rem', textDecoration: 'none' }}>
             Client Login
           </Link>

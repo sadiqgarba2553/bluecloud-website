@@ -70,6 +70,10 @@
   color: var(--primary-blue);
 }
 
+.header-cta {
+  display: flex;
+}
+
 .mobile-menu-btn {
   display: none;
   background: none;
