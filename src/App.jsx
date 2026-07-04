@@ -14,6 +14,8 @@ import Contact from './pages/Contact';
 // Portal Imports
 import PortalLogin from './pages/PortalLogin';
 import PortalDashboard from './pages/PortalDashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminRoute from './components/AdminRoute';
 
 function App() {
   const location = useLocation();
@@ -35,6 +37,11 @@ function App() {
           {/* Portal Routes */}
           <Route path="/portal/login" element={<PortalLogin />} />
           <Route path="/portal/dashboard" element={<PortalDashboard />} />
+          <Route path="/portal/admin" element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          } />
         </Routes>
       </main>
       {!isPortalRoute && <Footer />}

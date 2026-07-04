@@ -25,6 +25,7 @@ const PortalDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [projects, setProjects] = useState([]);
+  const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -34,14 +35,17 @@ const PortalDashboard = () => {
         navigate('/portal/login');
       } else {
         setUser(currentUser);
-        // Fetch projects from Firestore
+        // Fetch projects and invoices from Firestore
         try {
-          const q = query(collection(db, "projects"), where("userEmail", "==", currentUser.email));
-          const querySnapshot = await getDocs(q);
-          const projectsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          setProjects(projectsData);
+          const qProj = query(collection(db, "projects"), where("userEmail", "==", currentUser.email));
+          const projSnap = await getDocs(qProj);
+          setProjects(projSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+
+          const qInv = query(collection(db, "invoices"), where("userEmail", "==", currentUser.email));
+          const invSnap = await getDocs(qInv);
+          setInvoices(invSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
         } catch (error) {
-          console.error("Error fetching projects: ", error);
+          console.error("Error fetching data: ", error);
         }
         setLoading(false);
       }
@@ -70,6 +74,10 @@ const PortalDashboard = () => {
         { title: 'Phase 3: UI Implementation', completed: false, date: 'Oct 15' }
       ]
     }
+  ];
+
+  const displayInvoices = invoices.length > 0 ? invoices : [
+    { id: 'demo-inv-1', invoiceNumber: 'INV-2026-042', date: 'Sep 01, 2026', amount: 4500, status: 'Paid' }
   ];
 
   return (
@@ -220,28 +228,19 @@ const PortalDashboard = () => {
               </div>
               <div className="portal-card-body p-0">
                 <div className="invoice-list">
-                  <div className="invoice-item">
-                    <div className="invoice-info">
-                      <h4>INV-2026-042</h4>
-                      <p>Sep 01, 2026</p>
+                  {displayInvoices.map(inv => (
+                    <div key={inv.id} className="invoice-item">
+                      <div className="invoice-info">
+                        <h4>{inv.invoiceNumber}</h4>
+                        <p>{inv.date}</p>
+                      </div>
+                      <div className="invoice-amount">
+                        <h4>${inv.amount}</h4>
+                        <span className={`status-badge ${inv.status.toLowerCase()}`}>{inv.status}</span>
+                      </div>
+                      <button className="invoice-download"><Download size={16} /></button>
                     </div>
-                    <div className="invoice-amount">
-                      <h4>$4,500</h4>
-                      <span className="status-badge paid">Paid</span>
-                    </div>
-                    <button className="invoice-download"><Download size={16} /></button>
-                  </div>
-                  <div className="invoice-item">
-                    <div className="invoice-info">
-                      <h4>INV-2026-038</h4>
-                      <p>Aug 01, 2026</p>
-                    </div>
-                    <div className="invoice-amount">
-                      <h4>$4,500</h4>
-                      <span className="status-badge paid">Paid</span>
-                    </div>
-                    <button className="invoice-download"><Download size={16} /></button>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
