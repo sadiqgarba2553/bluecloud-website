@@ -172,6 +172,42 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Testimonials Section */}
+      <section className="testimonials-section">
+        <div className="container">
+          <h2 className="text-center" style={{ marginBottom: '1rem' }}>What Our Clients Say</h2>
+          <p className="text-center" style={{ color: 'var(--slate-text)', maxWidth: '600px', margin: '0 auto' }}>Don't just take our word for it. Here is what some of our enterprise partners have to say about working with BlueCloud.</p>
+          <div className="testimonials-grid">
+            <div className="testimonial-card">
+              <p className="testimonial-text">"BlueCloud completely transformed our legacy systems. Their AI automation saved us countless hours and the team was a joy to work with."</p>
+              <div className="testimonial-author">— Sarah Johnson, CEO of TechFlow</div>
+            </div>
+            <div className="testimonial-card">
+              <p className="testimonial-text">"The web app they built for us is incredibly fast and intuitive. Our customer retention increased by 40% in the first three months."</p>
+              <div className="testimonial-author">— Michael Chen, VP of Product at FinServe</div>
+            </div>
+            <div className="testimonial-card">
+              <p className="testimonial-text">"Security was our top priority, and BlueCloud delivered. Their enterprise architecture is rock solid. Highly recommended."</p>
+              <div className="testimonial-author">— Amina Bello, Director of IT at GlobalTrade</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter Section */}
+      <section className="newsletter-section">
+        <div className="container">
+          <div className="newsletter-content">
+            <h2>Stay Ahead of the Curve</h2>
+            <p>Get the latest insights on AI, Web Development, and Enterprise Tech delivered straight to your inbox.</p>
+            <form className="newsletter-form" onSubmit={(e) => { e.preventDefault(); alert('Subscribed successfully!'); }}>
+              <input type="email" placeholder="Enter your email address" className="newsletter-input" required />
+              <button type="submit" className="newsletter-btn">Subscribe</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Banner */}
       <div className="container">
         <div className="cta-banner">

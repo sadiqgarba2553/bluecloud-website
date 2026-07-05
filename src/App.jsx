@@ -1,12 +1,15 @@
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import Chatbot from './components/Chatbot';
 
 // Page Imports
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
 import Projects from './pages/Projects';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
 import AISolutions from './pages/AISolutions';
 import Careers from './pages/Careers';
 import Contact from './pages/Contact';
@@ -27,6 +30,8 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/ai-solutions" element={<AISolutions />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/contact" element={<Contact />} />
@@ -42,6 +47,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
+      <Chatbot />
     </div>
   );
 }

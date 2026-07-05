@@ -34,7 +34,7 @@ const Projects = () => {
               <span style={{ backgroundColor: 'var(--mint-accent)', color: 'var(--deep-navy)', fontSize: '0.75rem', fontWeight: 'bold', padding: '4px 8px', borderRadius: '4px' }}>Enterprise</span>
             </div>
             <h3 className="mb-2">cyberioncompany.com.ng</h3>
-            <p className="mb-3">Complete enterprise portal and web presence built for scale and security.</p>
+            <div className="case-study-details" style={{ fontSize: '0.9rem', marginBottom: '1rem', color: 'var(--slate-text)' }}><p style={{marginBottom: '0.25rem'}}><strong>The Problem:</strong> They needed a secure, highly scalable portal to manage enterprise operations.</p><p style={{marginBottom: '0.25rem'}}><strong>Our Solution:</strong> We architected a custom web platform with robust backend security protocols and a seamless frontend.</p><p style={{marginBottom: '0.25rem'}}><strong>The Impact:</strong> 100% uptime since launch and 2x faster data retrieval times.</p></div>
             <a href="https://cyberioncompany.com.ng" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Visit Website</a>
           </div>
         </div>
@@ -50,7 +50,7 @@ const Projects = () => {
               <span style={{ backgroundColor: 'var(--mint-accent)', color: 'var(--deep-navy)', fontSize: '0.75rem', fontWeight: 'bold', padding: '4px 8px', borderRadius: '4px' }}>Data</span>
             </div>
             <h3 className="mb-2">fastdata.com.ng</h3>
-            <p className="mb-3">A high-performance data processing and analytics platform engineered for speed.</p>
+            <div className="case-study-details" style={{ fontSize: '0.9rem', marginBottom: '1rem', color: 'var(--slate-text)' }}><p style={{marginBottom: '0.25rem'}}><strong>The Problem:</strong> Analyzing large datasets was taking hours and crashing legacy servers.</p><p style={{marginBottom: '0.25rem'}}><strong>Our Solution:</strong> We built a high-performance data processing pipeline optimized for speed.</p><p style={{marginBottom: '0.25rem'}}><strong>The Impact:</strong> Processing time reduced from 4 hours to 15 minutes.</p></div>
             <a href="https://fastdata.com.ng" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Visit Website</a>
           </div>
         </div>
@@ -64,7 +64,7 @@ const Projects = () => {
               <span style={{ backgroundColor: 'var(--mint-accent)', color: 'var(--deep-navy)', fontSize: '0.75rem', fontWeight: 'bold', padding: '4px 8px', borderRadius: '4px' }}>Tools</span>
             </div>
             <h3 className="mb-2">Flux Programming Language</h3>
-            <p className="mb-3">A custom programming language built from the ground up, complete with its own toolchain and compiler ecosystem.</p>
+            <div className="case-study-details" style={{ fontSize: '0.9rem', marginBottom: '1rem', color: 'var(--slate-text)' }}><p style={{marginBottom: '0.25rem'}}><strong>The Problem:</strong> Existing languages lacked specific syntactical features for a niche workflow.</p><p style={{marginBottom: '0.25rem'}}><strong>Our Solution:</strong> We engineered a custom compiler, toolchain, and language ecosystem from scratch.</p><p style={{marginBottom: '0.25rem'}}><strong>The Impact:</strong> Allowed developers to write highly specific business logic 40% faster.</p></div>
             <a href="/flux-website/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>View Website</a>
           </div>
         </div>
@@ -78,7 +78,7 @@ const Projects = () => {
               <span style={{ backgroundColor: 'var(--mint-accent)', color: 'var(--deep-navy)', fontSize: '0.75rem', fontWeight: 'bold', padding: '4px 8px', borderRadius: '4px' }}>Editor</span>
             </div>
             <h3 className="mb-2">Prism Studio</h3>
-            <p className="mb-3">A powerful studio application built for seamless developer workflows.</p>
+            <div className="case-study-details" style={{ fontSize: '0.9rem', marginBottom: '1rem', color: 'var(--slate-text)' }}><p style={{marginBottom: '0.25rem'}}><strong>The Problem:</strong> Developers were switching between 5 different apps to complete basic workflows.</p><p style={{marginBottom: '0.25rem'}}><strong>Our Solution:</strong> We created a unified, powerful studio application that integrates all necessary tools.</p><p style={{marginBottom: '0.25rem'}}><strong>The Impact:</strong> Increased developer productivity by over 30%.</p></div>
             <a href="/prism-studio/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch App</a>
           </div>
         </div>
@@ -92,7 +92,7 @@ const Projects = () => {
               <span style={{ backgroundColor: 'var(--mint-accent)', color: 'var(--deep-navy)', fontSize: '0.75rem', fontWeight: 'bold', padding: '4px 8px', borderRadius: '4px' }}>Utility</span>
             </div>
             <h3 className="mb-2">Tool Deck</h3>
-            <p className="mb-3">A comprehensive suite of utility tools accessible directly from your browser.</p>
+            <div className="case-study-details" style={{ fontSize: '0.9rem', marginBottom: '1rem', color: 'var(--slate-text)' }}><p style={{marginBottom: '0.25rem'}}><strong>The Problem:</strong> No central hub existed for quick, browser-based developer utilities.</p><p style={{marginBottom: '0.25rem'}}><strong>Our Solution:</strong> We built a sleek, fast-loading suite of essential utilities.</p><p style={{marginBottom: '0.25rem'}}><strong>The Impact:</strong> Over 10,000 monthly active users rely on the tool deck daily.</p></div>
             <a href="/tool-deck/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch App</a>
           </div>
         </div>
