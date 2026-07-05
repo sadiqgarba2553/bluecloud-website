@@ -19,7 +19,7 @@
 
 .blog-subtitle {
   font-size: 1.2rem;
-  color: var(--text-color);
+  color: var(--slate-text);
   opacity: 0.8;
   max-width: 600px;
   margin: 0 auto;
@@ -70,7 +70,7 @@
 
 .blog-tag {
   background: rgba(14, 165, 233, 0.1);
-  color: var(--primary-color);
+  color: var(--primary-blue);
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-weight: 600;
@@ -80,7 +80,7 @@
   font-size: 1.25rem;
   margin-bottom: 1rem;
   line-height: 1.4;
-  color: var(--heading-color);
+  color: var(--deep-navy);
 }
 
 .blog-card-title a {
@@ -90,7 +90,7 @@
 }
 
 .blog-card-title a:hover {
-  color: var(--primary-color);
+  color: var(--primary-blue);
 }
 
 .blog-card-excerpt {
@@ -104,7 +104,7 @@
 .read-more {
   display: inline-flex;
   align-items: center;
-  color: var(--primary-color);
+  color: var(--primary-blue);
   text-decoration: none;
   font-weight: 600;
   transition: gap 0.3s ease;
@@ -124,7 +124,7 @@
 
 .post-tag {
   display: inline-block;
-  background: var(--primary-color);
+  background: var(--primary-blue);
   color: white;
   padding: 0.25rem 1rem;
   border-radius: 20px;
@@ -174,7 +174,7 @@
 .post-content h2 {
   font-size: 2rem;
   margin: 2.5rem 0 1rem 0;
-  color: var(--heading-color);
+  color: var(--deep-navy);
 }
 
 .post-content p {
@@ -191,7 +191,7 @@
 }
 
 .post-content blockquote {
-  border-left: 4px solid var(--primary-color);
+  border-left: 4px solid var(--primary-blue);
   padding-left: 1.5rem;
   margin: 2rem 0;
   font-style: italic;

@@ -58,7 +58,7 @@ const Chatbot = () => {
 
     try {
       if (!apiKey || apiKey === 'MISSING_API_KEY') {
-        throw new Error("Missing API Key");
+        throw new Error("Missing API Key. Please ensure VITE_GEMINI_API_KEY is in your .env.local file and you have restarted the Vite dev server.");
       }
       
       const result = await chatSession.sendMessage(userMessage);
@@ -67,7 +67,7 @@ const Chatbot = () => {
       setMessages(prev => [...prev, { text: botResponse, sender: 'bot' }]);
     } catch (error) {
       console.error("Chat error:", error);
-      setMessages(prev => [...prev, { text: "I'm sorry, I'm having trouble connecting right now. Please try again later or contact us directly.", sender: 'bot' }]);
+      setMessages(prev => [...prev, { text: `Error: ${error.message}. If you just added the API key, please restart your development server.`, sender: 'bot' }]);
     } finally {
       setIsLoading(false);
     }
