@@ -29,6 +29,36 @@ const Home = () => {
         </div>
       </section>
 
+      {/* World Youth Day Announcement Banner */}
+      <div className="wyd-home-banner">
+        <div className="container">
+          <Link to="/blog/world-youth-day-2026" className="wyd-home-inner">
+            <div className="wyd-home-logo-wrap">
+              <img
+                src="/worldsyouthdaylogo.svg"
+                alt="World Youth Day 2026 Logo"
+                className="wyd-home-logo"
+              />
+            </div>
+            <div className="wyd-home-text">
+              <span className="wyd-home-label">Tomorrow · July 15th</span>
+              <h3 className="wyd-home-title">World Youth Day 2026</h3>
+              <p className="wyd-home-desc">
+                BlueCloud marks the day. Read our piece on the global gathering, what it means,
+                and why it matters to us.
+              </p>
+            </div>
+            <div className="wyd-home-cta">
+              Read Article
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </div>
+          </Link>
+        </div>
+      </div>
+
       {/* Services Overview */}
       <section className="section">
         <div className="container">
