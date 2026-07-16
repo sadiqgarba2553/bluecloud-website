@@ -13,6 +13,7 @@ import BlogPost from './pages/BlogPost';
 import AISolutions from './pages/AISolutions';
 import Careers from './pages/Careers';
 import Contact from './pages/Contact';
+import RateCard from './pages/RateCard';
 
 // Portal Imports
 import PortalLogin from './pages/PortalLogin';
@@ -35,6 +36,7 @@ function App() {
           <Route path="/ai-solutions" element={<AISolutions />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/rate-card" element={<RateCard />} />
           
           {/* Portal Routes */}
           <Route path="/portal/login" element={<PortalLogin />} />

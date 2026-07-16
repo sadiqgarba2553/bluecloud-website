@@ -121,3 +121,55 @@
   opacity: 0.1;
   transform: rotate(45deg);
 }
+
+/* Rate Card Inline CTA */
+.rate-card-inline-cta {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  background: linear-gradient(135deg, #eef4ff 0%, #e8f9fc 100%);
+  border: 1px solid rgba(11, 95, 255, 0.15);
+  border-left: 4px solid var(--primary-blue);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-3);
+  margin-top: var(--spacing-4);
+  flex-wrap: wrap;
+}
+
+.rate-card-inline-cta > svg {
+  color: var(--primary-blue);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.rate-card-label {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--deep-navy);
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.rate-card-sub {
+  font-size: 0.9rem;
+  color: var(--slate-text);
+  margin: 0;
+}
+
+.rate-card-actions {
+  display: flex;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-2);
+  width: 100%;
+}
+
+.rate-card-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px var(--spacing-3);
+  font-size: 0.9rem;
+  text-decoration: none;
+}

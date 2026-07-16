@@ -1,4 +1,4 @@
-import { Monitor, Cpu, Smartphone, Briefcase, CheckCircle } from 'lucide-react';
+import { Monitor, Cpu, Smartphone, Briefcase, Share2, Palette, Film, CheckCircle, Download, FileText, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import './Services.css';
@@ -45,6 +45,45 @@ const Services = () => {
       ]
     },
     {
+      id: 'social-media',
+      title: 'Social Media Management',
+      icon: <Share2 size={40} />,
+      description: 'Build a powerful, consistent online presence with our end-to-end social media management services. We craft compelling content strategies, manage your brand voice, and drive measurable engagement across all major platforms.',
+      capabilities: [
+        'Content Strategy & Calendar Planning',
+        'Platform Management (Instagram, X, LinkedIn, Facebook, TikTok)',
+        'Community Engagement & Growth',
+        'Analytics & Performance Reporting',
+        'Paid Social Advertising Campaigns'
+      ]
+    },
+    {
+      id: 'graphics',
+      title: 'Graphics Design',
+      icon: <Palette size={40} />,
+      description: 'Visuals that communicate, captivate, and convert. Our design team crafts brand identities, marketing materials, and digital assets that make your business impossible to ignore.',
+      capabilities: [
+        'Brand Identity & Logo Design',
+        'Marketing & Promotional Materials',
+        'Social Media Graphics & Templates',
+        'Presentation Design (Pitch Decks)',
+        'Print & Digital Collateral'
+      ]
+    },
+    {
+      id: 'video',
+      title: 'Video Editing',
+      icon: <Film size={40} />,
+      description: 'Cinematic, engaging video content that tells your story with impact. From raw footage to polished final cuts, we handle every aspect of post-production to deliver videos that keep audiences watching.',
+      capabilities: [
+        'Corporate & Promotional Videos',
+        'Short-Form Social Media Content (Reels, TikToks, Shorts)',
+        'Motion Graphics & Animations',
+        'Color Grading & Audio Mixing',
+        'Subtitle & Caption Integration'
+      ]
+    },
+    {
       id: 'consulting',
       title: 'Technical Consulting & Support',
       icon: <Briefcase size={40} />,
@@ -62,14 +101,14 @@ const Services = () => {
   return (
     <div>
       <SEO
-        title="Services — Web Development, AI, Cybersecurity | BlueCloud Technologies"
-        description="Explore our enterprise-grade services including responsive web development, AI-powered solutions, and proactive cybersecurity audits."
+        title="Services — Web Development, AI, Social Media, Design & Video | BlueCloud Technologies"
+        description="Explore our full suite of services including web development, AI solutions, social media management, graphics design, video editing, and technical consulting."
         path="/services"
       />
       <div className="services-header">
         <div className="container">
           <h1>Our Services</h1>
-          <p>Comprehensive, enterprise-grade technical solutions blending traditional software engineering with cutting-edge AI.</p>
+          <p>Comprehensive, enterprise-grade technical and creative solutions — from cutting-edge software to stunning content creation.</p>
         </div>
       </div>
 
@@ -95,6 +134,29 @@ const Services = () => {
                     </li>
                   ))}
                 </ul>
+
+                {/* Rate Card CTA for Social Media */}
+                {service.id === 'social-media' && (
+                  <div className="rate-card-inline-cta">
+                    <FileText size={22} />
+                    <div>
+                      <span className="rate-card-label">Transparent Pricing Available</span>
+                      <p className="rate-card-sub">Download our Social Media Management Rate Card to see our packages and pricing.</p>
+                    </div>
+                    <div className="rate-card-actions">
+                      <Link to="/rate-card" className="btn-primary rate-card-btn">
+                        <ExternalLink size={16} /> View Rate Card
+                      </Link>
+                      <a
+                        href="/BlueCloud_Rate_Card.pdf"
+                        download="BlueCloud_Rate_Card.pdf"
+                        className="btn-secondary rate-card-btn"
+                      >
+                        <Download size={16} /> Download PDF
+                      </a>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="service-detail-visual">
                 {service.title} Abstract Visual
@@ -107,11 +169,16 @@ const Services = () => {
       {/* Final CTA */}
       <section className="section section-dark text-center">
         <div className="container">
-          <h2 className="mb-2">Need a Custom Technical Solution?</h2>
-          <p className="mb-4">Let's discuss how BlueCloud can engineer the right platform for your needs.</p>
-          <Link to="/contact" className="btn-primary" style={{ backgroundColor: 'var(--cyan-accent)', color: 'var(--deep-navy)' }}>
-            Schedule a Consultation
-          </Link>
+          <h2 className="mb-2">Need a Custom Solution?</h2>
+          <p className="mb-4">Whether it's tech, content, or creative — BlueCloud delivers. Let's build something great together.</p>
+          <div style={{ display: 'flex', gap: 'var(--spacing-2)', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link to="/contact" className="btn-primary" style={{ backgroundColor: 'var(--cyan-accent)', color: 'var(--deep-navy)' }}>
+              Schedule a Consultation
+            </Link>
+            <Link to="/rate-card" className="btn-secondary" style={{ borderColor: 'var(--cyan-accent)', color: 'var(--cyan-accent)' }}>
+              View Rate Card
+            </Link>
+          </div>
         </div>
       </section>
     </div>

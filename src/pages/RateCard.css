@@ -1,0 +1,164 @@
+/* Rate Card Page Header */
+.rate-card-header {
+  background: linear-gradient(135deg, var(--deep-navy) 0%, #0d2a50 100%);
+  padding: var(--spacing-8) 0 var(--spacing-6);
+  color: var(--white);
+}
+
+.rate-card-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cyan-accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  margin-bottom: var(--spacing-4);
+  transition: opacity 0.2s ease;
+}
+
+.rate-card-back-link:hover {
+  color: var(--cyan-accent);
+  opacity: 0.8;
+}
+
+.rate-card-header-content {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-4);
+}
+
+.rate-card-icon-badge {
+  width: 80px;
+  height: 80px;
+  background: rgba(34, 211, 238, 0.15);
+  border: 2px solid rgba(34, 211, 238, 0.3);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cyan-accent);
+  flex-shrink: 0;
+}
+
+.rate-card-header-content h1 {
+  color: var(--white);
+  font-size: 2.8rem;
+  margin-bottom: var(--spacing-1);
+}
+
+.rate-card-header-content p {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 1.1rem;
+  max-width: 620px;
+  line-height: 1.6;
+}
+
+.rate-card-header-actions {
+  display: flex;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+}
+
+.rate-card-dl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  padding: 12px var(--spacing-3);
+  font-size: 0.95rem;
+}
+
+/* PDF Viewer Section */
+.rate-card-viewer-section {
+  padding: var(--spacing-6) 0;
+  background-color: var(--light-gray);
+}
+
+.rate-card-viewer-wrapper {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  border: 1px solid rgba(11, 95, 255, 0.1);
+}
+
+.rate-card-viewer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-2) var(--spacing-3);
+  background-color: var(--deep-navy);
+  color: var(--white);
+}
+
+.viewer-bar-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.viewer-bar-title svg {
+  color: var(--cyan-accent);
+}
+
+.viewer-bar-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cyan-accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  padding: 6px 14px;
+  border: 1px solid rgba(34, 211, 238, 0.4);
+  border-radius: var(--radius-sm);
+  transition: background-color 0.2s ease;
+}
+
+.viewer-bar-download:hover {
+  background-color: rgba(34, 211, 238, 0.15);
+  color: var(--cyan-accent);
+}
+
+.rate-card-iframe {
+  width: 100%;
+  height: 850px;
+  border: none;
+  display: block;
+}
+
+.rate-card-fallback {
+  text-align: center;
+  margin-top: var(--spacing-3);
+  font-size: 0.9rem;
+  color: var(--slate-text);
+}
+
+.rate-card-fallback a {
+  color: var(--primary-blue);
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .rate-card-header-content {
+    flex-direction: column;
+  }
+
+  .rate-card-header-content h1 {
+    font-size: 2rem;
+  }
+
+  .rate-card-iframe {
+    height: 550px;
+  }
+
+  .rate-card-header-actions {
+    flex-direction: column;
+  }
+}
