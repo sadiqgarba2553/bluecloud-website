@@ -29,7 +29,7 @@ const About = () => {
         <h2 style={{ color: 'var(--white)' }} className="mb-3">Meet the Leadership</h2>
         <img src="/imageofceo.PNG" alt="CEO" style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '50%', margin: '0 auto var(--spacing-3)', display: 'block' }} />
         <h3 style={{ color: 'var(--white)', marginBottom: '8px' }}>Sadiq Garba <span style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--mint-accent)' }}>— Founder / CEO</span></h3>
-        <p style={{ color: '#94A3B8', marginBottom: '16px' }}>Driving innovation and technical excellence at BlueCloud.</p>
+        <p style={{ color: '#94A3B8', marginBottom: '16px' }}>Software Engineer, Professional Graphics Designer & Video Editor driving innovation at BlueCloud.</p>
         <a href="/portfolio.html" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ display: 'inline-block', padding: '8px 24px', fontSize: '0.9rem' }}>View Portfolio</a>
       </div>
     </div>
