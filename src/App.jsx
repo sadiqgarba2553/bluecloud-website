@@ -14,6 +14,7 @@ import AISolutions from './pages/AISolutions';
 import Careers from './pages/Careers';
 import Contact from './pages/Contact';
 import RateCard from './pages/RateCard';
+import Portfolio from './pages/Portfolio';
 
 // Portal Imports
 import PortalLogin from './pages/PortalLogin';
@@ -37,6 +38,10 @@ function App() {
           <Route path="/careers" element={<Careers />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/rate-card" element={<RateCard />} />
+          <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/port" element={<Portfolio />} />
+          <Route path="/port/index.html" element={<Portfolio />} />
+          <Route path="/portfolio.html" element={<Portfolio />} />
           
           {/* Portal Routes */}
           <Route path="/portal/login" element={<PortalLogin />} />

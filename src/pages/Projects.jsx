@@ -19,7 +19,7 @@ const Projects = () => {
         <button className="btn-secondary">Web</button>
         <button className="btn-secondary">AI</button>
         <button className="btn-secondary">App</button>
-        <a href="/port/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center' }}>Founder Portfolio ↗</a>
+        <a href="/portfolio.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center' }}>Founder Portfolio ↗</a>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 'var(--spacing-4)' }}>

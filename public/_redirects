@@ -1,1 +1,7 @@
-/*    /index.html   200
+/port/*                      /port/:splat                 200!
+/portfolio.html              /portfolio.html              200!
+/certificates-awards.html    /certificates-awards.html    200!
+/flux-website/*              /flux-website/:splat         200!
+/prism-studio/*              /prism-studio/:splat         200!
+/tool-deck/*                 /tool-deck/:splat            200!
+/*                           /index.html                  200

@@ -43,7 +43,7 @@ const Footer = () => {
               <li><Link to="/about">About Us</Link></li>
               <li><Link to="/services">Services</Link></li>
               <li><Link to="/projects">Projects</Link></li>
-              <li><a href="/port/index.html" target="_blank" rel="noopener noreferrer">Founder Portfolio</a></li>
+              <li><a href="/portfolio.html" target="_blank" rel="noopener noreferrer">Founder Portfolio</a></li>
               <li><Link to="/ai-solutions">AI Solutions</Link></li>
               <li><Link to="/careers">Careers</Link></li>
               <li><Link to="/contact">Contact</Link></li>
