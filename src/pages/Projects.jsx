@@ -14,11 +14,12 @@ const Projects = () => {
         <p style={{ fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto' }}>Explore a selection of our recent enterprise deployments and technical solutions.</p>
       </div>
 
-      <div style={{ display: 'flex', gap: 'var(--spacing-2)', justifyContent: 'center', marginBottom: 'var(--spacing-5)' }}>
+      <div style={{ display: 'flex', gap: 'var(--spacing-2)', justifyContent: 'center', marginBottom: 'var(--spacing-5)', flexWrap: 'wrap' }}>
         <button className="btn-primary">All</button>
         <button className="btn-secondary">Web</button>
         <button className="btn-secondary">AI</button>
         <button className="btn-secondary">App</button>
+        <a href="/port/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center' }}>Founder Portfolio ↗</a>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 'var(--spacing-4)' }}>
