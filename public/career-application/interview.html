@@ -285,7 +285,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
             padding: 24px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .q-title {
@@ -307,6 +307,7 @@
             border-radius: 6px;
             height: fit-content;
             font-family: var(--font-heading);
+            white-space: nowrap;
         }
 
         .options-list {
@@ -506,7 +507,7 @@
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
-                <span id="timerText">15:00</span>
+                <span id="timerText">25:00</span>
             </div>
         </div>
     </header>
@@ -520,7 +521,7 @@
             </div>
             <div class="step-item" id="stepIndicator2">
                 <div class="step-num">2</div>
-                <span class="step-title">Technical Assessment</span>
+                <span class="step-title">Technical Assessment (20 Questions)</span>
             </div>
             <div class="step-item" id="stepIndicator3">
                 <div class="step-num">3</div>
@@ -580,7 +581,7 @@
                 <div class="actions-bar">
                     <div></div>
                     <button class="btn btn-primary" onclick="goToStep(2)">
-                        Proceed to Questions ➔
+                        Proceed to 20 Questions ➔
                     </button>
                 </div>
             </div>
@@ -589,12 +590,12 @@
             <div class="step-content hidden" id="stepContent2">
                 <div class="section-header">
                     <div class="role-track-badge" id="roleBadgeStep2">⚡ Senior Frontend Engineer Track</div>
-                    <h2 id="step2Title">Technical Skills Assessment</h2>
-                    <p id="step2Subtitle">Answer the key concepts for your selected role.</p>
+                    <h2 id="step2Title">Technical Assessment (20 Questions)</h2>
+                    <p id="step2Subtitle">Answer the 20 questions below for your selected role.</p>
                 </div>
 
                 <div id="dynamicQuestionsContainer">
-                    <!-- Dynamic Questions injected here -->
+                    <!-- 20 Dynamic Questions injected here -->
                 </div>
 
                 <div class="actions-bar">
@@ -632,7 +633,7 @@
                         ⬅ Back
                     </button>
                     <button class="btn btn-success" onclick="submitAssessment()">
-                        🚀 Submit Assessment
+                        🚀 Submit 20-Question Assessment
                     </button>
                 </div>
             </div>
@@ -646,7 +647,7 @@
                         </svg>
                     </div>
                     <h2>Assessment Completed!</h2>
-                    <p>Thank you for completing the BlueCloud Technologies Employment Assessment. Your responses have been saved and sent to our hiring team.</p>
+                    <p>Thank you for completing the BlueCloud 20-Question Technical Interview Assessment. Your responses have been saved and sent to our hiring team.</p>
 
                     <div class="meta-summary-box">
                         <div class="meta-row">
@@ -662,8 +663,8 @@
                             <span class="meta-val" id="resRole">Senior Frontend Engineer</span>
                         </div>
                         <div class="meta-row">
-                            <span class="meta-label">Assessment Status:</span>
-                            <span class="meta-val" style="color: #34D399;">● COMPLETED & VERIFIED</span>
+                            <span class="meta-label">Questions Completed:</span>
+                            <span class="meta-val" style="color: #34D399;">20 / 20 Questions Submitted</span>
                         </div>
                     </div>
 
@@ -684,46 +685,41 @@
 
     <script>
         let currentStep = 1;
-        let timerSeconds = 15 * 60; // 15 minutes
+        let timerSeconds = 25 * 60; // 25 minutes for 20 questions
         let candidateEmail = 'candidate@bluecloud.com';
         let candidatePlatform = 'Direct Application';
 
-        // Clear & Easy Role Question Bank
-        const ROLE_QUESTIONS = {
+        // 20 Questions Bank per Role
+        const ROLE_QUESTIONS_20 = {
             'Senior Frontend Engineer': {
                 trackLabel: '🎨 Senior Frontend Track (React, TypeScript, CSS)',
-                title: 'Senior Frontend Engineering Assessment',
-                subtitle: 'Key concepts in React, TypeScript, and modern Web Development',
-                q1: {
-                    badge: 'Q1 React Basics',
-                    title: 'What is the primary purpose of the React useState hook?',
-                    options: [
-                        'To store and update dynamic component state in memory',
-                        'To change the background color of the browser window',
-                        'To delete HTML elements permanently from the hard drive'
-                    ]
-                },
-                q2: {
-                    badge: 'Q2 CSS Layouts',
-                    title: 'Which modern CSS layout property is best for aligning items in flexible rows and columns?',
-                    options: [
-                        'Flexbox (display: flex) and CSS Grid (display: grid)',
-                        'Fixed absolute pixel margins',
-                        'Float left with clear fixes'
-                    ]
-                },
-                q3: {
-                    badge: 'Q3 TypeScript Benefits',
-                    title: 'What key feature does TypeScript bring to JavaScript development?',
-                    options: [
-                        'Static type checking and auto-complete to catch errors early',
-                        'Allows websites to load without internet access',
-                        'Replaces HTML markup with database queries'
-                    ]
-                },
+                title: 'Senior Frontend Engineering Assessment (20 Questions)',
+                subtitle: 'Key concepts in React, TypeScript, HTML, CSS, JavaScript, and Web Development',
+                questions: [
+                    { q: "Q1", title: "What is the primary purpose of the React useState hook?", opts: ["To store and update dynamic component state in memory", "To change the background color of the browser window", "To delete HTML elements permanently from disk"] },
+                    { q: "Q2", title: "Which modern CSS layout property is best for aligning items in flexible rows and columns?", opts: ["Flexbox (display: flex) and CSS Grid (display: grid)", "Fixed absolute pixel margins", "Float left with clear fixes"] },
+                    { q: "Q3", title: "What key feature does TypeScript bring to JavaScript development?", opts: ["Static type checking and auto-complete to catch errors early", "Allows websites to load without internet access", "Replaces HTML markup with database queries"] },
+                    { q: "Q4", title: "What does HTML stand for in web development?", opts: ["HyperText Markup Language", "High-Tech Machine Language", "Home Tool Markup Logic"] },
+                    { q: "Q5", title: "What is the purpose of the useEffect hook in React?", opts: ["To perform side effects like fetching data or setting timers", "To design custom CSS buttons", "To encrypt user passwords in the browser"] },
+                    { q: "Q6", title: "Which HTML tag is used to create a clickable hyperlink?", opts: ["<a> tag with href attribute", "<link> tag", "<button> tag only"] },
+                    { q: "Q7", title: "What is the DOM (Document Object Model)?", opts: ["The tree-structure representation of HTML elements in memory", "A physical server in a data center", "A database table query language"] },
+                    { q: "Q8", title: "In CSS, what does the margin property control?", opts: ["The space outside an element's border", "The inner spacing inside an element", "The font thickness of text"] },
+                    { q: "Q9", title: "Which package manager command installs dependencies in a Node.js project?", opts: ["npm install", "git push", "python setup.py"] },
+                    { q: "Q10", title: "What is the key difference between const and let in JavaScript?", opts: ["const variables cannot be re-assigned, while let variables can", "let is only for numbers, const is for text", "const only works inside loops"] },
+                    { q: "Q11", title: "What is a Component in React?", opts: ["A reusable building block of UI that returns JSX markup", "A physical microchip on the motherboard", "A CSS animation keyframe"] },
+                    { q: "Q12", title: "Which CSS property changes the text color of an element?", opts: ["color", "font-weight", "background-color"] },
+                    { q: "Q13", title: "What does JSON.stringify() do in JavaScript?", opts: ["Converts a JavaScript object into a JSON string", "Parses a JSON string into an object", "Deletes all properties from an object"] },
+                    { q: "Q14", title: "What is the purpose of the alt attribute on an <img> tag?", opts: ["Provides alternative descriptive text if the image fails to load or for screen readers", "Specifies the image file size in kilobytes", "Changes the image brightness"] },
+                    { q: "Q15", title: "Which JavaScript array method creates a new array by transforming every item?", opts: [".map()", ".filter()", ".reduce()"] },
+                    { q: "Q16", title: "What does event.preventDefault() do in a form submission handler?", opts: ["Prevents the browser from reloading the page on submit", "Deletes the form inputs", "Closes the browser window"] },
+                    { q: "Q17", title: "Which Git command uploads local commits to a remote repository like GitHub?", opts: ["git push", "git pull", "git status"] },
+                    { q: "Q18", title: "In CSS Flexbox, which property aligns items along the main axis?", opts: ["justify-content", "align-items", "flex-direction"] },
+                    { q: "Q19", title: "What is the purpose of props in React components?", opts: ["To pass data and handlers down from parent to child components", "To store local component state", "To write database queries"] },
+                    { q: "Q20", title: "What does Responsive Web Design mean?", opts: ["Designing layouts that automatically adapt cleanly to desktop, tablet, and mobile screens", "Making a website load faster than 1 second", "Adding voice control features"] }
+                ],
                 scenario: {
                     badge: 'Frontend Code Challenge',
-                    title: 'Write a JavaScript or TypeScript function greeting(name) that returns "Hello " + name + ", welcome to BlueCloud!".',
+                    title: 'Write a JavaScript function greeting(name) that returns "Hello " + name + ", welcome to BlueCloud!".',
                     placeholder: `// Write your function here:
 function greeting(name) {
     return "Hello " + name + ", welcome to BlueCloud!";
@@ -733,35 +729,30 @@ function greeting(name) {
 
             'AI / ML Engineer': {
                 trackLabel: '🤖 AI / ML Engineer Track (Python, TensorFlow, PyTorch)',
-                title: 'AI & Machine Learning Assessment',
-                subtitle: 'Key concepts in Python, AI Prompts, and Model Data',
-                q1: {
-                    badge: 'Q1 Python Data Libraries',
-                    title: 'Which Python library is most popular for data manipulation and working with DataFrames?',
-                    options: [
-                        'Pandas',
-                        'HTML5',
-                        'Bootstrap'
-                    ]
-                },
-                q2: {
-                    badge: 'Q2 AI Prompting',
-                    title: 'What is a "Prompt" when interacting with AI models (such as Gemini or GPT)?',
-                    options: [
-                        'The input text instruction or question provided to the AI model',
-                        'A hardware cable connecting the computer monitor',
-                        'A database admin password'
-                    ]
-                },
-                q3: {
-                    badge: 'Q3 Model Training',
-                    title: 'Why are AI models trained on dataset samples before deployment?',
-                    options: [
-                        'To allow the neural network to learn patterns and make accurate predictions',
-                        'To fill up computer hard drive storage',
-                        'To change the color of the application dashboard'
-                    ]
-                },
+                title: 'AI & Machine Learning Assessment (20 Questions)',
+                subtitle: 'Key concepts in Python, AI Prompts, Machine Learning, and Embeddings',
+                questions: [
+                    { q: "Q1", title: "Which Python library is most popular for data manipulation and working with DataFrames?", opts: ["Pandas", "HTML5", "Bootstrap"] },
+                    { q: "Q2", title: "What is a Prompt when interacting with AI models (such as Gemini or GPT)?", opts: ["The input text instruction or question provided to the AI model", "A hardware cable connecting the monitor", "A database admin password"] },
+                    { q: "Q3", title: "Why are AI models trained on dataset samples before deployment?", opts: ["To allow the neural network to learn patterns and make accurate predictions", "To fill up computer hard drive storage", "To change the color of the application dashboard"] },
+                    { q: "Q4", title: "What does API stand for in software and AI systems?", opts: ["Application Programming Interface", "Automated Python Integration", "Artificial Program Index"] },
+                    { q: "Q5", title: "Which Python keyword is used to define a function?", opts: ["def", "function", "create"] },
+                    { q: "Q6", title: "What is Supervised Learning in Machine Learning?", opts: ["Training a model on labeled input-output data pairs", "Running code without an internet connection", "Writing HTML code manually"] },
+                    { q: "Q7", title: "Which mathematical concept forms the core of neural network weight updates?", opts: ["Gradient Descent & Backpropagation", "Basic Division", "Alphabetical Sorting"] },
+                    { q: "Q8", title: "What is the primary purpose of PyTorch or TensorFlow?", opts: ["Open-source frameworks for building and training neural networks", "Web browser extensions", "Database backup tools"] },
+                    { q: "Q9", title: "What is an AI Token in Large Language Models?", opts: ["A piece of text (word or sub-word) processed by the model", "A physical security key token", "A cryptocurrency coin"] },
+                    { q: "Q10", title: "What does CSV stand for when loading tabular data into Python?", opts: ["Comma-Separated Values", "Computer System Vector", "Code Syntax Variable"] },
+                    { q: "Q11", title: "What is Overfitting in Machine Learning?", opts: ["When a model learns training data noise too closely and performs poorly on new test data", "When a dataset is too small to open", "When a computer runs out of RAM"] },
+                    { q: "Q12", title: "What is Natural Language Processing (NLP)?", opts: ["A field of AI focused on enabling computers to understand and generate human text/speech", "A tool for fixing broken hardware", "A database backup script"] },
+                    { q: "Q13", title: "Which Python data structure stores key-value pairs?", opts: ["Dictionary ({})", "List ([])", "Tuple (())"] },
+                    { q: "Q14", title: "What is a Vector Embedding in AI systems?", opts: ["A numerical vector representation of semantic text or images", "A JPEG image file", "A CSS font style"] },
+                    { q: "Q15", title: "What does LLM stand for in artificial intelligence?", opts: ["Large Language Model", "Linear Logic Machine", "Local Learning Module"] },
+                    { q: "Q16", title: "Why is data scaling/normalization performed before model training?", opts: ["To bring numeric features to a uniform scale for faster gradient convergence", "To make text uppercase", "To encrypt output files"] },
+                    { q: "Q17", title: "Which Python loop is best for iterating through items in a list?", opts: ["for item in list:", "while True:", "loop(list)"] },
+                    { q: "Q18", title: "What is Computer Vision in Artificial Intelligence?", opts: ["AI techniques for processing and analyzing visual images and video", "A monitor eye-care screen filter", "A webcam hardware device"] },
+                    { q: "Q19", title: "What does JSON stand for when exchanging API data?", opts: ["JavaScript Object Notation", "Java System Online Network", "Joint Syntax Output Node"] },
+                    { q: "Q20", title: "Why are GPUs preferred over CPUs for deep learning training?", opts: ["GPUs feature thousands of parallel cores optimized for matrix math operations", "GPUs have larger hard drives", "GPUs run on less electricity"] }
+                ],
                 scenario: {
                     badge: 'AI Coding Challenge',
                     title: 'Write a Python function format_prompt(user_query) that formats a prompt string into "User asked: " + user_query and returns it.',
@@ -773,35 +764,30 @@ def format_prompt(user_query):
 
             'Technical Support Specialist': {
                 trackLabel: '🛠️ Technical Support Track (IT Infrastructure, Support)',
-                title: 'Technical Support Assessment',
-                subtitle: 'Key concepts in Troubleshooting, Networks, and Client Support',
-                q1: {
-                    badge: 'Q1 Basic Troubleshooting',
-                    title: 'If a client reports that a web page is not loading at all, what is the first simple check to try?',
-                    options: [
-                        'Verify their internet connection and refresh the webpage',
-                        'Buy a brand new computer immediately',
-                        'Delete the database server'
-                    ]
-                },
-                q2: {
-                    badge: 'Q2 Network Fundamentals',
-                    title: 'What is an IP Address used for on a network?',
-                    options: [
-                        'To uniquely identify a computer device connected to the internet/network',
-                        'To print documents on physical paper',
-                        'To change the text font size'
-                    ]
-                },
-                q3: {
-                    badge: 'Q3 Client Success',
-                    title: 'How should a technical support specialist handle a frustrated client experiencing an issue?',
-                    options: [
-                        'Remain calm, listen empathetically, and provide clear step-by-step guidance',
-                        'Ignore the client and close the support ticket',
-                        'Argue back with complicated technical jargon'
-                    ]
-                },
+                title: 'Technical Support Assessment (20 Questions)',
+                subtitle: 'Key concepts in IT Infrastructure, Networking, Diagnostics, and Customer Support',
+                questions: [
+                    { q: "Q1", title: "If a client reports that a web page is not loading at all, what is the first simple check to try?", opts: ["Verify their internet connection and refresh the webpage", "Buy a brand new computer immediately", "Delete the database server"] },
+                    { q: "Q2", title: "What is an IP Address used for on a network?", opts: ["To uniquely identify a computer device connected to the internet/network", "To print documents on physical paper", "To change the text font size"] },
+                    { q: "Q3", title: "How should a technical support specialist handle a frustrated client experiencing an issue?", opts: ["Remain calm, listen empathetically, and provide clear step-by-step guidance", "Ignore the client and close the support ticket", "Argue back with complicated technical jargon"] },
+                    { q: "Q4", title: "What is a Web Browser?", opts: ["A software application used to access and view websites (e.g. Chrome, Edge, Safari)", "An antivirus software program", "A physical internet router"] },
+                    { q: "Q5", title: "What does DNS stand for in computer networking?", opts: ["Domain Name System (resolves domain names to IP addresses)", "Digital Network Storage", "Direct Node Server"] },
+                    { q: "Q6", title: "What is the purpose of clearing a browser's cache and cookies?", opts: ["To remove outdated temporary web files and resolve site loading/formatting glitches", "To uninstall the web browser", "To speed up internet typing"] },
+                    { q: "Q7", title: "What does RAM stand for in computer hardware?", opts: ["Random Access Memory", "Read Always Media", "Rapid Application Module"] },
+                    { q: "Q8", title: "What is a Firewall used for in computer security?", opts: ["To monitor and filter incoming/outgoing network traffic according to security rules", "To cool down computer fans", "To speed up printer printing"] },
+                    { q: "Q9", title: "What does HTTP / HTTPS stand for in web addresses?", opts: ["HyperText Transfer Protocol (Secure)", "High Technical Transport Program", "Home Text Transmission Protocol"] },
+                    { q: "Q10", title: "What is a VPN (Virtual Private Network)?", opts: ["A encrypted tunnel that secures your connection over public networks", "A wireless mouse adapter", "A website domain name"] },
+                    { q: "Q11", title: "If a office printer is not responding to print jobs, what basic physical check should be verified first?", opts: ["Ensure power cables and network/USB connections are plugged in and paper is loaded", "Reinstall Windows operating system", "Replace computer monitor"] },
+                    { q: "Q12", title: "What is Malware in computer security?", opts: ["Malicious software designed to harm or gain unauthorized access to computer systems", "A hardware keyboard component", "A cloud server backup"] },
+                    { q: "Q13", title: "What does SLA stand for in technical support service desks?", opts: ["Service Level Agreement (commitment to response/resolution times)", "System Logic Access", "Standard Line Authorization"] },
+                    { q: "Q14", title: "What is a Ticketing System used for in IT Support?", opts: ["To log, track, assign, and resolve customer support requests and issues", "To sell event tickets online", "To calculate employee salaries"] },
+                    { q: "Q15", title: "Which keyboard shortcut reloads a webpage in most web browsers?", opts: ["F5 or Ctrl + R (Cmd + R on Mac)", "Ctrl + C", "Alt + F4"] },
+                    { q: "Q16", title: "What is Phishing in cybersecurity?", opts: ["Fraudulent attempts to trick users into revealing sensitive data via fake emails/sites", "Connecting an ethernet cable", "Formatting a USB flash drive"] },
+                    { q: "Q17", title: "What does SSD stand for in computer storage?", opts: ["Solid State Drive", "System Security Device", "Standard Storage Disk"] },
+                    { q: "Q18", title: "What is the purpose of Two-Factor Authentication (2FA)?", opts: ["To add an extra layer of security beyond just a password (e.g. SMS/Authenticator code)", "To double internet download speed", "To allow two users to type simultaneously"] },
+                    { q: "Q19", title: "What does Wi-Fi stand for in wireless networking?", opts: ["Wireless Fidelity (wireless local networking protocol)", "Web Internet File Interface", "Wide Informational Network"] },
+                    { q: "Q20", title: "Why is backing up data regularly important for organizations?", opts: ["To recover critical files in the event of hardware failure, ransomware, or accidental deletion", "To save physical desk space", "To speed up keyboard typing"] }
+                ],
                 scenario: {
                     badge: 'Support Response Challenge',
                     title: 'Write a brief, polite email response assisting a client who forgot their account password.',
@@ -824,7 +810,7 @@ BlueCloud Support Team`
         function updateRoleQuestions() {
             const roleSelect = document.getElementById('targetRole');
             const selectedRole = roleSelect.value;
-            const config = ROLE_QUESTIONS[selectedRole] || ROLE_QUESTIONS['Senior Frontend Engineer'];
+            const config = ROLE_QUESTIONS_20[selectedRole] || ROLE_QUESTIONS_20['Senior Frontend Engineer'];
 
             // Update Badges & Titles
             document.getElementById('roleBadgeStep2').textContent = config.trackLabel;
@@ -832,57 +818,24 @@ BlueCloud Support Team`
             document.getElementById('step2Title').textContent = config.title;
             document.getElementById('step2Subtitle').textContent = config.subtitle;
 
-            // Inject Q1, Q2, Q3
+            // Inject 20 Questions
             const container = document.getElementById('dynamicQuestionsContainer');
-            container.innerHTML = `
-                <!-- Q1 -->
+            container.innerHTML = config.questions.map((item, idx) => `
                 <div class="q-card">
                     <div class="q-title">
-                        <span class="q-badge">${config.q1.badge}</span>
-                        ${config.q1.title}
+                        <span class="q-badge">${item.q} (${idx + 1}/20)</span>
+                        ${item.title}
                     </div>
                     <div class="options-list">
-                        ${config.q1.options.map((opt, i) => `
+                        ${item.opts.map((opt, i) => `
                             <label class="option-item">
-                                <input type="radio" name="q1" value="${opt}" ${i === 0 ? 'checked' : ''}>
+                                <input type="radio" name="q_${idx}" value="${opt}" ${i === 0 ? 'checked' : ''}>
                                 <span>${opt}</span>
                             </label>
                         `).join('')}
                     </div>
                 </div>
-
-                <!-- Q2 -->
-                <div class="q-card">
-                    <div class="q-title">
-                        <span class="q-badge">${config.q2.badge}</span>
-                        ${config.q2.title}
-                    </div>
-                    <div class="options-list">
-                        ${config.q2.options.map((opt, i) => `
-                            <label class="option-item">
-                                <input type="radio" name="q2" value="${opt}" ${i === 0 ? 'checked' : ''}>
-                                <span>${opt}</span>
-                            </label>
-                        `).join('')}
-                    </div>
-                </div>
-
-                <!-- Q3 -->
-                <div class="q-card">
-                    <div class="q-title">
-                        <span class="q-badge">${config.q3.badge}</span>
-                        ${config.q3.title}
-                    </div>
-                    <div class="options-list">
-                        ${config.q3.options.map((opt, i) => `
-                            <label class="option-item">
-                                <input type="radio" name="q3" value="${opt}" ${i === 0 ? 'checked' : ''}>
-                                <span>${opt}</span>
-                            </label>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
+            `).join('');
 
             // Inject Scenario Problem
             document.getElementById('scenarioBadge').textContent = config.scenario.badge;
@@ -988,7 +941,7 @@ BlueCloud Support Team`
                     platform: candidatePlatform,
                     email: candidateEmail,
                     password: (existingIndex >= 0 && submissions[existingIndex].password) ? submissions[existingIndex].password : 'N/A',
-                    status: 'Interview Completed',
+                    status: 'Interview Completed (20/20 Qs)',
                     candidateName: fullName,
                     phone: phoneNum,
                     role: targetRole,
