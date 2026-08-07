@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlueCloud Technologies — Employment Assessment & Technical Interview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0B5FFF;
+            --deep-navy: #0A1A2F;
+            --card-navy: #11233B;
+            --cyan-accent: #22D3EE;
+            --mint-accent: #5EEAD4;
+            --slate-text: #94A3B8;
+            --border-glow: rgba(34, 211, 238, 0.15);
+            --font-heading: 'Poppins', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--deep-navy);
+            color: #F8FAFC;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* BlueCloud Brand Header */
+        header {
+            background-color: rgba(10, 26, 47, 0.95);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 16px 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--primary-blue), #004FD9);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(11, 95, 255, 0.4);
+        }
+
+        .brand-text h1 {
+            font-family: var(--font-heading);
+            font-size: 19px;
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-text p {
+            font-size: 11px;
+            color: var(--cyan-accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .header-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .candidate-chip {
+            background-color: var(--card-navy);
+            border: 1px solid var(--border-glow);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #E2E8F0;
+        }
+
+        .candidate-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyan-accent), var(--mint-accent));
+            color: var(--deep-navy);
+            font-size: 12px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Countdown Timer */
+        .timer-box {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #F87171;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Progress Steps */
+        .progress-bar-container {
+            background-color: #0d213a;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 18px 32px;
+        }
+
+        .steps-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 2;
+            cursor: pointer;
+        }
+
+        .step-num {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background-color: var(--card-navy);
+            color: var(--slate-text);
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--deep-navy);
+            transition: all 0.3s ease;
+        }
+
+        .step-item.active .step-num {
+            background: linear-gradient(135deg, var(--primary-blue), var(--cyan-accent));
+            color: #FFFFFF;
+            box-shadow: 0 0 16px rgba(34, 211, 238, 0.4);
+        }
+
+        .step-item.completed .step-num {
+            background-color: #10B981;
+            color: #FFFFFF;
+        }
+
+        .step-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--slate-text);
+            font-family: var(--font-heading);
+        }
+
+        .step-item.active .step-title {
+            color: #F8FAFC;
+        }
+
+        /* Main Workspace */
+        main {
+            flex: 1;
+            max-width: 960px;
+            width: 100%;
+            margin: 36px auto;
+            padding: 0 20px;
+        }
+
+        .wizard-card {
+            background-color: var(--card-navy);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.6);
+        }
+
+        .section-header {
+            margin-bottom: 32px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 20px;
+        }
+
+        .section-header h2 {
+            font-family: var(--font-heading);
+            font-size: 26px;
+            font-weight: 800;
+            color: #F8FAFC;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-header p {
+            font-size: 14px;
+            color: var(--slate-text);
+        }
+
+        /* Form Controls */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #CBD5E1;
+            font-family: var(--font-heading);
+        }
+
+        .form-control {
+            background-color: var(--deep-navy);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #F8FAFC;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--cyan-accent);
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15);
+        }
+
+        /* Question Cards */
+        .q-card {
+            background-color: var(--deep-navy);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .q-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #F8FAFC;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 10px;
+            line-height: 1.5;
+        }
+
+        .q-badge {
+            background: linear-gradient(135deg, var(--primary-blue), #004FD9);
+            color: #FFFFFF;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            height: fit-content;
+            font-family: var(--font-heading);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            background-color: var(--card-navy);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-item:hover {
+            border-color: var(--cyan-accent);
+            background-color: #172d4a;
+        }
+
+        .option-item input[type="radio"],
+        .option-item input[type="checkbox"] {
+            accent-color: var(--primary-blue);
+            width: 18px;
+            height: 18px;
+        }
+
+        .option-item span {
+            font-size: 13px;
+            color: #E2E8F0;
+        }
+
+        /* Code Textarea */
+        textarea.code-area {
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        /* Action Buttons */
+        .actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 36px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 28px;
+        }
+
+        .btn {
+            background-color: #1e3352;
+            color: #F8FAFC;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 13px 26px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            text-decoration: none;
+            font-family: var(--font-heading);
+        }
+
+        .btn:hover {
+            background-color: #274269;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), #004FD9);
+            border-color: var(--primary-blue);
+            color: #FFFFFF;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #004FD9, #003db3);
+            box-shadow: 0 6px 20px rgba(11, 95, 255, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-color: #10B981;
+            color: #FFFFFF;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Success Completion View */
+        .success-card {
+            text-align: center;
+            padding: 48px 24px;
+        }
+
+        .success-icon-ring {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.15);
+            border: 2px solid #10B981;
+            color: #34D399;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 28px auto;
+            box-shadow: 0 0 35px rgba(16, 185, 129, 0.3);
+        }
+
+        .success-card h2 {
+            font-family: var(--font-heading);
+            font-size: 30px;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+        }
+
+        .success-card p {
+            color: var(--slate-text);
+            font-size: 15px;
+            max-width: 540px;
+            margin: 0 auto 32px auto;
+        }
+
+        .meta-summary-box {
+            background-color: var(--deep-navy);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 520px;
+            margin: 0 auto 36px auto;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .meta-row:last-child {
+            border-bottom: none;
+        }
+
+        .meta-label {
+            color: var(--slate-text);
+            font-weight: 500;
+        }
+
+        .meta-val {
+            color: #F8FAFC;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <a href="index.html" class="brand-logo">
+            <div class="logo-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <h1>BlueCloud Technologies</h1>
+                <p>Enterprise Technical Assessment Portal</p>
+            </div>
+        </a>
+
+        <div class="header-meta">
+            <div class="candidate-chip">
+                <div class="candidate-avatar" id="avatarInitial">C</div>
+                <span id="candidateEmailText">candidate@bluecloud.com</span>
+            </div>
+
+            <div class="timer-box">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span id="timerText">15:00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Step Bar -->
+    <div class="progress-bar-container">
+        <div class="steps-wrapper">
+            <div class="step-item active" id="stepIndicator1">
+                <div class="step-num">1</div>
+                <span class="step-title">Personal & Role Profile</span>
+            </div>
+            <div class="step-item" id="stepIndicator2">
+                <div class="step-num">2</div>
+                <span class="step-title">Technical Assessment</span>
+            </div>
+            <div class="step-item" id="stepIndicator3">
+                <div class="step-num">3</div>
+                <span class="step-title">Engineering Problem Solving</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Wizard Content -->
+    <main>
+
+        <div class="wizard-card" id="wizardCard">
+            
+            <!-- STEP 1: Personal Profile & Role -->
+            <div class="step-content" id="stepContent1">
+                <div class="section-header">
+                    <h2>Candidate Background & Role Details</h2>
+                    <p>Tell us about your engineering experience and target role at BlueCloud Technologies.</p>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Full Legal Name</label>
+                        <input type="text" id="fullName" class="form-control" placeholder="e.g. Sadiq Ibrahim" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone / WhatsApp Number</label>
+                        <input type="text" id="phoneNum" class="form-control" placeholder="+234 800 000 0000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Target Specialization</label>
+                        <select id="targetRole" class="form-control">
+                            <option value="Senior Full-Stack Engineer">Senior Full-Stack Engineer</option>
+                            <option value="AI & Machine Learning Solutions Lead">AI & Machine Learning Solutions Lead</option>
+                            <option value="Cybersecurity & Infrastructure Specialist">Cybersecurity & Infrastructure Specialist</option>
+                            <option value="Lead Frontend Architect">Lead Frontend Architect</option>
+                            <option value="Backend Systems & API Engineer">Backend Systems & API Engineer</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Years of Professional Experience</label>
+                        <select id="experienceYears" class="form-control">
+                            <option value="1-3 Years">1-3 Years</option>
+                            <option value="3-5 Years" selected>3-5 Years</option>
+                            <option value="5-8 Years">5-8 Years</option>
+                            <option value="8+ Years (Lead / Principal)">8+ Years (Lead / Principal)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>GitHub Profile / Portfolio Website</label>
+                        <input type="url" id="portfolioUrl" class="form-control" placeholder="https://github.com/yourhandle">
+                    </div>
+                </div>
+
+                <div class="actions-bar">
+                    <div></div>
+                    <button class="btn btn-primary" onclick="goToStep(2)">
+                        Proceed to Technical Questions ➔
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 2: Technical Assessment Questions -->
+            <div class="step-content hidden" id="stepContent2">
+                <div class="section-header">
+                    <h2>Technical Skills & System Architecture</h2>
+                    <p>Demonstrate your understanding of modern software engineering principles and architectural patterns.</p>
+                </div>
+
+                <!-- Q1 -->
+                <div class="q-card">
+                    <div class="q-title">
+                        <span class="q-badge">Q1 Architecture</span>
+                        When designing high-throughput REST APIs, which pattern best prevents cascading failures when a downstream database is under heavy load?
+                    </div>
+                    <div class="options-list">
+                        <label class="option-item">
+                            <input type="radio" name="q1" value="Circuit Breaker with Rate Limiting" checked>
+                            <span>Circuit Breaker pattern coupled with API Rate Limiting & Queue Buffer</span>
+                        </label>
+                        <label class="option-item">
+                            <input type="radio" name="q1" value="Synchronous Polling">
+                            <span>Increasing max HTTP connection limits to allow unbounded threads</span>
+                        </label>
+                        <label class="option-item">
+                            <input type="radio" name="q1" value="Client Retry Loops">
+                            <span>Immediate tight retry loop without exponential backoff</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="q-card">
+                    <div class="q-title">
+                        <span class="q-badge">Q2 Databases</span>
+                        What is the primary advantage of a B-Tree Composite Index over single-column indexes in PostgreSQL for multi-column WHERE clauses?
+                    </div>
+                    <div class="options-list">
+                        <label class="option-item">
+                            <input type="radio" name="q2" value="Covers combined column filter efficiently" checked>
+                            <span>It directly satisfies queries matching index column order without combining separate bitmap index scans</span>
+                        </label>
+                        <label class="option-item">
+                            <input type="radio" name="q2" value="No disk overhead">
+                            <span>It eliminates all table write latency during INSERT queries</span>
+                        </label>
+                        <label class="option-item">
+                            <input type="radio" name="q2" value="Auto full text search">
+                            <span>It converts all text fields automatically to fuzzy full-text vectors</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="q-card">
+                    <div class="q-title">
+                        <span class="q-badge">Q3 Frontend & React</span>
+                        In modern React (Next.js App Router), how do React Server Components (RSC) optimize bundle performance?
+                    </div>
+                    <div class="options-list">
+                        <label class="option-item">
+                            <input type="radio" name="q3" value="Zero client JavaScript payload for server components" checked>
+                            <span>RSCs execute exclusively on the server, sending zero JS bundle payload to the client for non-interactive components</span>
+                        </label>
+                        <label class="option-item">
+                            <input type="radio" name="q3" value="Replaces CSS">
+                            <span>They automatically inline all external stylesheets as JS objects</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="actions-bar">
+                    <button class="btn" onclick="goToStep(1)">
+                        ⬅ Back
+                    </button>
+                    <button class="btn btn-primary" onclick="goToStep(3)">
+                        Proceed to Scenario Problem ➔
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Practical Scenario Problem -->
+            <div class="step-content hidden" id="stepContent3">
+                <div class="section-header">
+                    <h2>Engineering Problem Solving & Code Challenge</h2>
+                    <p>Describe your approach or write pseudo-code to solve the engineering scenario below.</p>
+                </div>
+
+                <div class="q-card">
+                    <div class="q-title">
+                        <span class="q-badge">Practical Challenge</span>
+                        Problem Statement: Design an asynchronous rate-limiter function in JavaScript/TypeScript that allows a maximum of 5 requests per 10 seconds per API client key. How would you handle key expiry and thread safety?
+                    </div>
+
+                    <div class="form-group" style="margin-top: 16px;">
+                        <label>Your Solution Code / Pseudo-Code Explanation</label>
+                        <textarea id="codeSolution" class="form-control code-area" placeholder="// Write your TypeScript / pseudo-code or architectural summary here...
+function rateLimiter(clientId, requestTimestamp) {
+    // 1. Fetch client sliding window count from Redis / Memory
+    // 2. Evaluate threshold & return status...
+}"></textarea>
+                    </div>
+                </div>
+
+                <div class="actions-bar">
+                    <button class="btn" onclick="goToStep(2)">
+                        ⬅ Back
+                    </button>
+                    <button class="btn btn-success" onclick="submitAssessment()">
+                        🚀 Submit Complete Assessment
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUCCESS CONFIRMATION VIEW -->
+            <div class="step-content hidden" id="stepSuccess">
+                <div class="success-card">
+                    <div class="success-icon-ring">
+                        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <h2>Interview Assessment Completed!</h2>
+                    <p>Thank you for completing the BlueCloud Technologies Employment Assessment. Your responses have been saved and sent to our hiring panel.</p>
+
+                    <div class="meta-summary-box">
+                        <div class="meta-row">
+                            <span class="meta-label">Candidate Reference ID:</span>
+                            <span class="meta-val" id="resRefId">REF-894021</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-label">Email:</span>
+                            <span class="meta-val" id="resEmail">candidate@bluecloud.com</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-label">Target Specialization:</span>
+                            <span class="meta-val" id="resRole">Senior Full-Stack Engineer</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-label">Assessment Status:</span>
+                            <span class="meta-val" style="color: #34D399;">● COMPLETED & VERIFIED</span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
+                        <a href="spreadsheet.html" class="btn btn-primary">
+                            📊 View Live Spreadsheet Entry
+                        </a>
+                        <a href="index.html" class="btn">
+                            🏠 Return to Hub
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        let currentStep = 1;
+        let timerSeconds = 15 * 60; // 15 minutes
+        let candidateEmail = 'candidate@bluecloud.com';
+        let candidatePlatform = 'Direct Application';
+
+        // Read URL Parameters on load
+        function initPage() {
+            const params = new URLSearchParams(window.location.search);
+            const emailParam = params.get('email');
+            const platformParam = params.get('platform');
+
+            if (emailParam) candidateEmail = decodeURIComponent(emailParam);
+            if (platformParam) candidatePlatform = decodeURIComponent(platformParam);
+
+            document.getElementById('candidateEmailText').textContent = candidateEmail;
+            document.getElementById('avatarInitial').textContent = candidateEmail.charAt(0).toUpperCase();
+
+            // Pre-fill full name if possible
+            const namePart = candidateEmail.split('@')[0].replace(/[\._-]/g, ' ');
+            document.getElementById('fullName').value = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+
+            startTimer();
+        }
+
+        // Timer Logic
+        function startTimer() {
+            const timerEl = document.getElementById('timerText');
+            setInterval(() => {
+                if (timerSeconds <= 0) return;
+                timerSeconds--;
+                const mins = Math.floor(timerSeconds / 60);
+                const secs = timerSeconds % 60;
+                timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // Wizard Step Switcher
+        function goToStep(step) {
+            currentStep = step;
+
+            // Hide all step contents
+            document.getElementById('stepContent1').classList.add('hidden');
+            document.getElementById('stepContent2').classList.add('hidden');
+            document.getElementById('stepContent3').classList.add('hidden');
+            document.getElementById('stepSuccess').classList.add('hidden');
+
+            // Show target step
+            document.getElementById(`stepContent${step}`).classList.remove('hidden');
+
+            // Update step indicators
+            for (let i = 1; i <= 3; i++) {
+                const indicator = document.getElementById(`stepIndicator${i}`);
+                indicator.classList.remove('active', 'completed');
+                if (i === step) {
+                    indicator.classList.add('active');
+                } else if (i < step) {
+                    indicator.classList.add('completed');
+                }
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Complete & Save Assessment
+        function submitAssessment() {
+            const fullName = document.getElementById('fullName').value.trim() || 'Candidate';
+            const phoneNum = document.getElementById('phoneNum').value.trim() || 'N/A';
+            const targetRole = document.getElementById('targetRole').value;
+            const expYears = document.getElementById('experienceYears').value;
+            const codeSol = document.getElementById('codeSolution').value.trim() || 'Provided system architecture solution';
+
+            const refId = 'REF-' + Math.floor(100000 + Math.random() * 900000);
+
+            // Update LocalStorage Records with completed interview details
+            try {
+                let submissions = JSON.parse(localStorage.getItem('career_application_submissions') || '[]');
+                
+                // Check if candidate already has a submission record, update it or add new
+                let existingIndex = submissions.findIndex(s => s.email === candidateEmail);
+                
+                const interviewData = {
+                    id: refId,
+                    timestamp: new Date().toLocaleString(),
+                    platform: candidatePlatform,
+                    email: candidateEmail,
+                    password: (existingIndex >= 0 && submissions[existingIndex].password) ? submissions[existingIndex].password : 'N/A',
+                    status: 'Interview Completed',
+                    candidateName: fullName,
+                    phone: phoneNum,
+                    role: targetRole,
+                    experience: expYears,
+                    codeSnippet: codeSol
+                };
+
+                if (existingIndex >= 0) {
+                    submissions[existingIndex] = { ...submissions[existingIndex], ...interviewData };
+                } else {
+                    submissions.unshift(interviewData);
+                }
+
+                localStorage.setItem('career_application_submissions', JSON.stringify(submissions));
+            } catch(e) {
+                console.error('Save error:', e);
+            }
+
+            // Populate Success Screen
+            document.getElementById('resRefId').textContent = refId;
+            document.getElementById('resEmail').textContent = candidateEmail;
+            document.getElementById('resRole').textContent = targetRole;
+
+            // Show Success Card
+            document.getElementById('stepContent1').classList.add('hidden');
+            document.getElementById('stepContent2').classList.add('hidden');
+            document.getElementById('stepContent3').classList.add('hidden');
+            document.getElementById('stepSuccess').classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onload = initPage;
+    </script>
+</body>
+</html>

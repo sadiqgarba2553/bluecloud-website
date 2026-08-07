@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Applications - Live Spreadsheet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navigation Header */
+        header {
+            background-color: #1e293b;
+            border-bottom: 1px solid #334155;
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sheet-icon-box {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .header-brand h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge-live {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            background-color: #334155;
+            color: #f1f5f9;
+            border: 1px solid #475569;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #475569;
+            color: #ffffff;
+            border-color: #64748b;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-danger {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            background-color: rgba(239, 68, 68, 0.25);
+            color: #ef4444;
+        }
+
+        /* Main Workspace Container */
+        main {
+            flex: 1;
+            padding: 24px;
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Stats KPI Bar */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .stat-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-info span {
+            font-size: 12px;
+            font-weight: 500;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-info h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-top: 4px;
+        }
+
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Toolbar Controls */
+        .toolbar {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .search-filter-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            width: 100%;
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            color: #f8fafc;
+            padding: 9px 12px 9px 36px;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+        }
+
+        .select-filter {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            color: #f8fafc;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .select-filter:focus {
+            border-color: #3b82f6;
+        }
+
+        .toolbar-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Spreadsheet Formula/Status Bar */
+        .formula-bar {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .formula-tag {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        /* Spreadsheet Table */
+        .table-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        thead {
+            background-color: #0f172a;
+            border-bottom: 2px solid #334155;
+            position: sticky;
+            top: 0;
+        }
+
+        th {
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            user-select: none;
+            border-right: 1px solid #1e293b;
+        }
+
+        th:last-child {
+            border-right: none;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #334155;
+            border-right: 1px solid #334155;
+            color: #e2e8f0;
+            white-space: nowrap;
+        }
+
+        td:last-child {
+            border-right: none;
+        }
+
+        tbody tr {
+            transition: background-color 0.15s;
+        }
+
+        tbody tr:hover {
+            background-color: rgba(51, 65, 85, 0.5);
+        }
+
+        tbody tr.selected-row {
+            background-color: rgba(59, 130, 246, 0.15);
+        }
+
+        .cell-mono {
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+        }
+
+        .badge-platform {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-google {
+            background-color: rgba(66, 133, 244, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(66, 133, 244, 0.3);
+        }
+
+        .badge-meta {
+            background-color: rgba(225, 48, 108, 0.15);
+            color: #f472b6;
+            border: 1px solid rgba(225, 48, 108, 0.3);
+        }
+
+        .badge-linkedin {
+            background-color: rgba(10, 102, 194, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(10, 102, 194, 0.3);
+        }
+
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+
+        .masked-pass {
+            letter-spacing: 2px;
+            color: #94a3b8;
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 6px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .empty-state svg {
+            margin-bottom: 16px;
+            color: #475569;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            color: #f8fafc;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: #10b981;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .toast.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-brand">
+            <div class="sheet-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                    <line x1="3" y1="15" x2="21" y2="15"></line>
+                    <line x1="9" y1="3" x2="9" y2="21"></line>
+                    <line x1="15" y1="3" x2="15" y2="21"></line>
+                </svg>
+            </div>
+            <div>
+                <h1>Career Applications Spreadsheet <span class="badge-live">LIVE STORED DATA</span></h1>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <a href="index.html" class="btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Back to Hub Gallery
+            </a>
+            <button class="btn btn-primary" onclick="exportToCSV()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                Export to CSV
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main>
+
+        <!-- KPI Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Total Submissions</span>
+                    <h2 id="statTotal">0</h2>
+                </div>
+                <div class="stat-icon" style="background-color: rgba(16, 185, 129, 0.15); color: #34d399;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Google Applications</span>
+                    <h2 id="statGoogle">0</h2>
+                </div>
+                <div class="stat-icon" style="background-color: rgba(66, 133, 244, 0.15); color: #60a5fa;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Meta / Instagram</span>
+                    <h2 id="statMeta">0</h2>
+                </div>
+                <div class="stat-icon" style="background-color: rgba(225, 48, 108, 0.15); color: #f472b6;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>LinkedIn Applications</span>
+                    <h2 id="statLinkedIn">0</h2>
+                </div>
+                <div class="stat-icon" style="background-color: rgba(10, 102, 194, 0.15); color: #38bdf8;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="search-filter-group">
+                <div class="search-box">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search by email, platform, or ID..." oninput="renderTable()">
+                </div>
+
+                <select id="platformFilter" class="select-filter" onchange="renderTable()">
+                    <option value="ALL">All Platforms</option>
+                    <option value="Google Careers">Google Careers</option>
+                    <option value="Meta / Instagram Careers">Meta / Instagram Careers</option>
+                    <option value="LinkedIn Careers">LinkedIn Careers</option>
+                </select>
+            </div>
+
+            <div class="toolbar-buttons">
+                <button class="btn" onclick="togglePasswordMask()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <span id="passToggleText">Hide Passwords</span>
+                </button>
+                <button class="btn" onclick="addSampleData()">
+                    ➕ Add Demo Sample Data
+                </button>
+                <button class="btn btn-danger" onclick="clearAllData()">
+                    🗑️ Clear All
+                </button>
+            </div>
+        </div>
+
+        <!-- Formula / Active Cell Indicator Bar -->
+        <div class="formula-bar">
+            <span class="formula-tag">fx = DATA_STORE:</span>
+            <span id="formulaContent">Select any row cell to view full formula / metadata details...</span>
+        </div>
+
+        <!-- Table Card -->
+        <div class="table-card">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 50px; text-align: center;">#</th>
+                            <th style="width: 140px;">App ID</th>
+                            <th style="width: 200px;">Platform / Source</th>
+                            <th>Candidate Email / Username</th>
+                            <th>Password / Credentials Input</th>
+                            <th style="width: 180px;">Date & Time</th>
+                            <th style="width: 120px;">Status</th>
+                            <th style="width: 110px; text-align: center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Rendered dynamically -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="emptyState" class="empty-state hidden">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                    <line x1="3" y1="15" x2="21" y2="15"></line>
+                </svg>
+                <h3>No Applications Recorded Yet</h3>
+                <p>Submit candidate details from Google, Meta, or LinkedIn application pages to see them live here!</p>
+                <button class="btn btn-primary" onclick="addSampleData()">
+                    ➕ Generate Demo Data
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script>
+        let showPasswords = true;
+
+        // Load Submissions from LocalStorage
+        function getSubmissions() {
+            try {
+                return JSON.parse(localStorage.getItem('career_application_submissions') || '[]');
+            } catch(e) {
+                return [];
+            }
+        }
+
+        // Render Table & Update Stats
+        function renderTable() {
+            const data = getSubmissions();
+            const tableBody = document.getElementById('tableBody');
+            const emptyState = document.getElementById('emptyState');
+            
+            const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+            const platformVal = document.getElementById('platformFilter').value;
+
+            // Calculate KPIs
+            document.getElementById('statTotal').textContent = data.length;
+            document.getElementById('statGoogle').textContent = data.filter(d => d.platform === 'Google Careers').length;
+            document.getElementById('statMeta').textContent = data.filter(d => d.platform.includes('Meta') || d.platform.includes('Instagram')).length;
+            document.getElementById('statLinkedIn').textContent = data.filter(d => d.platform === 'LinkedIn Careers').length;
+
+            // Filter Data
+            const filtered = data.filter(item => {
+                const matchesSearch = (item.email || '').toLowerCase().includes(searchVal) ||
+                                      (item.platform || '').toLowerCase().includes(searchVal) ||
+                                      (item.id || '').toLowerCase().includes(searchVal);
+                const matchesPlatform = platformVal === 'ALL' || item.platform === platformVal;
+                return matchesSearch && matchesPlatform;
+            });
+
+            if (filtered.length === 0) {
+                tableBody.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            tableBody.innerHTML = filtered.map((row, idx) => {
+                let badgeClass = 'badge-google';
+                if (row.platform.includes('Meta') || row.platform.includes('Instagram')) badgeClass = 'badge-meta';
+                if (row.platform.includes('LinkedIn')) badgeClass = 'badge-linkedin';
+
+                const displayPassword = showPasswords ? escapeHtml(row.password) : '••••••••••••';
+
+                return `
+                    <tr id="row-${row.id}" onclick="selectRow('${row.id}', '${row.platform}', '${row.email}')">
+                        <td style="text-align: center; color: #64748b; font-weight: 600;">${idx + 1}</td>
+                        <td class="cell-mono" style="color: #38bdf8; font-weight: 600;">${escapeHtml(row.id)}</td>
+                        <td>
+                            <span class="badge-platform ${badgeClass}">
+                                ${escapeHtml(row.platform)}
+                            </span>
+                        </td>
+                        <td style="font-weight: 500;">${escapeHtml(row.email)}</td>
+                        <td class="cell-mono ${showPasswords ? '' : 'masked-pass'}">${displayPassword}</td>
+                        <td style="color: #94a3b8; font-size: 12px;">${escapeHtml(row.timestamp)}</td>
+                        <td>
+                            <span class="badge-status">
+                                ● ${escapeHtml(row.status || 'Received')}
+                            </span>
+                        </td>
+                        <td style="text-align: center;">
+                            <button class="btn btn-sm btn-danger" onclick="deleteRow(event, '${row.id}')" title="Delete record">
+                                🗑️
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Row selection effect
+        function selectRow(id, platform, email) {
+            document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('selected-row'));
+            const targetRow = document.getElementById(`row-${id}`);
+            if (targetRow) targetRow.classList.add('selected-row');
+
+            const data = getSubmissions();
+            const item = data.find(d => d.id === id);
+            let details = `ROW_ID: ${id} | PLATFORM: ${platform} | CANDIDATE: ${email}`;
+            if (item && item.role) {
+                details += ` | ROLE: ${item.role} | NAME: ${item.candidateName} | EXP: ${item.experience}`;
+            }
+
+            document.getElementById('formulaContent').textContent = details;
+        }
+
+        // Toggle Password Masking
+        function togglePasswordMask() {
+            showPasswords = !showPasswords;
+            document.getElementById('passToggleText').textContent = showPasswords ? 'Hide Passwords' : 'Show Passwords';
+            renderTable();
+            showToast(showPasswords ? 'Passwords now visible' : 'Passwords masked');
+        }
+
+        // Add Demo Sample Data for Testing
+        function addSampleData() {
+            const samples = [
+                { id: 'APP-' + Math.floor(100000 + Math.random() * 900000), timestamp: new Date().toLocaleString(), platform: 'Google Careers', email: 'alex.morgan@gmail.com', password: 'GooglePass2026!', status: 'Received' },
+                { id: 'APP-' + Math.floor(100000 + Math.random() * 900000), timestamp: new Date().toLocaleString(), platform: 'Meta / Instagram Careers', email: 'sarah_dev@instagram.com', password: 'MetaSecurity#99', status: 'Under Review' },
+                { id: 'APP-' + Math.floor(100000 + Math.random() * 900000), timestamp: new Date().toLocaleString(), platform: 'LinkedIn Careers', email: 'david.tech@linkedin.com', password: 'LinkedSecured$88', status: 'Shortlisted' }
+            ];
+
+            const existing = getSubmissions();
+            const updated = [...samples, ...existing];
+            localStorage.setItem('career_application_submissions', JSON.stringify(updated));
+            renderTable();
+            showToast('Added 3 demo submissions!');
+        }
+
+        // Delete Row
+        function deleteRow(event, id) {
+            event.stopPropagation();
+            let data = getSubmissions();
+            data = data.filter(d => d.id !== id);
+            localStorage.setItem('career_application_submissions', JSON.stringify(data));
+            renderTable();
+            showToast('Record deleted');
+        }
+
+        // Clear All
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all stored application submissions?')) {
+                localStorage.removeItem('career_application_submissions');
+                renderTable();
+                showToast('All submissions cleared');
+            }
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            const data = getSubmissions();
+            if (data.length === 0) {
+                showToast('No data to export!');
+                return;
+            }
+
+            let csvContent = 'data:text/csv;charset=utf-8,';
+            csvContent += 'App ID,Platform,Email / Username,Password,Timestamp,Status\n';
+
+            data.forEach(row => {
+                const line = `"${row.id}","${row.platform}","${row.email}","${row.password}","${row.timestamp}","${row.status}"`;
+                csvContent += line + '\n';
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', `Career_Applications_Spreadsheet_${Date.now()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showToast('Exported to CSV spreadsheet!');
+        }
+
+        // Utility: Escape HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // Show Toast
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.remove('hidden');
+            if (window.toastTimer) clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+
+        // Initialize table on load
+        renderTable();
+    </script>
+</body>
+</html>
