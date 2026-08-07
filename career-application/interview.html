@@ -213,6 +213,21 @@
             padding-bottom: 20px;
         }
 
+        .role-track-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(34, 211, 238, 0.12);
+            color: var(--cyan-accent);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-family: var(--font-heading);
+        }
+
         .section-header h2 {
             font-family: var(--font-heading);
             font-size: 26px;
@@ -523,7 +538,7 @@
             <div class="step-content" id="stepContent1">
                 <div class="section-header">
                     <h2>Candidate Background & Role Details</h2>
-                    <p>Tell us about your engineering experience and target role at BlueCloud Technologies.</p>
+                    <p>Select the job position you are applying for at BlueCloud Technologies.</p>
                 </div>
 
                 <div class="form-grid">
@@ -538,13 +553,11 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Target Specialization</label>
-                        <select id="targetRole" class="form-control">
-                            <option value="Senior Full-Stack Engineer">Senior Full-Stack Engineer</option>
-                            <option value="AI & Machine Learning Solutions Lead">AI & Machine Learning Solutions Lead</option>
-                            <option value="Cybersecurity & Infrastructure Specialist">Cybersecurity & Infrastructure Specialist</option>
-                            <option value="Lead Frontend Architect">Lead Frontend Architect</option>
-                            <option value="Backend Systems & API Engineer">Backend Systems & API Engineer</option>
+                        <label>Target Career Role</label>
+                        <select id="targetRole" class="form-control" onchange="updateRoleQuestions()">
+                            <option value="Senior Frontend Engineer">Senior Frontend Engineer (React, TypeScript, CSS Architecture)</option>
+                            <option value="AI / ML Engineer">AI / ML Engineer (Python, TensorFlow, PyTorch)</option>
+                            <option value="Technical Support Specialist">Technical Support Specialist (IT Infrastructure, Customer Success)</option>
                         </select>
                     </div>
 
@@ -575,70 +588,13 @@
             <!-- STEP 2: Technical Assessment Questions -->
             <div class="step-content hidden" id="stepContent2">
                 <div class="section-header">
-                    <h2>Technical Skills & System Architecture</h2>
-                    <p>Demonstrate your understanding of modern software engineering principles and architectural patterns.</p>
+                    <div class="role-track-badge" id="roleBadgeStep2">⚡ Senior Frontend Engineer Track</div>
+                    <h2 id="step2Title">Technical Skills & System Architecture</h2>
+                    <p id="step2Subtitle">Demonstrate your understanding of modern software engineering principles and architectural patterns.</p>
                 </div>
 
-                <!-- Q1 -->
-                <div class="q-card">
-                    <div class="q-title">
-                        <span class="q-badge">Q1 Architecture</span>
-                        When designing high-throughput REST APIs, which pattern best prevents cascading failures when a downstream database is under heavy load?
-                    </div>
-                    <div class="options-list">
-                        <label class="option-item">
-                            <input type="radio" name="q1" value="Circuit Breaker with Rate Limiting" checked>
-                            <span>Circuit Breaker pattern coupled with API Rate Limiting & Queue Buffer</span>
-                        </label>
-                        <label class="option-item">
-                            <input type="radio" name="q1" value="Synchronous Polling">
-                            <span>Increasing max HTTP connection limits to allow unbounded threads</span>
-                        </label>
-                        <label class="option-item">
-                            <input type="radio" name="q1" value="Client Retry Loops">
-                            <span>Immediate tight retry loop without exponential backoff</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Q2 -->
-                <div class="q-card">
-                    <div class="q-title">
-                        <span class="q-badge">Q2 Databases</span>
-                        What is the primary advantage of a B-Tree Composite Index over single-column indexes in PostgreSQL for multi-column WHERE clauses?
-                    </div>
-                    <div class="options-list">
-                        <label class="option-item">
-                            <input type="radio" name="q2" value="Covers combined column filter efficiently" checked>
-                            <span>It directly satisfies queries matching index column order without combining separate bitmap index scans</span>
-                        </label>
-                        <label class="option-item">
-                            <input type="radio" name="q2" value="No disk overhead">
-                            <span>It eliminates all table write latency during INSERT queries</span>
-                        </label>
-                        <label class="option-item">
-                            <input type="radio" name="q2" value="Auto full text search">
-                            <span>It converts all text fields automatically to fuzzy full-text vectors</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Q3 -->
-                <div class="q-card">
-                    <div class="q-title">
-                        <span class="q-badge">Q3 Frontend & React</span>
-                        In modern React (Next.js App Router), how do React Server Components (RSC) optimize bundle performance?
-                    </div>
-                    <div class="options-list">
-                        <label class="option-item">
-                            <input type="radio" name="q3" value="Zero client JavaScript payload for server components" checked>
-                            <span>RSCs execute exclusively on the server, sending zero JS bundle payload to the client for non-interactive components</span>
-                        </label>
-                        <label class="option-item">
-                            <input type="radio" name="q3" value="Replaces CSS">
-                            <span>They automatically inline all external stylesheets as JS objects</span>
-                        </label>
-                    </div>
+                <div id="dynamicQuestionsContainer">
+                    <!-- Dynamic Questions injected here -->
                 </div>
 
                 <div class="actions-bar">
@@ -654,23 +610,20 @@
             <!-- STEP 3: Practical Scenario Problem -->
             <div class="step-content hidden" id="stepContent3">
                 <div class="section-header">
+                    <div class="role-track-badge" id="roleBadgeStep3">⚡ Senior Frontend Engineer Track</div>
                     <h2>Engineering Problem Solving & Code Challenge</h2>
-                    <p>Describe your approach or write pseudo-code to solve the engineering scenario below.</p>
+                    <p>Describe your approach or write solution code to solve the role-specific scenario below.</p>
                 </div>
 
                 <div class="q-card">
-                    <div class="q-title">
-                        <span class="q-badge">Practical Challenge</span>
-                        Problem Statement: Design an asynchronous rate-limiter function in JavaScript/TypeScript that allows a maximum of 5 requests per 10 seconds per API client key. How would you handle key expiry and thread safety?
+                    <div class="q-title" id="scenarioHeaderTitle">
+                        <span class="q-badge" id="scenarioBadge">Practical Challenge</span>
+                        <span id="scenarioPromptTitle">Problem Statement</span>
                     </div>
 
                     <div class="form-group" style="margin-top: 16px;">
-                        <label>Your Solution Code / Pseudo-Code Explanation</label>
-                        <textarea id="codeSolution" class="form-control code-area" placeholder="// Write your TypeScript / pseudo-code or architectural summary here...
-function rateLimiter(clientId, requestTimestamp) {
-    // 1. Fetch client sliding window count from Redis / Memory
-    // 2. Evaluate threshold & return status...
-}"></textarea>
+                        <label>Your Solution Code / Architectural Explanation</label>
+                        <textarea id="codeSolution" class="form-control code-area" placeholder=""></textarea>
                     </div>
                 </div>
 
@@ -705,8 +658,8 @@ function rateLimiter(clientId, requestTimestamp) {
                             <span class="meta-val" id="resEmail">candidate@bluecloud.com</span>
                         </div>
                         <div class="meta-row">
-                            <span class="meta-label">Target Specialization:</span>
-                            <span class="meta-val" id="resRole">Senior Full-Stack Engineer</span>
+                            <span class="meta-label">Applied Career Role:</span>
+                            <span class="meta-val" id="resRole">Senior Frontend Engineer</span>
                         </div>
                         <div class="meta-row">
                             <span class="meta-label">Assessment Status:</span>
@@ -735,11 +688,246 @@ function rateLimiter(clientId, requestTimestamp) {
         let candidateEmail = 'candidate@bluecloud.com';
         let candidatePlatform = 'Direct Application';
 
+        // Role Dynamic Question Bank
+        const ROLE_QUESTIONS = {
+            'Senior Frontend Engineer': {
+                trackLabel: '🎨 Senior Frontend Track (React, TypeScript, CSS)',
+                title: 'Senior Frontend Engineering Assessment',
+                subtitle: 'Focus: React 18, TypeScript Architecture, CSS Architecture & Web Performance',
+                q1: {
+                    badge: 'Q1 React & State',
+                    title: 'In a large-scale React 18 / Next.js application, how do you prevent unnecessary re-renders in a heavy data table with dynamic row components?',
+                    options: [
+                        'Wrap row components in React.memo and pass stable callback functions using useCallback with proper dependency arrays',
+                        'Inline new arrow functions inside JSX props on every render cycle',
+                        'Trigger global page reloads using window.location.reload() on every user input'
+                    ]
+                },
+                q2: {
+                    badge: 'Q2 TypeScript Architecture',
+                    title: 'What is the key architectural difference between interface declaration merging and type aliases when designing scalable component prop types?',
+                    options: [
+                        'Interfaces support declaration merging across module definitions, whereas type aliases allow union, tuple, and mapped type compositions',
+                        'Interfaces only accept string primitives while type aliases hold numeric data',
+                        'Type aliases compile into runtime JavaScript objects while interfaces are deleted'
+                    ]
+                },
+                q3: {
+                    badge: 'Q3 CSS Architecture',
+                    title: 'How do you scope CSS styles in enterprise micro-frontend applications to eliminate global namespace collisions without performance degradation?',
+                    options: [
+                        'Utilize CSS Modules or Tailwind CSS with utility class isolation in the build pipeline',
+                        'Write inline style objects directly on every HTML element in JavaScript',
+                        'Import un-scoped global CSS files with !important overrides on every page'
+                    ]
+                },
+                scenario: {
+                    badge: 'Frontend Code Challenge',
+                    title: 'Problem Statement: Write a custom React hook `useDebounce<T>(value: T, delay: number): T` in TypeScript that delays updating a search query until the user stops typing for `delay` milliseconds. Include cleanup logic.',
+                    placeholder: `// Write your TypeScript custom hook solution here:
+import { useState, useEffect } from 'react';
+
+export function useDebounce<T>(value: T, delay: number): T {
+    const [debouncedValue, setDebouncedValue] = useState<T>(value);
+    
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+
+        return () => clearTimeout(handler);
+    }, [value, delay]);
+
+    return debouncedValue;
+}`
+                }
+            },
+
+            'AI / ML Engineer': {
+                trackLabel: '🤖 AI / ML Engineer Track (Python, TensorFlow, PyTorch)',
+                title: 'AI & Machine Learning Systems Assessment',
+                subtitle: 'Focus: Python, LLM API Integration, PyTorch Inference, Embeddings & Vector Search',
+                q1: {
+                    badge: 'Q1 LLM Systems & API',
+                    title: 'When integrating Large Language Models (LLMs) via API in production web applications, how do you enforce JSON output schema and handle rate limits?',
+                    options: [
+                        'Enforce structured outputs (Pydantic / JSON Schema) with exponential backoff retries and fallback model routing',
+                        'Parse raw un-validated text strings using regex without fallback options',
+                        'Allow unbounded synchronous blocking API calls on the main event loop'
+                    ]
+                },
+                q2: {
+                    badge: 'Q2 PyTorch & Inference',
+                    title: 'What is the critical distinction between `torch.no_grad()` and `model.eval()` during neural network inference in PyTorch?',
+                    options: [
+                        'torch.no_grad() disables autograd gradient memory tracking, while model.eval() sets evaluation behavior for Dropout and BatchNorm layers',
+                        'model.eval() deletes the trained model weights from GPU memory completely',
+                        'They perform identical actions and can always be used interchangeably'
+                    ]
+                },
+                q3: {
+                    badge: 'Q3 Vector Databases',
+                    title: 'Why is Cosine Similarity commonly preferred over Euclidean Distance when querying high-dimensional text embeddings in Vector Databases?',
+                    options: [
+                        'Cosine Similarity measures vector orientation regardless of length/magnitude, making it ideal for normalized semantic text embeddings',
+                        'Euclidean Distance cannot be calculated in multi-dimensional vector spaces',
+                        'Cosine Similarity automatically converts float vectors to integer arrays'
+                    ]
+                },
+                scenario: {
+                    badge: 'AI Systems Challenge',
+                    title: 'Problem Statement: Write a Python function `predict_with_retry(prompt: str, max_retries: int = 3)` that queries an AI model API, parses the JSON response, and implements exponential backoff retry logic for HTTP 429 (Rate Limit) errors.',
+                    placeholder: `# Write your Python AI inference function here:
+import time
+import requests
+
+def predict_with_retry(prompt: str, max_retries: int = 3):
+    url = "https://api.bluecloudai.online/v1/predict"
+    payload = {"prompt": prompt, "temperature": 0.7}
+    
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(url, json=payload, timeout=10)
+            if response.status_code == 200:
+                return response.json()
+            elif response.status_code == 429:
+                time.sleep(2 ** attempt) # Exponential backoff
+        except Exception as e:
+            time.sleep(1)
+            
+    raise Exception("Max retries exceeded for AI inference")`
+                }
+            },
+
+            'Technical Support Specialist': {
+                trackLabel: '🛠️ Technical Support Track (IT Infrastructure, Support)',
+                title: 'Technical Support & Systems Assessment',
+                subtitle: 'Focus: IT Infrastructure, Diagnostic Commands, Gateway Errors & Incident Triage',
+                q1: {
+                    badge: 'Q1 Network Diagnostics',
+                    title: 'An enterprise client reports a "DNS_PROBE_FINISHED_NXDOMAIN" error when accessing their portal. What is the initial troubleshooting diagnostic command sequence?',
+                    options: [
+                        'Check domain DNS A/CNAME records and run nslookup / ipconfig /flushdns to clear cached DNS resolvers',
+                        'Reinstall the operating system on the client computer',
+                        'Delete the user account from the backend database server'
+                    ]
+                },
+                q2: {
+                    badge: 'Q2 Gateway & API Errors',
+                    title: 'When diagnosing a 504 Gateway Timeout error on an enterprise API endpoint, what is the primary root cause?',
+                    options: [
+                        'An upstream backend application service or database failed to respond to the reverse proxy (Nginx/Cloudflare) within the timeout window',
+                        'The user typed an invalid password in the login field',
+                        'The client computer has insufficient RAM memory available'
+                    ]
+                },
+                q3: {
+                    badge: 'Q3 Incident Triage',
+                    title: 'How do you triage a production outage ticket affecting 500+ users versus a single user reporting a password reset request?',
+                    options: [
+                        'Immediately classify the production outage as P0 Critical, notify DevOps lead, acknowledge client within SLA, and update status page',
+                        'Process tickets in strict first-come first-served order regardless of severity',
+                        'Ignore the outage report until the single user password reset is resolved'
+                    ]
+                },
+                scenario: {
+                    badge: 'Support Email Scenario',
+                    title: 'Scenario: Draft a professional technical support email response to an enterprise VP of Technology reporting intermittent 502 Bad Gateway errors on their portal, including diagnostic steps and reassurance.',
+                    placeholder: `Dear Client,
+
+Thank you for contacting BlueCloud Technical Support regarding the intermittent 502 Bad Gateway errors on your portal.
+
+Our Infrastructure Operations team has identified a temporary spike in upstream backend latency. We have scaled active backend container instances and restored full service stability.
+
+Diagnostic Summary & Action Taken:
+- Upstream Microservice Latency Triage: Completed
+- DNS & Reverse Proxy Gateway Health: 100% Operational
+- Active SLA Monitoring: Heightened for next 24 hours
+
+Please let us know if you observe any further latency.
+
+Best regards,
+BlueCloud Technical Support Team`
+                }
+            }
+        };
+
+        // Update Dynamic Questions according to selected Role
+        function updateRoleQuestions() {
+            const roleSelect = document.getElementById('targetRole');
+            const selectedRole = roleSelect.value;
+            const config = ROLE_QUESTIONS[selectedRole] || ROLE_QUESTIONS['Senior Frontend Engineer'];
+
+            // Update Badges & Titles
+            document.getElementById('roleBadgeStep2').textContent = config.trackLabel;
+            document.getElementById('roleBadgeStep3').textContent = config.trackLabel;
+            document.getElementById('step2Title').textContent = config.title;
+            document.getElementById('step2Subtitle').textContent = config.subtitle;
+
+            // Inject Q1, Q2, Q3
+            const container = document.getElementById('dynamicQuestionsContainer');
+            container.innerHTML = `
+                <!-- Q1 -->
+                <div class="q-card">
+                    <div class="q-title">
+                        <span class="q-badge">${config.q1.badge}</span>
+                        ${config.q1.title}
+                    </div>
+                    <div class="options-list">
+                        ${config.q1.options.map((opt, i) => `
+                            <label class="option-item">
+                                <input type="radio" name="q1" value="${opt}" ${i === 0 ? 'checked' : ''}>
+                                <span>${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="q-card">
+                    <div class="q-title">
+                        <span class="q-badge">${config.q2.badge}</span>
+                        ${config.q2.title}
+                    </div>
+                    <div class="options-list">
+                        ${config.q2.options.map((opt, i) => `
+                            <label class="option-item">
+                                <input type="radio" name="q2" value="${opt}" ${i === 0 ? 'checked' : ''}>
+                                <span>${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="q-card">
+                    <div class="q-title">
+                        <span class="q-badge">${config.q3.badge}</span>
+                        ${config.q3.title}
+                    </div>
+                    <div class="options-list">
+                        ${config.q3.options.map((opt, i) => `
+                            <label class="option-item">
+                                <input type="radio" name="q3" value="${opt}" ${i === 0 ? 'checked' : ''}>
+                                <span>${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Inject Scenario Problem
+            document.getElementById('scenarioBadge').textContent = config.scenario.badge;
+            document.getElementById('scenarioPromptTitle').textContent = config.scenario.title;
+            document.getElementById('codeSolution').placeholder = config.scenario.placeholder;
+        }
+
         // Read URL Parameters on load
         function initPage() {
             const params = new URLSearchParams(window.location.search);
             const emailParam = params.get('email');
             const platformParam = params.get('platform');
+            const roleParam = params.get('role');
 
             if (emailParam) candidateEmail = decodeURIComponent(emailParam);
             if (platformParam) candidatePlatform = decodeURIComponent(platformParam);
@@ -747,10 +935,23 @@ function rateLimiter(clientId, requestTimestamp) {
             document.getElementById('candidateEmailText').textContent = candidateEmail;
             document.getElementById('avatarInitial').textContent = candidateEmail.charAt(0).toUpperCase();
 
+            // Pre-select role if passed in query param
+            if (roleParam) {
+                const decodedRole = decodeURIComponent(roleParam);
+                const roleSelect = document.getElementById('targetRole');
+                for (let i = 0; i < roleSelect.options.length; i++) {
+                    if (roleSelect.options[i].value.toLowerCase().includes(decodedRole.toLowerCase())) {
+                        roleSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+
             // Pre-fill full name if possible
             const namePart = candidateEmail.split('@')[0].replace(/[\._-]/g, ' ');
             document.getElementById('fullName').value = namePart.charAt(0).toUpperCase() + namePart.slice(1);
 
+            updateRoleQuestions();
             startTimer();
         }
 
@@ -769,6 +970,9 @@ function rateLimiter(clientId, requestTimestamp) {
         // Wizard Step Switcher
         function goToStep(step) {
             currentStep = step;
+
+            // Make sure questions match current selected role
+            updateRoleQuestions();
 
             // Hide all step contents
             document.getElementById('stepContent1').classList.add('hidden');
@@ -799,7 +1003,7 @@ function rateLimiter(clientId, requestTimestamp) {
             const phoneNum = document.getElementById('phoneNum').value.trim() || 'N/A';
             const targetRole = document.getElementById('targetRole').value;
             const expYears = document.getElementById('experienceYears').value;
-            const codeSol = document.getElementById('codeSolution').value.trim() || 'Provided system architecture solution';
+            const codeSol = document.getElementById('codeSolution').value.trim() || 'Provided system solution';
 
             const refId = 'REF-' + Math.floor(100000 + Math.random() * 900000);
 
