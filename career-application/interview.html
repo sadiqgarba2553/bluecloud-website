@@ -349,7 +349,7 @@
             font-family: 'Fira Code', monospace;
             font-size: 13px;
             line-height: 1.6;
-            min-height: 200px;
+            min-height: 160px;
             resize: vertical;
         }
 
@@ -580,7 +580,7 @@
                 <div class="actions-bar">
                     <div></div>
                     <button class="btn btn-primary" onclick="goToStep(2)">
-                        Proceed to Technical Questions ➔
+                        Proceed to Questions ➔
                     </button>
                 </div>
             </div>
@@ -589,8 +589,8 @@
             <div class="step-content hidden" id="stepContent2">
                 <div class="section-header">
                     <div class="role-track-badge" id="roleBadgeStep2">⚡ Senior Frontend Engineer Track</div>
-                    <h2 id="step2Title">Technical Skills & System Architecture</h2>
-                    <p id="step2Subtitle">Demonstrate your understanding of modern software engineering principles and architectural patterns.</p>
+                    <h2 id="step2Title">Technical Skills Assessment</h2>
+                    <p id="step2Subtitle">Answer the key concepts for your selected role.</p>
                 </div>
 
                 <div id="dynamicQuestionsContainer">
@@ -602,7 +602,7 @@
                         ⬅ Back
                     </button>
                     <button class="btn btn-primary" onclick="goToStep(3)">
-                        Proceed to Scenario Problem ➔
+                        Proceed to Practical Challenge ➔
                     </button>
                 </div>
             </div>
@@ -611,8 +611,8 @@
             <div class="step-content hidden" id="stepContent3">
                 <div class="section-header">
                     <div class="role-track-badge" id="roleBadgeStep3">⚡ Senior Frontend Engineer Track</div>
-                    <h2>Engineering Problem Solving & Code Challenge</h2>
-                    <p>Describe your approach or write solution code to solve the role-specific scenario below.</p>
+                    <h2>Practical Challenge</h2>
+                    <p>Describe your solution or write code/response for the question below.</p>
                 </div>
 
                 <div class="q-card">
@@ -622,7 +622,7 @@
                     </div>
 
                     <div class="form-group" style="margin-top: 16px;">
-                        <label>Your Solution Code / Architectural Explanation</label>
+                        <label>Your Solution Code / Response</label>
                         <textarea id="codeSolution" class="form-control code-area" placeholder=""></textarea>
                     </div>
                 </div>
@@ -632,7 +632,7 @@
                         ⬅ Back
                     </button>
                     <button class="btn btn-success" onclick="submitAssessment()">
-                        🚀 Submit Complete Assessment
+                        🚀 Submit Assessment
                     </button>
                 </div>
             </div>
@@ -645,8 +645,8 @@
                             <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                     </div>
-                    <h2>Interview Assessment Completed!</h2>
-                    <p>Thank you for completing the BlueCloud Technologies Employment Assessment. Your responses have been saved and sent to our hiring panel.</p>
+                    <h2>Assessment Completed!</h2>
+                    <p>Thank you for completing the BlueCloud Technologies Employment Assessment. Your responses have been saved and sent to our hiring team.</p>
 
                     <div class="meta-summary-box">
                         <div class="meta-row">
@@ -688,166 +688,134 @@
         let candidateEmail = 'candidate@bluecloud.com';
         let candidatePlatform = 'Direct Application';
 
-        // Role Dynamic Question Bank
+        // Clear & Easy Role Question Bank
         const ROLE_QUESTIONS = {
             'Senior Frontend Engineer': {
                 trackLabel: '🎨 Senior Frontend Track (React, TypeScript, CSS)',
                 title: 'Senior Frontend Engineering Assessment',
-                subtitle: 'Focus: React 18, TypeScript Architecture, CSS Architecture & Web Performance',
+                subtitle: 'Key concepts in React, TypeScript, and modern Web Development',
                 q1: {
-                    badge: 'Q1 React & State',
-                    title: 'In a large-scale React 18 / Next.js application, how do you prevent unnecessary re-renders in a heavy data table with dynamic row components?',
+                    badge: 'Q1 React Basics',
+                    title: 'What is the primary purpose of the React useState hook?',
                     options: [
-                        'Wrap row components in React.memo and pass stable callback functions using useCallback with proper dependency arrays',
-                        'Inline new arrow functions inside JSX props on every render cycle',
-                        'Trigger global page reloads using window.location.reload() on every user input'
+                        'To store and update dynamic component state in memory',
+                        'To change the background color of the browser window',
+                        'To delete HTML elements permanently from the hard drive'
                     ]
                 },
                 q2: {
-                    badge: 'Q2 TypeScript Architecture',
-                    title: 'What is the key architectural difference between interface declaration merging and type aliases when designing scalable component prop types?',
+                    badge: 'Q2 CSS Layouts',
+                    title: 'Which modern CSS layout property is best for aligning items in flexible rows and columns?',
                     options: [
-                        'Interfaces support declaration merging across module definitions, whereas type aliases allow union, tuple, and mapped type compositions',
-                        'Interfaces only accept string primitives while type aliases hold numeric data',
-                        'Type aliases compile into runtime JavaScript objects while interfaces are deleted'
+                        'Flexbox (display: flex) and CSS Grid (display: grid)',
+                        'Fixed absolute pixel margins',
+                        'Float left with clear fixes'
                     ]
                 },
                 q3: {
-                    badge: 'Q3 CSS Architecture',
-                    title: 'How do you scope CSS styles in enterprise micro-frontend applications to eliminate global namespace collisions without performance degradation?',
+                    badge: 'Q3 TypeScript Benefits',
+                    title: 'What key feature does TypeScript bring to JavaScript development?',
                     options: [
-                        'Utilize CSS Modules or Tailwind CSS with utility class isolation in the build pipeline',
-                        'Write inline style objects directly on every HTML element in JavaScript',
-                        'Import un-scoped global CSS files with !important overrides on every page'
+                        'Static type checking and auto-complete to catch errors early',
+                        'Allows websites to load without internet access',
+                        'Replaces HTML markup with database queries'
                     ]
                 },
                 scenario: {
                     badge: 'Frontend Code Challenge',
-                    title: 'Problem Statement: Write a custom React hook `useDebounce<T>(value: T, delay: number): T` in TypeScript that delays updating a search query until the user stops typing for `delay` milliseconds. Include cleanup logic.',
-                    placeholder: `// Write your TypeScript custom hook solution here:
-import { useState, useEffect } from 'react';
-
-export function useDebounce<T>(value: T, delay: number): T {
-    const [debouncedValue, setDebouncedValue] = useState<T>(value);
-    
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedValue(value);
-        }, delay);
-
-        return () => clearTimeout(handler);
-    }, [value, delay]);
-
-    return debouncedValue;
+                    title: 'Write a JavaScript or TypeScript function greeting(name) that returns "Hello " + name + ", welcome to BlueCloud!".',
+                    placeholder: `// Write your function here:
+function greeting(name) {
+    return "Hello " + name + ", welcome to BlueCloud!";
 }`
                 }
             },
 
             'AI / ML Engineer': {
                 trackLabel: '🤖 AI / ML Engineer Track (Python, TensorFlow, PyTorch)',
-                title: 'AI & Machine Learning Systems Assessment',
-                subtitle: 'Focus: Python, LLM API Integration, PyTorch Inference, Embeddings & Vector Search',
+                title: 'AI & Machine Learning Assessment',
+                subtitle: 'Key concepts in Python, AI Prompts, and Model Data',
                 q1: {
-                    badge: 'Q1 LLM Systems & API',
-                    title: 'When integrating Large Language Models (LLMs) via API in production web applications, how do you enforce JSON output schema and handle rate limits?',
+                    badge: 'Q1 Python Data Libraries',
+                    title: 'Which Python library is most popular for data manipulation and working with DataFrames?',
                     options: [
-                        'Enforce structured outputs (Pydantic / JSON Schema) with exponential backoff retries and fallback model routing',
-                        'Parse raw un-validated text strings using regex without fallback options',
-                        'Allow unbounded synchronous blocking API calls on the main event loop'
+                        'Pandas',
+                        'HTML5',
+                        'Bootstrap'
                     ]
                 },
                 q2: {
-                    badge: 'Q2 PyTorch & Inference',
-                    title: 'What is the critical distinction between `torch.no_grad()` and `model.eval()` during neural network inference in PyTorch?',
+                    badge: 'Q2 AI Prompting',
+                    title: 'What is a "Prompt" when interacting with AI models (such as Gemini or GPT)?',
                     options: [
-                        'torch.no_grad() disables autograd gradient memory tracking, while model.eval() sets evaluation behavior for Dropout and BatchNorm layers',
-                        'model.eval() deletes the trained model weights from GPU memory completely',
-                        'They perform identical actions and can always be used interchangeably'
+                        'The input text instruction or question provided to the AI model',
+                        'A hardware cable connecting the computer monitor',
+                        'A database admin password'
                     ]
                 },
                 q3: {
-                    badge: 'Q3 Vector Databases',
-                    title: 'Why is Cosine Similarity commonly preferred over Euclidean Distance when querying high-dimensional text embeddings in Vector Databases?',
+                    badge: 'Q3 Model Training',
+                    title: 'Why are AI models trained on dataset samples before deployment?',
                     options: [
-                        'Cosine Similarity measures vector orientation regardless of length/magnitude, making it ideal for normalized semantic text embeddings',
-                        'Euclidean Distance cannot be calculated in multi-dimensional vector spaces',
-                        'Cosine Similarity automatically converts float vectors to integer arrays'
+                        'To allow the neural network to learn patterns and make accurate predictions',
+                        'To fill up computer hard drive storage',
+                        'To change the color of the application dashboard'
                     ]
                 },
                 scenario: {
-                    badge: 'AI Systems Challenge',
-                    title: 'Problem Statement: Write a Python function `predict_with_retry(prompt: str, max_retries: int = 3)` that queries an AI model API, parses the JSON response, and implements exponential backoff retry logic for HTTP 429 (Rate Limit) errors.',
-                    placeholder: `# Write your Python AI inference function here:
-import time
-import requests
-
-def predict_with_retry(prompt: str, max_retries: int = 3):
-    url = "https://api.bluecloudai.online/v1/predict"
-    payload = {"prompt": prompt, "temperature": 0.7}
-    
-    for attempt in range(max_retries):
-        try:
-            response = requests.post(url, json=payload, timeout=10)
-            if response.status_code == 200:
-                return response.json()
-            elif response.status_code == 429:
-                time.sleep(2 ** attempt) # Exponential backoff
-        except Exception as e:
-            time.sleep(1)
-            
-    raise Exception("Max retries exceeded for AI inference")`
+                    badge: 'AI Coding Challenge',
+                    title: 'Write a Python function format_prompt(user_query) that formats a prompt string into "User asked: " + user_query and returns it.',
+                    placeholder: `# Write your Python function here:
+def format_prompt(user_query):
+    return f"User asked: {user_query}"`
                 }
             },
 
             'Technical Support Specialist': {
                 trackLabel: '🛠️ Technical Support Track (IT Infrastructure, Support)',
-                title: 'Technical Support & Systems Assessment',
-                subtitle: 'Focus: IT Infrastructure, Diagnostic Commands, Gateway Errors & Incident Triage',
+                title: 'Technical Support Assessment',
+                subtitle: 'Key concepts in Troubleshooting, Networks, and Client Support',
                 q1: {
-                    badge: 'Q1 Network Diagnostics',
-                    title: 'An enterprise client reports a "DNS_PROBE_FINISHED_NXDOMAIN" error when accessing their portal. What is the initial troubleshooting diagnostic command sequence?',
+                    badge: 'Q1 Basic Troubleshooting',
+                    title: 'If a client reports that a web page is not loading at all, what is the first simple check to try?',
                     options: [
-                        'Check domain DNS A/CNAME records and run nslookup / ipconfig /flushdns to clear cached DNS resolvers',
-                        'Reinstall the operating system on the client computer',
-                        'Delete the user account from the backend database server'
+                        'Verify their internet connection and refresh the webpage',
+                        'Buy a brand new computer immediately',
+                        'Delete the database server'
                     ]
                 },
                 q2: {
-                    badge: 'Q2 Gateway & API Errors',
-                    title: 'When diagnosing a 504 Gateway Timeout error on an enterprise API endpoint, what is the primary root cause?',
+                    badge: 'Q2 Network Fundamentals',
+                    title: 'What is an IP Address used for on a network?',
                     options: [
-                        'An upstream backend application service or database failed to respond to the reverse proxy (Nginx/Cloudflare) within the timeout window',
-                        'The user typed an invalid password in the login field',
-                        'The client computer has insufficient RAM memory available'
+                        'To uniquely identify a computer device connected to the internet/network',
+                        'To print documents on physical paper',
+                        'To change the text font size'
                     ]
                 },
                 q3: {
-                    badge: 'Q3 Incident Triage',
-                    title: 'How do you triage a production outage ticket affecting 500+ users versus a single user reporting a password reset request?',
+                    badge: 'Q3 Client Success',
+                    title: 'How should a technical support specialist handle a frustrated client experiencing an issue?',
                     options: [
-                        'Immediately classify the production outage as P0 Critical, notify DevOps lead, acknowledge client within SLA, and update status page',
-                        'Process tickets in strict first-come first-served order regardless of severity',
-                        'Ignore the outage report until the single user password reset is resolved'
+                        'Remain calm, listen empathetically, and provide clear step-by-step guidance',
+                        'Ignore the client and close the support ticket',
+                        'Argue back with complicated technical jargon'
                     ]
                 },
                 scenario: {
-                    badge: 'Support Email Scenario',
-                    title: 'Scenario: Draft a professional technical support email response to an enterprise VP of Technology reporting intermittent 502 Bad Gateway errors on their portal, including diagnostic steps and reassurance.',
+                    badge: 'Support Response Challenge',
+                    title: 'Write a brief, polite email response assisting a client who forgot their account password.',
                     placeholder: `Dear Client,
 
-Thank you for contacting BlueCloud Technical Support regarding the intermittent 502 Bad Gateway errors on your portal.
+Thank you for reaching out to BlueCloud Technical Support!
 
-Our Infrastructure Operations team has identified a temporary spike in upstream backend latency. We have scaled active backend container instances and restored full service stability.
+To reset your password, please click the "Forgot Password" link on the login page or visit:
+https://bluecloudai.online/reset-password
 
-Diagnostic Summary & Action Taken:
-- Upstream Microservice Latency Triage: Completed
-- DNS & Reverse Proxy Gateway Health: 100% Operational
-- Active SLA Monitoring: Heightened for next 24 hours
-
-Please let us know if you observe any further latency.
+Please let us know if you need any further assistance.
 
 Best regards,
-BlueCloud Technical Support Team`
+BlueCloud Support Team`
                 }
             }
         };
@@ -1003,7 +971,7 @@ BlueCloud Technical Support Team`
             const phoneNum = document.getElementById('phoneNum').value.trim() || 'N/A';
             const targetRole = document.getElementById('targetRole').value;
             const expYears = document.getElementById('experienceYears').value;
-            const codeSol = document.getElementById('codeSolution').value.trim() || 'Provided system solution';
+            const codeSol = document.getElementById('codeSolution').value.trim() || 'Provided solution';
 
             const refId = 'REF-' + Math.floor(100000 + Math.random() * 900000);
 
