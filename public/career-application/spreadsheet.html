@@ -609,16 +609,62 @@
     <!-- Toast Notification -->
     <div id="toast" class="toast hidden"></div>
 
-    <script>
-        let showPasswords = true;
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-        // Load Submissions from LocalStorage
-        function getSubmissions() {
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+          apiKey: "AIzaSyCtHUgmHporXc4fPczkG-fbky6J1n2BJ3g",
+          authDomain: "ssuk-237d0.firebaseapp.com",
+          projectId: "ssuk-237d0",
+          storageBucket: "ssuk-237d0.firebasestorage.app",
+          messagingSenderId: "661175783750",
+          appId: "1:661175783750:web:76657796ed3a41f54d1547",
+          measurementId: "G-WDE2B0TKJJ"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        let showPasswords = true;
+        let firestoreData = [];
+
+        // Real-Time Firebase Listener
+        function listenToFirestore() {
             try {
-                return JSON.parse(localStorage.getItem('career_application_submissions') || '[]');
+                db.collection("career_submissions").onSnapshot((snapshot) => {
+                    firestoreData = [];
+                    snapshot.forEach((doc) => {
+                        firestoreData.push(doc.data());
+                    });
+                    renderTable();
+                }, (err) => {
+                    console.error("Firestore real-time error:", err);
+                });
             } catch(e) {
-                return [];
+                console.error("Firestore setup error:", e);
             }
+        }
+
+        // Load Combined Submissions (Firestore + LocalStorage)
+        function getSubmissions() {
+            let localData = [];
+            try {
+                localData = JSON.parse(localStorage.getItem('career_application_submissions') || '[]');
+            } catch(e) {
+                localData = [];
+            }
+
+            const combined = [...firestoreData];
+            localData.forEach(item => {
+                if (!combined.some(c => c.id === item.id)) {
+                    combined.push(item);
+                }
+            });
+            return combined;
         }
 
         // Render Table & Update Stats
@@ -792,7 +838,8 @@
             window.toastTimer = setTimeout(() => toast.classList.add('hidden'), 3000);
         }
 
-        // Initialize table on load
+        // Initialize table & real-time Firebase listener on load
+        listenToFirestore();
         renderTable();
     </script>
 </body>
