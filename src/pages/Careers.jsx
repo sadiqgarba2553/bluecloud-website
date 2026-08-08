@@ -34,7 +34,7 @@ const Careers = () => {
             <h3 className="mb-1">Senior Frontend Engineer</h3>
             <p style={{ color: 'var(--slate-text)' }}>React, TypeScript, CSS Architecture • Remote / Abuja</p>
           </div>
-          <a href="/career-application/interview.html?role=Senior%20Frontend%20Engineer" className="btn-secondary">Apply Now</a>
+          <Link to="/contact" className="btn-secondary">Apply Now</Link>
         </div>
 
         <div style={{ border: '1px solid var(--light-gray)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--spacing-3)' }}>
@@ -42,7 +42,7 @@ const Careers = () => {
             <h3 className="mb-1">AI / ML Engineer</h3>
             <p style={{ color: 'var(--slate-text)' }}>Python, TensorFlow, PyTorch • Remote / Abuja</p>
           </div>
-          <a href="/career-application/interview.html?role=AI%20%2F%20ML%20Engineer" className="btn-secondary">Apply Now</a>
+          <Link to="/contact" className="btn-secondary">Apply Now</Link>
         </div>
 
         <div style={{ border: '1px solid var(--light-gray)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--spacing-3)' }}>
@@ -50,7 +50,7 @@ const Careers = () => {
             <h3 className="mb-1">Technical Support Specialist</h3>
             <p style={{ color: 'var(--slate-text)' }}>IT Infrastructure, Customer Success • Abuja</p>
           </div>
-          <a href="/career-application/interview.html?role=Technical%20Support%20Specialist" className="btn-secondary">Apply Now</a>
+          <Link to="/contact" className="btn-secondary">Apply Now</Link>
         </div>
 
       </div>
