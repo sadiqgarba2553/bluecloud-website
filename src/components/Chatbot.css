@@ -147,28 +147,90 @@
   transition: background 0.3s;
 }
 
-.chatbot-input button:hover {
-  background: var(--deep-navy);
+.chatbot-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.typing-indicator span {
-  animation: blink 1.4s infinite both;
-  font-weight: bold;
-  font-size: 1.2rem;
-  line-height: 1;
+.chatbot-voice-toggle-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.chatbot-voice-toggle-btn:hover,
+.chatbot-voice-toggle-btn.active {
+  opacity: 1;
+}
+
+.chatbot-mic-btn {
+  background: none;
+  border: none;
   color: var(--deep-navy);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background 0.2s ease;
 }
 
-@keyframes blink {
-  0% { opacity: 0.2; }
-  20% { opacity: 1; }
-  100% { opacity: 0.2; }
+.chatbot-mic-btn:hover {
+  background: var(--light-gray);
 }
 
-@media (max-width: 480px) {
-  .chatbot-window {
-    width: 300px;
-    height: 400px;
-    right: -15px;
-  }
+.chatbot-mic-btn.listening {
+  color: #ef4444;
+  animation: pulseMic 1s infinite alternate;
 }
+
+@keyframes pulseMic {
+  from { transform: scale(1); }
+  to { transform: scale(1.15); }
+}
+
+.chat-lead-card {
+  background: var(--white);
+  border: 1px solid var(--primary-blue);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
+}
+
+.chat-lead-card h4 {
+  font-size: 0.9rem;
+  color: var(--deep-navy);
+  margin-bottom: 6px;
+}
+
+.chat-lead-card input,
+.chat-lead-card select {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--light-gray);
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.chat-lead-card button {
+  width: 100%;
+  background: var(--primary-blue);
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+

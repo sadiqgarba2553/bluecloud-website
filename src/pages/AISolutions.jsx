@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Cpu, Zap, Database } from 'lucide-react';
 import SEO from '../components/SEO';
+import AIPlayground from '../components/AIPlayground';
 
 const AISolutions = () => {
   return (
@@ -39,6 +40,9 @@ const AISolutions = () => {
             <p>From Natural Language Processing to computer vision, we train and deploy models specific to your industry needs.</p>
           </div>
         </div>
+
+        {/* Live AI Playground */}
+        <AIPlayground />
       </div>
 
       <div className="section section-light text-center">
@@ -53,3 +57,4 @@ const AISolutions = () => {
 };
 
 export default AISolutions;
+

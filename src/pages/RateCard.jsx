@@ -1,6 +1,7 @@
 import { Download, FileText, ArrowLeft, Phone, CheckCircle, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
+import ProjectScopeEstimator from '../components/ProjectScopeEstimator';
 import './RateCard.css';
 
 const RateCard = () => {
@@ -16,8 +17,8 @@ const RateCard = () => {
   return (
     <div>
       <SEO
-        title="Social Media Rate Card | BlueCloud Technologies"
-        description="Download BlueCloud's Social Media Management rate card. Transparent, flexible pricing packages for businesses of all sizes."
+        title="Social Media & Web Rate Card | BlueCloud Technologies"
+        description="Download BlueCloud's rate card and calculate custom project scope using our interactive estimator."
         path="/rate-card"
       />
 
@@ -31,12 +32,12 @@ const RateCard = () => {
           <div className="rate-card-hero">
             <div className="rate-card-hero-left">
               <div className="rate-card-badge">
-                <Star size={14} /> Social Media Management
+                <Star size={14} /> Services Rate Card
               </div>
               <h1>Our Rate Card</h1>
               <p>
-                Transparent, flexible pricing for businesses ready to grow their online presence.
-                Download our rate card to explore our packages and find the right fit for you.
+                Transparent, flexible pricing for businesses ready to grow their digital presence.
+                Download our rate card to explore our packages or use our builder below.
               </p>
 
               <div className="rate-card-actions">
@@ -60,7 +61,7 @@ const RateCard = () => {
                   <FileText size={28} />
                   <div>
                     <span className="doc-preview-name">BlueCloud_Rate_Card.pdf</span>
-                    <span className="doc-preview-type">Social Media Management</span>
+                    <span className="doc-preview-type">Social Media & Web Services</span>
                   </div>
                 </div>
                 <div className="doc-preview-divider" />
@@ -86,8 +87,13 @@ const RateCard = () => {
         </div>
       </div>
 
+      {/* Interactive Scope & Cost Estimator */}
+      <div className="container">
+        <ProjectScopeEstimator />
+      </div>
+
       {/* Bottom CTA */}
-      <section className="section section-dark text-center">
+      <section className="section section-dark text-center" style={{ marginTop: 'var(--spacing-8)' }}>
         <div className="container">
           <h2 className="mb-2">Not Sure Which Package Fits?</h2>
           <p className="mb-4">
@@ -113,3 +119,4 @@ const RateCard = () => {
 };
 
 export default RateCard;
+

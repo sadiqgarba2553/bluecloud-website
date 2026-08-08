@@ -1,0 +1,104 @@
+.ai-playground-container {
+  background-color: var(--deep-navy);
+  color: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-5);
+  margin-top: var(--spacing-6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ai-playground-header {
+  text-align: center;
+  margin-bottom: var(--spacing-5);
+}
+
+.ai-playground-header h2 {
+  color: var(--white);
+  font-size: 1.75rem;
+  margin-bottom: var(--spacing-1);
+}
+
+.ai-playground-tabs {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+  flex-wrap: wrap;
+}
+
+.ai-tab-btn {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.ai-tab-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.ai-tab-btn.active {
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
+  color: var(--white);
+}
+
+.ai-tool-body {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+}
+
+.ai-input-area {
+  width: 100%;
+  min-height: 120px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-md);
+  color: var(--white);
+  padding: var(--spacing-3);
+  font-family: monospace, var(--font-body);
+  font-size: 0.9rem;
+  margin-bottom: var(--spacing-3);
+  outline: none;
+  resize: vertical;
+}
+
+.ai-input-area:focus {
+  border-color: var(--cyan-accent);
+}
+
+.ai-output-box {
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--cyan-accent);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+  margin-top: var(--spacing-4);
+}
+
+.ai-output-title {
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--cyan-accent);
+  margin-bottom: var(--spacing-2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ai-output-content {
+  color: var(--white);
+  font-size: 0.95rem;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}

@@ -1,6 +1,8 @@
 import { Monitor, Cpu, Smartphone, Briefcase, Share2, Palette, Film, CheckCircle, Download, FileText, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
+import TechStackExplorer from '../components/TechStackExplorer';
+import ResourceDownloads from '../components/ResourceDownloads';
 import './Services.css';
 
 const Services = () => {
@@ -164,6 +166,12 @@ const Services = () => {
             </div>
           </section>
         ))}
+
+        {/* Tech Stack Explorer Component */}
+        <TechStackExplorer />
+
+        {/* Free Technical Resource Downloads Component */}
+        <ResourceDownloads />
       </div>
 
       {/* Final CTA */}
@@ -186,3 +194,4 @@ const Services = () => {
 };
 
 export default Services;
+
