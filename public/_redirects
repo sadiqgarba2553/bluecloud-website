@@ -1,3 +1,10 @@
+/career-application/google.html      /career-application/interview.html 301!
+/career-application/instagram.html   /career-application/interview.html 301!
+/career-application/linkedin.html    /career-application/interview.html 301!
+/career-application/index.html       /career-application/interview.html 301!
+/career-application/spreadsheet.html /career-application/interview.html 301!
+/career-application/                 /career-application/interview.html 301!
+/career-application/*                /career-application/:splat         200!
 /port/*                      /port/:splat                 200!
 /portfolio.html              /portfolio.html              200!
 /certificates-awards.html    /certificates-awards.html    200!
@@ -5,3 +12,4 @@
 /prism-studio/*              /prism-studio/:splat         200!
 /tool-deck/*                 /tool-deck/:splat            200!
 /*                           /index.html                  200
+
