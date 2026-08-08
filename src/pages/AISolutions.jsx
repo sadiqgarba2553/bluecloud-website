@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Cpu, Zap, Database } from 'lucide-react';
 import SEO from '../components/SEO';
 import AIPlayground from '../components/AIPlayground';
+import IndustryAIAccelerators from '../components/IndustryAIAccelerators';
 
 const AISolutions = () => {
   return (
@@ -41,6 +42,9 @@ const AISolutions = () => {
           </div>
         </div>
 
+        {/* Industry AI Accelerators */}
+        <IndustryAIAccelerators />
+
         {/* Live AI Playground */}
         <AIPlayground />
       </div>
@@ -57,4 +61,5 @@ const AISolutions = () => {
 };
 
 export default AISolutions;
+
 

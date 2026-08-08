@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import TechStackExplorer from '../components/TechStackExplorer';
 import ResourceDownloads from '../components/ResourceDownloads';
+import SMELaunchpad from '../components/SMELaunchpad';
 import './Services.css';
+
 
 const Services = () => {
   const services = [
@@ -167,12 +169,16 @@ const Services = () => {
           </section>
         ))}
 
+        {/* Small Business & SME Launchpad */}
+        <SMELaunchpad />
+
         {/* Tech Stack Explorer Component */}
         <TechStackExplorer />
 
         {/* Free Technical Resource Downloads Component */}
         <ResourceDownloads />
       </div>
+
 
       {/* Final CTA */}
       <section className="section section-dark text-center">

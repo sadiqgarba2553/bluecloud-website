@@ -1,0 +1,111 @@
+.industry-ai-card {
+  background-color: var(--white);
+  border: 1px solid var(--light-gray);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-5);
+  box-shadow: var(--shadow-sm);
+  margin-top: var(--spacing-6);
+}
+
+.industry-header h2 {
+  font-size: 1.6rem;
+  color: var(--deep-navy);
+  margin-bottom: 4px;
+}
+
+.industry-selector-grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: var(--spacing-4);
+  border-bottom: 1px solid var(--light-gray);
+  padding-bottom: 12px;
+}
+
+.ind-select-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--light-gray);
+  background-color: var(--white);
+  color: var(--slate-text);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ind-select-btn:hover {
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+}
+
+.ind-select-btn.active {
+  background-color: var(--primary-blue);
+  color: var(--white);
+  border-color: var(--primary-blue);
+}
+
+.industry-body {
+  padding-top: var(--spacing-4);
+}
+
+.ind-grid {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: var(--spacing-5);
+  align-items: start;
+}
+
+@media (max-width: 850px) {
+  .ind-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sim-output-box {
+  margin-top: var(--spacing-4);
+  background-color: var(--deep-navy);
+  color: var(--white);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-3);
+  border: 1px solid var(--primary-blue);
+}
+
+.sim-output-box pre {
+  margin: 0;
+  font-family: monospace;
+  font-size: 0.82rem;
+  color: var(--white);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.ind-metrics-col {
+  background-color: var(--light-gray);
+  border: 1px solid var(--light-gray);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+}
+
+.ind-metric-card {
+  margin-bottom: 12px;
+}
+
+.ind-metric-card:last-child {
+  margin-bottom: 0;
+}
+
+.ind-metric-card span {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--slate-text);
+  text-transform: uppercase;
+}
+
+.ind-metric-card strong {
+  font-size: 0.95rem;
+  color: var(--deep-navy);
+}

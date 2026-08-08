@@ -1,0 +1,122 @@
+.erp-suite-card {
+  background-color: var(--white);
+  border: 1px solid var(--light-gray);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-5);
+  box-shadow: var(--shadow-sm);
+  margin-top: var(--spacing-6);
+}
+
+.erp-header h2 {
+  font-size: 1.6rem;
+  color: var(--deep-navy);
+  margin-bottom: 4px;
+}
+
+.erp-tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: var(--spacing-4);
+  border-bottom: 1px solid var(--light-gray);
+  padding-bottom: 12px;
+}
+
+.erp-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--light-gray);
+  background-color: var(--white);
+  color: var(--slate-text);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.erp-tab-btn:hover {
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+}
+
+.erp-tab-btn.active {
+  background-color: var(--primary-blue);
+  color: var(--white);
+  border-color: var(--primary-blue);
+}
+
+.erp-body {
+  padding-top: var(--spacing-4);
+}
+
+.erp-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: var(--spacing-5);
+  align-items: start;
+}
+
+@media (max-width: 850px) {
+  .erp-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.erp-info-box h3 {
+  font-size: 1.2rem;
+  color: var(--deep-navy);
+  margin-bottom: 8px;
+}
+
+.erp-info-box p {
+  color: var(--slate-text);
+  font-size: 0.92rem;
+  margin-bottom: var(--spacing-4);
+}
+
+.erp-feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.erp-feature-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--deep-navy);
+  margin-bottom: 8px;
+
+}
+
+.erp-metrics-box {
+  background-color: var(--light-gray);
+  border: 1px solid var(--light-gray);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+}
+
+.metric-row {
+  margin-bottom: 12px;
+}
+
+.metric-row:last-child {
+  margin-bottom: 0;
+}
+
+.metric-row span {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--slate-text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-row strong {
+  font-size: 1rem;
+  color: var(--deep-navy);
+}

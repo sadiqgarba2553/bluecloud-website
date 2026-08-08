@@ -2,7 +2,9 @@ import { Download, FileText, ArrowLeft, Phone, CheckCircle, Star } from 'lucide-
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import ProjectScopeEstimator from '../components/ProjectScopeEstimator';
+import CorporateProposalEngine from '../components/CorporateProposalEngine';
 import './RateCard.css';
+
 
 const RateCard = () => {
   const highlights = [
@@ -90,7 +92,9 @@ const RateCard = () => {
       {/* Interactive Scope & Cost Estimator */}
       <div className="container">
         <ProjectScopeEstimator />
+        <CorporateProposalEngine />
       </div>
+
 
       {/* Bottom CTA */}
       <section className="section section-dark text-center" style={{ marginTop: 'var(--spacing-8)' }}>

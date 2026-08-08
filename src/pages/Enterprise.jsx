@@ -1,5 +1,7 @@
 import SEO from '../components/SEO';
 import EnterpriseHub from '../components/EnterpriseHub';
+import EnterpriseERPSuite from '../components/EnterpriseERPSuite';
+import CorporateProposalEngine from '../components/CorporateProposalEngine';
 import { Link } from 'react-router-dom';
 
 const Enterprise = () => {
@@ -12,9 +14,11 @@ const Enterprise = () => {
       />
       <div className="container">
         <EnterpriseHub />
+        <EnterpriseERPSuite />
+        <CorporateProposalEngine />
       </div>
 
-      <section className="section section-dark text-center">
+      <section className="section section-dark text-center" style={{ marginTop: 'var(--spacing-6)' }}>
         <div className="container">
           <h2 className="mb-2">Ready to Execute an Enterprise Migration?</h2>
           <p className="mb-4">Speak directly with our enterprise security & cloud architects today.</p>
@@ -28,3 +32,4 @@ const Enterprise = () => {
 };
 
 export default Enterprise;
+
