@@ -10,23 +10,24 @@ const RESOURCES = [
     title: 'Enterprise AI Integration Guide 2026',
     category: 'Whitepaper',
     desc: 'A comprehensive technical blueprint on embedding generative AI models and automated LLM pipelines into enterprise web architectures.',
-    file: '/BlueCloud_Rate_Card.pdf'
+    file: '/Enterprise_AI_Integration_Guide_2026.pdf'
   },
   {
     id: 'cloud-security',
     title: 'Cloud Security & Infrastructure Scalability',
     category: 'Architecture Guide',
     desc: 'Best practices for zero-trust authorization, Firebase Security Rules auditing, and scaling real-time databases under high user loads.',
-    file: '/BlueCloud_Rate_Card.pdf'
+    file: '/Cloud_Security_Infrastructure_Scalability_2026.pdf'
   },
   {
     id: 'rate-card-doc',
     title: 'BlueCloud Official Rate Card & Services Guide',
     category: 'Service Guide',
     desc: 'Full breakdown of web app development packages, retainer tiers, custom AI solution pricing, and social media management rates.',
-    file: '/BlueCloud_Rate_Card.pdf'
+    file: '/BlueCloud_Official_Rate_Card_Services_Guide_2026.pdf'
   }
 ];
+
 
 const ResourceDownloads = () => {
   const [selectedResource, setSelectedResource] = useState(null);
