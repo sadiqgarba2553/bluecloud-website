@@ -37,19 +37,22 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div className="footer-links">
-            <h4>Quick Links</h4>
+            <h4>Platform & Solutions</h4>
             <ul>
-              <li><Link to="/">Home</Link></li>
-              <li><Link to="/about">About Us</Link></li>
+              <li><Link to="/platform">Platform Ecosystem</Link></li>
+              <li><Link to="/developers">Developer API Hub</Link></li>
+              <li><Link to="/enterprise">Enterprise & SLAs</Link></li>
+              <li><Link to="/investors">Investor Relations</Link></li>
+              <li><Link to="/ai-solutions">AI Solutions</Link></li>
               <li><Link to="/services">Services</Link></li>
               <li><Link to="/projects">Projects</Link></li>
               <li><a href="/portfolio.html" target="_blank" rel="noopener noreferrer">Founder Portfolio</a></li>
-              <li><Link to="/ai-solutions">AI Solutions</Link></li>
               <li><Link to="/careers">Careers</Link></li>
               <li><Link to="/contact">Contact</Link></li>
               <li><Link to="/portal/admin">Admin Portal</Link></li>
             </ul>
           </div>
+
 
           {/* Contact Info */}
           <div className="footer-contact">

@@ -15,6 +15,10 @@ import Careers from './pages/Careers';
 import Contact from './pages/Contact';
 import RateCard from './pages/RateCard';
 import Portfolio from './pages/Portfolio';
+import Platform from './pages/Platform';
+import Developers from './pages/Developers';
+import Enterprise from './pages/Enterprise';
+import Investors from './pages/Investors';
 
 // Portal Imports
 import PortalLogin from './pages/PortalLogin';
@@ -35,6 +39,10 @@ function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/ai-solutions" element={<AISolutions />} />
+          <Route path="/platform" element={<Platform />} />
+          <Route path="/developers" element={<Developers />} />
+          <Route path="/enterprise" element={<Enterprise />} />
+          <Route path="/investors" element={<Investors />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/rate-card" element={<RateCard />} />
@@ -42,6 +50,7 @@ function App() {
           <Route path="/port" element={<Portfolio />} />
           <Route path="/port/index.html" element={<Portfolio />} />
           <Route path="/portfolio.html" element={<Portfolio />} />
+
           
           {/* Portal Routes */}
           <Route path="/portal/login" element={<PortalLogin />} />

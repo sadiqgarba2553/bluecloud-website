@@ -12,13 +12,15 @@ const Header = () => {
 
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'About', path: '/about' },
+    { name: 'Platform', path: '/platform' },
+    { name: 'Developers', path: '/developers' },
+    { name: 'Enterprise', path: '/enterprise' },
     { name: 'Services', path: '/services' },
     { name: 'Projects', path: '/projects' },
-    { name: 'Blog', path: '/blog' },
     { name: 'AI Solutions', path: '/ai-solutions' },
-    { name: 'Contact', path: '/contact' },
+    { name: 'About', path: '/about' },
   ];
+
 
   return (
     <header className="header">
