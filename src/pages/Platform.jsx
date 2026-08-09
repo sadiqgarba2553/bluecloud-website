@@ -9,6 +9,7 @@ const Platform = () => {
         title="BLUECLOUD Platform Ecosystem — Cloud Architecture, AI & Compiler Platform"
         description="Explore the unified BLUECLOUD platform uniting Flux Language, Aura AI Engine, Prism Studio, and Tool Deck."
         path="/platform"
+        keywords="BlueCloud platform, cloud architecture Nigeria, Flux language, Aura AI engine, Prism Studio, Tool Deck, developer platform Africa, tech ecosystem"
       />
       <div className="container">
         <PlatformEcosystem />

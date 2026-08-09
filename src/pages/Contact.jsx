@@ -56,6 +56,7 @@ const Contact = () => {
         title="Contact BlueCloud Technologies | Get a Quote for Your Project"
         description="Ready to start your next enterprise project? Contact BlueCloud Technologies today for web development, AI integration, and cybersecurity services."
         path="/contact"
+        keywords="contact BlueCloud, get a quote, hire web developer Abuja, project consultation Nigeria, BlueCloud contact, software development inquiry, Abuja tech company contact"
       />
       <div className="contact-header">
         <div className="container">

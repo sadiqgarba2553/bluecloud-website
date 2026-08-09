@@ -1,13 +1,42 @@
-import { Monitor, Cpu, Smartphone, Briefcase, Share2, Palette, Film, CheckCircle, Download, FileText, ExternalLink } from 'lucide-react';
+import { Monitor, Cpu, Smartphone, Briefcase, Share2, Palette, Film, CheckCircle, Download, FileText, ExternalLink, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import SEO from '../components/SEO';
 import TechStackExplorer from '../components/TechStackExplorer';
 import ResourceDownloads from '../components/ResourceDownloads';
 import SMELaunchpad from '../components/SMELaunchpad';
 import './Services.css';
 
+const faqData = [
+  {
+    question: 'How much does it cost to build a website in Nigeria?',
+    answer: 'Website costs vary based on complexity. A basic corporate website starts from ₦150,000, while custom web applications with advanced features like AI integration, user dashboards, and API backends range from ₦500,000 to ₦5,000,000+. BlueCloud provides transparent pricing through our Rate Card and offers free consultations to scope your project accurately.',
+  },
+  {
+    question: 'What services does BlueCloud Technologies offer?',
+    answer: 'BlueCloud offers a comprehensive suite of technology and creative services: Website Development, AI Solutions & Automation, Mobile/Desktop App Development, Social Media Management, Graphics Design, Video Editing, and Technical Consulting & Support. We serve clients across Nigeria and worldwide.',
+  },
+  {
+    question: 'How long does it take to build a web application?',
+    answer: 'A standard corporate website takes 2-4 weeks. Custom web applications typically take 4-12 weeks depending on complexity, features, and integrations required. Enterprise-grade platforms with AI integration, security layers, and multiple user roles can take 3-6 months. We provide detailed timelines during our initial consultation.',
+  },
+  {
+    question: 'Does BlueCloud work with clients outside Nigeria?',
+    answer: 'Yes. While BlueCloud is headquartered in Abuja, Nigeria, we serve clients worldwide. We work with businesses across Africa, the UK, and the US, providing remote collaboration through modern project management tools, regular video calls, and transparent progress reporting.',
+  },
+  {
+    question: 'Can BlueCloud integrate AI into my existing business systems?',
+    answer: 'Absolutely. We specialize in integrating AI capabilities into existing business workflows. This includes AI chatbots, predictive analytics dashboards, automated document processing, intelligent automation pipelines, and custom machine learning models tailored to your industry. We assess your current infrastructure and design AI solutions that work with your existing systems.',
+  },
+  {
+    question: 'Does BlueCloud offer ongoing support after project delivery?',
+    answer: 'Yes. We provide 24/7 technical support, maintenance packages, and ongoing development services. Our enterprise clients benefit from SLA-backed support with guaranteed response times. We also offer retainer packages for businesses that need continuous development and optimization.',
+  },
+];
 
 const Services = () => {
+  const [openFaq, setOpenFaq] = useState(null);
+
   const services = [
     {
       id: 'web',
@@ -106,8 +135,10 @@ const Services = () => {
     <div>
       <SEO
         title="Services — Web Development, AI, Social Media, Design & Video | BlueCloud Technologies"
-        description="Explore our full suite of services including web development, AI solutions, social media management, graphics design, video editing, and technical consulting."
+        description="Explore our full suite of services including web development, AI solutions, social media management, graphics design, video editing, and technical consulting. Based in Abuja, Nigeria."
         path="/services"
+        keywords="web development services Nigeria, AI solutions Abuja, social media management Nigeria, graphics design Abuja, video editing services, technical consulting Nigeria, website cost Nigeria, app development Nigeria, BlueCloud services, hire developer Nigeria"
+        faq={faqData}
       />
       <div className="services-header">
         <div className="container">
@@ -177,6 +208,74 @@ const Services = () => {
 
         {/* Free Technical Resource Downloads Component */}
         <ResourceDownloads />
+
+        {/* FAQ Section — targets Google FAQ Rich Results */}
+        <section className="faq-section" id="faq" style={{ marginTop: 'var(--spacing-8)' }}>
+          <div className="text-center mb-6">
+            <h2>Frequently Asked Questions</h2>
+            <p style={{ color: 'var(--slate-text)', maxWidth: '600px', margin: '0 auto' }}>
+              Common questions about our services, pricing, and process.
+            </p>
+          </div>
+          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+            {faqData.map((item, index) => (
+              <div
+                key={index}
+                style={{
+                  border: '1px solid var(--light-gray)',
+                  borderRadius: 'var(--radius-md)',
+                  marginBottom: 'var(--spacing-2)',
+                  overflow: 'hidden',
+                  backgroundColor: 'var(--white)',
+                }}
+              >
+                <button
+                  onClick={() => setOpenFaq(openFaq === index ? null : index)}
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: 'var(--spacing-3) var(--spacing-4)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: '1rem',
+                    fontWeight: '600',
+                    color: 'var(--heading-color)',
+                    textAlign: 'left',
+                    gap: 'var(--spacing-2)',
+                  }}
+                  aria-expanded={openFaq === index}
+                  id={`faq-btn-${index}`}
+                >
+                  <span>{item.question}</span>
+                  <ChevronDown
+                    size={20}
+                    style={{
+                      transform: openFaq === index ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 0.2s ease',
+                      flexShrink: 0,
+                      color: 'var(--primary-blue)',
+                    }}
+                  />
+                </button>
+                {openFaq === index && (
+                  <div
+                    style={{
+                      padding: '0 var(--spacing-4) var(--spacing-3)',
+                      color: 'var(--slate-text)',
+                      lineHeight: 1.7,
+                      fontSize: '0.95rem',
+                    }}
+                  >
+                    {item.answer}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
 
 
@@ -200,4 +299,3 @@ const Services = () => {
 };
 
 export default Services;
-

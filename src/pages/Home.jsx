@@ -10,6 +10,7 @@ const Home = () => {
         title="BlueCloud Technologies — Enterprise Web Development, AI Solutions & Software Engineering"
         description="BlueCloud delivers premium web development, AI-powered solutions, and enterprise software engineering. Based in Abuja, Nigeria — serving clients worldwide."
         path="/"
+        keywords="BlueCloud Technologies, web development Nigeria, AI solutions Abuja, enterprise software engineering, build website Nigeria, app development Africa, tech company Abuja, software company Nigeria, React developer Nigeria, hire web developer Nigeria"
       />
       {/* Hero Section */}
       <section className="hero-section">

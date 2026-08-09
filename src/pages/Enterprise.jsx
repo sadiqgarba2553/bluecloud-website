@@ -11,6 +11,7 @@ const Enterprise = () => {
         title="Enterprise Infrastructure & 99.999% SLA — BLUECLOUD"
         description="Zero-Trust cloud security, 99.999% SLA availability guarantees, and high-performance cloud architecture for global enterprises."
         path="/enterprise"
+        keywords="enterprise software Nigeria, SLA guarantee, Zero-Trust security, cloud infrastructure Abuja, enterprise solutions Africa, high availability, BlueCloud enterprise"
       />
       <div className="container">
         <EnterpriseHub />

@@ -11,6 +11,7 @@ const AISolutions = () => {
         title="AI Solutions — Machine Learning & Automation | BlueCloud Technologies"
         description="Integrate cutting-edge AI models, machine learning, and automation into your business processes with BlueCloud Technologies."
         path="/ai-solutions"
+        keywords="AI solutions Nigeria, machine learning Abuja, automation services, AI chatbot development, predictive analytics, custom ML models, artificial intelligence company Nigeria, BlueCloud AI"
       />
       <div style={{ backgroundColor: 'var(--deep-navy)', color: 'var(--white)', padding: 'var(--spacing-8) 0', textAlign: 'center' }}>
         <div className="container">

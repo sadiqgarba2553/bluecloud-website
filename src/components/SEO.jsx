@@ -8,10 +8,25 @@ const SEO = ({
   image = null,
   article = null,
   keywords = null,
+  faq = null,
+  breadcrumbLabel = null,
 }) => {
   const siteUrl = 'https://bluecloudai.online';
   const fullUrl = `${siteUrl}${path}`;
   const ogImage = image ? (image.startsWith('http') ? image : `${siteUrl}${image}`) : `${siteUrl}/icon_no_background.PNG`;
+
+  // Build breadcrumb items
+  const breadcrumbItems = [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: siteUrl },
+  ];
+
+  if (path.startsWith('/blog/')) {
+    breadcrumbItems.push({ '@type': 'ListItem', position: 2, name: 'Blog', item: `${siteUrl}/blog` });
+    breadcrumbItems.push({ '@type': 'ListItem', position: 3, name: breadcrumbLabel || title, item: fullUrl });
+  } else if (path && path !== '/') {
+    const label = breadcrumbLabel || title.split('—')[0].split('|')[0].trim();
+    breadcrumbItems.push({ '@type': 'ListItem', position: 2, name: label, item: fullUrl });
+  }
 
   return (
     <Helmet>
@@ -51,16 +66,23 @@ const SEO = ({
       <meta name="twitter:creator" content="@sadeeqsgi" />
       <meta name="twitter:site" content="@sadeeqsgi" />
 
-      {/* Article JSON-LD */}
-      {article && (
-        <script type="application/ld+json">
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BlogPosting',
+      {/* WebPage JSON-LD — renders on every page */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': article ? 'BlogPosting' : 'WebPage',
+          name: title,
+          description: description,
+          url: fullUrl,
+          image: ogImage,
+          inLanguage: 'en-US',
+          isPartOf: {
+            '@type': 'WebSite',
+            name: 'BlueCloud Technologies',
+            url: siteUrl,
+          },
+          ...(article ? {
             headline: title,
-            description: description,
-            image: ogImage,
-            url: fullUrl,
             datePublished: article.publishedTime,
             dateModified: article.modifiedTime || article.publishedTime,
             author: {
@@ -81,22 +103,41 @@ const SEO = ({
               '@id': fullUrl,
             },
             keywords: article.tags ? article.tags.join(', ') : '',
-            inLanguage: 'en-US',
-          })}
-        </script>
-      )}
+          } : {
+            publisher: {
+              '@type': 'Organization',
+              name: 'BlueCloud Technologies',
+              url: siteUrl,
+            },
+          }),
+        })}
+      </script>
 
-      {/* BreadcrumbList JSON-LD for blog posts */}
-      {path.startsWith('/blog/') && (
+      {/* BreadcrumbList JSON-LD — renders on all pages with a path */}
+      {path && path !== '/' && (
         <script type="application/ld+json">
           {JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'BreadcrumbList',
-            itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Home', item: siteUrl },
-              { '@type': 'ListItem', position: 2, name: 'Blog', item: `${siteUrl}/blog` },
-              { '@type': 'ListItem', position: 3, name: title, item: fullUrl },
-            ],
+            itemListElement: breadcrumbItems,
+          })}
+        </script>
+      )}
+
+      {/* FAQPage JSON-LD — optional, for pages with FAQ sections */}
+      {faq && faq.length > 0 && (
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: faq.map((item) => ({
+              '@type': 'Question',
+              name: item.question,
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: item.answer,
+              },
+            })),
           })}
         </script>
       )}

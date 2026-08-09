@@ -1,4 +1,13 @@
 User-agent: *
 Allow: /
+Disallow: /portal/
+Disallow: /portal/login
+Disallow: /portal/dashboard
+Disallow: /portal/admin
+Disallow: /api-test/
+Disallow: /api-test-client/
+
+# Crawl-delay for politeness
+Crawl-delay: 1
 
 Sitemap: https://bluecloudai.online/sitemap.xml

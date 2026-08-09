@@ -8,6 +8,7 @@ const Careers = () => {
         title="Careers at BlueCloud Technologies | Join Our Team"
         description="Join BlueCloud Technologies and build the future of software engineering, artificial intelligence, and enterprise technology in Nigeria."
         path="/careers"
+        keywords="BlueCloud careers, tech jobs Nigeria, software engineer jobs Abuja, AI engineer position, frontend developer Nigeria, tech jobs Africa, hire developers Abuja"
       />
       <div className="text-center mb-6">
         <h1>Join BlueCloud</h1>

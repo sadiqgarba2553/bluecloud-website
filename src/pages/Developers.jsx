@@ -9,6 +9,7 @@ const Developers = () => {
         title="Developer Portal & API Documentation Hub — BLUECLOUD"
         description="Access BLUECLOUD API reference, SDK snippets in JS/Python/Flux, and sandbox API key access."
         path="/developers"
+        keywords="BlueCloud API, developer portal, API documentation, SDK integration, developer tools Nigeria, API access Abuja, BlueCloud developers"
       />
       <div className="container">
         <DeveloperPortal />

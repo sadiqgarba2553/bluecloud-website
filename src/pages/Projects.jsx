@@ -86,6 +86,7 @@ const Projects = () => {
         title="Our Projects & Case Studies — BlueCloud Portfolio"
         description="Explore our enterprise deployments, ROI metrics, and technical case studies including Cyberion, FastData, Flux Language, Prism Studio, and Tool Deck."
         path="/projects"
+        keywords="BlueCloud projects, web development portfolio Nigeria, case studies, Cyberion, FastData, Flux programming language, Prism Studio, Tool Deck, enterprise software case study, tech portfolio Abuja"
       />
       <div className="text-center mb-6">
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--primary-blue)', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '8px' }}>

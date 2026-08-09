@@ -9,6 +9,7 @@ const About = () => {
         title="About BlueCloud Technologies — Nigerian Software Engineering Company"
         description="BlueCloud Technologies is a Nigerian technology company focused on premium web development, AI solutions, and enterprise software. Founded by Sadiq Garba Ibrahim."
         path="/about"
+        keywords="about BlueCloud Technologies, Nigerian tech company, Sadiq Garba Ibrahim, software engineering Abuja, technology company Nigeria, BlueCloud founder, Abuja software company"
       />
       <h1 className="mb-4">About BlueCloud</h1>
       <p className="mb-4" style={{ fontSize: '1.2rem', maxWidth: '800px' }}>

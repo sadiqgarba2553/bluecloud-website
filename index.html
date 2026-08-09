@@ -122,9 +122,126 @@
       ]
     }
     </script>
+
+    <!-- JSON-LD Structured Data: WebSite with SearchAction -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "BlueCloud Technologies",
+      "alternateName": "BlueCloud",
+      "url": "https://bluecloudai.online",
+      "description": "Premium web development, AI solutions, and enterprise software engineering company based in Abuja, Nigeria.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "BlueCloud Technologies"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://bluecloudai.online/blog?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- JSON-LD Structured Data: LocalBusiness -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "BlueCloud Technologies",
+      "image": "https://bluecloudai.online/icon_no_background.PNG",
+      "url": "https://bluecloudai.online",
+      "telephone": "+234-812-553-1111",
+      "email": "sadeeqsgi@icloud.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Plot 1743, Cadastral Zone B, Mabushi",
+        "addressLocality": "Abuja",
+        "addressRegion": "FCT",
+        "postalCode": "900108",
+        "addressCountry": "NG"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 9.0579,
+        "longitude": 7.4951
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "09:00",
+        "closes": "18:00"
+      },
+      "priceRange": "$$",
+      "areaServed": [
+        {"@type": "Country", "name": "Nigeria"},
+        {"@type": "Country", "name": "United Kingdom"},
+        {"@type": "Country", "name": "United States"}
+      ],
+      "serviceType": [
+        "Web Development",
+        "AI Solutions",
+        "Mobile App Development",
+        "Software Engineering",
+        "Social Media Management",
+        "Graphics Design",
+        "Video Editing",
+        "Technical Consulting",
+        "Cybersecurity"
+      ],
+      "sameAs": [
+        "https://github.com/sadiqgarba2553",
+        "https://twitter.com/sadeeqsgi",
+        "https://www.instagram.com/bluecloud.ai/"
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- SEO Fallback for crawlers that don't execute JavaScript -->
+    <noscript>
+      <div style="max-width:800px;margin:0 auto;padding:40px 20px;font-family:system-ui,sans-serif">
+        <h1>BlueCloud Technologies — Enterprise Web Development, AI Solutions & Software Engineering</h1>
+        <p>BlueCloud Technologies is a Nigerian technology company delivering premium web development, AI-powered solutions, cybersecurity services, and enterprise software engineering. Based in Abuja, Nigeria — serving clients worldwide.</p>
+
+        <h2>Our Services</h2>
+        <ul>
+          <li><a href="/services">Website Development</a> — Scalable web applications and corporate portals</li>
+          <li><a href="/ai-solutions">AI Solutions & Automation</a> — Machine learning, chatbots, predictive analytics</li>
+          <li><a href="/services#app">Application Development</a> — iOS, Android, and cross-platform apps</li>
+          <li><a href="/services#social-media">Social Media Management</a> — Content strategy, engagement, growth</li>
+          <li><a href="/services#graphics">Graphics Design</a> — Brand identity, marketing materials</li>
+          <li><a href="/services#video">Video Editing</a> — Corporate videos, motion graphics</li>
+          <li><a href="/services#consulting">Technical Consulting</a> — Architecture, security audits, DevOps</li>
+        </ul>
+
+        <h2>Quick Links</h2>
+        <nav>
+          <a href="/">Home</a> |
+          <a href="/about">About</a> |
+          <a href="/services">Services</a> |
+          <a href="/projects">Projects</a> |
+          <a href="/blog">Blog</a> |
+          <a href="/ai-solutions">AI Solutions</a> |
+          <a href="/platform">Platform</a> |
+          <a href="/enterprise">Enterprise</a> |
+          <a href="/careers">Careers</a> |
+          <a href="/contact">Contact</a> |
+          <a href="/rate-card">Rate Card</a> |
+          <a href="/portfolio">Portfolio</a>
+        </nav>
+
+        <h2>Contact</h2>
+        <p>Plot 1743, Cadastral Zone B, Mabushi, Abuja, Nigeria</p>
+        <p>Phone: 08125531111 | Email: sadeeqsgi@icloud.com</p>
+      </div>
+    </noscript>
   </body>
 </html>
