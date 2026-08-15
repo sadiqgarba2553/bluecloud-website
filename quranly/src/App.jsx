@@ -1,5 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { PlayerProvider, usePlayer } from './context/PlayerContext';
 import BottomNav from './components/BottomNav';
@@ -8,6 +8,61 @@ import Onboarding from './components/Onboarding';
 import FullScreenPlayer from './components/FullScreenPlayer';
 import BadgePopup from './components/BadgePopup';
 import { evaluateUserAchievements } from './utils/achievements';
+
+const ROUTE_SEO = {
+  '/': {
+    title: 'Quranly — Holy Quran Audio Streaming, AI Tafsir, 100+ Reciters & Tajweed App',
+    desc: 'Stream high-fidelity Quran recitations by 100+ world-renowned reciters, explore AI Tafsir insights, interactive Mushaf, and daily Hadith & Azkar.'
+  },
+  '/reciters': {
+    title: '100+ Global Quran Reciters & Qaris — Quranly Audio Streaming',
+    desc: 'Browse and stream crystal-clear audio from top Quran reciters including Mishary Rashid Alafasi, Abdulbasit, Al-Minshawi, and Al-Sudais.'
+  },
+  '/mushaf': {
+    title: 'Interactive Digital Quran & Mushaf Reader — Quranly',
+    desc: 'Read the Holy Quran with crystal-clear Arabic typography, verse translations, tajweed guides, and synchronized audio recitations.'
+  },
+  '/hadith': {
+    title: 'Daily Hadith Collection & Prophetic Guidance — Quranly',
+    desc: 'Explore authentic daily Hadith collections from Sahih al-Bukhari, Sahih Muslim, and other authentic Islamic sources.'
+  },
+  '/azkar': {
+    title: 'Daily Azkar, Morning & Evening Supplications — Quranly',
+    desc: 'Read and listen to authentic daily Islamic supplications and morning/evening adhkar from Hisn al-Muslim.'
+  },
+  '/radio': {
+    title: 'Live Global Islamic Quran Radio Stations — Quranly',
+    desc: 'Tune in to 24/7 continuous live Quran radio streaming stations from around the world on Quranly.'
+  },
+  '/memorize': {
+    title: 'Quran Memorization & Hifz Companion — Quranly',
+    desc: 'Memorize the Holy Quran with smart repetition tools, ayah looping, and interactive memorization progress tracking.'
+  },
+  '/ask-ai': {
+    title: 'Ask AI Islamic & Quranic Assistant — Quranly',
+    desc: 'Ask questions and receive instant, AI-guided answers rooted in verified Quran and Sunnah context.'
+  },
+  '/playlists': {
+    title: 'Curated Quran Playlists & Mood Mixes — Quranly',
+    desc: 'Discover uplifting, calming, and spiritually resonant Quran playlists tailored for your mood and spiritual peace.'
+  },
+  '/insights': {
+    title: 'Quran Listening Insights & Activity Stats — Quranly',
+    desc: 'Track your daily listening milestones, recitation streaks, and spiritual growth on Quranly.'
+  },
+  '/search': {
+    title: 'Search Quran Surahs, Ayahs & Reciters — Quranly',
+    desc: 'Instantly search across 114 Surahs, 6,236 Ayahs, and hundreds of world-class reciters.'
+  },
+  '/downloads': {
+    title: 'Offline Quran Downloads & Cached Audio — Quranly',
+    desc: 'Manage downloaded Quran surahs and offline recitations for playback anytime without an internet connection.'
+  },
+  '/settings': {
+    title: 'Quranly Settings & Preferences',
+    desc: 'Customize your audio playback, reciter preferences, font styles, and app theme on Quranly.'
+  }
+};
 
 // Lazy load route pages for optimal initial load speed & bundle splitting
 const Home = lazy(() => import('./pages/Home'));
@@ -25,10 +80,29 @@ const Downloads = lazy(() => import('./pages/Downloads'));
 const Azkar = lazy(() => import('./pages/Azkar'));
 
 function AppContent() {
+  const location = useLocation();
   const { isPlayerOpen, listeningHistory, dailyGoalMinutes, favouriteReciterIds, bookmarkedVerses } = usePlayer();
   const [onboarded, setOnboarded] = useState(
     () => localStorage.getItem('quranly_onboarded') === 'true'
   );
+
+  // Dynamic Route SEO Management
+  useEffect(() => {
+    const seo = ROUTE_SEO[location.pathname] || ROUTE_SEO['/'];
+    if (seo) {
+      document.title = seo.title;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.setAttribute('content', seo.desc);
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute('content', seo.title);
+      const ogDesc = document.querySelector('meta[property="og:description"]');
+      if (ogDesc) ogDesc.setAttribute('content', seo.desc);
+      const twTitle = document.querySelector('meta[name="twitter:title"]');
+      if (twTitle) twTitle.setAttribute('content', seo.title);
+      const twDesc = document.querySelector('meta[name="twitter:description"]');
+      if (twDesc) twDesc.setAttribute('content', seo.desc);
+    }
+  }, [location.pathname]);
   
   // Gamification tracking
   const [previousUnlockedIds, setPreviousUnlockedIds] = useState(null);
