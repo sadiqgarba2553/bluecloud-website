@@ -3,8 +3,12 @@
   top: 0;
   left: 0;
   width: 100%;
-  background-color: var(--white);
-  box-shadow: var(--shadow-sm);
+  /* Apple-style translucent material — content scrolls underneath */
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  /* Subtle bright top edge = light catching the material */
+  border-bottom: 1px solid rgba(10, 26, 47, 0.06);
   z-index: 1000;
   padding: var(--spacing-2) 0;
 }
@@ -69,10 +73,17 @@
   font-weight: 500;
   font-size: 0.88rem;
   white-space: nowrap;
+  transition: color var(--duration-fast) var(--ease-out);
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link.active {
   color: var(--primary-blue);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-link:hover {
+    color: var(--primary-blue);
+  }
 }
 
 .header-cta {
@@ -89,24 +100,39 @@
   border: none;
   cursor: pointer;
   color: var(--deep-navy);
+  transition: transform var(--duration-press) var(--ease-out);
+}
+
+.mobile-menu-btn:active {
+  transform: scale(0.9);
 }
 
 @media (max-width: 1180px) {
   .nav-menu {
-    display: none;
     position: absolute;
     top: 100%;
     left: 0;
     width: 100%;
-    background-color: var(--white);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     flex-direction: column;
     padding: var(--spacing-3);
     box-shadow: var(--shadow-md);
     gap: var(--spacing-2);
+    /* Animate entry — prevent jarring teleport */
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+    transition:
+      opacity var(--duration-normal) var(--ease-out),
+      transform var(--duration-normal) var(--ease-out);
   }
 
   .nav-menu.open {
-    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 
   .mobile-menu-btn {
@@ -115,6 +141,21 @@
 
   .header-cta {
     display: none;
+  }
+}
+
+/* Mobile CTA hidden on desktop — only visible inside mobile nav */
+.mobile-nav-cta {
+  display: none;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-3);
+  width: 100%;
+}
+
+@media (max-width: 1180px) {
+  .mobile-nav-cta {
+    display: flex;
   }
 }
 

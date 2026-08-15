@@ -69,6 +69,19 @@ const PROJECTS_DATA = [
     solution: 'Built a light, superfast web app packed with essential encoding, formatting, and debugging tools.',
     impact: 'Adopted by over 10,000 active monthly developers worldwide for daily utility tasks.',
     link: '/tool-deck/index.html'
+  },
+  {
+    id: 6,
+    title: 'Quranly AI & Audio Platform',
+    domain: 'quranly',
+    category: 'App',
+    tags: ['AI & Audio', 'Mobile & PWA', 'Quran Platform'],
+    imgSrc: '/quranlylogo.png',
+    roi: '100+ Reciters | Sub-Second Audio CDN | Gemini AI Tafsir',
+    problem: 'Need for a peaceful, ad-free digital Quran application integrating real-time AI tafsir, global reciter streaming, and offline audio.',
+    solution: 'Engineered a high-performance cross-platform Progressive Web & Mobile App powered by Gemini AI, responsive audio playback engine, indexedDB caching, and tajweed study analytics.',
+    impact: 'Delivered sub-second audio streaming across global CDNs with seamless offline persistence and multi-device sync.',
+    link: '/quranly/index.html'
   }
 ];
 
@@ -84,9 +97,9 @@ const Projects = () => {
     <div className="section container">
       <SEO
         title="Our Projects & Case Studies — BlueCloud Portfolio"
-        description="Explore our enterprise deployments, ROI metrics, and technical case studies including Cyberion, FastData, Flux Language, Prism Studio, and Tool Deck."
+        description="Explore our enterprise deployments, ROI metrics, and technical case studies including Cyberion, FastData, Flux Language, Prism Studio, Tool Deck, and Quranly."
         path="/projects"
-        keywords="BlueCloud projects, web development portfolio Nigeria, case studies, Cyberion, FastData, Flux programming language, Prism Studio, Tool Deck, enterprise software case study, tech portfolio Abuja"
+        keywords="BlueCloud projects, web development portfolio Nigeria, case studies, Cyberion, FastData, Flux programming language, Prism Studio, Tool Deck, Quranly, enterprise software case study, tech portfolio Abuja"
       />
       <div className="text-center mb-6">
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--primary-blue)', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '8px' }}>

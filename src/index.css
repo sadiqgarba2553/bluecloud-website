@@ -27,6 +27,17 @@
   --radius-lg: 12px;
   --shadow-sm: 0 2px 4px rgba(10, 26, 47, 0.05);
   --shadow-md: 0 4px 12px rgba(10, 26, 47, 0.08);
+
+  /* Animation — Emil Kowalski's exact easing curves */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* Duration scale */
+  --duration-press: 160ms;
+  --duration-fast: 200ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
 }
 
 /* Base Reset & Styles */
@@ -49,16 +60,29 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--deep-navy);
   line-height: 1.2;
   margin-bottom: var(--spacing-2);
+  font-optical-sizing: auto;
+}
+
+/* Tighten tracking on large headings — small text stays near 0 */
+h1 {
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+h2 {
+  letter-spacing: -0.015em;
 }
 
 a {
   color: var(--primary-blue);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color var(--duration-fast) var(--ease-out);
 }
 
-a:hover {
-  color: var(--deep-navy);
+@media (hover: hover) and (pointer: fine) {
+  a:hover {
+    color: var(--deep-navy);
+  }
 }
 
 img {
@@ -75,6 +99,7 @@ img {
   padding: 0 var(--spacing-3);
 }
 
+/* === Buttons — press feedback on :active, named transitions === */
 .btn-primary {
   display: inline-block;
   background-color: var(--primary-blue);
@@ -84,12 +109,20 @@ img {
   font-weight: 600;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    background-color var(--duration-fast) ease;
 }
 
-.btn-primary:hover {
-  background-color: var(--deep-navy);
-  color: var(--white); /* Ensure color stays white on hover */
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover {
+    background-color: var(--deep-navy);
+    color: var(--white);
+  }
 }
 
 .btn-secondary {
@@ -101,12 +134,22 @@ img {
   font-weight: 600;
   border: 2px solid var(--primary-blue);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    background-color var(--duration-fast) ease,
+    color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease;
 }
 
-.btn-secondary:hover {
-  background-color: var(--primary-blue);
-  color: var(--white);
+.btn-secondary:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-secondary:hover {
+    background-color: var(--primary-blue);
+    color: var(--white);
+  }
 }
 
 .section {
@@ -141,4 +184,44 @@ img {
 
 .mb-6 {
   margin-bottom: var(--spacing-6);
+}
+
+/* =========================================================
+   STAGGER ENTRANCE — reusable across all grids/cards
+   ========================================================= */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   ACCESSIBILITY — reduced motion & transparency
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* Keep opacity fades for comprehension */
+  .btn-primary,
+  .btn-secondary {
+    transition: opacity 200ms ease, background-color 200ms ease, color 200ms ease !important;
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .header {
+    background: var(--white) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
 }

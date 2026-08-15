@@ -78,7 +78,10 @@
   border-radius: var(--radius-md);
   color: var(--deep-navy);
   font-size: 1rem;
-  transition: all 0.2s ease;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
 }
 
 .portal-form-group input:focus {
@@ -129,7 +132,9 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    background-color var(--duration-fast) ease;
 }
 
 .portal-btn:hover:not(:disabled) {

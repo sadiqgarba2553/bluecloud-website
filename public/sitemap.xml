@@ -179,4 +179,12 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+
+  <!-- Quranly Audio & AI Platform -->
+  <url>
+    <loc>https://bluecloudai.online/quranly/index.html</loc>
+    <lastmod>2026-08-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
 </urlset>

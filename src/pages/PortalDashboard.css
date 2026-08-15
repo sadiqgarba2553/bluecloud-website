@@ -18,7 +18,7 @@
   top: 76px; /* Offset for global header */
   height: calc(100vh - 76px);
   z-index: 30;
-  transition: transform 0.3s ease;
+  transition: transform 300ms var(--ease-drawer);
 }
 
 .portal-sidebar-header {
@@ -73,7 +73,9 @@
   text-decoration: none;
   border-radius: var(--radius-md);
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
 }
 
 .portal-nav-item:hover {
@@ -103,7 +105,9 @@
   font-weight: 500;
   cursor: pointer;
   border-radius: var(--radius-md);
-  transition: all 0.2s ease;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
   font-family: inherit;
   font-size: 1rem;
 }

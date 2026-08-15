@@ -37,11 +37,20 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.2s ease;
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
 }
 
-.ai-tab-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+.ai-tab-btn:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ai-tab-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
 }
 
 .ai-tab-btn.active {

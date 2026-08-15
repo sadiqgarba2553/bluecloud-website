@@ -18,12 +18,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
 }
 
-.chatbot-toggle-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+.chatbot-toggle-btn:active {
+  transform: scale(0.93);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .chatbot-toggle-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
 }
 
 .chatbot-window {
@@ -39,12 +47,22 @@
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--light-gray);
-  animation: slideUp 0.3s ease;
+  /* Origin-aware: panel grows from the FAB trigger position */
+  transform-origin: bottom right;
+  /* Transition instead of keyframes — interruptible for rapid open/close */
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity var(--duration-normal) var(--ease-out),
+    transform var(--duration-normal) var(--ease-out);
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Entry state — CSS @starting-style for mount animation */
+@starting-style {
+  .chatbot-window {
+    opacity: 0;
+    transform: scale(0.96);
+  }
 }
 
 .chatbot-header {
@@ -144,7 +162,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.3s;
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    background var(--duration-fast) ease;
+}
+
+.chatbot-input button:active {
+  transform: scale(0.93);
 }
 
 .chatbot-header-actions {

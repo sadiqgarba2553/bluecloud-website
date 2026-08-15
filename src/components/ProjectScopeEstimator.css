@@ -46,7 +46,10 @@
   padding: var(--spacing-3);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
   text-align: left;
 }
 
@@ -91,7 +94,9 @@
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--deep-navy);
-  transition: all 0.2s ease;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
 }
 
 .estimator-checkbox-label.active {

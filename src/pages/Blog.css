@@ -64,16 +64,20 @@
     0 0 0 1px rgba(15,118,110,0.15),
     0 20px 60px rgba(15,118,110,0.2),
     0 4px 20px rgba(0,0,0,0.4);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transition:
+    transform 300ms var(--ease-out),
+    box-shadow 300ms var(--ease-out);
   min-height: 460px;
 }
 
-.wyd-featured-card:hover {
-  transform: translateY(-6px);
-  box-shadow:
-    0 0 0 1px rgba(132,204,22,0.35),
-    0 30px 80px rgba(15,118,110,0.35),
-    0 8px 30px rgba(0,0,0,0.5);
+@media (hover: hover) and (pointer: fine) {
+  .wyd-featured-card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 0 0 1px rgba(132,204,22,0.35),
+      0 30px 80px rgba(15,118,110,0.35),
+      0 8px 30px rgba(0,0,0,0.5);
+  }
 }
 
 .wyd-featured-image-wrap {
@@ -86,11 +90,13 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-  transition: transform 0.5s ease;
+  transition: transform 300ms var(--ease-out);
 }
 
-.wyd-featured-card:hover .wyd-featured-image {
-  transform: scale(1.04);
+@media (hover: hover) and (pointer: fine) {
+  .wyd-featured-card:hover .wyd-featured-image {
+    transform: scale(1.04);
+  }
 }
 
 .wyd-overlay {
@@ -174,13 +180,22 @@
   border-radius: 999px;
   text-decoration: none;
   width: fit-content;
-  transition: gap 0.3s ease, background 0.3s ease;
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    gap var(--duration-normal) var(--ease-out),
+    background var(--duration-fast) ease;
 }
 
-.wyd-read-btn:hover {
-  gap: 0.9rem;
-  background: #0d6560;
-  color: #fff;
+.wyd-read-btn:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .wyd-read-btn:hover {
+    gap: 0.9rem;
+    background: #0d6560;
+    color: #fff;
+  }
 }
 
 /* =========================================================
@@ -197,14 +212,26 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
+  /* Stagger entrance */
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeInUp 300ms var(--ease-out) forwards;
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
 }
 
-.blog-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+.blog-card:nth-child(1) { animation-delay: 0ms; }
+.blog-card:nth-child(2) { animation-delay: 50ms; }
+.blog-card:nth-child(3) { animation-delay: 100ms; }
+
+@media (hover: hover) and (pointer: fine) {
+  .blog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+  }
 }
 
 .blog-card-img {
@@ -247,11 +274,13 @@
 .blog-card-title a {
   text-decoration: none;
   color: inherit;
-  transition: color 0.3s ease;
+  transition: color var(--duration-fast) var(--ease-out);
 }
 
-.blog-card-title a:hover {
-  color: var(--primary-blue);
+@media (hover: hover) and (pointer: fine) {
+  .blog-card-title a:hover {
+    color: var(--primary-blue);
+  }
 }
 
 .blog-card-excerpt {
@@ -268,12 +297,14 @@
   color: var(--primary-blue);
   text-decoration: none;
   font-weight: 600;
-  transition: gap 0.3s ease;
+  transition: gap var(--duration-fast) var(--ease-out);
   gap: 0.5rem;
 }
 
-.read-more:hover {
-  gap: 0.75rem;
+@media (hover: hover) and (pointer: fine) {
+  .read-more:hover {
+    gap: 0.75rem;
+  }
 }
 
 /* =========================================================

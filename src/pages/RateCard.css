@@ -78,7 +78,11 @@
   font-size: 0.95rem;
   font-weight: 600;
   border-radius: var(--radius-md);
-  transition: all 0.2s ease;
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    background-color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease,
+    color var(--duration-fast) ease;
 }
 
 .rate-card-dl-btn.btn-secondary {

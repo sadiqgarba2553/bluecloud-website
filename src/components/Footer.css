@@ -42,12 +42,21 @@
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-sm);
   color: var(--white);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
 }
 
-.social-icon:hover {
-  background-color: var(--primary-blue);
-  color: var(--white);
+.social-icon:active {
+  transform: scale(0.9);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .social-icon:hover {
+    background-color: var(--primary-blue);
+    color: var(--white);
+  }
 }
 
 .footer-links h4,
@@ -68,11 +77,13 @@
 
 .footer-links a {
   color: #94A3B8;
-  transition: color 0.2s ease;
+  transition: color var(--duration-fast) var(--ease-out);
 }
 
-.footer-links a:hover {
-  color: var(--cyan-accent);
+@media (hover: hover) and (pointer: fine) {
+  .footer-links a:hover {
+    color: var(--cyan-accent);
+  }
 }
 
 .footer-contact .contact-item {

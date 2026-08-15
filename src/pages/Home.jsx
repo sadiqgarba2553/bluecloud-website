@@ -175,6 +175,18 @@ const Home = () => {
                 <a href="/tool-deck/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch App</a>
               </div>
             </div>
+            <div className="work-card">
+              <img src="/quranlylogo.png" alt="Quranly AI & Audio Platform" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
+              <div className="work-content">
+                <div className="work-tags">
+                  <span className="work-tag">App</span>
+                  <span className="work-tag">AI & Audio</span>
+                </div>
+                <h3>Quranly Platform</h3>
+                <p className="mb-3">A progressive Quran recitation, AI tafsir assistant, and audio streaming platform.</p>
+                <a href="/quranly/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch App</a>
+              </div>
+            </div>
           </div>
           <div className="text-center" style={{ marginTop: 'var(--spacing-5)' }}>
             <Link to="/projects" className="btn-secondary">Explore All Projects</Link>

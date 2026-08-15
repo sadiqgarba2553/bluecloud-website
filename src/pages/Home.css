@@ -59,14 +59,28 @@
   padding: var(--spacing-4);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 1px solid var(--light-gray);
+  /* Stagger entrance */
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeInUp 300ms var(--ease-out) forwards;
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
 }
 
-.service-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--primary-blue);
+.service-card:nth-child(1) { animation-delay: 0ms; }
+.service-card:nth-child(2) { animation-delay: 50ms; }
+.service-card:nth-child(3) { animation-delay: 100ms; }
+.service-card:nth-child(4) { animation-delay: 150ms; }
+
+@media (hover: hover) and (pointer: fine) {
+  .service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-blue);
+  }
 }
 
 .service-icon-wrapper {
@@ -131,6 +145,24 @@
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   background-color: var(--white);
+  /* Stagger entrance */
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeInUp 300ms var(--ease-out) forwards;
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.work-card:nth-child(1) { animation-delay: 0ms; }
+.work-card:nth-child(2) { animation-delay: 60ms; }
+.work-card:nth-child(3) { animation-delay: 120ms; }
+
+@media (hover: hover) and (pointer: fine) {
+  .work-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
 }
 
 .work-img-placeholder {
@@ -210,7 +242,15 @@
   padding: var(--spacing-4);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
+  /* Stagger entrance */
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeInUp 300ms var(--ease-out) forwards;
 }
+
+.testimonial-card:nth-child(1) { animation-delay: 0ms; }
+.testimonial-card:nth-child(2) { animation-delay: 50ms; }
+.testimonial-card:nth-child(3) { animation-delay: 100ms; }
 
 .testimonial-text {
   font-style: italic;
@@ -258,12 +298,21 @@
   border-radius: 30px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    background var(--duration-fast) ease,
+    color var(--duration-fast) ease;
 }
 
-.newsletter-btn:hover {
-  background: var(--white);
-  color: var(--deep-navy);
+.newsletter-btn:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .newsletter-btn:hover {
+    background: var(--white);
+    color: var(--deep-navy);
+  }
 }
 
 @media (max-width: 768px) {
@@ -293,11 +342,13 @@
   gap: 2rem;
   padding: 1.75rem 0;
   text-decoration: none;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--duration-fast) var(--ease-out);
 }
 
-.wyd-home-inner:hover {
-  opacity: 0.88;
+@media (hover: hover) and (pointer: fine) {
+  .wyd-home-inner:hover {
+    opacity: 0.88;
+  }
 }
 
 .wyd-home-logo-wrap {
@@ -359,11 +410,13 @@
   font-weight: 600;
   font-size: 0.9rem;
   white-space: nowrap;
-  transition: gap 0.25s ease;
+  transition: gap var(--duration-normal) var(--ease-out);
 }
 
-.wyd-home-inner:hover .wyd-home-cta {
-  gap: 0.75rem;
+@media (hover: hover) and (pointer: fine) {
+  .wyd-home-inner:hover .wyd-home-cta {
+    gap: 0.75rem;
+  }
 }
 
 @media (max-width: 640px) {

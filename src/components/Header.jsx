@@ -45,17 +45,15 @@ const Header = () => {
               {link.name}
             </NavLink>
           ))}
-          {/* Mobile CTA (only shows when menu open on small screens) */}
-          {isMenuOpen && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)', marginTop: 'var(--spacing-3)' }}>
-              <Link to="/portal/login" className="btn-secondary" onClick={() => setIsMenuOpen(false)} style={{ textAlign: 'center' }}>
-                Client Login
-              </Link>
-              <Link to="/contact" className="btn-primary" onClick={() => setIsMenuOpen(false)} style={{ textAlign: 'center' }}>
-                Get a Quote
-              </Link>
-            </div>
-          )}
+          {/* Mobile CTA — always rendered, visibility handled by nav-menu CSS */}
+          <div className="mobile-nav-cta">
+            <Link to="/portal/login" className="btn-secondary" onClick={() => setIsMenuOpen(false)} style={{ textAlign: 'center' }}>
+              Client Login
+            </Link>
+            <Link to="/contact" className="btn-primary" onClick={() => setIsMenuOpen(false)} style={{ textAlign: 'center' }}>
+              Get a Quote
+            </Link>
+          </div>
         </nav>
 
         {/* Desktop CTA */}
