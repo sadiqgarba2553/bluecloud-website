@@ -64,8 +64,11 @@ const ROUTE_SEO = {
   }
 };
 
-// Lazy load route pages for optimal initial load speed & bundle splitting
-const Home = lazy(() => import('./pages/Home'));
+// Eagerly import Landing and Home
+import Landing from './pages/Landing';
+import Home from './pages/Home';
+
+// Lazy load non-landing route pages for optimal bundle splitting
 const Reciters = lazy(() => import('./pages/Reciters'));
 const Hadith = lazy(() => import('./pages/Hadith'));
 const Playlists = lazy(() => import('./pages/Playlists'));
@@ -79,9 +82,41 @@ const AskAI = lazy(() => import('./pages/AskAI'));
 const Downloads = lazy(() => import('./pages/Downloads'));
 const Azkar = lazy(() => import('./pages/Azkar'));
 
+// Prefetch map for route-level chunk preloading on hover
+const ROUTE_IMPORTS = {
+  '/app': () => import('./pages/Home'),
+  '/reciters': () => import('./pages/Reciters'),
+  '/mushaf': () => import('./pages/Mushaf'),
+  '/playlists': () => import('./pages/Playlists'),
+  '/settings': () => import('./pages/Settings'),
+};
+export const prefetchRoute = (path) => { ROUTE_IMPORTS[path]?.(); };
+
+// Skeleton fallback — avoids content flash during lazy route loads
+const PageSkeleton = () => (
+  <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    {[1, 2, 3].map(i => (
+      <div key={i} style={{
+        height: i === 1 ? '28px' : '120px',
+        width: i === 1 ? '40%' : '100%',
+        background: 'var(--card-bg)',
+        borderRadius: '12px',
+        animation: 'skeletonPulse 1.2s ease-in-out infinite',
+      }} />
+    ))}
+    <style>{`
+      @keyframes skeletonPulse {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 0.8; }
+      }
+    `}</style>
+  </div>
+);
+
 function AppContent() {
   const location = useLocation();
-  const { isPlayerOpen, listeningHistory, dailyGoalMinutes, favouriteReciterIds, bookmarkedVerses } = usePlayer();
+  const isLandingPage = location.pathname === '/' || location.pathname === '';
+  const { isPlayerOpen, listeningHistory, dailyGoalMinutes, favouriteReciterIds, bookmarkedVerses, currentTrack } = usePlayer();
   const [onboarded, setOnboarded] = useState(
     () => localStorage.getItem('quranly_onboarded') === 'true'
   );
@@ -144,20 +179,18 @@ function AppContent() {
     initStatusBar();
   }, []);
 
-  if (!onboarded) {
+  if (!onboarded && !isLandingPage) {
     return <Onboarding onComplete={() => setOnboarded(true)} />;
   }
 
   return (
-    <div className="app-container">
-      <main className="page-content">
-        <Suspense fallback={
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: 'var(--text-secondary)' }}>
-            <span>Loading Quranly...</span>
-          </div>
-        }>
+    <div className={`app-container ${isLandingPage ? 'landing-mode' : 'player-mode'}`}>
+      <main className={isLandingPage ? 'landing-page-content' : 'page-content'}>
+        <Suspense fallback={<PageSkeleton />}>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Landing />} />
+            <Route path="/app" element={<Home />} />
+            <Route path="/player" element={<Home />} />
             <Route path="/reciters" element={<Reciters />} />
             <Route path="/hadith" element={<Hadith />} />
             <Route path="/playlists" element={<Playlists />} />
@@ -174,9 +207,17 @@ function AppContent() {
         </Suspense>
       </main>
 
-      {/* Global persistent components */}
-      <MiniPlayer />
-      <BottomNav />
+      {/* Global persistent components — only rendered in player mode */}
+      {!isLandingPage && (
+        <>
+          <MiniPlayer />
+          <BottomNav />
+        </>
+      )}
+
+      {/* MiniPlayer on landing page if active track is playing in background */}
+      {isLandingPage && currentTrack && <MiniPlayer />}
+
       <BadgePopup badge={newBadge} onClose={() => setNewBadge(null)} />
 
       {/* Overlay Full Screen Player */}

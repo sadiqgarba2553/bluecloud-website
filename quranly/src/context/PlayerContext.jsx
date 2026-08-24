@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useReducer, useEffect, useCallback, useRef } from 'react';
+import { createContext, useContext, useReducer, useEffect, useCallback, useRef, useMemo } from 'react';
+import { PlayerActionsContext } from '../hooks/usePlayerState';
 import staticSurahs from '../data/surahs';
 import staticReciters from '../data/reciters';
 import {
@@ -21,6 +22,7 @@ import { auth, subscribeUserData, saveUserDataToFirestore } from '../services/fi
 import { onAuthStateChanged } from 'firebase/auth';
 import { evaluateUserAchievements } from '../utils/achievements';
 import { recordReciterPlay, recordListeningDuration, recordSurahCompleted } from '../utils/reciterAnalytics';
+import { fadeVolume } from '../utils/audioEngine';
 
 // ─── Shape Mappers ────────────────────────────────────────────
 function mapReciter(r) {
@@ -760,7 +762,7 @@ export function PlayerProvider({ children }) {
   const bgAudioRef = useRef(null);
   if (!audioRef.current) {
     audioRef.current = new Audio();
-    audioRef.current.preload = 'metadata';
+    audioRef.current.preload = 'auto';
   }
   if (!bgAudioRef.current) {
     bgAudioRef.current = new Audio();
@@ -850,36 +852,41 @@ export function PlayerProvider({ children }) {
     }
   }, [surah.id, reciter, moshafIndex]);
 
-  // ── Play / pause ──────────────────────────────────────────
+  // ── Play / pause (with smooth micro volume fade) ───────────
   useEffect(() => {
     if (state.isPlaying) {
       if (!audio.src) return;
       audio.playbackRate = state.playbackSpeed;
+      // Start muted and ramp volume up over 70ms to eliminate clicks/pops
+      audio.volume = 0;
       const promise = audio.play();
       if (promise !== undefined) {
-        promise.catch((err) => console.warn('Play error:', err));
+        promise
+          .then(() => {
+            fadeVolume(audio, state.volume, 70);
+          })
+          .catch((err) => console.warn('Play error:', err));
       }
     } else {
-      audio.pause();
+      // Fade out volume over 60ms before pausing
+      fadeVolume(audio, 0, 60).then(() => {
+        audio.pause();
+        audio.volume = state.volume;
+      });
     }
   }, [state.isPlaying]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Volume & Playback Speed ───────────────────────────────
-  useEffect(() => { audio.volume = state.volume; }, [state.volume]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (state.isPlaying) {
+      audio.volume = state.volume;
+    }
+  }, [state.volume]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { audio.playbackRate = state.playbackSpeed; }, [state.playbackSpeed]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── LocalStorage Sync ─────────────────────────────────────
-  useEffect(() => {
-    localStorage.setItem('quranly_fav_surahs', JSON.stringify([...state.favouriteSurahIds]));
-  }, [state.favouriteSurahIds]);
-
-  useEffect(() => {
-    localStorage.setItem('quranly_fav_reciters', JSON.stringify([...state.favouriteReciterIds]));
-  }, [state.favouriteReciterIds]);
-
-  useEffect(() => {
-    localStorage.setItem('quranly_bookmarks', JSON.stringify(state.bookmarkedVerses));
-  }, [state.bookmarkedVerses]);
+  // ── LocalStorage Sync (deduplicated — reducer already persists inline) ──
+  // favouriteSurahIds, favouriteReciterIds, and bookmarkedVerses are persisted
+  // directly in their reducer cases, so we do NOT duplicate them here.
 
   useEffect(() => {
     localStorage.setItem('quranly_listening_history', JSON.stringify(state.listeningHistory));
@@ -922,19 +929,12 @@ export function PlayerProvider({ children }) {
     }
   }, [state.currentTime, state.sleepEndTime, state.sleepMode]);
 
-  // ── Bookmarked Verses Persistence ─────────────────────────
-  useEffect(() => {
-    try {
-      localStorage.setItem('quranly_bookmarks', JSON.stringify(state.bookmarkedVerses));
-    } catch (e) {
-      console.error('Failed to save bookmarks:', e);
-    }
-  }, [state.bookmarkedVerses]);
-
   // ── Audio event listeners (registered once) ───────────────
   const currentTrackRef = useRef(state.currentTrack);
+  const fallbackIndexRef = useRef(0);
   useEffect(() => {
     currentTrackRef.current = state.currentTrack;
+    fallbackIndexRef.current = 0;
   }, [state.currentTrack]);
 
   useEffect(() => {
@@ -943,9 +943,20 @@ export function PlayerProvider({ children }) {
 
     const onTimeUpdate = () => {
       const now = Date.now();
-      if (now - lastTimeUpdate >= 350) {
+      if (now - lastTimeUpdate >= 500) {
         lastTimeUpdate = now;
         dispatch({ type: 'AUDIO_TIME_UPDATE', payload: audio.currentTime });
+
+        // Update MediaSession position state
+        if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession && audio.duration > 0) {
+          try {
+            navigator.mediaSession.setPositionState({
+              duration: audio.duration,
+              playbackRate: audio.playbackRate || 1,
+              position: Math.min(audio.currentTime, audio.duration)
+            });
+          } catch (_) {}
+        }
       }
 
       // Record real listening duration to reciter analytics every 5s
@@ -979,17 +990,22 @@ export function PlayerProvider({ children }) {
       dispatch({ type: 'PLAY_NEXT' });
     };
     const onError = () => {
-      const padded = String(state.currentTrack?.surah?.id || 1).padStart(3, '0');
-      const fallbackUrl = `https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaaseee/${padded}.mp3`;
-      if (audio.src !== fallbackUrl) {
-        audio.src = fallbackUrl;
+      const surahId = state.currentTrack?.surah?.id || 1;
+      const reciterName = state.currentTrack?.reciter?.name || '';
+      const mirrors = getAlternateAudioUrls(surahId, reciterName);
+
+      if (fallbackIndexRef.current < mirrors.length) {
+        const nextMirror = mirrors[fallbackIndexRef.current];
+        fallbackIndexRef.current += 1;
+        audio.src = nextMirror;
+        audio.load();
         audio.play().catch(() => {
           const msgs = { 1: 'Playback aborted.', 2: 'Network error.', 3: 'Decoding error.', 4: 'Format not supported.' };
-          dispatch({ type: 'AUDIO_ERROR', payload: msgs[audio.error?.code] || 'Audio stream unavailable.' });
+          dispatch({ type: 'AUDIO_ERROR', payload: msgs[audio.error?.code] || 'Retrying audio server...' });
         });
       } else {
         const msgs = { 1: 'Playback aborted.', 2: 'Network error.', 3: 'Decoding error.', 4: 'Format not supported.' };
-        dispatch({ type: 'AUDIO_ERROR', payload: msgs[audio.error?.code] || 'Audio error.' });
+        dispatch({ type: 'AUDIO_ERROR', payload: msgs[audio.error?.code] || 'Audio server unavailable.' });
       }
     };
 
@@ -1007,46 +1023,22 @@ export function PlayerProvider({ children }) {
       audio.removeEventListener('ended', onEnded);
       audio.removeEventListener('error', onError);
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [state.playbackSpeed]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // --- APP THEME ENGINE (accent only; light/dark from data-theme CSS) ---
+  // ── Keyboard Media & Shortcuts ─────────────────────────────
   useEffect(() => {
-    const resolveMode = () => {
-      const mode = state.themeMode || 'light';
-      if (mode === 'system') {
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const handleKeyDown = (e) => {
+      // Don't trigger shortcuts if user is typing in an input
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target?.tagName)) return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        dispatch({ type: 'TOGGLE_PLAY' });
+        triggerHaptic(15);
       }
-      return mode === 'dark' ? 'dark' : 'light';
     };
-
-    const applyTheme = () => {
-      const resolved = resolveMode();
-      document.documentElement.setAttribute('data-theme', resolved);
-
-      const freeThemes = ['white', 'indigo'];
-      const effectiveTheme = (!state.isPro && !freeThemes.includes(state.appTheme))
-        ? 'white'
-        : (state.appTheme || 'white');
-      const themeConfig = APP_THEMES[effectiveTheme] || APP_THEMES.white;
-      const isDark = resolved === 'dark';
-      const primary = isDark ? (themeConfig.darkPrimary || themeConfig.primary) : themeConfig.primary;
-      const hover = isDark ? (themeConfig.darkHover || themeConfig.hover) : themeConfig.hover;
-
-      const root = document.documentElement.style;
-      root.setProperty('--accent-primary', primary);
-      root.setProperty('--accent-color', primary);
-      root.setProperty('--accent-hover', hover);
-      root.setProperty('--accent-gradient', 'none');
-    };
-
-    applyTheme();
-
-    if (state.themeMode !== 'system') return undefined;
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const onChange = () => applyTheme();
-    mq.addEventListener?.('change', onChange);
-    return () => mq.removeEventListener?.('change', onChange);
-  }, [state.appTheme, state.themeMode, state.isPro]);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // ── Media Session API (lock screen / notification bar) ───
   useEffect(() => {
@@ -1055,7 +1047,7 @@ export function PlayerProvider({ children }) {
     navigator.mediaSession.metadata = new MediaMetadata({
       title: `${surah.nameEnglish} (${surah.nameArabic})`,
       artist: reciter.name,
-      album: 'Quranly — Quran Recitation',
+      album: 'Quranly — Holy Quran',
       artwork: [
         { src: reciter.avatar || '/logo.png', sizes: '512x512', type: 'image/png' },
       ],
@@ -1297,8 +1289,11 @@ export function PlayerProvider({ children }) {
   const claimKhatmJuz = useCallback((data) => dispatch({ type: 'CLAIM_KHATM_JUZ', payload: data }), []);
   const deleteGroupKhatm = useCallback((id) => dispatch({ type: 'DELETE_GROUP_KHATM', payload: id }), []);
 
-  const value = {
-    ...state,
+  // ── Memoized Stable Actions (never changes reference) ────
+  const incrementAzkarCount = useCallback((amt = 1) => dispatch({ type: 'INCREMENT_AZKAR_COUNT', payload: amt }), []);
+  const setDailyAzkarGoal = useCallback((goal) => dispatch({ type: 'SET_DAILY_AZKAR_GOAL', payload: goal }), []);
+
+  const actions = useMemo(() => ({
     play, pause, togglePlay, playNext, playPrev, seek, cycleSpeed,
     setVolume, setSoundVolume,
     setTrack, setReciter, setMoshafIndex, setQueue, shuffleQueue, toggleRepeat,
@@ -1307,32 +1302,57 @@ export function PlayerProvider({ children }) {
     openPlayer, closePlayer, toggleSoundModal, togglePlaylistDrawer,
     toggleSleepTimerModal, toggleQuranText, toggleVolume, closeModals,
     setApiLanguage, getAudioUrl,
-    incrementAzkarCount: (amt = 1) => dispatch({ type: 'INCREMENT_AZKAR_COUNT', payload: amt }),
-    setDailyAzkarGoal: (goal) => dispatch({ type: 'SET_DAILY_AZKAR_GOAL', payload: goal }),
-    completedAzkarCount: state.completedAzkarCount,
-    dailyAzkarGoal: state.dailyAzkarGoal,
+    incrementAzkarCount,
+    setDailyAzkarGoal,
     openSubscriptionModal, closeSubscriptionModal, subscribePro, cancelPro,
     downloadTrack, removeTrack, isDownloaded, setThemeMode, setAppTheme, setPlayerNatureTheme,
     openAuthModal, closeAuthModal, openReciterProfile,
     createPlaylist, deletePlaylist, addSurahToPlaylist, removeSurahFromPlaylist,
     saveReflection, deleteReflection,
     createGroupKhatm, claimKhatmJuz, deleteGroupKhatm,
+  }), [
+    play, pause, togglePlay, playNext, playPrev, seek, cycleSpeed,
+    setVolume, setSoundVolume,
+    setTrack, setReciter, setMoshafIndex, setQueue, shuffleQueue, toggleRepeat,
+    toggleFavouriteSurah, toggleFavouriteReciter, toggleBookmark,
+    setSound, setSleepTimer, setDailyGoal,
+    openPlayer, closePlayer, toggleSoundModal, togglePlaylistDrawer,
+    toggleSleepTimerModal, toggleQuranText, toggleVolume, closeModals,
+    setApiLanguage, getAudioUrl,
+    incrementAzkarCount,
+    setDailyAzkarGoal,
+    openSubscriptionModal, closeSubscriptionModal, subscribePro, cancelPro,
+    downloadTrack, removeTrack, isDownloaded, setThemeMode, setAppTheme, setPlayerNatureTheme,
+    openAuthModal, closeAuthModal, openReciterProfile,
+    createPlaylist, deletePlaylist, addSurahToPlaylist, removeSurahFromPlaylist,
+    saveReflection, deleteReflection,
+    createGroupKhatm, claimKhatmJuz, deleteGroupKhatm,
+  ]);
+
+  // Combined value for backward-compat (existing usePlayer() still works)
+  const value = {
+    ...state,
+    ...actions,
+    completedAzkarCount: state.completedAzkarCount,
+    dailyAzkarGoal: state.dailyAzkarGoal,
   };
 
   return (
     <PlayerContext.Provider value={value}>
-      {children}
-      <SubscriptionModal
-        isOpen={state.isSubscriptionModalOpen}
-        onClose={closeSubscriptionModal}
-        isPro={state.isPro}
-        onSubscribeSuccess={subscribePro}
-        onCancelPro={cancelPro}
-      />
-      <AuthModal
-        isOpen={state.isAuthModalOpen}
-        onClose={closeAuthModal}
-      />
+      <PlayerActionsContext.Provider value={actions}>
+        {children}
+        <SubscriptionModal
+          isOpen={state.isSubscriptionModalOpen}
+          onClose={closeSubscriptionModal}
+          isPro={state.isPro}
+          onSubscribeSuccess={subscribePro}
+          onCancelPro={cancelPro}
+        />
+        <AuthModal
+          isOpen={state.isAuthModalOpen}
+          onClose={closeAuthModal}
+        />
+      </PlayerActionsContext.Provider>
     </PlayerContext.Provider>
   );
 }

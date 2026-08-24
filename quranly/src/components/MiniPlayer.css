@@ -90,3 +90,32 @@
   transform: scale(0.9);
   opacity: 0.8;
 }
+
+/* iPad — wider mini player */
+@media (min-width: 768px) {
+  .mini-player {
+    max-width: 688px;
+    padding: 12px 20px;
+  }
+
+  .player-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .track-title {
+    font-size: 15px;
+  }
+
+  .track-artist {
+    font-size: 13px;
+  }
+}
+
+/* PC — even wider */
+@media (min-width: 1200px) {
+  .mini-player {
+    max-width: 928px;
+    padding: 12px 24px;
+  }
+}

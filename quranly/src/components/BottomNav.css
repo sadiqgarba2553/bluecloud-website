@@ -47,3 +47,36 @@
 .nav-item:active {
   transform: scale(0.95);
 }
+
+/* iPad — expand nav width */
+@media (min-width: 768px) {
+  .bottom-nav {
+    max-width: 688px;
+    padding: 10px 20px;
+  }
+
+  .nav-item {
+    padding: 6px 16px;
+  }
+
+  .nav-label {
+    font-size: 11px;
+  }
+}
+
+/* PC — expand further */
+@media (min-width: 1200px) {
+  .bottom-nav {
+    max-width: 928px;
+    padding: 10px 24px;
+  }
+
+  .nav-item {
+    padding: 6px 20px;
+    gap: 2px;
+  }
+
+  .nav-label {
+    font-size: 11px;
+  }
+}

@@ -249,3 +249,66 @@
 .spin {
   animation: spin 1s linear infinite;
 }
+
+/* iPad — wider grid */
+@media (min-width: 768px) {
+  .search-results .horizontal-scroll {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 20px;
+  }
+
+  .horizontal-scroll {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    gap: 18px;
+  }
+
+  .reciter-circle {
+    width: 110px;
+  }
+
+  .circle-img-wrap {
+    width: 90px;
+    height: 90px;
+  }
+
+  .top-reciters-card {
+    padding: 24px;
+  }
+
+  .overlapping-avatars {
+    height: 110px;
+  }
+
+  .top-avatar-wrap.av2 {
+    width: 96px;
+    height: 96px;
+  }
+
+  .top-avatar-wrap.av1,
+  .top-avatar-wrap.av3 {
+    width: 72px;
+    height: 72px;
+  }
+}
+
+/* PC — even wider grid */
+@media (min-width: 1200px) {
+  .search-results .horizontal-scroll {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 24px;
+  }
+
+  .reciter-circle {
+    width: 120px;
+  }
+
+  .circle-img-wrap {
+    width: 100px;
+    height: 100px;
+  }
+
+  .reciter-name {
+    font-size: 13px;
+  }
+}

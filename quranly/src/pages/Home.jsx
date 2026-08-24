@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ChevronRight, Play, Loader, Crown, Star, Heart,
@@ -27,14 +27,15 @@ const Home = () => {
     currentTime, duration,
   } = usePlayer();
 
-  // Get favourite reciters for "Your favourites"
-  const favouriteReciters = (reciters && favouriteReciterIds?.has)
-    ? reciters.filter(r =>
-        favouriteReciterIds.has(r.id) ||
-        favouriteReciterIds.has(String(r.id)) ||
-        (!isNaN(Number(r.id)) && favouriteReciterIds.has(Number(r.id)))
-      )
-    : [];
+  // Memoize favourite reciters — prevents re-filtering on every audio time update
+  const favouriteReciters = useMemo(() => {
+    if (!reciters || !favouriteReciterIds?.has) return [];
+    return reciters.filter(r =>
+      favouriteReciterIds.has(r.id) ||
+      favouriteReciterIds.has(String(r.id)) ||
+      (!isNaN(Number(r.id)) && favouriteReciterIds.has(Number(r.id)))
+    );
+  }, [reciters, favouriteReciterIds]);
 
   const handleReciterClick = (reciter) => {
     if (surahs?.[0] && reciter) {
@@ -62,7 +63,7 @@ const Home = () => {
     <div className="home-page">
       {/* Sleek Top Brand Header */}
       <div className="top-header">
-        <div className="app-brand">
+        <div className="app-brand" onClick={() => navigate('/')} style={{ cursor: 'pointer' }} title="Back to Landing Page">
           <img src="/logo.png" alt="Quranly Logo" className="brand-logo" />
           <span className="brand-title">Quranly</span>
         </div>

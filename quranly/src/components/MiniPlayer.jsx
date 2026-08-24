@@ -1,9 +1,10 @@
+import { memo } from 'react';
 import { Play, Pause, FastForward } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { usePlayer } from '../context/PlayerContext';
 import './MiniPlayer.css';
 
-const MiniPlayer = () => {
+const MiniPlayer = memo(() => {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentTrack, isPlaying, togglePlay, playNext, openPlayer, openReciterProfile } = usePlayer();
@@ -53,8 +54,8 @@ const MiniPlayer = () => {
       </div>
     </div>
   );
-};
+});
+
+MiniPlayer.displayName = 'MiniPlayer';
 
 export default MiniPlayer;
-
-

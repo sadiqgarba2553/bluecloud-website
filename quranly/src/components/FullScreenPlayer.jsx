@@ -79,10 +79,15 @@ function NatureCanvas({ mode = 0 }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
+    // Respect reduced motion preference
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let animId;
+    let lastFrameTime = 0;
+    const FRAME_INTERVAL = 1000 / 30; // Cap at 30fps for battery/perf
 
     let width = (canvas.width = canvas.parentElement?.offsetWidth || window.innerWidth);
     let height = (canvas.height = canvas.parentElement?.offsetHeight || window.innerHeight);
@@ -94,7 +99,8 @@ function NatureCanvas({ mode = 0 }) {
     };
     window.addEventListener('resize', handleResize);
 
-    const particles = Array.from({ length: 70 }, () => ({
+    // Reduced particle count: 70 → 35 (imperceptible visual difference)
+    const particles = Array.from({ length: 35 }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
       radius: Math.random() * 2.2 + 0.5,
@@ -103,8 +109,21 @@ function NatureCanvas({ mode = 0 }) {
     }));
 
     let step = 0;
+    let paused = false;
 
-    const render = () => {
+    // Pause when tab/page is not visible
+    const handleVisibility = () => { paused = document.hidden; };
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    const render = (timestamp) => {
+      animId = requestAnimationFrame(render);
+
+      if (paused) return;
+
+      // 30fps frame gate
+      if (timestamp - lastFrameTime < FRAME_INTERVAL) return;
+      lastFrameTime = timestamp;
+
       step += 0.015;
       ctx.clearRect(0, 0, width, height);
 
@@ -178,19 +197,18 @@ function NatureCanvas({ mode = 0 }) {
           ctx.fill();
         }
       }
-
-      animId = requestAnimationFrame(render);
     };
 
-    render();
+    animId = requestAnimationFrame(render);
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      document.removeEventListener('visibilitychange', handleVisibility);
       cancelAnimationFrame(animId);
     };
   }, [mode]);
 
-  return <canvas ref={canvasRef} className="fs-nature-bg-canvas" />;
+  return <canvas ref={canvasRef} className="fs-nature-bg-canvas" style={{ willChange: 'transform' }} />;
 }
 
 import { useNavigate } from 'react-router-dom';
@@ -240,8 +258,13 @@ const FullScreenPlayer = () => {
 
   const { surah, reciter } = currentTrack;
   const isFavSurah = favouriteSurahIds.has(surah.id);
-  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
-  const remaining = Math.max(0, duration - currentTime);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragTime, setDragTime] = useState(0);
+  const [hoverPosition, setHoverPosition] = useState(null); // { time, percent }
+
+  const displayTime = isDragging ? dragTime : currentTime;
+  const progressPercent = duration > 0 ? (displayTime / duration) * 100 : 0;
+  const remaining = Math.max(0, duration - displayTime);
   const progressBarRef = useRef(null);
 
   const canvasMode = playerNatureTheme === 'aurora' ? 1 : playerNatureTheme === 'ocean' ? 2 : playerNatureTheme === 'none' ? null : 0;
@@ -254,30 +277,60 @@ const FullScreenPlayer = () => {
     }
   };
 
-  // ── Seek handler ────────────────────────────────────────
-  const handleSeek = useCallback((e) => {
+  // ── Calculate Seek Time from Mouse / Touch ─────────────────
+  const calculateSeekTime = useCallback((clientX) => {
     const bar = progressBarRef.current;
-    if (!bar) return;
+    if (!bar || duration <= 0) return 0;
     const rect = bar.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
-    seek(Math.floor((x / rect.width) * duration));
-  }, [duration, seek]);
+    return Math.floor((x / rect.width) * duration);
+  }, [duration]);
 
+  // ── Pointer Scrubbing Handlers ────────────────────────────
   const handlePointerDown = useCallback((e) => {
-    handleSeek(e);
-    const move = (ev) => handleSeek(ev);
-    const up = () => {
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const time = calculateSeekTime(clientX);
+    setIsDragging(true);
+    setDragTime(time);
+    triggerHaptic(10);
+
+    const move = (ev) => {
+      const cx = ev.touches ? ev.touches[0].clientX : ev.clientX;
+      const t = calculateSeekTime(cx);
+      setDragTime(t);
+    };
+
+    const up = (ev) => {
+      setIsDragging(false);
+      const cx = ev.changedTouches ? ev.changedTouches[0].clientX : ev.clientX;
+      const finalTime = calculateSeekTime(cx);
+      seek(finalTime);
+      triggerHaptic(15);
+
       document.removeEventListener('mousemove', move);
       document.removeEventListener('mouseup', up);
       document.removeEventListener('touchmove', move);
       document.removeEventListener('touchend', up);
     };
+
     document.addEventListener('mousemove', move);
     document.addEventListener('mouseup', up);
     document.addEventListener('touchmove', move);
     document.addEventListener('touchend', up);
-  }, [handleSeek]);
+  }, [calculateSeekTime, seek]);
+
+  const handleMouseMove = (e) => {
+    if (isDragging || !progressBarRef.current || duration <= 0) return;
+    const rect = progressBarRef.current.getBoundingClientRect();
+    const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+    const percent = (x / rect.width) * 100;
+    const time = Math.floor((x / rect.width) * duration);
+    setHoverPosition({ time, percent });
+  };
+
+  const handleMouseLeave = () => {
+    setHoverPosition(null);
+  };
 
   // ── Share / Cast ────────────────────────────────────────
   const [shareToast, setShareToast] = useState(false);
@@ -323,7 +376,7 @@ const FullScreenPlayer = () => {
 
         {/* Sound selector pill */}
         <div className="fs-sound-selector">
-          <button className="sound-pill glass-panel" onClick={toggleSoundModal}>
+          <button className="sound-pill glass-panel pressable" onClick={() => { toggleSoundModal(); triggerHaptic(10); }}>
             <CloudRain size={16} />
             <span>{activeSound === 'None' ? 'Sound off' : activeSound}</span>
           </button>
@@ -334,7 +387,7 @@ const FullScreenPlayer = () => {
           <div className="fs-track-info">
             <div className="fs-track-left">
               <div
-                className="fs-avatar clickable-qari"
+                className="fs-avatar clickable-qari pressable"
                 onClick={handleGoToQariProfile}
                 style={{ cursor: 'pointer' }}
                 title={`View ${reciter.name} profile`}
@@ -354,8 +407,8 @@ const FullScreenPlayer = () => {
               </div>
             </div>
             <button
-              className={`fs-star-btn ${isFavSurah ? 'active' : ''}`}
-              onClick={() => toggleFavouriteSurah(surah.id)}
+              className={`fs-star-btn pressable ${isFavSurah ? 'active' : ''}`}
+              onClick={() => { toggleFavouriteSurah(surah.id); triggerHaptic(12); }}
               title="Favorite Surah"
             >
               <Star size={24} fill={isFavSurah ? '#fbbf24' : 'none'} color={isFavSurah ? '#fbbf24' : '#9ca3af'} />
@@ -373,15 +426,15 @@ const FullScreenPlayer = () => {
           {/* Controls */}
           <div className="fs-playback-controls">
             <button
-              className={`fs-speed ${shuffleOn ? 'active-control' : ''}`}
-              onClick={shuffleQueue}
+              className={`fs-speed pressable ${shuffleOn ? 'active-control' : ''}`}
+              onClick={() => { shuffleQueue(); triggerHaptic(10); }}
               title="Shuffle"
             >
               <Shuffle size={18} />
             </button>
             <div className="fs-main-buttons">
-              <button onClick={playPrev}><Rewind size={28} fill="currentColor" /></button>
-              <button className={`fs-play-btn ${isPlaying ? 'playing' : ''}`} onClick={togglePlay}>
+              <button className="pressable" onClick={() => { playPrev(); triggerHaptic(10); }}><Rewind size={28} fill="currentColor" /></button>
+              <button className={`fs-play-btn pressable ${isPlaying ? 'playing' : ''}`} onClick={() => { togglePlay(); triggerHaptic(15); }}>
                 {isBuffering
                   ? <Loader size={36} className="spin" />
                   : isPlaying
@@ -389,11 +442,11 @@ const FullScreenPlayer = () => {
                     : <Play size={36} fill="currentColor" />
                 }
               </button>
-              <button onClick={playNext}><FastForward size={28} fill="currentColor" /></button>
+              <button className="pressable" onClick={() => { playNext(); triggerHaptic(10); }}><FastForward size={28} fill="currentColor" /></button>
             </div>
             <button
-              className={`fs-repeat-btn ${repeatMode !== 'off' ? 'active-control' : ''}`}
-              onClick={toggleRepeat}
+              className={`fs-repeat-btn pressable ${repeatMode !== 'off' ? 'active-control' : ''}`}
+              onClick={() => { toggleRepeat(); triggerHaptic(10); }}
               title={repeatMode === 'off' ? 'No repeat' : repeatMode === 'all' ? 'Repeat all' : 'Repeat one'}
             >
               {repeatMode === 'one' ? <Repeat1 size={20} /> : <Repeat2 size={20} />}
@@ -403,16 +456,29 @@ const FullScreenPlayer = () => {
           {/* Progress bar */}
           <div className="fs-progress-wrapper">
             <div
-              className="fs-progress-bar"
+              className={`fs-progress-bar ${isDragging ? 'dragging' : ''}`}
               ref={progressBarRef}
               onMouseDown={handlePointerDown}
               onTouchStart={handlePointerDown}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
             >
               <div className="fs-progress-fill" style={{ width: `${progressPercent}%` }}></div>
-              <div className="fs-progress-thumb" style={{ left: `${progressPercent}%` }}></div>
+              <div className="fs-progress-thumb" style={{ left: `${progressPercent}%` }}>
+                {isDragging && (
+                  <div className="fs-seek-tooltip">
+                    {formatTime(dragTime)}
+                  </div>
+                )}
+              </div>
+              {!isDragging && hoverPosition && (
+                <div className="fs-seek-hover-indicator" style={{ left: `${hoverPosition.percent}%` }}>
+                  <span className="fs-seek-hover-time">{formatTime(hoverPosition.time)}</span>
+                </div>
+              )}
             </div>
             <div className="fs-time-info">
-              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(displayTime)}</span>
               <span>-{formatTime(remaining)}</span>
             </div>
           </div>

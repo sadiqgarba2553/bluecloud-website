@@ -6,6 +6,12 @@ export default defineConfig({
   base: '/quranly/',
   plugins: [react()],
   build: {
+    // Target modern browsers (iPad Safari 15+, Chrome 90+) — skip unnecessary polyfills
+    target: 'es2020',
+    // CSS code splitting — each lazy route only loads its own CSS
+    cssCodeSplit: true,
+    // No sourcemaps in production for smaller bundles
+    sourcemap: false,
     chunkSizeWarningLimit: 800,
     rollupOptions: {
       output: {
