@@ -183,8 +183,8 @@ const Home = () => {
                   <span className="work-tag">AI & Audio</span>
                 </div>
                 <h3>Quranly Platform</h3>
-                <p className="mb-3">A progressive Quran recitation, AI tafsir assistant, and audio streaming platform.</p>
-                <a href="/quranly/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch App</a>
+                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>High-fidelity Quran audio streaming, 100+ reciters & AI Tafsir companion.</p>
+                <a href="/quranly/" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch App</a>
               </div>
             </div>
           </div>

@@ -81,7 +81,7 @@ const PROJECTS_DATA = [
     problem: 'Need for a peaceful, ad-free digital Quran application integrating real-time AI tafsir, global reciter streaming, and offline audio.',
     solution: 'Engineered a high-performance cross-platform Progressive Web & Mobile App powered by Gemini AI, responsive audio playback engine, indexedDB caching, and tajweed study analytics.',
     impact: 'Delivered sub-second audio streaming across global CDNs with seamless offline persistence and multi-device sync.',
-    link: '/quranly/index.html'
+    link: '/quranly/'
   }
 ];
 

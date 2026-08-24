@@ -115,7 +115,10 @@ const PageSkeleton = () => (
 
 function AppContent() {
   const location = useLocation();
-  const isLandingPage = location.pathname === '/' || location.pathname === '';
+  const isLandingPage = 
+    location.pathname === '/' || 
+    location.pathname === '' || 
+    location.pathname === '/index.html';
   const { isPlayerOpen, listeningHistory, dailyGoalMinutes, favouriteReciterIds, bookmarkedVerses, currentTrack } = usePlayer();
   const [onboarded, setOnboarded] = useState(
     () => localStorage.getItem('quranly_onboarded') === 'true'
@@ -189,6 +192,7 @@ function AppContent() {
         <Suspense fallback={<PageSkeleton />}>
           <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/index.html" element={<Landing />} />
             <Route path="/app" element={<Home />} />
             <Route path="/player" element={<Home />} />
             <Route path="/reciters" element={<Reciters />} />
