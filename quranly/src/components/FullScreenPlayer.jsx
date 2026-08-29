@@ -2,7 +2,7 @@ import { useRef, useCallback, useState } from 'react';
 import {
   CloudRain, Star, Play, Pause, Rewind, FastForward,
   Moon, Volume2, VolumeX, ListVideo, Share2, Loader, WifiOff,
-  Download, Check, Lock, Repeat2, Repeat1, Shuffle
+  Download, Check, Lock, Repeat2, Repeat1, Shuffle, ChevronDown
 } from 'lucide-react';
 import {
   usePlayback,
@@ -388,17 +388,36 @@ const FullScreenPlayer = () => {
       </div>
 
       <div className="fs-content">
-        {/* Handle / Close */}
-        <div className="fs-top-handle" onClick={closePlayer}>
-          <div className="drag-handle"></div>
+        {/* Top Header Bar with Safe-Area & Collapse */}
+        <div className="fs-top-bar">
+          <button className="fs-header-btn pressable" onClick={closePlayer} title="Close Player">
+            <ChevronDown size={24} />
+          </button>
+
+          {/* Sound selector pill */}
+          <div className="fs-sound-selector">
+            <button className="sound-pill pressable" onClick={() => { toggleSoundModal(); triggerHaptic(10); }}>
+              <CloudRain size={15} />
+              <span>{activeSound === 'None' ? 'Sound off' : activeSound}</span>
+            </button>
+          </div>
+
+          <div className="fs-header-spacer" />
         </div>
 
-        {/* Sound selector pill */}
-        <div className="fs-sound-selector">
-          <button className="sound-pill glass-panel pressable" onClick={() => { toggleSoundModal(); triggerHaptic(10); }}>
-            <CloudRain size={16} />
-            <span>{activeSound === 'None' ? 'Sound off' : activeSound}</span>
-          </button>
+        {/* Center Hero Artwork Card */}
+        <div className="fs-hero-section">
+          <div className="fs-hero-card pressable" onClick={toggleQuranText} title="Tap to view Quran text">
+            <div className="fs-hero-art-wrap">
+              <ReciterAvatar name={reciter.name} src={reciter.avatar} alt={reciter.name} className="fs-hero-img" />
+              <div className="fs-hero-overlay">
+                <div className="fs-hero-surah-badge">
+                  <span className="fs-hero-surah-num">Surah {surah.id}</span>
+                  <span className="fs-hero-surah-ar">{surah.nameArabic}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="fs-main-controls">
