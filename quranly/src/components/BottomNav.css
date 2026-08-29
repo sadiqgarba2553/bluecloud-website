@@ -1,17 +1,21 @@
 .bottom-nav {
   position: fixed;
-  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-  left: 16px;
-  right: 16px;
-  max-width: 448px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 480px;
   margin: 0 auto;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 8px 12px;
-  border-radius: 20px;
+  padding: 6px 12px calc(8px + env(safe-area-inset-bottom, 0px)) 12px;
+  border-radius: 0;
   background: var(--nav-bg);
-  border: 1px solid var(--glass-border);
+  border-top: 1px solid var(--glass-border);
+  border-left: 1px solid var(--glass-border);
+  border-right: 1px solid var(--glass-border);
+  border-bottom: none;
   box-shadow: none;
   z-index: 100;
   backdrop-filter: none;
@@ -20,6 +24,15 @@
   will-change: transform;
   transform: translateZ(0);
   transition: background 0.2s ease, border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+  .bottom-nav {
+    max-width: 100%;
+    border-left: none;
+    border-right: none;
+  }
 }
 
 .nav-item {
@@ -53,8 +66,8 @@
 /* iPad — expand nav width */
 @media (min-width: 768px) {
   .bottom-nav {
-    max-width: 688px;
-    padding: 10px 20px;
+    max-width: 720px;
+    padding: 8px 20px calc(8px + env(safe-area-inset-bottom, 0px)) 20px;
   }
 
   .nav-item {

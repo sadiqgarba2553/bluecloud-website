@@ -103,7 +103,7 @@
   transform: scale(0.96);
 }
 
-/* ── Center Hero Artwork ── */
+/* ── Center Hero Artwork (Squircle) ── */
 .fs-hero-section {
   flex: 1;
   display: flex;
@@ -115,10 +115,10 @@
 
 .fs-hero-card {
   width: 100%;
-  max-width: 320px;
+  max-width: 280px;
   aspect-ratio: 1 / 1;
-  max-height: calc(44vh);
-  border-radius: 24px;
+  max-height: calc(40vh);
+  border-radius: 28px;
   overflow: hidden;
   border: 1px solid var(--glass-border);
   background: var(--card-bg);
@@ -135,13 +135,17 @@
   width: 100%;
   height: 100%;
   position: relative;
+  border-radius: 28px;
+  overflow: hidden;
 }
 
-.fs-hero-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.fs-hero-img,
+.fs-hero-art-wrap img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  border-radius: 28px !important;
 }
 
 .fs-hero-overlay {
@@ -151,6 +155,7 @@
   display: flex;
   align-items: flex-end;
   padding: 18px;
+  border-radius: 28px;
 }
 
 .fs-hero-surah-badge {
@@ -210,10 +215,12 @@
   flex-shrink: 0;
 }
 
-.fs-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.fs-avatar img,
+.fs-avatar .reciter-avatar-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 14px !important;
 }
 
 .fs-text {
