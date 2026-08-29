@@ -1,8 +1,8 @@
 .insights-page {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding-bottom: calc(180px + env(safe-area-inset-bottom, 0px));
+  gap: 24px;
+  padding-bottom: 24px;
 }
 
 .insights-title {

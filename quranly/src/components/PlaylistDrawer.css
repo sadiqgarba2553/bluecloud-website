@@ -13,18 +13,20 @@
 }
 
 .playlist-drawer {
-  background: rgba(30, 40, 45, 0.95);
+  background: var(--card-bg, #18181b);
+  border-top: 1px solid var(--glass-border);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   width: 100%;
   height: 100%;
   border-top-left-radius: 32px;
   border-top-right-radius: 32px;
-  padding: 24px;
+  padding: 24px 24px calc(24px + env(safe-area-inset-bottom, 0px)) 24px;
   display: flex;
   flex-direction: column;
   animation: slideUpModal 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-  box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+  box-shadow: none;
+  box-sizing: border-box;
 }
 
 .drawer-header {
@@ -73,8 +75,8 @@
 }
 
 .queue-item.current {
-  background: rgba(167, 139, 250, 0.1);
-  border: 1px solid rgba(167, 139, 250, 0.2);
+  background: var(--card-bg-hover);
+  border: 1px solid var(--text-primary);
 }
 
 .queue-item:last-child {
@@ -91,11 +93,13 @@
 }
 
 .queue-index.highlight {
-  color: #a78bfa;
+  color: var(--text-primary);
+  font-weight: 800;
 }
 
 .btn-active {
-  background: rgba(167, 139, 250, 0.15) !important;
+  background: var(--card-bg-hover) !important;
+  color: var(--text-primary) !important;
 }
 
 .queue-info {

@@ -1,10 +1,9 @@
-/* ── Reciter Profile View Main Layout ───────────────────────── */
 .reciter-profile-view {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  margin: -24px -24px 0 -24px; /* Expand to screen edge */
-  padding-bottom: calc(180px + env(safe-area-inset-bottom, 0px));
+  margin: -16px -16px 0 -16px; /* Expand to screen edge */
+  padding-bottom: 24px;
 }
 
 /* ── Hero Cover Header ─────────────────────────────────────── */

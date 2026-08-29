@@ -1,7 +1,8 @@
 .azkar-page {
   display: flex;
   flex-direction: column;
-  padding-bottom: calc(180px + env(safe-area-inset-bottom, 0px));
+  gap: 20px;
+  padding-bottom: 24px;
 }
 
 .azkar-header {

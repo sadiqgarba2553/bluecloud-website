@@ -18,15 +18,17 @@
 }
 
 .sound-modal {
-  background: #1c1c1e;
+  background: var(--card-bg, #18181b);
+  border-top: 1px solid var(--glass-border);
   width: 100%;
   height: 85%;
   border-top-left-radius: 32px;
   border-top-right-radius: 32px;
-  padding: 24px;
+  padding: 24px 24px calc(24px + env(safe-area-inset-bottom, 0px)) 24px;
   display: flex;
   flex-direction: column;
   animation: slideUpModal 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  box-sizing: border-box;
 }
 
 @keyframes slideUpModal {
