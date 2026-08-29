@@ -203,7 +203,7 @@ body {
   overscroll-behavior-y: contain;
   padding: 16px;
   padding-top: calc(16px + env(safe-area-inset-top, 0px));
-  padding-bottom: calc(130px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px));
 }
 
 /* Wider padding on tablet/desktop */
