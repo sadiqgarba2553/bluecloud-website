@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Play, Sparkles, RefreshCw, Bookmark, Share2, Volume2, Check } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { useData, usePlayerActions } from '../context/PlayerContext';
 import GlassCard from './GlassCard';
 import './DailyAyahWidget.css';
 
@@ -15,7 +15,8 @@ const FEATURED_VARS = [
 ];
 
 const DailyAyahWidget = () => {
-  const { surahs = [], reciters = [], setTrack, openPlayer } = usePlayer();
+  const { surahs = [], reciters = [] } = useData();
+  const { setTrack, openPlayer } = usePlayerActions();
   const [currentAyahIndex, setCurrentAyahIndex] = useState(0);
   const [copied, setCopied] = useState(false);
   const [saved, setSaved] = useState(false);

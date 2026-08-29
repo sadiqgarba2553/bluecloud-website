@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { X, Loader, WifiOff, Radio, Play, Globe, Bookmark, BookOpen } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { usePlayback, useCurrentTime, useUserData, usePlayerActions } from '../context/PlayerContext';
 import { fetchTafsir } from '../services/quranApi';
 import './QuranTextModal.css';
 
@@ -19,7 +19,10 @@ const TRANSLATIONS = [
  * Bismillah offset estimation, auto-scroll, tap-to-seek, and live sync nudge controls!
  */
 const QuranTextModal = ({ surahId, surahName, surahArabic }) => {
-  const { toggleQuranText, currentTime, duration, seek, toggleBookmark, bookmarkedVerses } = usePlayer();
+  const { duration } = usePlayback();
+  const currentTime = useCurrentTime();
+  const { bookmarkedVerses } = useUserData();
+  const { toggleQuranText, seek, toggleBookmark } = usePlayerActions();
   const [selectedLang, setSelectedLang] = useState('en.sahih');
   const [ayahs, setAyahs] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -1,9 +1,10 @@
 import { Moon, X } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { usePlayback, usePlayerActions } from '../context/PlayerContext';
 import './SleepTimerModal.css';
 
 const SleepTimerModal = () => {
-  const { sleepEndTime, sleepMinutes, setSleepTimer, toggleSleepTimerModal } = usePlayer();
+  const { sleepEndTime, sleepMinutes } = usePlayback();
+  const { setSleepTimer, toggleSleepTimerModal } = usePlayerActions();
 
   const presets = [
     { label: '5 min', value: 5 },

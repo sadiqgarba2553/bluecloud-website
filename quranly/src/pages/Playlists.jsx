@@ -3,19 +3,23 @@ import {
   ArrowLeft, Play, MoreVertical, Download, Lock, Trash2, Star, Bookmark,
   Plus, FolderPlus, Music, Check, X, Heart, User, Sparkles, Moon
 } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { usePlayback, useData, useUserData, usePlayerActions } from '../context/PlayerContext';
 import { MOOD_MIXES } from '../data/moodMixes';
 import ReciterAvatar from '../components/ReciterAvatar';
 import './Playlists.css';
 
 const Playlists = () => {
+  const { currentTrack } = usePlayback();
+  const { reciters = [], surahs = [] } = useData();
   const {
-    favouriteSurahIds, favouriteReciterIds, toggleFavouriteReciter,
-    setTrack, openPlayer, setSleepTimer, currentTrack,
-    reciters = [], surahs = [], downloadedTracks, removeTrack, isPro, openSubscriptionModal,
-    bookmarkedVerses = [], toggleBookmark,
-    customPlaylists = [], createPlaylist, deletePlaylist, addSurahToPlaylist, removeSurahFromPlaylist
-  } = usePlayer();
+    favouriteSurahIds, favouriteReciterIds, downloadedTracks, isPro,
+    bookmarkedVerses = [], customPlaylists = [],
+  } = useUserData();
+  const {
+    toggleFavouriteReciter, setTrack, openPlayer, setSleepTimer,
+    removeTrack, openSubscriptionModal, toggleBookmark,
+    createPlaylist, deletePlaylist, addSurahToPlaylist, removeSurahFromPlaylist,
+  } = usePlayerActions();
 
   const [selectedPlaylistKey, setSelectedPlaylistKey] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);

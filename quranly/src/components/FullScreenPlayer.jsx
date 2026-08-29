@@ -4,7 +4,13 @@ import {
   Moon, Volume2, VolumeX, ListVideo, Share2, Loader, WifiOff,
   Download, Check, Lock, Repeat2, Repeat1, Shuffle
 } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import {
+  usePlayback,
+  useCurrentTime,
+  useUserData,
+  useUIState,
+  usePlayerActions,
+} from '../context/PlayerContext';
 import SoundModal from './SoundModal';
 import PlaylistDrawer from './PlaylistDrawer';
 import SleepTimerModal from './SleepTimerModal';
@@ -44,8 +50,8 @@ function VolumePill({ value, onChange, disabled, icon: Icon, fillGradient, label
     };
     document.addEventListener('mousemove', move);
     document.addEventListener('mouseup', up);
-    document.addEventListener('touchmove', move);
-    document.addEventListener('touchend', up);
+    document.addEventListener('touchmove', move, { passive: true });
+    document.addEventListener('touchend', up, { passive: true });
   };
 
   const pct = Math.round((value || 0) * 100);
@@ -229,18 +235,30 @@ const FullScreenPlayer = () => {
   const navigate = useNavigate();
 
   const {
-    currentTrack, isPlaying, currentTime, duration, playbackSpeed,
-    activeSound, favouriteSurahIds, sleepEndTime,
-    isBuffering, audioError, volume, isVolumeOpen,
-    soundVolume, setSoundVolume,
-    repeatMode, shuffleOn, playerNatureTheme = 'stars',
-    togglePlay, playNext, playPrev, seek, cycleSpeed,
+    currentTrack, isPlaying, duration, playbackSpeed,
+    activeSound, sleepEndTime,
+    isBuffering, audioError, volume,
+    soundVolume, repeatMode, shuffleOn,
+  } = usePlayback();
+
+  const currentTime = useCurrentTime();
+
+  const {
+    favouriteSurahIds, playerNatureTheme = 'stars',
+    isPro, downloadingTrackId, downloadProgress,
+  } = useUserData();
+
+  const {
+    isVolumeOpen, isSoundModalOpen, isPlaylistDrawerOpen,
+    isSleepTimerOpen, isQuranTextOpen,
+  } = useUIState();
+
+  const {
+    setSoundVolume, togglePlay, playNext, playPrev, seek, cycleSpeed,
     toggleFavouriteSurah, closePlayer, setVolume, toggleVolume,
     toggleSoundModal, togglePlaylistDrawer, toggleSleepTimerModal, toggleQuranText,
-    isSoundModalOpen, isPlaylistDrawerOpen, isSleepTimerOpen, isQuranTextOpen,
-    isPro, downloadTrack, isDownloaded, downloadingTrackId, downloadProgress,
-    toggleRepeat, shuffleQueue, openReciterProfile,
-  } = usePlayer();
+    downloadTrack, isDownloaded, toggleRepeat, shuffleQueue, openReciterProfile,
+  } = usePlayerActions();
 
   const [bgImage, setBgImage] = useState(() => NATURE_IMAGES[Math.floor(Math.random() * NATURE_IMAGES.length)]);
 
@@ -315,8 +333,8 @@ const FullScreenPlayer = () => {
 
     document.addEventListener('mousemove', move);
     document.addEventListener('mouseup', up);
-    document.addEventListener('touchmove', move);
-    document.addEventListener('touchend', up);
+    document.addEventListener('touchmove', move, { passive: true });
+    document.addEventListener('touchend', up, { passive: true });
   }, [calculateSeekTime, seek]);
 
   const handleMouseMove = (e) => {
@@ -352,6 +370,7 @@ const FullScreenPlayer = () => {
         <img
           src={bgImage}
           alt="Nature Background"
+          decoding="async"
           style={{
             position: 'absolute',
             top: 0,
@@ -360,7 +379,7 @@ const FullScreenPlayer = () => {
             height: '100%',
             objectFit: 'cover',
             filter: 'brightness(0.55)',
-            transition: 'all 1s ease',
+            transition: 'opacity 0.6s ease',
             zIndex: 0
           }}
         />

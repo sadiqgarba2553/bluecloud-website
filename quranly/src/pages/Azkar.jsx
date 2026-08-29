@@ -5,7 +5,7 @@ import {
   Sun, Moon, Landmark, Bed, Shield, Target, Trophy, Zap
 } from 'lucide-react';
 import { AZKAR_CATEGORIES, AZKAR_LIST } from '../data/azkarData';
-import { usePlayer } from '../context/PlayerContext';
+import { useUserData, usePlayerActions } from '../context/PlayerContext';
 import GlassCard from '../components/GlassCard';
 import './Azkar.css';
 
@@ -20,12 +20,8 @@ const ICON_MAP = {
 
 const Azkar = () => {
   const navigate = useNavigate();
-  const {
-    completedAzkarCount = 0,
-    dailyAzkarGoal = 5,
-    setDailyAzkarGoal,
-    incrementAzkarCount,
-  } = usePlayer();
+  const { completedAzkarCount = 0, dailyAzkarGoal = 5 } = useUserData();
+  const { setDailyAzkarGoal, incrementAzkarCount } = usePlayerActions();
 
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');

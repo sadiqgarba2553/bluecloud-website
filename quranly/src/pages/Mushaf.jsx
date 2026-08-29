@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import surahs from '../data/surahs';
 import { getJuzStartPage } from '../data/juz';
-import { usePlayer } from '../context/PlayerContext';
+import { useUserData, usePlayerActions } from '../context/PlayerContext';
 import { fetchTajweedPage, fetchWordByWordPage, parseTajweedText, fetchTafsir } from '../services/quranApi';
 import { fetchAsbabAlNuzul } from '../services/asbabApi';
 import VerseCardGenerator from '../components/VerseCardGenerator';
@@ -111,9 +111,9 @@ const Mushaf = () => {
 
   const scrollRef = useRef(null);
 
-  // Context for bookmarks & global reciter
-  const playerContext = usePlayer();
-  const { bookmarkedVerses, toggleBookmark } = playerContext || {};
+  // Context for bookmarks
+  const { bookmarkedVerses = [] } = useUserData();
+  const { toggleBookmark } = usePlayerActions();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const toggleBookmarkVerse = (verse) => {

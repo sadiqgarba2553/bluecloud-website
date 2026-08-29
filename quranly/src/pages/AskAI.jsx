@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Sparkles, Send, Key, Loader2, Crown, BookOpen, FileText } from 'lucide-react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { usePlayer } from '../context/PlayerContext';
+import { useUserData, usePlayerActions } from '../context/PlayerContext';
 import { retrieveIslamicContext, buildGroundedPrompt } from '../services/ragService';
 import GlassCard from '../components/GlassCard';
 import './AskAI.css';
@@ -9,7 +9,8 @@ import './AskAI.css';
 const ENV_GEMINI_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
 
 const AskAI = () => {
-  const { isPro, openSubscriptionModal } = usePlayer();
+  const { isPro } = useUserData();
+  const { openSubscriptionModal } = usePlayerActions();
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('quranly_gemini_key') || ENV_GEMINI_KEY);
   const [messages, setMessages] = useState([
     { 

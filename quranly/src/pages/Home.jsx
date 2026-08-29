@@ -5,7 +5,14 @@ import {
   BookOpen, User, Mic, Radio, Volume2, Sparkles, BarChart2, Search as SearchIcon, Shield,
   Sun, CloudRain, Compass, Users
 } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { memo } from 'react';
+import {
+  usePlayback,
+  useData,
+  useUserData,
+  usePlayerActions,
+  useCurrentTime,
+} from '../context/PlayerContext';
 import ReciterAvatar from '../components/ReciterAvatar';
 import DailyAyahWidget from '../components/DailyAyahWidget';
 import PrayerTimesWidget from '../components/PrayerTimesWidget';
@@ -14,18 +21,30 @@ import { MOOD_MIXES } from '../data/moodMixes';
 import { MOOD_CATEGORIES } from '../services/moodService';
 import './Home.css';
 
+// Isolate currentTime to this tiny subcomponent so the entire Home page NEVER re-renders on playback ticks
+const ResumeProgressBar = memo(({ duration }) => {
+  const currentTime = useCurrentTime();
+  if (!duration || duration <= 0) return null;
+  return (
+    <div className="resume-progress-bar">
+      <div
+        className="resume-progress-fill"
+        style={{ width: `${Math.min((currentTime / duration) * 100, 100)}%` }}
+      />
+    </div>
+  );
+});
+ResumeProgressBar.displayName = 'ResumeProgressBar';
+
 const Home = () => {
   const navigate = useNavigate();
   const [activeMoodModal, setActiveMoodModal] = useState(null); // category object
   const [showKhatmModal, setShowKhatmModal] = useState(false);
-  const {
-    currentTrack, isPlaying,
-    setTrack, openPlayer, togglePlay,
-    favouriteReciterIds,
-    reciters = [], surahs = [], apiLoading,
-    isPro, openSubscriptionModal, openAuthModal, currentUser,
-    currentTime, duration,
-  } = usePlayer();
+
+  const { currentTrack, isPlaying, duration } = usePlayback();
+  const { reciters = [], surahs = [], apiLoading } = useData();
+  const { favouriteReciterIds, isPro, currentUser } = useUserData();
+  const { setTrack, openPlayer, togglePlay, openSubscriptionModal, openAuthModal } = usePlayerActions();
 
   // Memoize favourite reciters — prevents re-filtering on every audio time update
   const favouriteReciters = useMemo(() => {
@@ -64,7 +83,7 @@ const Home = () => {
       {/* Sleek Top Brand Header */}
       <div className="top-header">
         <div className="app-brand" onClick={() => navigate('/')} style={{ cursor: 'pointer' }} title="Back to Landing Page">
-          <img src="/logo.png" alt="Quranly Logo" className="brand-logo" />
+          <img src="/logo.png" alt="Quranly Logo" className="brand-logo" width={28} height={28} decoding="async" />
           <span className="brand-title">Quranly</span>
         </div>
 
@@ -75,7 +94,7 @@ const Home = () => {
             title={currentUser ? currentUser.displayName || currentUser.email : "Sign In / Account"}
           >
             {currentUser?.photoURL ? (
-              <img src={currentUser.photoURL} alt="User Profile" className="user-avatar-tiny" />
+              <img src={currentUser.photoURL} alt="User Profile" className="user-avatar-tiny" width={24} height={24} loading="lazy" decoding="async" />
             ) : (
               <User size={15} color="var(--text-primary)" />
             )}
@@ -220,14 +239,7 @@ const Home = () => {
             {currentTrack?.surah && (
               <p className="recent-surah-name">{currentTrack.surah.nameEnglish}</p>
             )}
-            {duration > 0 && (
-              <div className="resume-progress-bar">
-                <div
-                  className="resume-progress-fill"
-                  style={{ width: `${Math.min((currentTime / duration) * 100, 100)}%` }}
-                />
-              </div>
-            )}
+            <ResumeProgressBar duration={duration} />
           </div>
           <button className="continue-btn">
             <Play size={15} fill="currentColor" />

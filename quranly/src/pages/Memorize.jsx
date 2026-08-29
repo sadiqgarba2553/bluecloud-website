@@ -4,7 +4,7 @@ import {
   Mic, MicOff, Brain, Sparkles, CheckCircle2, AlertCircle, RefreshCw,
   Eye, EyeOff, Volume2, HelpCircle, ArrowLeft, Trophy, Zap, Loader
 } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { useData, usePlayerActions } from '../context/PlayerContext';
 import GlassCard from '../components/GlassCard';
 import staticSurahs from '../data/surahs';
 import './Memorize.css';
@@ -79,7 +79,8 @@ const STATIC_FALLBACK_VERSES = {
 
 const Memorize = () => {
   const navigate = useNavigate();
-  const { openPlayer, play, setTrack, reciters } = usePlayer();
+  const { reciters } = useData();
+  const { openPlayer, play, setTrack } = usePlayerActions();
 
   // State
   const [selectedSurahId, setSelectedSurahId] = useState(1);

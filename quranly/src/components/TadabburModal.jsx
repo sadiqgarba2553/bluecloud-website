@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { X, Heart, Tag, Sparkles, BookOpen, Save, Trash2 } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { useUserData, usePlayerActions } from '../context/PlayerContext';
 import './TadabburModal.css';
 
 const DEFAULT_TAGS = ['#patience', '#hope', '#gratitude', '#dua', '#guidance', '#reflection', '#wisdom'];
 
 export default function TadabburModal({ isOpen, onClose, verseInfo }) {
-  const { verseReflections, saveReflection, deleteReflection } = usePlayer();
+  const { verseReflections } = useUserData();
+  const { saveReflection, deleteReflection } = usePlayerActions();
   const [noteText, setNoteText] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
   const [customTagInput, setCustomTagInput] = useState('');

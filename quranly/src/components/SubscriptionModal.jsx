@@ -237,7 +237,7 @@ const SubscriptionModal = ({ isOpen, onClose, isPro, onSubscribeSuccess, onCance
           <div className="pro-subscribe-view">
             <div className="pro-header">
               <div className="pro-icon-glow">
-                <img src="/logo.png" alt="Quranly Logo" className="pro-real-logo" />
+                <img src="/logo.png" alt="Quranly Logo" className="pro-real-logo" width={48} height={48} loading="lazy" decoding="async" />
               </div>
               <h2>Upgrade to Quranly Pro</h2>
               <p className="pro-tagline">Unlock offline downloads, AI, and cloud sync</p>

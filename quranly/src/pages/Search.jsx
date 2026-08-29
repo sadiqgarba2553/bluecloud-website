@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Search as SearchIcon, Users, FileText, Loader, ArrowRight, Play, BookOpen } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { usePlayerActions } from '../context/PlayerContext';
 import surahs from '../data/surahs';
 import reciters from '../data/reciters';
 import './Search.css';
@@ -10,7 +10,7 @@ const Search = () => {
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [quranResults, setQuranResults] = useState([]);
   const [isSearchingQuran, setIsSearchingQuran] = useState(false);
-  const { openReciterProfile, toggleQuranText, handlePlaySurah } = usePlayer();
+  const { openReciterProfile, toggleQuranText } = usePlayerActions();
 
   useEffect(() => {
     const timer = setTimeout(() => {

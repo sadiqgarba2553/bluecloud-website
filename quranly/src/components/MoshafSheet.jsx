@@ -1,5 +1,5 @@
 import { X, Play, Heart } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { useUserData, usePlayerActions } from '../context/PlayerContext';
 import ReciterAvatar from './ReciterAvatar';
 import './MoshafSheet.css';
 
@@ -8,7 +8,8 @@ import './MoshafSheet.css';
  * and lets the user pick one before playing.
  */
 const MoshafSheet = ({ reciter, surahs, onSelect, onClose }) => {
-  const { favouriteReciterIds, toggleFavouriteReciter } = usePlayer();
+  const { favouriteReciterIds } = useUserData();
+  const { toggleFavouriteReciter } = usePlayerActions();
   if (!reciter) return null;
 
   const hasMoshaf = reciter.moshaf?.length > 0;

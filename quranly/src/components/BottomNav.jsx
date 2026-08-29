@@ -1,12 +1,12 @@
 import { NavLink } from 'react-router-dom';
 import { memo } from 'react';
 import { Home, Users, BookOpen, LayoutGrid, Settings } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { usePlayerActions } from '../context/PlayerContext';
 import { prefetchRoute } from '../App';
 import './BottomNav.css';
 
 const BottomNav = memo(() => {
-  const { openReciterProfile } = usePlayer();
+  const { openReciterProfile } = usePlayerActions();
 
   const navItems = [
     { path: '/app', icon: Home, label: 'Player' },

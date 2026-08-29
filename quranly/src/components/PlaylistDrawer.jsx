@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { Search, Shuffle, Repeat, Repeat1, Menu } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { usePlayback, usePlayerActions } from '../context/PlayerContext';
 import './PlaylistDrawer.css';
 
 const PlaylistDrawer = () => {
-  const {
-    queue, queueIndex, currentTrack, repeatMode, shuffleOn,
-    setTrack, shuffleQueue, toggleRepeat, togglePlaylistDrawer,
-  } = usePlayer();
+  const { queue, queueIndex, currentTrack, repeatMode, shuffleOn } = usePlayback();
+  const { setTrack, shuffleQueue, toggleRepeat, togglePlaylistDrawer } = usePlayerActions();
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredQueue = queue.filter(s =>

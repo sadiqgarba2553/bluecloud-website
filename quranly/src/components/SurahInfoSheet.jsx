@@ -1,6 +1,6 @@
 import { createPortal } from 'react-dom';
 import { X, Play, Headphones } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { usePlayback, usePlayerActions } from '../context/PlayerContext';
 import { SURAH_JUZ } from '../data/juz';
 import { fetchLecturesForSurah } from '../services/lecturesApi';
 import './SurahInfoSheet.css';
@@ -10,7 +10,8 @@ import './SurahInfoSheet.css';
  * Uses createPortal to mount cleanly outside page transform stacking contexts.
  */
 const SurahInfoSheet = ({ surah, reciter, availableSurahs, surahIndex, moshafIndex, onClose }) => {
-  const { setTrack, openPlayer, currentTrack, isPlaying, togglePlay, pause } = usePlayer();
+  const { currentTrack, isPlaying } = usePlayback();
+  const { setTrack, openPlayer, togglePlay, pause } = usePlayerActions();
 
   if (!surah) return null;
 
@@ -80,7 +81,7 @@ const SurahInfoSheet = ({ surah, reciter, availableSurahs, surahIndex, moshafInd
             {fetchLecturesForSurah(surah.id).map((lec, idx) => (
               <div key={idx} className="sheet-lecture-card">
                 <div className="lecture-scholar-info">
-                  <img src={lec.avatar} alt={lec.scholarName} className="scholar-avatar" />
+                  <img src={lec.avatar} alt={lec.scholarName} className="scholar-avatar" width={36} height={36} loading="lazy" decoding="async" />
                   <div className="scholar-meta">
                     <span className="scholar-name">{lec.scholarName}</span>
                     <span className="lecture-title">{lec.title} ({lec.duration})</span>

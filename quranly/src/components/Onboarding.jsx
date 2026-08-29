@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ChevronRight, BookOpen, Target, Palette, Check } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { useData, usePlayerActions } from '../context/PlayerContext';
 import ReciterAvatar from './ReciterAvatar';
 import './Onboarding.css';
 
@@ -8,7 +8,8 @@ const DAILY_GOALS = [5, 10, 20, 30, 60];
 const FEATURED_RECITERS = [1, 2, 3, 4, 5, 6]; // IDs to show in onboarding
 
 const Onboarding = ({ onComplete }) => {
-  const { reciters, toggleFavouriteReciter, setDailyGoal, setThemeMode } = usePlayer();
+  const { reciters } = useData();
+  const { toggleFavouriteReciter, setDailyGoal, setThemeMode } = usePlayerActions();
   const [step, setStep] = useState(0);
   const [selectedReciters, setSelectedReciters] = useState(new Set());
   const [selectedGoal, setSelectedGoal] = useState(10);

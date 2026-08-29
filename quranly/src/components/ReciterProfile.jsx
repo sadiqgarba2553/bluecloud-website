@@ -5,7 +5,7 @@ import {
   Loader, Share2, Plus, BookOpen, Heart, X, Sparkles,
   BarChart3, Activity, TrendingUp, ChevronRight
 } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { usePlayback, useData, useUserData, usePlayerActions } from '../context/PlayerContext';
 import { getReciterAvatarUrl } from '../utils/reciterPhotos';
 import { getQariUniqueAttributes } from '../data/qariBios';
 import { recordProfileView, getReciterAnalytics } from '../utils/reciterAnalytics';
@@ -19,14 +19,17 @@ import './ReciterProfile.css';
  * - Numbered Surah list container
  */
 const ReciterProfile = ({ reciter, onBack }) => {
+  const { currentTrack, isPlaying } = usePlayback();
+  const { surahs = [] } = useData();
   const {
-    currentTrack, isPlaying, setTrack, togglePlay, openPlayer,
-    favouriteReciterIds, toggleFavouriteReciter, surahs = [],
-    downloadTrack, removeTrack, isDownloaded, downloadingTrackId, downloadProgress,
-    toggleFavouriteSurah, favouriteSurahIds,
-    customPlaylists = [], addSurahToPlaylist, createPlaylist,
-    toggleQuranText,
-  } = usePlayer();
+    favouriteReciterIds, downloadingTrackId, downloadProgress,
+    favouriteSurahIds, customPlaylists = [],
+  } = useUserData();
+  const {
+    setTrack, togglePlay, openPlayer, toggleFavouriteReciter,
+    downloadTrack, removeTrack, isDownloaded, toggleFavouriteSurah,
+    addSurahToPlaylist, createPlaylist, toggleQuranText,
+  } = usePlayerActions();
 
   const [selectedMoshafIndex, setSelectedMoshafIndex] = useState(0);
   const [surahSearch, setSurahSearch] = useState('');

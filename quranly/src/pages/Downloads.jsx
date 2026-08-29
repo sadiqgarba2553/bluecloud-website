@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { DownloadCloud, Trash2, Play, HardDrive, AlertCircle } from 'lucide-react';
 import { getDownloadedTracks, removeAudioTrack, getTotalStorageUsed } from '../services/offlineCache';
-import { usePlayer } from '../context/PlayerContext';
+import { usePlayerActions } from '../context/PlayerContext';
 import './Downloads.css';
 
 // Helper to format bytes to MB
@@ -14,7 +14,7 @@ const formatBytes = (bytes) => {
 const Downloads = () => {
   const [tracks, setTracks] = useState([]);
   const [storageUsed, setStorageUsed] = useState(0);
-  const { setQueue, openPlayer } = usePlayer();
+  const { setQueue, openPlayer } = usePlayerActions();
 
   useEffect(() => {
     loadTracks();

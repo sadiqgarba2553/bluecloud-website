@@ -4,7 +4,7 @@ import {
   Trophy, Sparkles, Zap, Crown, Clock, Headphones, Users, Bookmark, Target,
   Lock, CheckCircle2, Globe, Shield, RefreshCw, Heart, Tag, Trash2, Search as SearchIcon
 } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { usePlayback, useUserData, usePlayerActions } from '../context/PlayerContext';
 import { evaluateUserAchievements } from '../utils/achievements';
 import { getLeaderboardFromFirestore } from '../services/firebase';
 import GlassCard from '../components/GlassCard';
@@ -16,12 +16,12 @@ const ICON_MAP = {
 };
 
 const Insights = () => {
+  const { isPlaying } = usePlayback();
   const {
-    listeningHistory, dailyGoalMinutes, isPlaying,
-    openPlayer, togglePlay, setDailyGoal, favouriteReciterIds,
-    bookmarkedVerses, currentUser, isPro,
-    verseReflections = [], deleteReflection
-  } = usePlayer();
+    listeningHistory, dailyGoalMinutes, favouriteReciterIds,
+    bookmarkedVerses, currentUser, isPro, verseReflections = [],
+  } = useUserData();
+  const { openPlayer, togglePlay, setDailyGoal, deleteReflection } = usePlayerActions();
 
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'badges' | 'leaderboard' | 'journal'
   const [showMore, setShowMore] = useState(false);

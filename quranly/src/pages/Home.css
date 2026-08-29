@@ -611,7 +611,7 @@
   height: 100%;
   background: var(--text-primary);
   border-radius: 2px;
-  transition: width 0.3s linear;
+  will-change: width;
 }
 
 /* ── iPad Responsive (768px+) ────────── */

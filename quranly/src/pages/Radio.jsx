@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Radio as RadioIcon, Loader, WifiOff, Search } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { useData, usePlayback, usePlayerActions } from '../context/PlayerContext';
 import GlassCard from '../components/GlassCard';
 import './Radio.css';
 
 const Radio = () => {
-  const { radios = [], apiLoading, pause, isPlaying } = usePlayer();
+  const { radios = [], apiLoading } = useData();
+  const { isPlaying } = usePlayback();
+  const { pause } = usePlayerActions();
   const [playing, setPlaying] = useState(null); // currently playing radio id
   const [loading, setLoading] = useState(false);
   const [radioError, setRadioError] = useState(null);

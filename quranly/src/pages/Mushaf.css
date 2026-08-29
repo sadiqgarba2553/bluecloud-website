@@ -362,7 +362,7 @@
 .mushaf-paper-card {
   background: var(--mushaf-card-bg);
   padding: 0;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease;
 }
 
 .surah-section {
@@ -544,7 +544,7 @@
   padding: 6px;
   border-radius: 4px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background 0.2s ease;
 }
 
 .icon-sub-btn:hover {
@@ -691,7 +691,7 @@
   cursor: pointer;
   padding: 8px 16px;
   border-radius: 6px;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .pagination-btn:hover:not(:disabled) {
@@ -826,7 +826,7 @@
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .repeat-pill.active {
@@ -844,7 +844,7 @@
   border-color: var(--mushaf-gold) !important;
   box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
   transform: translateY(-2px);
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background 0.15s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1), transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .word-popover-modal {
@@ -1026,7 +1026,7 @@
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   color: var(--text-primary);
-  transition: all 0.2s ease;
+  transition: transform 0.16s var(--ease-out), background 0.2s ease, border-color 0.2s ease;
 }
 
 .modal-action-btn:hover {

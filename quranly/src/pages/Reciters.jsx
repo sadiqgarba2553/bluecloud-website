@@ -1,66 +1,66 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback, memo } from 'react';
 import { Search, ChevronRight, Loader, WifiOff } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { useData, useUIState, usePlayerActions } from '../context/PlayerContext';
 import GlassCard from '../components/GlassCard';
 import ReciterAvatar from '../components/ReciterAvatar';
 import ReciterProfile from '../components/ReciterProfile';
 import ErrorBoundary from '../components/ErrorBoundary';
 import './Reciters.css';
 
+const ReciterCircle = memo(({ reciter, onClick }) => (
+  <div
+    className="reciter-circle"
+    onClick={() => onClick(reciter)}
+    style={{ cursor: 'pointer' }}
+  >
+    <div className="circle-img-wrap">
+      <ReciterAvatar name={reciter.name} src={reciter.avatar} alt={reciter.name} width={56} height={56} />
+      {reciter.moshaf?.length > 1 && (
+        <span className="moshaf-badge">{reciter.moshaf.length}</span>
+      )}
+    </div>
+    <p className="reciter-name">{reciter.name}</p>
+  </div>
+));
+ReciterCircle.displayName = 'ReciterCircle';
+
 const Reciters = () => {
-  const {
-    reciters, apiLoading, apiError,
-    activeProfileReciter, openReciterProfile,
-  } = usePlayer();
+  const { reciters, apiLoading, apiError } = useData();
+  const { activeProfileReciter } = useUIState();
+  const { openReciterProfile } = usePlayerActions();
   const [searchQuery, setSearchQuery] = useState('');
   const [localProfileReciter, setLocalProfileReciter] = useState(null);
 
   const displayReciter = activeProfileReciter || localProfileReciter;
-
-  const safeReciters = Array.isArray(reciters) ? reciters : [];
+  const safeReciters = useMemo(() => Array.isArray(reciters) ? reciters : [], [reciters]);
 
   // Filter by search
-  const allFiltered = searchQuery
-    ? safeReciters.filter(r =>
-        r?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (r?.country && r.country.toLowerCase().includes(searchQuery.toLowerCase()))
-      )
-    : null;
+  const allFiltered = useMemo(() => {
+    if (!searchQuery.trim()) return null;
+    const q = searchQuery.toLowerCase();
+    return safeReciters.filter(r =>
+      r?.name?.toLowerCase().includes(q) ||
+      (r?.country && r.country.toLowerCase().includes(q))
+    );
+  }, [searchQuery, safeReciters]);
 
   // Open Spotify-style Reciter Profile
-  const handleReciterClick = (reciter) => {
+  const handleReciterClick = useCallback((reciter) => {
     if (reciter) openReciterProfile(reciter);
-  };
+  }, [openReciterProfile]);
 
   // Group by letter
-  const topReciters = safeReciters.slice(0, 5);
-  const byLetter = safeReciters.reduce((acc, r) => {
-    if (!r) return acc;
-    const key = (r.letter || r.name?.[0] || '#').toUpperCase();
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(r);
-    return acc;
-  }, {});
-  const sortedLetters = Object.keys(byLetter).sort();
-
-  const renderReciterCircle = (reciter) => {
-    return (
-      <div
-        className="reciter-circle"
-        key={reciter.id}
-        onClick={() => handleReciterClick(reciter)}
-        style={{ cursor: 'pointer' }}
-      >
-        <div className="circle-img-wrap">
-          <ReciterAvatar name={reciter.name} src={reciter.avatar} alt={reciter.name} />
-          {reciter.moshaf?.length > 1 && (
-            <span className="moshaf-badge">{reciter.moshaf.length}</span>
-          )}
-        </div>
-        <p className="reciter-name">{reciter.name}</p>
-      </div>
-    );
-  };
+  const topReciters = useMemo(() => safeReciters.slice(0, 5), [safeReciters]);
+  const { byLetter, sortedLetters } = useMemo(() => {
+    const grouped = safeReciters.reduce((acc, r) => {
+      if (!r) return acc;
+      const key = (r.letter || r.name?.[0] || '#').toUpperCase();
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(r);
+      return acc;
+    }, {});
+    return { byLetter: grouped, sortedLetters: Object.keys(grouped).sort() };
+  }, [safeReciters]);
 
   // If a reciter profile is open, show Spotify-style ReciterProfile
   if (displayReciter) {
@@ -114,7 +114,9 @@ const Reciters = () => {
             <p className="no-results">No reciters found for "{searchQuery}"</p>
           )}
           <div className="horizontal-scroll" style={{ flexWrap: 'wrap', gap: '16px' }}>
-            {allFiltered.map(renderReciterCircle)}
+            {allFiltered.map(r => (
+              <ReciterCircle key={r.id} reciter={r} onClick={handleReciterClick} />
+            ))}
           </div>
         </div>
       ) : !apiLoading ? (
@@ -123,7 +125,7 @@ const Reciters = () => {
             <div className="overlapping-avatars">
               {topReciters.slice(0, 3).map((r, i) => (
                 <div key={r.id || i} className={`top-avatar-wrap av${i + 1}`}>
-                  <ReciterAvatar name={r.name} src={r.avatar} alt={r.name} />
+                  <ReciterAvatar name={r.name} src={r.avatar} alt={r.name} width={48} height={48} />
                 </div>
               ))}
             </div>
@@ -142,7 +144,9 @@ const Reciters = () => {
                 <h2 className="section-title">{letter}</h2>
               </div>
               <div className="horizontal-scroll">
-                {byLetter[letter].map(renderReciterCircle)}
+                {byLetter[letter].map(r => (
+                  <ReciterCircle key={r.id} reciter={r} onClick={handleReciterClick} />
+                ))}
               </div>
             </div>
           ))}

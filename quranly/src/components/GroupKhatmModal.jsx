@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { X, Users, CheckCircle, BookOpen, Plus, Sparkles, Trash2, Award } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { useUserData, usePlayerActions } from '../context/PlayerContext';
 import { useNavigate } from 'react-router-dom';
 import './GroupKhatmModal.css';
 
 export default function GroupKhatmModal({ isOpen, onClose }) {
-  const { groupKhatms, createGroupKhatm, claimKhatmJuz, deleteGroupKhatm } = usePlayer();
+  const { groupKhatms } = useUserData();
+  const { createGroupKhatm, claimKhatmJuz, deleteGroupKhatm } = usePlayerActions();
   const navigate = useNavigate();
 
   const [activeKhatmId, setActiveKhatmId] = useState(null);

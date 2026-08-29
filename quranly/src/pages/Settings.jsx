@@ -4,7 +4,7 @@ import {
   Diamond, Tag, Handshake, Gift, Lightbulb, ChevronRight, Globe, Radio, BookOpen, X, Send, Sun, Moon, Monitor, CheckCircle, Check, User, CloudCheck,
   Sparkles, Waves, CloudRain, Palette, Lock
 } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { useData, useUserData, usePlayerActions } from '../context/PlayerContext';
 import { submitAppFeedback, auth } from '../services/firebase';
 import './Settings.css';
 
@@ -152,12 +152,15 @@ function SuggestModal({ onClose }) {
 }
 
 const Settings = () => {
+  const { apiLanguage, radios = [], tafasir = [], riwayat = [], apiLoading } = useData();
   const {
-    apiLanguage, setApiLanguage, radios = [], tafasir = [], riwayat = [], apiLoading,
-    themeMode = 'light', setThemeMode, playerNatureTheme = 'stars', setPlayerNatureTheme,
-    appTheme = 'indigo', setAppTheme,
-    isPro, openSubscriptionModal, openAuthModal, currentUser
-  } = usePlayer();
+    themeMode = 'light', playerNatureTheme = 'stars',
+    appTheme = 'indigo', isPro, currentUser,
+  } = useUserData();
+  const {
+    setApiLanguage, setThemeMode, setPlayerNatureTheme,
+    setAppTheme, openSubscriptionModal, openAuthModal,
+  } = usePlayerActions();
   const [modal, setModal] = useState(null); // 'collaborate' | 'suggest'
   const navigate = useNavigate();
 

@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { BookOpen, Search, Copy, Check, Sparkles, Loader, Volume2, Square, Lock, Crown } from 'lucide-react';
 import { fetchHadiths, HADITH_BOOKS } from '../services/hadithApi';
-import { usePlayer } from '../context/PlayerContext';
+import { useUserData, usePlayerActions } from '../context/PlayerContext';
 import GlassCard from '../components/GlassCard';
 import './Hadith.css';
 
 const Hadith = () => {
-  const { isPro, openSubscriptionModal } = usePlayer();
+  const { isPro } = useUserData();
+  const { openSubscriptionModal } = usePlayerActions();
   const [selectedBook, setSelectedBook] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [hadiths, setHadiths] = useState([]);

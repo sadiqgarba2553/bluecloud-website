@@ -72,7 +72,7 @@
   font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
-  transition: all 0.2s;
+  transition: transform 0.16s var(--ease-out), background 0.2s ease, border-color 0.2s ease;
 }
 
 .sleep-preset-btn:active {

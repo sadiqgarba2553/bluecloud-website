@@ -1,7 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { StatusBar, Style } from '@capacitor/status-bar';
-import { PlayerProvider, usePlayer } from './context/PlayerContext';
+import { PlayerProvider, useUIState, useUserData, usePlayback } from './context/PlayerContext';
 import BottomNav from './components/BottomNav';
 import MiniPlayer from './components/MiniPlayer';
 import Onboarding from './components/Onboarding';
@@ -64,11 +64,11 @@ const ROUTE_SEO = {
   }
 };
 
-// Eagerly import Landing and Home
+// Eagerly import Landing (entry page)
 import Landing from './pages/Landing';
-import Home from './pages/Home';
 
 // Lazy load non-landing route pages for optimal bundle splitting
+const Home = lazy(() => import('./pages/Home'));
 const Reciters = lazy(() => import('./pages/Reciters'));
 const Hadith = lazy(() => import('./pages/Hadith'));
 const Playlists = lazy(() => import('./pages/Playlists'));
@@ -119,7 +119,9 @@ function AppContent() {
     location.pathname === '/' || 
     location.pathname === '' || 
     location.pathname === '/index.html';
-  const { isPlayerOpen, listeningHistory, dailyGoalMinutes, favouriteReciterIds, bookmarkedVerses, currentTrack } = usePlayer();
+  const { isPlayerOpen } = useUIState();
+  const { listeningHistory, dailyGoalMinutes, favouriteReciterIds, bookmarkedVerses } = useUserData();
+  const { currentTrack } = usePlayback();
   const [onboarded, setOnboarded] = useState(
     () => localStorage.getItem('quranly_onboarded') === 'true'
   );

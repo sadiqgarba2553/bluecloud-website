@@ -1,13 +1,15 @@
 import { memo } from 'react';
 import { Play, Pause, FastForward } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { usePlayer } from '../context/PlayerContext';
+import { usePlayback, usePlayerActions } from '../context/PlayerContext';
+import ReciterAvatar from './ReciterAvatar';
 import './MiniPlayer.css';
 
 const MiniPlayer = memo(() => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { currentTrack, isPlaying, togglePlay, playNext, openPlayer, openReciterProfile } = usePlayer();
+  const { currentTrack, isPlaying } = usePlayback();
+  const { togglePlay, playNext, openPlayer, openReciterProfile } = usePlayerActions();
 
   if (!currentTrack || location.pathname === '/mushaf') return null;
   const { surah, reciter } = currentTrack;
@@ -24,7 +26,7 @@ const MiniPlayer = memo(() => {
     <div className="mini-player glass-panel" onClick={openPlayer} style={{ cursor: 'pointer' }}>
       <div className="player-info">
         <div className="player-avatar" onClick={handleQariClick} title={`View ${reciter.name} profile`}>
-          <img src={reciter.avatar} alt={reciter.name} />
+          <ReciterAvatar name={reciter.name} src={reciter.avatar} alt={reciter.name} width={40} height={40} />
         </div>
         <div className="player-text">
           <h4 className="track-title">{surah.id}. {surah.nameEnglish} ({surah.nameArabic})</h4>

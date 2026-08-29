@@ -188,7 +188,7 @@
   position: absolute;
   top: 8px;
   left: 0;
-  transition: width 0.05s linear;
+  will-change: width;
 }
 
 .fs-progress-bar.dragging .fs-progress-fill {
@@ -204,8 +204,9 @@
   background: var(--text-primary);
   border-radius: 50%;
   pointer-events: none;
-  transition: left 0.05s linear, transform 0.16s var(--ease-out);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: transform 0.16s var(--ease-out);
+  box-shadow: none;
+  will-change: left, transform;
 }
 
 .fs-progress-bar:hover .fs-progress-thumb,
@@ -373,7 +374,7 @@
   right: 0;
   background: var(--text-primary);
   border-radius: 12px;
-  transition: height 0.07s linear;
+  will-change: height;
 }
 
 .volume-pill-icon-inner {

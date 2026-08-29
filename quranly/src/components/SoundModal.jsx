@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { X, Check, Search } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { usePlayback, usePlayerActions } from '../context/PlayerContext';
 import sounds, { getSoundIcon } from '../data/sounds';
 import './SoundModal.css';
 
@@ -15,7 +15,8 @@ function MinusCircle(props) {
 }
 
 const SoundModal = () => {
-  const { activeSound, setSound, toggleSoundModal } = usePlayer();
+  const { activeSound } = usePlayback();
+  const { setSound, toggleSoundModal } = usePlayerActions();
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredSounds = sounds.filter(s =>

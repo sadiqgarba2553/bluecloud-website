@@ -6,7 +6,7 @@ import {
   ChevronDown, ChevronUp, Layers, ExternalLink,
   Volume2, Sparkles, Award
 } from 'lucide-react';
-import { usePlayer } from '../context/PlayerContext';
+import { useData, usePlayerActions } from '../context/PlayerContext';
 import './Landing.css';
 
 // Asset path resolver helper
@@ -119,7 +119,8 @@ const FAQS = [
 
 const Landing = () => {
   const navigate = useNavigate();
-  const { setTrack, openPlayer, surahs, reciters } = usePlayer();
+  const { surahs, reciters } = useData();
+  const { setTrack, openPlayer } = usePlayerActions();
 
   const [playingSampleId, setPlayingSampleId] = useState(null);
   const [isSamplePlaying, setIsSamplePlaying] = useState(false);
@@ -190,6 +191,9 @@ const Landing = () => {
               src={resolveAsset('logo.png')}
               alt="Quranly Logo"
               className="ql-nav-logo"
+              width={28}
+              height={28}
+              decoding="async"
               onError={(e) => { e.target.style.display = 'none'; }}
             />
             <div className="ql-brand-text">
@@ -300,6 +304,8 @@ const Landing = () => {
                   src={resolveAsset('quranly_hero_banner.jpg')}
                   alt="Quranly Audio Player Showcase"
                   className="ql-hero-banner-img"
+                  loading="lazy"
+                  decoding="async"
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
               </div>
@@ -342,6 +348,10 @@ const Landing = () => {
                         src={resolveAsset(sample.photo)}
                         alt=""
                         className="ql-sample-avatar-img"
+                        width={48}
+                        height={48}
+                        loading="lazy"
+                        decoding="async"
                         onError={() => handleImageError(`sample-${sample.id}`)}
                       />
                     ) : (
@@ -495,6 +505,10 @@ const Landing = () => {
                         src={resolveAsset(reciter.photo)}
                         alt=""
                         className="ql-reciter-avatar-img"
+                        width={60}
+                        height={60}
+                        loading="lazy"
+                        decoding="async"
                         onError={() => handleImageError(`reciter-${idx}`)}
                       />
                     ) : (
@@ -535,6 +549,8 @@ const Landing = () => {
                 src={resolveAsset('quranly_features_preview.jpg')}
                 alt="Quranly AI Tafsir Interface"
                 className="ql-showcase-img"
+                loading="lazy"
+                decoding="async"
                 onError={(e) => { e.target.style.display = 'none'; }}
               />
             </div>
@@ -713,6 +729,10 @@ const Landing = () => {
                   src={resolveAsset('logo.png')}
                   alt="Quranly"
                   className="ql-nav-logo"
+                  width={28}
+                  height={28}
+                  loading="lazy"
+                  decoding="async"
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
                 <div className="ql-brand-text">

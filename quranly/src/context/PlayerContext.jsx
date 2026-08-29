@@ -1,6 +1,14 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useReducer, useEffect, useCallback, useRef, useMemo } from 'react';
 import { PlayerActionsContext } from '../hooks/usePlayerState';
+import {
+  PlaybackContext,
+  DataContext,
+  UserDataContext,
+  UIStateContext,
+  TimeStoreContext,
+} from './contexts';
+import { createTimeStore } from './TimeStore';
 import staticSurahs from '../data/surahs';
 import staticReciters from '../data/reciters';
 import {
@@ -99,12 +107,15 @@ const loadSavedJson = (key, fallback) => {
 const rawSavedTrack = loadSavedJson('quranly_last_track', null);
 const savedLastTrack = (rawSavedTrack?.track?.surah?.id && rawSavedTrack?.track?.reciter?.id) ? rawSavedTrack : null;
 
+// currentTime lives in TimeStore, NOT in React state — this is the key perf win.
+// It prevents 32 components from re-rendering every 500ms during playback.
+const savedInitialTime = savedLastTrack ? savedLastTrack.currentTime : 0;
+
 const initialState = {
   // Playback State
   queue: [],
   queueIndex: 0,
   currentTrack: savedLastTrack ? savedLastTrack.track : { surah: staticSurahs[0], reciter: staticReciters[0], moshafIndex: 0 },
-  currentTime: savedLastTrack ? savedLastTrack.currentTime : 0,
   isPlaying: false,
   duration: 0,
   volume: 1,
@@ -254,14 +265,16 @@ function playerReducer(state, action) {
     }
 
     case 'SEEK':
-      return { ...state, currentTime: action.payload };
+      // currentTime is stored in TimeStore, not state. Seek is handled via audio element + timeStore.update().
+      return state;
     case 'SET_VOLUME':
       return { ...state, volume: action.payload };
     case 'SET_SOUND_VOLUME':
       return { ...state, soundVolume: action.payload };
 
     case 'AUDIO_TIME_UPDATE':
-      return { ...state, currentTime: action.payload };
+      // No-op: currentTime moved to TimeStore to avoid cascading re-renders.
+      return state;
     case 'AUDIO_DURATION':
       return { ...state, duration: action.payload, isBuffering: false };
     case 'AUDIO_BUFFERING':
@@ -757,6 +770,13 @@ export const APP_THEMES = {
 export function PlayerProvider({ children }) {
   const [state, dispatch] = useReducer(playerReducer, initialState);
 
+  // ── TimeStore — currentTime lives here, outside React state ──
+  const timeStoreRef = useRef(null);
+  if (!timeStoreRef.current) {
+    timeStoreRef.current = createTimeStore(savedInitialTime);
+  }
+  const timeStore = timeStoreRef.current;
+
   // ── Persistent audio elements ─────────────────────────────
   const audioRef = useRef(null);
   const bgAudioRef = useRef(null);
@@ -897,15 +917,26 @@ export function PlayerProvider({ children }) {
   }, [state.dailyGoalMinutes]);
 
   // ── Save Last Played Track (Throttled Resume State) ──────
-  const timeBucket = Math.floor((state.currentTime || 0) / 5);
+  // Save every 5 seconds based on an interval, reading timeStore.peek()
+  // instead of depending on state.currentTime.
   useEffect(() => {
+    const saveInterval = setInterval(() => {
+      try {
+        localStorage.setItem('quranly_last_track', JSON.stringify({
+          track: state.currentTrack,
+          currentTime: timeStore.peek()
+        }));
+      } catch { }
+    }, 5000);
+    // Also save immediately on track change
     try {
       localStorage.setItem('quranly_last_track', JSON.stringify({
         track: state.currentTrack,
-        currentTime: state.currentTime
+        currentTime: timeStore.peek()
       }));
     } catch { }
-  }, [state.currentTrack, state.currentTime, timeBucket]);
+    return () => clearInterval(saveInterval);
+  }, [state.currentTrack]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Background sound ──────────────────────────────────────
   useEffect(() => {
@@ -922,12 +953,12 @@ export function PlayerProvider({ children }) {
   useEffect(() => { bgAudio.volume = state.soundVolume; }, [state.soundVolume]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Sleep timer (wall-clock) ──────────────────────────────
+  // Checked inside the timeupdate handler now to avoid depending on state.currentTime.
+  // This ref lets the handler read current sleep state without stale closures.
+  const sleepStateRef = useRef({ sleepMode: state.sleepMode, sleepEndTime: state.sleepEndTime });
   useEffect(() => {
-    if (state.sleepMode === 'timer' && state.sleepEndTime && state.sleepEndTime !== -1 && Date.now() >= state.sleepEndTime) {
-      dispatch({ type: 'PAUSE' });
-      dispatch({ type: 'SET_SLEEP_TIMER', payload: null });
-    }
-  }, [state.currentTime, state.sleepEndTime, state.sleepMode]);
+    sleepStateRef.current = { sleepMode: state.sleepMode, sleepEndTime: state.sleepEndTime };
+  }, [state.sleepMode, state.sleepEndTime]);
 
   // ── Audio event listeners (registered once) ───────────────
   const currentTrackRef = useRef(state.currentTrack);
@@ -943,9 +974,12 @@ export function PlayerProvider({ children }) {
 
     const onTimeUpdate = () => {
       const now = Date.now();
+      // Always update TimeStore (cheap — only notifies subscribers if value changed)
+      timeStore.update(audio.currentTime);
+
       if (now - lastTimeUpdate >= 500) {
         lastTimeUpdate = now;
-        dispatch({ type: 'AUDIO_TIME_UPDATE', payload: audio.currentTime });
+        // No dispatch needed — currentTime is in TimeStore, not React state.
 
         // Update MediaSession position state
         if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession && audio.duration > 0) {
@@ -957,6 +991,13 @@ export function PlayerProvider({ children }) {
             });
           } catch (_) {}
         }
+
+        // Check sleep timer (moved from useEffect that depended on state.currentTime)
+        const sleep = sleepStateRef.current;
+        if (sleep.sleepMode === 'timer' && sleep.sleepEndTime && sleep.sleepEndTime !== -1 && Date.now() >= sleep.sleepEndTime) {
+          dispatch({ type: 'PAUSE' });
+          dispatch({ type: 'SET_SLEEP_TIMER', payload: null });
+        }
       }
 
       // Record real listening duration to reciter analytics every 5s
@@ -966,12 +1007,19 @@ export function PlayerProvider({ children }) {
         if (track?.reciter?.id) {
           recordListeningDuration(track.reciter.id, 5);
         }
+
+        // Accumulate listening time (moved from useEffect on state.currentTime)
+        if (audio.currentTime > 0) {
+          dispatch({ type: 'ADD_LISTENING_TIME', payload: 5 });
+        }
       }
     };
     const onLoadedMetadata = () => {
       audio.playbackRate = state.playbackSpeed;
-      if (state.currentTime > 0 && Math.abs(audio.currentTime - state.currentTime) > 1) {
-        audio.currentTime = state.currentTime;
+      // Resume from saved position using TimeStore
+      const savedTime = timeStore.peek();
+      if (savedTime > 0 && Math.abs(audio.currentTime - savedTime) > 1) {
+        audio.currentTime = savedTime;
       }
       dispatch({ type: 'AUDIO_DURATION', payload: audio.duration });
       dispatch({ type: 'AUDIO_BUFFERING', payload: false });
@@ -1063,30 +1111,20 @@ export function PlayerProvider({ children }) {
     navigator.mediaSession.setActionHandler('previoustrack', () => dispatch({ type: 'PLAY_PREV' }));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Real Listening time tracker (syncs seconds instead of minutes) ──
-  const accRef = useRef(0);
-  useEffect(() => {
-    if (state.isPlaying && state.currentTime > 0) {
-      accRef.current += 1;
-      if (accRef.current >= 5) {
-        dispatch({ type: 'ADD_LISTENING_TIME', payload: 5 });
-        accRef.current = 0;
-      }
-    }
-  }, [Math.floor(state.currentTime)]); // eslint-disable-line react-hooks/exhaustive-deps
-
   // ─── Action creators ──────────────────────────────────────
   const play = useCallback(() => dispatch({ type: 'PLAY' }), []);
   const pause = useCallback(() => dispatch({ type: 'PAUSE' }), []);
   const togglePlay = useCallback(() => dispatch({ type: 'TOGGLE_PLAY' }), []);
   const playNext = useCallback(() => dispatch({ type: 'PLAY_NEXT' }), []);
   const playPrev = useCallback(() => dispatch({ type: 'PLAY_PREV' }), []);
-  const seek = useCallback((time) => { audio.currentTime = time; dispatch({ type: 'SEEK', payload: time }); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const seek = useCallback((time) => { audio.currentTime = time; timeStore.update(time); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const setVolume = useCallback((v) => dispatch({ type: 'SET_VOLUME', payload: v }), []);
   const setSoundVolume = useCallback((v) => dispatch({ type: 'SET_SOUND_VOLUME', payload: v }), []);
   const cycleSpeed = useCallback(() => dispatch({ type: 'CYCLE_SPEED' }), []);
-  const setTrack = useCallback((surah, reciter, queue, queueIndex, moshafIndex) =>
-    dispatch({ type: 'SET_TRACK', payload: { surah, reciter, queue, queueIndex, moshafIndex } }), []);
+  const setTrack = useCallback((surah, reciter, queue, queueIndex, moshafIndex) => {
+    timeStore.update(0); // Reset time on track change
+    dispatch({ type: 'SET_TRACK', payload: { surah, reciter, queue, queueIndex, moshafIndex } });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const setReciter = useCallback((r) => dispatch({ type: 'SET_RECITER', payload: r }), []);
   const setMoshafIndex = useCallback((i) => dispatch({ type: 'SET_MOSHAF_INDEX', payload: i }), []);
   const setQueue = useCallback((queue, queueIndex) => dispatch({ type: 'SET_QUEUE', payload: { queue, queueIndex } }), []);
@@ -1329,31 +1367,136 @@ export function PlayerProvider({ children }) {
     createGroupKhatm, claimKhatmJuz, deleteGroupKhatm,
   ]);
 
-  // Combined value for backward-compat (existing usePlayer() still works)
-  const value = {
-    ...state,
-    ...actions,
+  // ── Memoized Context Slices ─────────────────────────────────
+  // Each slice only creates a new object when its specific fields change,
+  // so consumers of one slice don't re-render when another slice updates.
+
+  const playbackValue = useMemo(() => ({
+    currentTrack: state.currentTrack,
+    isPlaying: state.isPlaying,
+    isBuffering: state.isBuffering,
+    duration: state.duration,
+    audioError: state.audioError,
+    queue: state.queue,
+    queueIndex: state.queueIndex,
+    repeatMode: state.repeatMode,
+    shuffleOn: state.shuffleOn,
+    playbackSpeed: state.playbackSpeed,
+    volume: state.volume,
+    activeSound: state.activeSound,
+    soundVolume: state.soundVolume,
+    sleepMinutes: state.sleepMinutes,
+    sleepEndTime: state.sleepEndTime,
+    sleepMode: state.sleepMode,
+  }), [
+    state.currentTrack, state.isPlaying, state.isBuffering, state.duration,
+    state.audioError, state.queue, state.queueIndex, state.repeatMode,
+    state.shuffleOn, state.playbackSpeed, state.volume,
+    state.activeSound, state.soundVolume,
+    state.sleepMinutes, state.sleepEndTime, state.sleepMode,
+  ]);
+
+  const dataValue = useMemo(() => ({
+    reciters: state.reciters,
+    surahs: state.surahs,
+    riwayat: state.riwayat,
+    moshaf: state.moshaf,
+    radios: state.radios,
+    tafasir: state.tafasir,
+    apiLanguage: state.apiLanguage,
+    apiLoading: state.apiLoading,
+    apiError: state.apiError,
+  }), [
+    state.reciters, state.surahs, state.riwayat, state.moshaf,
+    state.radios, state.tafasir, state.apiLanguage, state.apiLoading, state.apiError,
+  ]);
+
+  const userDataValue = useMemo(() => ({
+    currentUser: state.currentUser,
+    isPro: state.isPro,
+    isCloudLoaded: state.isCloudLoaded,
+    favouriteSurahIds: state.favouriteSurahIds,
+    favouriteReciterIds: state.favouriteReciterIds,
+    bookmarkedVerses: state.bookmarkedVerses,
+    customPlaylists: state.customPlaylists,
+    verseReflections: state.verseReflections,
+    groupKhatms: state.groupKhatms,
+    listeningHistory: state.listeningHistory,
+    dailyGoalMinutes: state.dailyGoalMinutes,
+    recentReciterIds: state.recentReciterIds,
     completedAzkarCount: state.completedAzkarCount,
     dailyAzkarGoal: state.dailyAzkarGoal,
-  };
+    downloadedTracks: state.downloadedTracks,
+    downloadingTrackId: state.downloadingTrackId,
+    downloadProgress: state.downloadProgress,
+    themeMode: state.themeMode,
+    appTheme: state.appTheme,
+    playerNatureTheme: state.playerNatureTheme,
+  }), [
+    state.currentUser, state.isPro, state.isCloudLoaded,
+    state.favouriteSurahIds, state.favouriteReciterIds, state.bookmarkedVerses,
+    state.customPlaylists, state.verseReflections, state.groupKhatms,
+    state.listeningHistory, state.dailyGoalMinutes, state.recentReciterIds,
+    state.completedAzkarCount, state.dailyAzkarGoal,
+    state.downloadedTracks, state.downloadingTrackId, state.downloadProgress,
+    state.themeMode, state.appTheme, state.playerNatureTheme,
+  ]);
+
+  const uiStateValue = useMemo(() => ({
+    isPlayerOpen: state.isPlayerOpen,
+    isSoundModalOpen: state.isSoundModalOpen,
+    isPlaylistDrawerOpen: state.isPlaylistDrawerOpen,
+    isSleepTimerOpen: state.isSleepTimerOpen,
+    isQuranTextOpen: state.isQuranTextOpen,
+    isVolumeOpen: state.isVolumeOpen,
+    activeProfileReciter: state.activeProfileReciter,
+    isSubscriptionModalOpen: state.isSubscriptionModalOpen,
+    isAuthModalOpen: state.isAuthModalOpen,
+  }), [
+    state.isPlayerOpen, state.isSoundModalOpen, state.isPlaylistDrawerOpen,
+    state.isSleepTimerOpen, state.isQuranTextOpen, state.isVolumeOpen,
+    state.activeProfileReciter, state.isSubscriptionModalOpen, state.isAuthModalOpen,
+  ]);
+
+  // Combined value for backward-compat (existing usePlayer() still works)
+  // Components using usePlayer() still re-render on any state change,
+  // but they can be incrementally migrated to specific hooks.
+  const value = useMemo(() => ({
+    ...state,
+    ...actions,
+    // Provide currentTime via timeStore for backward compat
+    currentTime: timeStore.peek(),
+    completedAzkarCount: state.completedAzkarCount,
+    dailyAzkarGoal: state.dailyAzkarGoal,
+  }), [state, actions, timeStore]);
 
   return (
-    <PlayerContext.Provider value={value}>
-      <PlayerActionsContext.Provider value={actions}>
-        {children}
-        <SubscriptionModal
-          isOpen={state.isSubscriptionModalOpen}
-          onClose={closeSubscriptionModal}
-          isPro={state.isPro}
-          onSubscribeSuccess={subscribePro}
-          onCancelPro={cancelPro}
-        />
-        <AuthModal
-          isOpen={state.isAuthModalOpen}
-          onClose={closeAuthModal}
-        />
-      </PlayerActionsContext.Provider>
-    </PlayerContext.Provider>
+    <PlaybackContext.Provider value={playbackValue}>
+      <DataContext.Provider value={dataValue}>
+        <UserDataContext.Provider value={userDataValue}>
+          <UIStateContext.Provider value={uiStateValue}>
+            <TimeStoreContext.Provider value={timeStore}>
+              <PlayerContext.Provider value={value}>
+                <PlayerActionsContext.Provider value={actions}>
+                  {children}
+                  <SubscriptionModal
+                    isOpen={state.isSubscriptionModalOpen}
+                    onClose={closeSubscriptionModal}
+                    isPro={state.isPro}
+                    onSubscribeSuccess={subscribePro}
+                    onCancelPro={cancelPro}
+                  />
+                  <AuthModal
+                    isOpen={state.isAuthModalOpen}
+                    onClose={closeAuthModal}
+                  />
+                </PlayerActionsContext.Provider>
+              </PlayerContext.Provider>
+            </TimeStoreContext.Provider>
+          </UIStateContext.Provider>
+        </UserDataContext.Provider>
+      </DataContext.Provider>
+    </PlaybackContext.Provider>
   );
 }
 
@@ -1363,4 +1506,5 @@ export function usePlayer() {
   return ctx;
 }
 
+export { usePlayback, useData, useUserData, useUIState, useCurrentTime, usePlayerActions } from '../hooks/usePlayerHooks';
 

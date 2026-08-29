@@ -50,8 +50,8 @@
   align-items: center;
   justify-content: space-between;
   text-align: center;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-  transition: all 0.3s ease;
+  box-shadow: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
   overflow: hidden;
   max-height: 200px;
   max-width: 100%;
@@ -116,7 +116,7 @@
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.16s var(--ease-out), color 0.16s var(--ease-out), border-color 0.16s var(--ease-out);
 }
 
 .option-pill.active {
