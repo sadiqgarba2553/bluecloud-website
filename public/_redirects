@@ -12,10 +12,14 @@
 /flux-website/*              /flux-website/:splat         200!
 /prism-studio/*              /prism-studio/:splat         200!
 /tool-deck/*                 /tool-deck/:splat            200!
-/quranly/assets/*            /quranly/assets/:splat       200!
-/quranly/reciters/*          /quranly/reciters/:splat     200!
-/quranly/nature/*            /quranly/nature/:splat       200!
-/quranly/icons/*             /quranly/icons/:splat        200!
-/quranly/*                   /quranly/index.html          200
-/*                           /index.html                  200
+/quranly/manifest.json          /quranly/manifest.json       200!
+/quranly/sw.js                  /quranly/sw.js               200!
+/quranly/assets/*               /quranly/assets/:splat       200!
+/quranly/reciters/*             /quranly/reciters/:splat     200!
+/quranly/nature/*               /quranly/nature/:splat       200!
+/quranly/icons/*                /quranly/icons/:splat        200!
+/quranly                        /quranly/index.html          200
+/quranly/                       /quranly/index.html          200
+/quranly/*                      /quranly/index.html          200
+/*                              /index.html                  200
 

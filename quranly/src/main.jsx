@@ -15,7 +15,7 @@ createRoot(document.getElementById('root')).render(
 // Register Service Worker for PWA & iOS Safari installability
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch((err) => {
+    navigator.serviceWorker.register('/quranly/sw.js', { scope: '/quranly/' }).catch((err) => {
       console.log('SW registration note:', err);
     });
   });

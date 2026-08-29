@@ -4,12 +4,12 @@ const API_CACHE = 'quranly-api-v1';
 const IMAGE_CACHE = 'quranly-images-v1';
 
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/logo.png',
-  '/apple-touch-icon.png',
-  '/manifest.json',
-  '/favicon.svg'
+  '/quranly/',
+  '/quranly/index.html',
+  '/quranly/logo.png',
+  '/quranly/apple-touch-icon.png',
+  '/quranly/manifest.json',
+  '/quranly/favicon.svg'
 ];
 
 self.addEventListener('install', (event) => {
