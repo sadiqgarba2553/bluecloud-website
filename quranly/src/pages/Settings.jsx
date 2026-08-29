@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Diamond, Tag, Handshake, Gift, Lightbulb, ChevronRight, Globe, Radio, BookOpen, X, Send, Sun, Moon, Monitor, CheckCircle, Check, User, CloudCheck,
-  Sparkles, Waves, CloudRain, Palette, Lock
+  Sparkles, Waves, CloudRain, Palette, Lock, Zap
 } from 'lucide-react';
 import { useData, useUserData, usePlayerActions } from '../context/PlayerContext';
 import { submitAppFeedback, auth } from '../services/firebase';
@@ -319,6 +319,14 @@ const Settings = () => {
           Player Nature Background
         </p>
         <div className="settings-group glass-panel theme-selector-group nature-theme-group">
+          <button
+            className={`theme-option-btn ${playerNatureTheme === 'acid' ? 'active' : ''}`}
+            onClick={() => setPlayerNatureTheme && setPlayerNatureTheme('acid')}
+          >
+            <Zap size={18} />
+            <span>Acid Squares</span>
+          </button>
+
           <button
             className={`theme-option-btn ${playerNatureTheme === 'stars' ? 'active' : ''}`}
             onClick={() => setPlayerNatureTheme && setPlayerNatureTheme('stars')}

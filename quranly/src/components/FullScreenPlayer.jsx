@@ -16,6 +16,7 @@ import PlaylistDrawer from './PlaylistDrawer';
 import SleepTimerModal from './SleepTimerModal';
 import QuranTextModal from './QuranTextModal';
 import ReciterAvatar from './ReciterAvatar';
+import AcidSquares from './AcidSquares';
 import './FullScreenPlayer.css';
 
 function formatTime(totalSeconds) {
@@ -365,25 +366,56 @@ const FullScreenPlayer = () => {
 
   return (
     <div className="full-screen-player open">
-      {/* Background Video / Canvas & Gradient Overlay */}
+      {/* Background Video / Canvas / AcidSquares & Gradient Overlay */}
       <div className="fs-background-gradient">
-        <img
-          src={bgImage}
-          alt="Nature Background"
-          decoding="async"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            filter: 'brightness(0.55)',
-            transition: 'opacity 0.6s ease',
-            zIndex: 0
-          }}
-        />
-        {canvasMode !== null && <NatureCanvas mode={canvasMode} />}
+        {playerNatureTheme === 'acid' ? (
+          <div style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}>
+            <AcidSquares
+              color1="#3300ff"
+              color2="#6c26af"
+              color3="#FFFFFF"
+              detail="medium"
+              speed={0.7}
+              waveDepth={1}
+              zoom={1.3}
+              density={10.0}
+              glow={1.0}
+              exposure={2700}
+              spread={0.3}
+              stepSize={0.002}
+              colorShift={0}
+              contrast={1}
+              brightness={1.0}
+              opacity={1.0}
+              mouseInteraction={true}
+              mouseStrength={0.1}
+              mouseRadius={0.35}
+              blur={0}
+              grain={true}
+              grainIntensity={0.05}
+            />
+          </div>
+        ) : (
+          <>
+            <img
+              src={bgImage}
+              alt="Nature Background"
+              decoding="async"
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                filter: 'brightness(0.4)',
+                transition: 'opacity 0.6s ease',
+                zIndex: 0
+              }}
+            />
+            {canvasMode !== null && <NatureCanvas mode={canvasMode} />}
+          </>
+        )}
         <div className="fs-video-dark-overlay" />
       </div>
 
@@ -403,21 +435,6 @@ const FullScreenPlayer = () => {
           </div>
 
           <div className="fs-header-spacer" />
-        </div>
-
-        {/* Center Hero Artwork Card */}
-        <div className="fs-hero-section">
-          <div className="fs-hero-card pressable" onClick={toggleQuranText} title="Tap to view Quran text">
-            <div className="fs-hero-art-wrap">
-              <ReciterAvatar name={reciter.name} src={reciter.avatar} alt={reciter.name} className="fs-hero-img" />
-              <div className="fs-hero-overlay">
-                <div className="fs-hero-surah-badge">
-                  <span className="fs-hero-surah-num">Surah {surah.id}</span>
-                  <span className="fs-hero-surah-ar">{surah.nameArabic}</span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div className="fs-main-controls">

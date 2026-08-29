@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import {
   X, Mail, Lock, User, LogOut, Loader, AlertCircle, CloudCheck,
-  Crown, ArrowRight, Edit2, Check, Sparkles
+  Crown, ArrowRight, Edit2, Check, Sparkles, KeyRound
 } from 'lucide-react';
 import {
   signUpWithEmail,
   signInWithEmail,
   signInWithGoogle,
+  resetPassword,
   logOutUser,
   updateUserProfileName,
   saveUserDataToFirestore
@@ -46,12 +47,13 @@ const AuthModal = ({ isOpen, onClose }) => {
   } = useUserData();
   const { openSubscriptionModal } = usePlayerActions();
 
-  const [mode, setMode] = useState('signin');
+  const [mode, setMode] = useState('signin'); // 'signin' | 'signup' | 'forgot'
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(null);
 
   // Inline name editing
   const [isEditingName, setIsEditingName] = useState(false);
@@ -63,10 +65,13 @@ const AuthModal = ({ isOpen, onClose }) => {
 
   const handleGoogleLogin = async () => {
     setError(null);
+    setSuccessMsg(null);
     setLoading(true);
     try {
-      await signInWithGoogle();
-      onClose();
+      const user = await signInWithGoogle();
+      if (user) {
+        onClose();
+      }
     } catch (err) {
       console.error('Google Sign In Error:', err);
       setError(err.message || 'Could not sign in with Google');
@@ -78,9 +83,29 @@ const AuthModal = ({ isOpen, onClose }) => {
   const handleEmailAuth = async (e) => {
     e.preventDefault();
     setError(null);
+    setSuccessMsg(null);
 
-    if (!email || !password) {
-      setError('Please fill in all fields');
+    if (!email) {
+      setError('Please enter your email address');
+      return;
+    }
+
+    if (mode === 'forgot') {
+      setLoading(true);
+      try {
+        await resetPassword(email);
+        setSuccessMsg('Password reset link sent! Check your inbox.');
+      } catch (err) {
+        console.error('Reset Password Error:', err);
+        setError(err.message || 'Failed to send password reset email');
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    if (!password) {
+      setError('Please enter your password');
       return;
     }
 
@@ -321,29 +346,35 @@ const AuthModal = ({ isOpen, onClose }) => {
             <div className="auth-tabs">
               <button
                 className={`auth-tab-btn ${mode === 'signin' ? 'active' : ''}`}
-                onClick={() => { setMode('signin'); setError(null); }}
+                onClick={() => { setMode('signin'); setError(null); setSuccessMsg(null); }}
               >
                 Sign In
               </button>
               <button
                 className={`auth-tab-btn ${mode === 'signup' ? 'active' : ''}`}
-                onClick={() => { setMode('signup'); setError(null); }}
+                onClick={() => { setMode('signup'); setError(null); setSuccessMsg(null); }}
               >
                 Sign Up
               </button>
             </div>
 
-            {/* Error Banner */}
+            {/* Error / Success Banners */}
             {error && (
               <div className="auth-error-banner">
                 <AlertCircle size={16} />
                 <span>{error}</span>
               </div>
             )}
+            {successMsg && (
+              <div className="auth-error-banner" style={{ background: 'rgba(34, 197, 94, 0.15)', borderColor: 'rgba(34, 197, 94, 0.3)', color: '#4ade80' }}>
+                <Check size={16} />
+                <span>{successMsg}</span>
+              </div>
+            )}
 
             {/* Google Login Button */}
             <button className="google-auth-btn" onClick={handleGoogleLogin} disabled={loading}>
-              <GoogleLogo size={20} />
+              <GoogleIcon />
               <span>Continue with Google</span>
             </button>
 
@@ -383,30 +414,54 @@ const AuthModal = ({ isOpen, onClose }) => {
                 </div>
               </div>
 
-              <div className="input-group">
-                <label>Password</label>
-                <div className="input-field-wrap">
-                  <Lock size={16} color="#94a3b8" />
-                  <input
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
+              {mode !== 'forgot' && (
+                <div className="input-group">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <label>Password</label>
+                    {mode === 'signin' && (
+                      <span
+                        onClick={() => { setMode('forgot'); setError(null); setSuccessMsg(null); }}
+                        style={{ fontSize: '11px', color: 'var(--text-secondary)', cursor: 'pointer', textDecoration: 'underline' }}
+                      >
+                        Forgot password?
+                      </span>
+                    )}
+                  </div>
+                  <div className="input-field-wrap">
+                    <Lock size={16} color="#94a3b8" />
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
 
               <button className="auth-submit-btn" type="submit" disabled={loading}>
                 {loading ? (
                   <Loader size={18} className="spin" />
                 ) : (
                   <>
-                    <span>{mode === 'signin' ? 'Sign In' : 'Create Account'}</span>
+                    <span>
+                      {mode === 'signin' ? 'Sign In' : mode === 'signup' ? 'Create Account' : 'Send Reset Link'}
+                    </span>
                     <ArrowRight size={16} />
                   </>
                 )}
               </button>
+
+              {mode === 'forgot' && (
+                <button
+                  type="button"
+                  onClick={() => { setMode('signin'); setError(null); }}
+                  style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontSize: '13px', cursor: 'pointer', marginTop: '10px', textAlign: 'center' }}
+                >
+                  ← Back to Sign In
+                </button>
+              )}
             </form>
           </>
         )}

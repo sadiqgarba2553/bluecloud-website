@@ -4,6 +4,9 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
+  sendPasswordResetEmail,
   GoogleAuthProvider,
   signOut,
   onAuthStateChanged,
@@ -70,11 +73,30 @@ export async function signInWithEmail(email, password) {
 }
 
 /**
- * Sign in with Google Popup
+ * Sign in with Google (with mobile redirect fallback)
  */
 export async function signInWithGoogle() {
-  const userCredential = await signInWithPopup(auth, googleProvider);
-  return userCredential.user;
+  try {
+    const userCredential = await signInWithPopup(auth, googleProvider);
+    return userCredential.user;
+  } catch (err) {
+    if (err.code === 'auth/popup-blocked' || err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
+      try {
+        await signInWithRedirect(auth, googleProvider);
+        return null;
+      } catch (redirectErr) {
+        throw redirectErr;
+      }
+    }
+    throw err;
+  }
+}
+
+/**
+ * Send password reset email
+ */
+export async function resetPassword(email) {
+  return sendPasswordResetEmail(auth, email);
 }
 
 /**
