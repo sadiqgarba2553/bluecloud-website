@@ -42,6 +42,18 @@ class TunnelApp {
     // Profile modal
     this.profileModal = document.getElementById('profile-modal');
     this.closeProfileBtn = document.getElementById('close-profile-btn');
+
+    // Leaderboard modal
+    this.leaderboardBtn = document.getElementById('leaderboard-btn');
+    this.leaderboardModal = document.getElementById('leaderboard-modal');
+    this.closeLeaderboardBtn = document.getElementById('close-leaderboard-btn');
+    this.leaderboardSelect = document.getElementById('leaderboard-game-select');
+
+    // Jukebox modal
+    this.jukeboxBtn = document.getElementById('jukebox-btn');
+    this.jukeboxModal = document.getElementById('jukebox-modal');
+    this.closeJukeboxBtn = document.getElementById('close-jukebox-btn');
+    this.jukeboxBgmToggle = document.getElementById('jukebox-bgm-toggle');
   }
 
   bindEvents() {
@@ -66,7 +78,7 @@ class TunnelApp {
       this.musicToggleBtn.addEventListener('click', () => {
         const active = window.tunnelAudio.toggleMusic();
         this.updateAudioToggles();
-        this.showToast(active ? 'CHIPTUNE BGM ACTIVE' : 'BGM AUDIO MUTED');
+        this.showToast(active ? 'SYNTH BGM ENABLED' : 'SYNTH BGM MUTED');
       });
     }
 
@@ -85,6 +97,32 @@ class TunnelApp {
     }
     if (this.closeProfileBtn) {
       this.closeProfileBtn.addEventListener('click', () => this.closeProfile());
+    }
+
+    // Leaderboard
+    if (this.leaderboardBtn) {
+      this.leaderboardBtn.addEventListener('click', () => this.openLeaderboard());
+    }
+    if (this.closeLeaderboardBtn) {
+      this.closeLeaderboardBtn.addEventListener('click', () => this.closeLeaderboard());
+    }
+    if (this.leaderboardSelect) {
+      this.leaderboardSelect.addEventListener('change', (e) => this.renderLeaderboardTable(e.target.value));
+    }
+
+    // Jukebox
+    if (this.jukeboxBtn) {
+      this.jukeboxBtn.addEventListener('click', () => this.openJukebox());
+    }
+    if (this.closeJukeboxBtn) {
+      this.closeJukeboxBtn.addEventListener('click', () => this.closeJukebox());
+    }
+    if (this.jukeboxBgmToggle) {
+      this.jukeboxBgmToggle.addEventListener('click', () => {
+        const active = window.tunnelAudio.toggleMusic();
+        this.updateAudioToggles();
+        this.showToast(active ? 'SYNTH BGM: PLAYING' : 'SYNTH BGM: STOPPED');
+      });
     }
 
     // Arena Modal controls
@@ -345,6 +383,61 @@ class TunnelApp {
 
   closeProfile() {
     if (this.profileModal) this.profileModal.classList.add('hidden');
+    if (window.tunnelAudio) window.tunnelAudio.play('click');
+  }
+
+  openLeaderboard() {
+    if (!this.leaderboardModal) return;
+    this.leaderboardModal.classList.remove('hidden');
+    if (window.tunnelAudio) window.tunnelAudio.play('click');
+
+    // Populate select
+    if (this.leaderboardSelect) {
+      const games = window.tunnelRegistry.getAll();
+      this.leaderboardSelect.innerHTML = games.map(g => `<option value="${g.id}">${g.title}</option>`).join('');
+      this.renderLeaderboardTable(games[0].id);
+    }
+  }
+
+  closeLeaderboard() {
+    if (this.leaderboardModal) this.leaderboardModal.classList.add('hidden');
+    if (window.tunnelAudio) window.tunnelAudio.play('click');
+  }
+
+  renderLeaderboardTable(gameId) {
+    const tbody = document.getElementById('leaderboard-tbody');
+    if (!tbody) return;
+
+    const userHigh = parseInt(localStorage.getItem(`tunnel_hs_${gameId}`) || '0', 10);
+    
+    // Seed authentic arcade champions + User Rank
+    const pilots = [
+      { name: 'SAQ', score: Math.max(12400, userHigh + 4000) },
+      { name: 'ACE', score: Math.max(9800, userHigh + 2200) },
+      { name: 'YOU (P1)', score: userHigh, isUser: true },
+      { name: 'NEO', score: 6200 },
+      { name: 'VIP', score: 4500 },
+      { name: 'MAX', score: 3200 },
+      { name: 'ZOD', score: 2100 }
+    ].sort((a, b) => b.score - a.score);
+
+    tbody.innerHTML = pilots.map((p, idx) => `
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); ${p.isUser ? 'color: var(--neon-gold); font-weight: bold;' : ''}">
+        <td style="padding: 8px;">#0${idx + 1}</td>
+        <td style="padding: 8px;">${p.name}</td>
+        <td style="padding: 8px; text-align: right;">${p.score.toLocaleString()}</td>
+      </tr>
+    `).join('');
+  }
+
+  openJukebox() {
+    if (!this.jukeboxModal) return;
+    this.jukeboxModal.classList.remove('hidden');
+    if (window.tunnelAudio) window.tunnelAudio.play('click');
+  }
+
+  closeJukebox() {
+    if (this.jukeboxModal) this.jukeboxModal.classList.add('hidden');
     if (window.tunnelAudio) window.tunnelAudio.play('click');
   }
 

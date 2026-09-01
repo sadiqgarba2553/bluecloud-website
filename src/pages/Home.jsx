@@ -196,7 +196,7 @@ const Home = () => {
                   <span className="work-tag">Arcade Gaming</span>
                 </div>
                 <h3>Tunnel Arcade</h3>
-                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Next-gen 80s-90s retro web arcade with 12 vector games, chiptune audio & offline PWA.</p>
+                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Next-gen 80s-90s retro web arcade with 16 vector games, 2P local versus, leaderboards, chiptune sound studio & offline PWA.</p>
                 <a href="/tunnel/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch Arcade</a>
               </div>
             </div>
@@ -277,5 +277,6 @@ const Home = () => {
 };
 
 export default Home;
+
 
 

@@ -203,6 +203,74 @@ const TUNNEL_GAMES = [
     canvasWidth: 800,
     canvasHeight: 600,
     gameClass: 'AsteroidsGame'
+  },
+  {
+    id: 'galaga',
+    title: 'Cyber Galaga',
+    category: 'Action',
+    badge: 'SWARM CAB',
+    accentColor: '#00f0ff',
+    iconType: 'galaga',
+    description: 'Master the classic space dogfight against swooping alien wings, tractor beams, and dual-fighter firepower.',
+    tags: ['Galaga', 'Space', 'Shooter', 'Retro', 'Aliens'],
+    controls: {
+      desktop: 'Left / Right Arrow to steer, Space to fire twin lasers.',
+      mobile: 'Use Left / Right D-pad, Button A to fire.'
+    },
+    canvasWidth: 800,
+    canvasHeight: 600,
+    gameClass: 'GalagaGame'
+  },
+  {
+    id: 'frogger',
+    title: 'Cyber Crossing',
+    category: 'Retro',
+    badge: 'GRID HOPPER',
+    accentColor: '#00ff66',
+    iconType: 'frogger',
+    description: 'Cross hyper-speed highway lanes and navigate floating data logs to land safely in target bays.',
+    tags: ['Frogger', 'Crossing', 'Grid', 'Retro', 'Timing'],
+    controls: {
+      desktop: 'Arrow keys or W/A/S/D to hop grid sectors.',
+      mobile: 'Use directional D-Pad or swipe gestures.'
+    },
+    canvasWidth: 800,
+    canvasHeight: 600,
+    gameClass: 'FroggerGame'
+  },
+  {
+    id: 'lunar-lander',
+    title: 'Lunar Lander',
+    category: 'Action',
+    badge: 'GRAVITY CAB',
+    accentColor: '#ffb700',
+    iconType: 'lander',
+    description: 'Manage thrusters and fuel physics to perform pinpoint landings across rocky vector lunar craters.',
+    tags: ['Lander', 'Lunar', 'Physics', 'Vector', 'Gravity'],
+    controls: {
+      desktop: 'Left / Right to rotate, Up Arrow / Space to fire thruster.',
+      mobile: 'Use D-pad to pitch lander, Button A to fire thruster.'
+    },
+    canvasWidth: 800,
+    canvasHeight: 600,
+    gameClass: 'LunarLanderGame'
+  },
+  {
+    id: 'pinball',
+    title: 'Neon Pinball',
+    category: 'Classic',
+    badge: 'ARCADE TABLE',
+    accentColor: '#ff007f',
+    iconType: 'pinball',
+    description: 'Electric kinetic pinball action with reactive bumpers, dual flippers, drop targets, and score cascades.',
+    tags: ['Pinball', 'Arcade', 'Table', 'Physics', 'Neon'],
+    controls: {
+      desktop: 'A / Left Arrow for Left Flipper, D / Right Arrow for Right Flipper, Down Arrow / Space for Plunger.',
+      mobile: 'Left D-pad for Left Flipper, Button A for Right Flipper, Button B for Plunger.'
+    },
+    canvasWidth: 800,
+    canvasHeight: 600,
+    gameClass: 'PinballGame'
   }
 ];
 
@@ -287,6 +355,14 @@ class GameRegistry {
         return `<svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="${color}" stroke-width="2"><rect x="8" y="8" width="32" height="32" rx="3" stroke="${color}" fill="#0f172a"/><circle cx="24" cy="24" r="6" fill="#ff0055"/><line x1="24" y1="12" x2="24" y2="36" stroke="#ff0055" stroke-width="2"/><line x1="12" y1="24" x2="36" y2="24" stroke="#ff0055" stroke-width="2"/><line x1="16" y1="16" x2="32" y2="32" stroke="#ff0055" stroke-width="2"/><line x1="16" y1="32" x2="32" y2="16" stroke="#ff0055" stroke-width="2"/><circle cx="22" cy="22" r="1.5" fill="#ffffff"/></svg>`;
       case 'asteroids':
         return `<svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="${color}" stroke-width="2"><polygon points="24,10 32,34 24,29 16,34" fill="#0f172a" stroke="#ffffff"/><polygon points="8,12 14,8 18,12 16,18 10,18" stroke="${color}"/><polygon points="34,26 42,22 44,30 38,36 32,32" stroke="${color}"/><circle cx="24" cy="6" r="1.5" fill="#ff0055"/></svg>`;
+      case 'galaga':
+        return `<svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="${color}" stroke-width="2"><polygon points="24,6 36,24 30,38 24,32 18,38 12,24" fill="${color}" fill-opacity="0.3"/><polygon points="24,14 30,26 18,26" stroke="#ff0055"/><circle cx="24" cy="20" r="2" fill="#ffffff"/><line x1="12" y1="24" x2="4" y2="20" stroke="${color}"/><line x1="36" y1="24" x2="44" y2="20" stroke="${color}"/></svg>`;
+      case 'frogger':
+        return `<svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="${color}" stroke-width="2"><rect x="14" y="14" width="20" height="20" rx="4" fill="${color}" fill-opacity="0.3"/><rect x="8" y="10" width="8" height="8" rx="2" fill="${color}"/><rect x="32" y="10" width="8" height="8" rx="2" fill="${color}"/><rect x="8" y="30" width="8" height="8" rx="2" fill="${color}"/><rect x="32" y="30" width="8" height="8" rx="2" fill="${color}"/><circle cx="18" cy="18" r="2" fill="#05060c"/><circle cx="30" cy="18" r="2" fill="#05060c"/></svg>`;
+      case 'lander':
+        return `<svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="${color}" stroke-width="2"><rect x="16" y="12" width="16" height="14" rx="2" stroke="#ffffff" fill="#0f172a"/><line x1="16" y1="26" x2="10" y2="36" stroke="${color}" stroke-width="2"/><line x1="32" y1="26" x2="38" y2="36" stroke="${color}" stroke-width="2"/><line x1="8" y1="36" x2="12" y2="36" stroke="${color}" stroke-width="2"/><line x1="36" y1="36" x2="40" y2="36" stroke="${color}" stroke-width="2"/><polygon points="22,26 26,26 24,34" fill="#ff0055"/></svg>`;
+      case 'pinball':
+        return `<svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="${color}" stroke-width="2"><path d="M10,40 L10,18 A14,14 0 0,1 38,18 L38,40" stroke="${color}" stroke-width="2"/><circle cx="24" cy="20" r="5" fill="#ff0055"/><line x1="14" y1="38" x2="22" y2="34" stroke="#00f0ff" stroke-width="3"/><line x1="34" y1="38" x2="26" y2="34" stroke="#ff007f" stroke-width="3"/><circle cx="24" cy="28" r="3" fill="#ffffff"/></svg>`;
       default:
         return `<svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="${color}" stroke-width="2"><rect x="8" y="8" width="32" height="32" rx="4"/></svg>`;
     }

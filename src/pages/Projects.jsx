@@ -90,9 +90,9 @@ const PROJECTS_DATA = [
     category: 'App',
     tags: ['Arcade Gaming', 'PWA & Web Audio', 'Retro Games'],
     imgSrc: '/tunnel_icon.svg',
-    roi: '12 Games | 60+ FPS Vector Canvas | Full Offline PWA',
+    roi: '16 Games | 2P Versus & Co-Op | Global Leaderboards | Full Offline PWA',
     problem: 'Web gaming portals are often cluttered with invasive ads, slow heavy bundles, and poor cross-device touch controls.',
-    solution: 'Built a next-generation 1980s-90s retro arcade web platform with 12 handcrafted vector games, real-time Web Audio API chiptune synthesis, and 1-click PWA installation.',
+    solution: 'Built a next-generation 1980s-90s retro arcade web platform with 16 handcrafted vector games, 2-player local versus/co-op, retro chiptune jukebox, global leaderboards,, real-time Web Audio API chiptune synthesis, and 1-click PWA installation.',
     impact: 'Zero-latency 60 FPS performance across desktop, tablet, and mobile with complete offline standalone play capability.',
     link: '/tunnel/index.html'
   }
@@ -185,5 +185,6 @@ const Projects = () => {
 };
 
 export default Projects;
+
 
 

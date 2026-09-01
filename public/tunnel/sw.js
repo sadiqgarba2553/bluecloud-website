@@ -1,5 +1,5 @@
-// Tunnel Arcade Service Worker - Offline Caching (12-Game Suite)
-const CACHE_NAME = 'tunnel-arcade-v2';
+// Tunnel Arcade Service Worker - Offline Caching (16-Game Master Suite)
+const CACHE_NAME = 'tunnel-arcade-v3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -25,6 +25,10 @@ const ASSETS_TO_CACHE = [
   './js/games/game-2048.js',
   './js/games/minesweeper.js',
   './js/games/asteroids.js',
+  './js/games/galaga.js',
+  './js/games/frogger.js',
+  './js/games/lunar-lander.js',
+  './js/games/pinball.js',
   './icons/icon-192.svg',
   './icons/icon-512.svg'
 ];
@@ -32,7 +36,7 @@ const ASSETS_TO_CACHE = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[ServiceWorker] Pre-caching all 12 arcade game modules');
+      console.log('[ServiceWorker] Pre-caching all 16 arcade game modules');
       return cache.addAll(ASSETS_TO_CACHE).catch((err) => {
         console.warn('[ServiceWorker] Pre-cache non-fatal warning:', err);
       });

@@ -9,6 +9,7 @@ class PongGame {
     this.playerY = (600 - this.paddleHeight) / 2;
     this.aiY = (600 - this.paddleHeight) / 2;
     this.aiSpeed = 380;
+    this.is2Player = false;
 
     this.ball = {
       x: 400,
@@ -35,23 +36,38 @@ class PongGame {
   }
 
   update(dt, input) {
-    // Player Paddle Movement (Up / Down)
-    if (input.isDown('up')) {
+    // Player 1 Paddle Movement (WASD or W/S or Virtual Up/Down)
+    if (input.isP1Down('up')) {
       this.playerY -= this.playerSpeed * dt;
     }
-    if (input.isDown('down')) {
+    if (input.isP1Down('down')) {
       this.playerY += this.playerSpeed * dt;
     }
     this.playerY = Math.max(10, Math.min(600 - this.paddleHeight - 10, this.playerY));
 
-    // AI Paddle Tracking
-    const aiCenter = this.aiY + this.paddleHeight / 2;
-    const targetY = this.ball.y;
-    if (Math.abs(aiCenter - targetY) > 10) {
-      if (aiCenter < targetY) {
-        this.aiY += this.aiSpeed * dt;
-      } else {
-        this.aiY -= this.aiSpeed * dt;
+    // Check if Player 2 is actively controlling (Arrow Keys or P2 Gamepad)
+    if (input.isP2Down('up') || input.isP2Down('down')) {
+      this.is2Player = true;
+    }
+
+    if (this.is2Player) {
+      // Player 2 Manual Control
+      if (input.isP2Down('up')) {
+        this.aiY -= this.playerSpeed * dt;
+      }
+      if (input.isP2Down('down')) {
+        this.aiY += this.playerSpeed * dt;
+      }
+    } else {
+      // AI Paddle Tracking
+      const aiCenter = this.aiY + this.paddleHeight / 2;
+      const targetY = this.ball.y;
+      if (Math.abs(aiCenter - targetY) > 10) {
+        if (aiCenter < targetY) {
+          this.aiY += this.aiSpeed * dt;
+        } else {
+          this.aiY -= this.aiSpeed * dt;
+        }
       }
     }
     this.aiY = Math.max(10, Math.min(600 - this.paddleHeight - 10, this.aiY));

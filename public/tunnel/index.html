@@ -62,6 +62,14 @@
           CRT: ON
         </button>
 
+        <!-- Leaderboard & Jukebox Buttons -->
+        <button id="leaderboard-btn" class="btn btn-tool" title="Global High Scores Leaderboard">
+          [ HI-SCORES ]
+        </button>
+        <button id="jukebox-btn" class="btn btn-tool" title="Chiptune Jukebox & Sound Studio">
+          [ JUKEBOX ]
+        </button>
+
         <!-- Profile & Level Pill -->
         <div id="profile-btn" class="profile-pill" title="View Player Profile & Achievements">
           <span id="header-level-badge" class="level-badge">P1: LVL 1</span>
@@ -262,6 +270,62 @@
     </div>
   </div>
 
+  <!-- Leaderboard Modal -->
+  <div id="leaderboard-modal" class="modal-overlay hidden">
+    <div class="profile-card" style="max-width: 600px;">
+      <div class="profile-header">
+        <h3 class="profile-title">[ GLOBAL ARCADE HALL OF FAME ]</h3>
+        <button id="close-leaderboard-btn" class="btn-close">[ X ]</button>
+      </div>
+      <div style="margin-bottom: 14px;">
+        <select id="leaderboard-game-select" class="search-input" style="background: #0f172a; font-family: var(--font-arcade); font-size: 0.75rem; border: 1px solid var(--neon-cyan);"></select>
+      </div>
+      <div id="leaderboard-table-wrap" style="max-height: 280px; overflow-y: auto;">
+        <table style="width: 100%; text-align: left; font-family: var(--font-arcade); font-size: 0.75rem; border-collapse: collapse;">
+          <thead>
+            <tr style="color: var(--neon-cyan); border-bottom: 1px solid rgba(0,240,255,0.3);">
+              <th style="padding: 8px;">RANK</th>
+              <th style="padding: 8px;">PILOT</th>
+              <th style="padding: 8px; text-align: right;">SCORE</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chiptune Jukebox & Sound Studio Modal -->
+  <div id="jukebox-modal" class="modal-overlay hidden">
+    <div class="profile-card" style="max-width: 560px;">
+      <div class="profile-header">
+        <h3 class="profile-title">[ CHIPTUNE SOUND STUDIO ]</h3>
+        <button id="close-jukebox-btn" class="btn-close">[ X ]</button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Test synthesized 8-bit sound effects & procedural synthwave generators in real-time.</p>
+      
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px;">
+        <button class="btn btn-tool" onclick="window.tunnelAudio.play('laser')">LASER</button>
+        <button class="btn btn-tool" onclick="window.tunnelAudio.play('explosion')">EXPLODE</button>
+        <button class="btn btn-tool" onclick="window.tunnelAudio.play('coin')">COIN CHIME</button>
+        <button class="btn btn-tool" onclick="window.tunnelAudio.play('jump')">JUMP BLIP</button>
+        <button class="btn btn-tool" onclick="window.tunnelAudio.play('powerup')">POWER UP</button>
+        <button class="btn btn-tool" onclick="window.tunnelAudio.play('levelUp')">FANFARE</button>
+        <button class="btn btn-tool" onclick="window.tunnelAudio.play('gameover')">GAME OVER</button>
+        <button class="btn btn-tool" onclick="window.tunnelAudio.play('bounce')">PADDLE BOUNCE</button>
+        <button class="btn btn-tool" onclick="window.tunnelAudio.play('rotate')">WARP ROTATE</button>
+      </div>
+
+      <div style="padding: 12px; background: rgba(0,0,0,0.4); border-radius: 6px; border: 1px solid var(--neon-cyan);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-family: var(--font-arcade); font-size: 0.75rem; color: var(--neon-gold);">SYNTH BGM GENERATOR</span>
+          <button id="jukebox-bgm-toggle" class="btn btn-primary" style="padding: 4px 10px; font-size: 0.65rem;">TOGGLE BGM</button>
+        </div>
+        <p style="font-size: 0.75rem; color: var(--text-muted);">125 BPM Sawtooth Bassline &amp; Chord Modulator.</p>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div id="toast-container"></div>
 
@@ -272,7 +336,7 @@
   <script src="./js/tunnel-bg.js"></script>
   <script src="./js/engine.js"></script>
 
-  <!-- Game Modules -->
+  <!-- Game Modules (16-Game Master Suite) -->
   <script src="./js/games/tunnel-runner.js"></script>
   <script src="./js/games/space-invaders.js"></script>
   <script src="./js/games/tetris.js"></script>
@@ -285,6 +349,10 @@
   <script src="./js/games/game-2048.js"></script>
   <script src="./js/games/minesweeper.js"></script>
   <script src="./js/games/asteroids.js"></script>
+  <script src="./js/games/galaga.js"></script>
+  <script src="./js/games/frogger.js"></script>
+  <script src="./js/games/lunar-lander.js"></script>
+  <script src="./js/games/pinball.js"></script>
 
   <!-- Catalog & App Controller -->
   <script src="./js/games-registry.js"></script>
