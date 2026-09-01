@@ -71,20 +71,21 @@
   align-items: center;
   padding: 6px 10px;
   height: 48px;
-  width: 100%;
+  width: calc(100% - 24px);
   max-width: 100%;
   box-sizing: border-box;
   position: sticky;
-  top: 0;
+  top: 12px;
   z-index: 100;
-  background: var(--nav-bg) !important;
-  border-bottom: 1px solid var(--glass-border) !important;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  margin: 0 0 12px 0;
-  border-radius: 0 0 16px 16px;
+  background: var(--nav-bg, rgba(28, 28, 30, 0.72)) !important;
+  border: 0.5px solid var(--glass-border) !important;
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  margin: 12px auto 16px auto;
+  border-radius: 16px;
   gap: 6px;
   overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .mushaf-header-left {
@@ -369,19 +370,18 @@
   margin-bottom: 48px;
 }
 
-/* Clean Surah Header */
+/* Clean Premium Surah Header */
 .surah-header-frame {
   position: relative;
   margin: 0 0 32px 0;
-  padding: 32px 0;
-  border-top: 1px solid var(--mushaf-border);
-  border-bottom: 1px solid var(--mushaf-border);
+  padding: 40px 20px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, var(--glass-bg), transparent);
   text-align: center;
-  background: transparent;
 }
 
 .frame-corner {
-  display: none; /* Removed childish corners */
+  display: none;
 }
 
 .surah-meta-pills {
@@ -391,26 +391,32 @@
   gap: 8px;
   margin-bottom: 16px;
   font-size: 12px;
-  color: var(--mushaf-text-muted);
+  color: var(--text-primary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .meta-pill {
   font-weight: 500;
+  background: var(--glass-bg);
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
 }
 
 .surah-arabic-title {
   font-family: var(--font-quran, 'Amiri Quran', 'Scheherazade New', serif);
-  font-size: 36px;
-  font-weight: 400;
-  color: var(--mushaf-text-arabic);
+  font-size: 42px;
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--mushaf-gold), #eab308);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   line-height: 1.4;
-  margin: 0 0 8px 0;
+  margin: 0 0 12px 0;
 }
 
 .surah-english-subtitle {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--mushaf-text-muted);
   font-weight: 400;
   letter-spacing: 0.02em;
@@ -443,12 +449,12 @@
 /* Paragraph Reading Mode */
 .mushaf-paragraph {
   direction: rtl;
-  text-align: justify;
+  text-align: center;
   text-align-last: center;
-  line-height: 2.2;
+  line-height: 2.6; /* Prevents clipping of tall Arabic diacritics */
   font-family: var(--font-quran, 'Amiri Quran', 'Scheherazade New', serif);
   color: var(--mushaf-text-arabic);
-  word-spacing: 4px;
+  word-spacing: 8px; /* Better spacing for readability */
 }
 
 .mushaf-ayah-inline {
@@ -470,20 +476,28 @@
 
 .mushaf-ayah-inline.playing-ayah {
   color: var(--mushaf-gold);
+  background: rgba(10, 132, 255, 0.12);
+  border-radius: 6px;
+  box-shadow: 0 0 20px rgba(10, 132, 255, 0.12);
+  animation: ayahPulse 2s ease-in-out infinite;
 }
 
-/* Minimal SVG Ayah End Badge */
+@keyframes ayahPulse {
+  0%, 100% { background: rgba(10, 132, 255, 0.08); }
+  50%      { background: rgba(10, 132, 255, 0.18); }
+}
+
+/* Authentic Ornate Ayah End Badge ﴿ ﴾ */
 .mushaf-ayah-end-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  width: 28px;
-  height: 28px;
-  margin: 0 6px;
+  gap: 4px;
+  margin: 0 8px;
   vertical-align: middle;
   cursor: pointer;
   color: var(--mushaf-gold);
+  font-size: 1em; /* Scale with surrounding text */
 }
 
 .mushaf-ayah-end-badge.selected {
@@ -491,25 +505,27 @@
 }
 
 .mushaf-ayah-end-badge.playing {
-  color: var(--mushaf-text-arabic);
+  color: var(--accent-color, #0a84ff);
+  animation: badgePulse 1.5s ease-in-out infinite;
 }
 
-.ayah-badge-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.6;
+@keyframes badgePulse {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.05); }
+}
+
+.ayah-badge-bracket {
+  font-family: var(--font-quran, 'Amiri Quran', 'Scheherazade New', serif);
+  font-size: 1.1em;
+  color: inherit;
+  font-weight: 400;
 }
 
 .ayah-badge-num {
-  position: relative;
-  z-index: 2;
   font-family: var(--font-arabic, 'Scheherazade New', serif);
-  font-size: 14px;
+  font-size: 0.7em;
   font-weight: 400;
   color: inherit;
-  line-height: 1;
 }
 
 /* Word-by-Word View Mode */
@@ -569,11 +585,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  padding: 8px;
+  padding: 12px 10px;
   cursor: pointer;
   transition: background 0.2s ease;
-  border-radius: 6px;
-  min-width: 60px;
+  border-radius: 8px;
+  min-width: 70px;
 }
 
 .wbw-word-pill:hover {
@@ -582,14 +598,17 @@
 
 .wbw-word-pill.playing {
   color: var(--mushaf-gold);
+  background: rgba(10, 132, 255, 0.15);
+  box-shadow: 0 0 12px rgba(10, 132, 255, 0.12);
 }
 
 .wbw-arabic {
   font-family: var(--font-quran, 'Amiri Quran', 'Scheherazade New', serif);
+  font-size: 1.2em;
   font-weight: 400;
   color: var(--mushaf-text-arabic);
   direction: rtl;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .wbw-word-pill.playing .wbw-arabic {
@@ -667,12 +686,12 @@
   width: calc(100% - 32px);
   max-width: 448px;
   z-index: 105;
-  background: var(--nav-bg, rgba(15, 23, 42, 0.95));
-  border: 1px solid var(--glass-border);
+  background: var(--nav-bg, rgba(28, 28, 30, 0.72));
+  border: 0.5px solid var(--glass-border);
   border-radius: 28px;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
 }
 
 .mushaf-footer.has-mini-player {

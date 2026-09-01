@@ -92,9 +92,48 @@ const PROJECTS_DATA = [
     imgSrc: '/tunnel_icon.svg',
     roi: '16 Games | 2P Versus & Co-Op | Global Leaderboards | Full Offline PWA',
     problem: 'Web gaming portals are often cluttered with invasive ads, slow heavy bundles, and poor cross-device touch controls.',
-    solution: 'Built a next-generation 1980s-90s retro arcade web platform with 16 handcrafted vector games, 2-player local versus/co-op, retro chiptune jukebox, global leaderboards,, real-time Web Audio API chiptune synthesis, and 1-click PWA installation.',
+    solution: 'Built a next-generation 1980s-90s retro arcade web platform with 16 handcrafted vector games, 2-player local versus/co-op, retro chiptune jukebox, global leaderboards, real-time Web Audio API chiptune synthesis, and 1-click PWA installation.',
     impact: 'Zero-latency 60 FPS performance across desktop, tablet, and mobile with complete offline standalone play capability.',
     link: '/tunnel/index.html'
+  },
+  {
+    id: 8,
+    title: 'Mods Social & Creator Platform',
+    domain: 'mods-app',
+    category: 'App',
+    tags: ['Social Media', 'Creator Economy', 'React Native & Web', 'Video Platform'],
+    imgSrc: '/mods_logo.png',
+    roi: 'Real-Time Feed & Video Streaming | Tiered Verification | Full Cross-Platform Web & Mobile',
+    problem: 'Modern creators and online communities require high-fidelity multimedia sharing with zero latency, transparent verification badges, and unified web and mobile apps.',
+    solution: 'Engineered a modern social and multimedia streaming platform featuring dynamic video feeds, multi-image carousels, tiered blue and gold verification systems, Supabase real-time database, and responsive dual-layer UI.',
+    impact: 'Delivered smooth 60 FPS media feeds with sub-second post distribution, real-time engagement notifications, and seamless cross-platform deployment.',
+    link: '/mods/index.html'
+  },
+  {
+    id: 9,
+    title: 'CargoLedger Logistics Operating System',
+    domain: 'cargoledger',
+    category: 'Web',
+    tags: ['Logistics & Freight', 'Supply Chain', 'Enterprise ERP', 'Next.js'],
+    imgSrc: '/cargoledger_logo.svg',
+    roi: 'End-to-End Shipment Tracking | Automated Manifests | 100% Paperless Logistics Pipeline',
+    problem: 'Small freight forwarders and logistics operators outgrow spreadsheets and fragmented WhatsApp threads without the budget or flexibility for legacy enterprise ERPs.',
+    solution: 'Architected an elegant shipment management platform for logistics operators featuring real-time status pipelines, automated customer updates, digital airway bills, invoice tracking, and bank-ledger precision UI.',
+    impact: 'Eliminated manual shipment tracking overhead, boosted manifest generation speed by 75%, and established automated customer milestone transparency.',
+    link: '/cargoledger/index.html'
+  },
+  {
+    id: 10,
+    title: 'WiFi Master Wireless Security Suite',
+    domain: 'wifi-master',
+    category: 'Tools',
+    tags: ['Cybersecurity', 'Wireless Audit', 'Penetration Testing', 'Python & Web Engine'],
+    imgSrc: '/wifi_master_icon.svg',
+    roi: 'Aircrack-ng Automation | Handshake Capture | Monitor Mode Toggle | 80% Faster Audit Setup',
+    problem: 'Wireless security audits and penetration testing workflows often require executing fragmented CLI commands across multiple separate tools, causing human error and slow diagnostic cycles.',
+    solution: 'Engineered an end-to-end Python and web-based automation suite for wireless security diagnostics, automated monitor mode toggling, WPA/WPA2 handshake interception, network scoping, and deauthentication analysis.',
+    impact: 'Accelerated wireless penetration testing setup time by 80% while standardizing capture formats and diagnostic logs for security teams.',
+    link: '/wifi-master/index.html'
   }
 ];
 
@@ -110,9 +149,9 @@ const Projects = () => {
     <div className="section container">
       <SEO
         title="Our Projects & Case Studies — BlueCloud Portfolio"
-        description="Explore our enterprise deployments, ROI metrics, and technical case studies including Cyberion, FastData, Flux Language, Prism Studio, Tool Deck, and Quranly."
+        description="Explore our enterprise deployments, ROI metrics, and technical case studies including Cyberion, FastData, WiFi Master, CargoLedger, Mods App, Flux Language, Prism Studio, Tool Deck, and Quranly."
         path="/projects"
-        keywords="BlueCloud projects, web development portfolio Nigeria, case studies, Cyberion, FastData, Flux programming language, Prism Studio, Tool Deck, Quranly, enterprise software case study, tech portfolio Abuja"
+        keywords="BlueCloud projects, web development portfolio Nigeria, case studies, WiFi Master, CargoLedger, Mods App, Cyberion, FastData, Flux programming language, Prism Studio, Tool Deck, Quranly, cybersecurity Nigeria, tech portfolio Abuja"
       />
       <div className="text-center mb-6">
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--primary-blue)', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '8px' }}>

@@ -95,13 +95,10 @@ export const prefetchRoute = (path) => { ROUTE_IMPORTS[path]?.(); };
 // Skeleton fallback — avoids content flash during lazy route loads
 const PageSkeleton = () => (
   <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-    {[1, 2, 3].map(i => (
-      <div key={i} style={{
-        height: i === 1 ? '28px' : '120px',
-        width: i === 1 ? '40%' : '100%',
-        background: 'var(--card-bg)',
-        borderRadius: '12px',
-        animation: 'skeletonPulse 1.2s ease-in-out infinite',
+    {[1, 2, 3, 4, 5].map(i => (
+      <div key={i} className="skeleton-glass" style={{
+        height: i === 1 ? '48px' : i === 2 ? '140px' : '80px',
+        width: i === 1 ? '60%' : '100%',
       }} />
     ))}
     <style>{`
@@ -119,6 +116,11 @@ function AppContent() {
     location.pathname === '/' || 
     location.pathname === '' || 
     location.pathname === '/index.html';
+  
+  // Pages where MiniPlayer should be hidden to prevent UI obstruction
+  const hideMiniPlayerRoutes = ['/ask-ai', '/memorize', '/mushaf'];
+  const shouldShowMiniPlayer = !hideMiniPlayerRoutes.includes(location.pathname);
+
   const { isPlayerOpen } = useUIState();
   const { listeningHistory, dailyGoalMinutes, favouriteReciterIds, bookmarkedVerses } = useUserData();
   const { currentTrack } = usePlayback();
@@ -216,13 +218,13 @@ function AppContent() {
       {/* Global persistent components — only rendered in player mode */}
       {!isLandingPage && (
         <>
-          <MiniPlayer />
+          {shouldShowMiniPlayer && <MiniPlayer />}
           <BottomNav />
         </>
       )}
 
       {/* MiniPlayer on landing page if active track is playing in background */}
-      {isLandingPage && currentTrack && <MiniPlayer />}
+      {isLandingPage && currentTrack && shouldShowMiniPlayer && <MiniPlayer />}
 
       <BadgePopup badge={newBadge} onClose={() => setNewBadge(null)} />
 

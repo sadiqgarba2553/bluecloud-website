@@ -16,6 +16,86 @@ const ASPECT_RATIOS = [
   { id: 'wallpaper', label: 'Wallpaper (16:9)', width: 1920, height: 1080, previewWidth: 380, previewHeight: 213 },
 ];
 
+const drawGeometricPattern = (ctx, canvasWidth, canvasHeight) => {
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
+  ctx.lineWidth = 2;
+  const step = canvasWidth * 0.08;
+  for (let i = -canvasHeight; i < canvasWidth + canvasHeight; i += step) {
+    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i + canvasHeight, canvasHeight); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i - canvasHeight, canvasHeight); ctx.stroke();
+  }
+};
+
+const drawIslamicArch = (ctx, w, h, m, color) => {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = Math.round(w * 0.008);
+  ctx.beginPath();
+  ctx.moveTo(m, h - m);
+  const archStart = h * 0.25; // Push the arch up higher
+  ctx.lineTo(m, archStart);
+  
+  ctx.bezierCurveTo(
+    m, archStart * 0.6, 
+    w * 0.3, archStart * 0.4, 
+    w * 0.5, m
+  );
+  
+  ctx.bezierCurveTo(
+    w * 0.7, archStart * 0.4, 
+    w - m, archStart * 0.6, 
+    w - m, archStart
+  );
+  
+  ctx.lineTo(w - m, h - m);
+  ctx.lineTo(m, h - m);
+  ctx.stroke();
+
+  // Inner border
+  const iM = m + Math.round(w * 0.02);
+  ctx.lineWidth = Math.round(w * 0.003);
+  ctx.beginPath();
+  ctx.moveTo(iM, h - iM);
+  ctx.lineTo(iM, archStart);
+  ctx.bezierCurveTo(
+    iM, archStart * 0.65, 
+    w * 0.35, archStart * 0.45, 
+    w * 0.5, iM
+  );
+  ctx.bezierCurveTo(
+    w * 0.65, archStart * 0.45, 
+    w - iM, archStart * 0.65, 
+    w - iM, archStart
+  );
+  ctx.lineTo(w - iM, h - iM);
+  ctx.lineTo(iM, h - iM);
+  ctx.stroke();
+};
+
+const drawLantern = (ctx, x, y, size, color) => {
+  ctx.save();
+  ctx.translate(x, y);
+  
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.lineWidth = size * 0.06;
+  ctx.lineJoin = 'round';
+  
+  ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, size * 0.6); ctx.stroke(); // chain
+  
+  ctx.translate(0, size * 0.6);
+  ctx.beginPath(); ctx.arc(0, 0, size * 0.05, 0, Math.PI * 2); ctx.fill(); // top point
+  ctx.beginPath(); ctx.moveTo(-size * 0.3, size * 0.2); ctx.quadraticCurveTo(0, 0, size * 0.3, size * 0.2); ctx.closePath(); ctx.fill(); // dome
+  ctx.beginPath(); ctx.rect(-size * 0.25, size * 0.2, size * 0.5, size * 0.6); ctx.stroke(); // body
+  
+  ctx.beginPath(); ctx.moveTo(0, size * 0.2); ctx.lineTo(0, size * 0.8); ctx.moveTo(-size * 0.25, size * 0.5); ctx.lineTo(size * 0.25, size * 0.5); ctx.stroke(); // cross
+  
+  ctx.beginPath(); ctx.moveTo(-size * 0.25, size * 0.85); ctx.lineTo(size * 0.25, size * 0.85); ctx.lineTo(size * 0.15, size); ctx.lineTo(-size * 0.15, size); ctx.closePath(); ctx.fill(); // base
+  
+  ctx.beginPath(); ctx.arc(0, size * 0.5, size * 0.15, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255, 235, 100, 0.6)'; ctx.fill(); // glow
+  
+  ctx.restore();
+};
+
 const VerseCardGenerator = ({ verse, onClose }) => {
   const [selectedBg, setSelectedBg] = useState(BACKGROUND_PRESETS[0]);
   const [selectedRatio, setSelectedRatio] = useState(ASPECT_RATIOS[0]);
@@ -58,19 +138,17 @@ const VerseCardGenerator = ({ verse, onClose }) => {
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // 2. Draw Decorative Gold Border Frame
-      ctx.strokeStyle = selectedBg.gold;
-      ctx.lineWidth = Math.round(canvas.width * 0.008);
-      const margin = Math.round(canvas.width * 0.05);
-      ctx.strokeRect(margin, margin, canvas.width - (margin * 2), canvas.height - (margin * 2));
+      // 1.5 Draw Background Pattern
+      drawGeometricPattern(ctx, canvas.width, canvas.height);
 
-      // Corner Ornaments
-      ctx.fillStyle = selectedBg.gold;
-      const cornerSize = Math.round(canvas.width * 0.02);
-      ctx.fillRect(margin - (cornerSize/2), margin - (cornerSize/2), cornerSize, cornerSize);
-      ctx.fillRect(canvas.width - margin - (cornerSize/2), margin - (cornerSize/2), cornerSize, cornerSize);
-      ctx.fillRect(margin - (cornerSize/2), canvas.height - margin - (cornerSize/2), cornerSize, cornerSize);
-      ctx.fillRect(canvas.width - margin - (cornerSize/2), canvas.height - margin - (cornerSize/2), cornerSize, cornerSize);
+      // 2. Draw Islamic Arch Frame
+      const margin = Math.round(canvas.width * 0.05);
+      drawIslamicArch(ctx, canvas.width, canvas.height, margin, selectedBg.gold);
+
+      // 2.5 Draw Hanging Lanterns
+      const lanternSize = Math.round(canvas.width * 0.1);
+      drawLantern(ctx, margin * 2.5, margin, lanternSize, selectedBg.gold);
+      drawLantern(ctx, canvas.width - (margin * 2.5), margin, lanternSize, selectedBg.gold);
 
       // 3. Draw App Branding Logo + Watermark
       let watermarkY = margin + Math.round(canvas.height * 0.05);
@@ -101,7 +179,7 @@ const VerseCardGenerator = ({ verse, onClose }) => {
       let currentLine = '';
       words.forEach(w => {
         const test = currentLine + (currentLine ? ' ' : '') + w;
-        if (ctx.measureText(test).width > canvas.width * 0.8) {
+        if (ctx.measureText(test).width > canvas.width * 0.75) {
           lines.push(currentLine);
           currentLine = w;
         } else {
@@ -110,9 +188,13 @@ const VerseCardGenerator = ({ verse, onClose }) => {
       });
       if (currentLine) lines.push(currentLine);
 
-      const startY = (canvas.height / 2) - (lines.length * arabicFontSize * 0.7);
+      // Adjust text position slightly lower so it stays beautifully inside the arch
+      const archStart = canvas.height * 0.25;
+      const availableHeight = canvas.height - archStart - margin;
+      const startY = archStart + (availableHeight / 2) - (lines.length * arabicFontSize * 0.7);
+      
       lines.forEach((line, idx) => {
-        ctx.fillText(line, canvas.width / 2, startY + (idx * arabicFontSize * 1.5));
+        ctx.fillText(line, canvas.width / 2, startY + (idx * arabicFontSize * 1.6));
       });
 
       // 5. Draw English Translation Text

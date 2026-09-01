@@ -132,9 +132,9 @@ const initialState = {
   downloadingTrackId: null,
   downloadProgress: 0,
 
-  themeMode: localStorage.getItem('quranly_theme') || 'light', // 'light' (default) | 'dark' | 'system'
-  appTheme: localStorage.getItem('quranly_app_theme') || 'white', // 'white' | 'indigo'
-  playerNatureTheme: localStorage.getItem('quranly_player_nature_theme') || 'stars', // 'stars' | 'aurora' | 'ocean' | 'none'
+  themeMode: localStorage.getItem('quranly_theme') || 'dark', // 'dark' (default) | 'light' | 'system'
+  appTheme: localStorage.getItem('quranly_app_theme') || 'white', // 'white' | 'indigo' | 'amethyst' | 'ocean' | 'emerald' | 'sunset'
+  playerNatureTheme: localStorage.getItem('quranly_player_nature_theme') || 'darkveil', // 'darkveil' | 'liquidether' | 'prism' | 'acid' | 'none'
 
   favouriteSurahIds: loadSavedSet('quranly_fav_surahs'),
   favouriteReciterIds: loadSavedSet('quranly_fav_reciters'),
@@ -792,6 +792,51 @@ export function PlayerProvider({ children }) {
   const audio = audioRef.current;
   const bgAudio = bgAudioRef.current;
 
+  // ── Theme Mode & Accent Sync Effect ─────────────────────
+  useEffect(() => {
+    const updateTheme = () => {
+      let effectiveTheme = state.themeMode;
+      if (effectiveTheme === 'system') {
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        effectiveTheme = prefersDark ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', effectiveTheme);
+      document.documentElement.setAttribute('data-app-theme', state.appTheme || 'white');
+
+      const themeConfig = APP_THEMES[state.appTheme] || APP_THEMES.white;
+      const primary = effectiveTheme === 'dark' ? themeConfig.darkPrimary : themeConfig.primary;
+      const hover = effectiveTheme === 'dark' ? themeConfig.darkHover : themeConfig.hover;
+
+      document.documentElement.style.setProperty('--accent-primary', primary);
+      document.documentElement.style.setProperty('--accent-color', primary);
+      document.documentElement.style.setProperty('--accent-hover', hover);
+
+      const gradients = {
+        white: 'none',
+        indigo: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+        amethyst: 'linear-gradient(135deg, #a855f7, #d946ef)',
+        ocean: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
+        emerald: 'linear-gradient(135deg, #10b981, #14b8a6)',
+        sunset: 'linear-gradient(135deg, #f97316, #f43f5e)',
+      };
+      document.documentElement.style.setProperty('--accent-gradient', gradients[state.appTheme] || 'none');
+    };
+
+    updateTheme();
+
+    if (state.themeMode === 'system' && window.matchMedia) {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const listener = () => updateTheme();
+      if (mediaQuery.addEventListener) {
+        mediaQuery.addEventListener('change', listener);
+        return () => mediaQuery.removeEventListener('change', listener);
+      } else if (mediaQuery.addListener) {
+        mediaQuery.addListener(listener);
+        return () => mediaQuery.removeListener(listener);
+      }
+    }
+  }, [state.themeMode, state.appTheme]);
+
   // ── Fetch API data on language change ─────────────────────
   useEffect(() => {
     const controller = new AbortController();
@@ -1092,12 +1137,17 @@ export function PlayerProvider({ children }) {
   useEffect(() => {
     if (!('mediaSession' in navigator)) return;
     const { surah, reciter } = state.currentTrack;
+    const artworkSrc = reciter.avatar || '/logo.png';
     navigator.mediaSession.metadata = new MediaMetadata({
       title: `${surah.nameEnglish} (${surah.nameArabic})`,
       artist: reciter.name,
       album: 'Quranly — Holy Quran',
       artwork: [
-        { src: reciter.avatar || '/logo.png', sizes: '512x512', type: 'image/png' },
+        { src: artworkSrc, sizes: '96x96', type: 'image/png' },
+        { src: artworkSrc, sizes: '128x128', type: 'image/png' },
+        { src: artworkSrc, sizes: '192x192', type: 'image/png' },
+        { src: artworkSrc, sizes: '256x256', type: 'image/png' },
+        { src: artworkSrc, sizes: '512x512', type: 'image/png' },
       ],
     });
     navigator.mediaSession.playbackState = state.isPlaying ? 'playing' : 'paused';
@@ -1109,6 +1159,39 @@ export function PlayerProvider({ children }) {
     navigator.mediaSession.setActionHandler('pause', () => dispatch({ type: 'PAUSE' }));
     navigator.mediaSession.setActionHandler('nexttrack', () => dispatch({ type: 'PLAY_NEXT' }));
     navigator.mediaSession.setActionHandler('previoustrack', () => dispatch({ type: 'PLAY_PREV' }));
+
+    // Seek handlers for lock screen scrubbing
+    navigator.mediaSession.setActionHandler('seekto', (details) => {
+      if (details.seekTime != null && audio) {
+        audio.currentTime = details.seekTime;
+        timeStore.update(details.seekTime);
+        if ('setPositionState' in navigator.mediaSession && audio.duration > 0) {
+          try {
+            navigator.mediaSession.setPositionState({
+              duration: audio.duration,
+              playbackRate: audio.playbackRate,
+              position: details.seekTime,
+            });
+          } catch (_) {}
+        }
+      }
+    });
+
+    navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+      const skipTime = details.seekOffset || 10;
+      if (audio) {
+        audio.currentTime = Math.max(audio.currentTime - skipTime, 0);
+        timeStore.update(audio.currentTime);
+      }
+    });
+
+    navigator.mediaSession.setActionHandler('seekforward', (details) => {
+      const skipTime = details.seekOffset || 10;
+      if (audio) {
+        audio.currentTime = Math.min(audio.currentTime + skipTime, audio.duration || 0);
+        timeStore.update(audio.currentTime);
+      }
+    });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ─── Action creators ──────────────────────────────────────
@@ -1204,10 +1287,11 @@ export function PlayerProvider({ children }) {
 
   // ── Theme Manager ────────
   const setThemeMode = useCallback((mode) => {
-    localStorage.setItem('quranly_theme', mode);
+    try { localStorage.setItem('quranly_theme', mode); } catch { }
     dispatch({ type: 'SET_THEME_MODE', payload: mode });
   }, []);
   const setAppTheme = useCallback((theme) => {
+    try { localStorage.setItem('quranly_app_theme', theme); } catch { }
     dispatch({ type: 'SET_APP_THEME', payload: theme });
   }, []);
 
@@ -1314,8 +1398,10 @@ export function PlayerProvider({ children }) {
   const removeSurahFromPlaylist = useCallback((playlistId, surahId) =>
     dispatch({ type: 'REMOVE_FROM_PLAYLIST', payload: { playlistId, surahId } }), []);
 
-  const setPlayerNatureTheme = useCallback((theme) =>
-    dispatch({ type: 'SET_PLAYER_NATURE_THEME', payload: theme }), []);
+  const setPlayerNatureTheme = useCallback((theme) => {
+    try { localStorage.setItem('quranly_player_nature_theme', theme); } catch { }
+    dispatch({ type: 'SET_PLAYER_NATURE_THEME', payload: theme });
+  }, []);
 
   const saveReflection = useCallback((reflection) => dispatch({ type: 'SAVE_REFLECTION', payload: reflection }), []);
   const deleteReflection = useCallback((id) => dispatch({ type: 'DELETE_REFLECTION', payload: id }), []);

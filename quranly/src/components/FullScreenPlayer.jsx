@@ -1,4 +1,5 @@
-import { useRef, useCallback, useState } from 'react';
+import { useRef, useCallback, useState, lazy, Suspense } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   CloudRain, Star, Play, Pause, Rewind, FastForward,
   Moon, Volume2, VolumeX, ListVideo, Share2, Loader, WifiOff,
@@ -16,7 +17,11 @@ import PlaylistDrawer from './PlaylistDrawer';
 import SleepTimerModal from './SleepTimerModal';
 import QuranTextModal from './QuranTextModal';
 import ReciterAvatar from './ReciterAvatar';
-import AcidSquares from './AcidSquares';
+
+const AcidSquares = lazy(() => import('./AcidSquares'));
+const Prism = lazy(() => import('./Prism'));
+const DarkVeil = lazy(() => import('./DarkVeil'));
+const LiquidEther = lazy(() => import('./LiquidEther'));
 import './FullScreenPlayer.css';
 
 function formatTime(totalSeconds) {
@@ -79,159 +84,6 @@ function VolumePill({ value, onChange, disabled, icon: Icon, fillGradient, label
   );
 }
 
-import { useEffect } from 'react';
-import { Video } from 'lucide-react';
-
-function NatureCanvas({ mode = 0 }) {
-  const canvasRef = useRef(null);
-
-  useEffect(() => {
-    // Respect reduced motion preference
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let animId;
-    let lastFrameTime = 0;
-    const FRAME_INTERVAL = 1000 / 30; // Cap at 30fps for battery/perf
-
-    let width = (canvas.width = canvas.parentElement?.offsetWidth || window.innerWidth);
-    let height = (canvas.height = canvas.parentElement?.offsetHeight || window.innerHeight);
-
-    const handleResize = () => {
-      if (!canvas.parentElement) return;
-      width = canvas.width = canvas.parentElement.offsetWidth || window.innerWidth;
-      height = canvas.height = canvas.parentElement.offsetHeight || window.innerHeight;
-    };
-    window.addEventListener('resize', handleResize);
-
-    // Reduced particle count: 70 → 35 (imperceptible visual difference)
-    const particles = Array.from({ length: 35 }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      radius: Math.random() * 2.2 + 0.5,
-      alpha: Math.random(),
-      speed: Math.random() * 0.4 + 0.1,
-    }));
-
-    let step = 0;
-    let paused = false;
-
-    // Pause when tab/page is not visible
-    const handleVisibility = () => { paused = document.hidden; };
-    document.addEventListener('visibilitychange', handleVisibility);
-
-    const render = (timestamp) => {
-      animId = requestAnimationFrame(render);
-
-      if (paused) return;
-
-      // 30fps frame gate
-      if (timestamp - lastFrameTime < FRAME_INTERVAL) return;
-      lastFrameTime = timestamp;
-
-      step += 0.015;
-      ctx.clearRect(0, 0, width, height);
-
-      if (mode === 0) {
-        // Mode 0: Cosmic Night Sky & Twinkling Stars
-        const bgGrad = ctx.createRadialGradient(
-          width / 2, height * 0.35, 10,
-          width / 2, height * 0.35, width * 0.85
-        );
-        bgGrad.addColorStop(0, 'rgba(30, 58, 138, 0.55)');
-        bgGrad.addColorStop(0.5, 'rgba(15, 23, 42, 0.9)');
-        bgGrad.addColorStop(1, '#000000');
-        ctx.fillStyle = bgGrad;
-        ctx.fillRect(0, 0, width, height);
-
-        particles.forEach((p) => {
-          p.alpha += Math.sin(step + p.x) * 0.012;
-          const a = Math.max(0.2, Math.min(0.95, p.alpha));
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(191, 219, 254, ${a})`;
-          ctx.fill();
-
-          p.y -= p.speed * 0.25;
-          if (p.y < 0) p.y = height;
-        });
-      } else if (mode === 1) {
-        // Mode 1: Aurora Borealis Nature Light Waves
-        const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-        bgGrad.addColorStop(0, '#020617');
-        bgGrad.addColorStop(0.4, '#111111');
-        bgGrad.addColorStop(1, '#000000');
-        ctx.fillStyle = bgGrad;
-        ctx.fillRect(0, 0, width, height);
-
-        [
-          { color: 'rgba(255, 255, 255, 0.3)', speed: 1, yOff: height * 0.3 },
-          { color: 'rgba(16, 185, 129, 0.25)', speed: 1.3, yOff: height * 0.42 },
-          { color: 'rgba(99, 102, 241, 0.25)', speed: 0.8, yOff: height * 0.52 },
-        ].forEach((wave) => {
-          ctx.beginPath();
-          ctx.moveTo(0, height);
-          for (let x = 0; x <= width; x += 15) {
-            const y = wave.yOff + Math.sin(step * wave.speed + x * 0.007) * 50;
-            ctx.lineTo(x, y);
-          }
-          ctx.lineTo(width, height);
-          ctx.closePath();
-          ctx.fillStyle = wave.color;
-          ctx.fill();
-        });
-      } else {
-        // Mode 2: Peaceful Ocean Wave Horizon
-        const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-        bgGrad.addColorStop(0, 'rgba(14, 116, 144, 0.45)');
-        bgGrad.addColorStop(0.5, 'rgba(15, 23, 42, 0.9)');
-        bgGrad.addColorStop(1, '#000000');
-        ctx.fillStyle = bgGrad;
-        ctx.fillRect(0, 0, width, height);
-
-        for (let i = 0; i < 3; i++) {
-          ctx.beginPath();
-          ctx.moveTo(0, height);
-          for (let x = 0; x <= width; x += 15) {
-            const y = height * 0.35 + i * 40 + Math.cos(step * 0.8 + x * 0.006 + i) * 35;
-            ctx.lineTo(x, y);
-          }
-          ctx.lineTo(width, height);
-          ctx.closePath();
-          ctx.fillStyle = `rgba(56, 189, 248, ${0.15 - i * 0.03})`;
-          ctx.fill();
-        }
-      }
-    };
-
-    animId = requestAnimationFrame(render);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      document.removeEventListener('visibilitychange', handleVisibility);
-      cancelAnimationFrame(animId);
-    };
-  }, [mode]);
-
-  return <canvas ref={canvasRef} className="fs-nature-bg-canvas" style={{ willChange: 'transform' }} />;
-}
-
-import { useNavigate } from 'react-router-dom';
-
-const resolveAsset = (p) => {
-  const base = import.meta.env.BASE_URL || '/';
-  return `${base.replace(/\/$/, '')}/${p.replace(/^\//, '')}`;
-};
-
-const NATURE_IMAGES = [
-  resolveAsset('/nature/naturebackground.jpg'),
-  resolveAsset('/nature/naturebackground1.jpg'),
-  resolveAsset('/nature/naturebackground2.jpg'),
-  resolveAsset('/nature/naturebackground3.jpg')
-];
-
 const FullScreenPlayer = () => {
   const navigate = useNavigate();
 
@@ -245,7 +97,7 @@ const FullScreenPlayer = () => {
   const currentTime = useCurrentTime();
 
   const {
-    favouriteSurahIds, playerNatureTheme = 'stars',
+    favouriteSurahIds, playerNatureTheme = 'darkveil',
     isPro, downloadingTrackId, downloadProgress,
   } = useUserData();
 
@@ -261,20 +113,6 @@ const FullScreenPlayer = () => {
     downloadTrack, isDownloaded, toggleRepeat, shuffleQueue, openReciterProfile,
   } = usePlayerActions();
 
-  const [bgImage, setBgImage] = useState(() => NATURE_IMAGES[Math.floor(Math.random() * NATURE_IMAGES.length)]);
-
-  useEffect(() => {
-    if (currentTrack?.surah?.id) {
-      setBgImage(prev => {
-        let next;
-        do {
-          next = NATURE_IMAGES[Math.floor(Math.random() * NATURE_IMAGES.length)];
-        } while (next === prev);
-        return next;
-      });
-    }
-  }, [currentTrack?.surah?.id]);
-
   const { surah, reciter } = currentTrack;
   const isFavSurah = favouriteSurahIds.has(surah.id);
   const [isDragging, setIsDragging] = useState(false);
@@ -285,8 +123,16 @@ const FullScreenPlayer = () => {
   const progressPercent = duration > 0 ? (displayTime / duration) * 100 : 0;
   const remaining = Math.max(0, duration - displayTime);
   const progressBarRef = useRef(null);
+  const isFreeTheme = playerNatureTheme === 'darkveil' || playerNatureTheme === 'none';
+  const activeTheme = isPro || isFreeTheme ? playerNatureTheme : 'darkveil';
 
-  const canvasMode = playerNatureTheme === 'aurora' ? 1 : playerNatureTheme === 'ocean' ? 2 : playerNatureTheme === 'none' ? null : 0;
+  // ── Swipe-to-Dismiss State ─────────────────────────────────
+  const [swipeDeltaY, setSwipeDeltaY] = useState(0);
+  const [isSwiping, setIsSwiping] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const swipeStartRef = useRef({ y: 0, time: 0 });
+  const swipeHistoryRef = useRef([]); // [{y, t}] for velocity
+  const playerRef = useRef(null);
 
   const handleGoToQariProfile = () => {
     if (reciter) {
@@ -364,58 +210,167 @@ const FullScreenPlayer = () => {
     }
   };
 
+  // ── Swipe-to-Dismiss Handlers ───────────────────────────
+  const rubberband = (overshoot, dimension, constant = 0.55) => {
+    return (overshoot * dimension * constant) / (dimension + constant * Math.abs(overshoot));
+  };
+
+  const handleSwipeStart = useCallback((e) => {
+    // Don't intercept drags on progress bar, volume controls, or modals
+    const tag = e.target.tagName;
+    if (['INPUT', 'BUTTON', 'A'].includes(tag)) return;
+    if (e.target.closest('.fs-progress-bar-area') || e.target.closest('.volume-pill-track') || e.target.closest('.sound-modal') || e.target.closest('.playlist-drawer')) return;
+
+    const clientY = e.clientY;
+    swipeStartRef.current = { y: clientY, time: Date.now() };
+    swipeHistoryRef.current = [{ y: clientY, t: Date.now() }];
+    setIsSwiping(true);
+
+    const onMove = (ev) => {
+      const cy = ev.clientY;
+      const delta = cy - swipeStartRef.current.y;
+
+      // Track velocity history (last 5 points)
+      swipeHistoryRef.current.push({ y: cy, t: Date.now() });
+      if (swipeHistoryRef.current.length > 5) swipeHistoryRef.current.shift();
+
+      // Allow downward freely, rubber-band upward
+      const clamped = delta > 0 ? delta : rubberband(delta, window.innerHeight);
+      setSwipeDeltaY(clamped);
+    };
+
+    const onEnd = () => {
+      setIsSwiping(false);
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onEnd);
+      document.removeEventListener('pointercancel', onEnd);
+
+      // Calculate velocity from history
+      const history = swipeHistoryRef.current;
+      let velocityY = 0;
+      if (history.length >= 2) {
+        const last = history[history.length - 1];
+        const first = history[0];
+        const dt = (last.t - first.t) / 1000; // seconds
+        if (dt > 0) velocityY = (last.y - first.y) / dt; // px/s
+      }
+
+      const currentDelta = swipeStartRef.current.y;
+      const finalDelta = (history.length > 0 ? history[history.length - 1].y : currentDelta) - swipeStartRef.current.y;
+
+      // Dismiss if dragged far enough or velocity is high enough
+      if (finalDelta > 120 || velocityY > 500) {
+        setIsClosing(true);
+        setSwipeDeltaY(window.innerHeight); // animate off-screen
+        setTimeout(() => {
+          closePlayer();
+          setIsClosing(false);
+          setSwipeDeltaY(0);
+        }, 300);
+      } else {
+        // Snap back
+        setSwipeDeltaY(0);
+      }
+    };
+
+    document.addEventListener('pointermove', onMove);
+    document.addEventListener('pointerup', onEnd);
+    document.addEventListener('pointercancel', onEnd);
+  }, [closePlayer]);
+
   return (
-    <div className="full-screen-player open">
-      {/* Background Video / Canvas / AcidSquares & Gradient Overlay */}
+    <div
+      ref={playerRef}
+      className={`full-screen-player open ${isClosing ? 'closing' : ''} ${isSwiping ? 'dragging' : ''}`}
+      style={{
+        transform: swipeDeltaY !== 0 ? `translateY(${swipeDeltaY}px)` : undefined,
+        transition: isSwiping ? 'none' : 'transform 0.35s cubic-bezier(0.23, 1, 0.32, 1)',
+      }}
+      onPointerDown={handleSwipeStart}
+    >
+      {/* Drag Handle Pill */}
+      <div className="fs-drag-handle"><div className="fs-drag-pill" /></div>
+
+      {/* Background Video / Canvas / LiquidEther / Prism / DarkVeil / AcidSquares & Gradient Overlay */}
       <div className="fs-background-gradient">
-        {playerNatureTheme === 'acid' ? (
-          <div style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}>
-            <AcidSquares
-              color1="#3300ff"
-              color2="#6c26af"
-              color3="#FFFFFF"
-              detail="medium"
-              speed={0.7}
-              waveDepth={1}
-              zoom={1.3}
-              density={10.0}
-              glow={1.0}
-              exposure={2700}
-              spread={0.3}
-              stepSize={0.002}
-              colorShift={0}
-              contrast={1}
-              brightness={1.0}
-              opacity={1.0}
-              mouseInteraction={true}
-              mouseStrength={0.1}
-              mouseRadius={0.35}
-              blur={0}
-              grain={true}
-              grainIntensity={0.05}
-            />
-          </div>
-        ) : (
-          <>
-            <img
-              src={bgImage}
-              alt="Nature Background"
-              decoding="async"
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                filter: 'brightness(0.4)',
-                transition: 'opacity 0.6s ease',
-                zIndex: 0
-              }}
-            />
-            {canvasMode !== null && <NatureCanvas mode={canvasMode} />}
-          </>
-        )}
+        <Suspense fallback={<div className="fs-solid-backdrop" style={{ width: '100%', height: '100%', position: 'absolute', inset: 0, background: '#09090b' }} />}>
+          {activeTheme === 'liquidether' ? (
+            <div style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}>
+              <LiquidEther
+                colors={['#5227FF', '#FF9FFC', '#B497CF']}
+                mouseForce={20}
+                cursorSize={100}
+                isViscous={false}
+                viscous={30}
+                iterationsViscous={32}
+                iterationsPoisson={32}
+                resolution={0.5}
+                isBounce={false}
+                autoDemo={true}
+                autoSpeed={0.5}
+                autoIntensity={2.2}
+                takeoverDuration={0.25}
+                autoResumeDelay={3000}
+                autoRampDuration={0.6}
+              />
+            </div>
+          ) : activeTheme === 'darkveil' ? (
+            <div style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}>
+              <DarkVeil
+                hueShift={0}
+                noiseIntensity={0.02}
+                scanlineIntensity={0}
+                speed={0.5}
+                scanlineFrequency={0}
+                warpAmount={0}
+                resolutionScale={1}
+              />
+            </div>
+          ) : activeTheme === 'prism' ? (
+            <div style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}>
+              <Prism
+                animationType="rotate"
+                timeScale={0.5}
+                height={3.5}
+                baseWidth={5.5}
+                scale={3.6}
+                hueShift={0}
+                colorFrequency={1}
+                noise={0.5}
+                glow={1}
+              />
+            </div>
+          ) : activeTheme === 'acid' ? (
+            <div style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}>
+              <AcidSquares
+                color1="#3300ff"
+                color2="#6c26af"
+                color3="#FFFFFF"
+                detail="medium"
+                speed={0.7}
+                waveDepth={1}
+                zoom={1.3}
+                density={10.0}
+                glow={1.0}
+                exposure={2700}
+                spread={0.3}
+                stepSize={0.002}
+                colorShift={0}
+                contrast={1}
+                brightness={1.0}
+                opacity={1.0}
+                mouseInteraction={true}
+                mouseStrength={0.1}
+                mouseRadius={0.35}
+                blur={0}
+                grain={true}
+                grainIntensity={0.05}
+              />
+            </div>
+          ) : (
+            <div className="fs-solid-backdrop" style={{ width: '100%', height: '100%', position: 'absolute', inset: 0, background: '#09090b' }} />
+          )}
+        </Suspense>
         <div className="fs-video-dark-overlay" />
       </div>
 

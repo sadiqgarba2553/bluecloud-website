@@ -200,6 +200,42 @@ const Home = () => {
                 <a href="/tunnel/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch Arcade</a>
               </div>
             </div>
+            <div className="work-card">
+              <img src="/mods_logo.png" alt="Mods Social Platform" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
+              <div className="work-content">
+                <div className="work-tags">
+                  <span className="work-tag">App</span>
+                  <span className="work-tag">Social Media</span>
+                </div>
+                <h3>Mods App</h3>
+                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Next-gen social platform with real-time video feeds, tiered verification & cross-platform PWA.</p>
+                <a href="/mods/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch App</a>
+              </div>
+            </div>
+            <div className="work-card">
+              <img src="/cargoledger_logo.svg" alt="CargoLedger Logistics OS" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F6F6F3', padding: '24px' }} />
+              <div className="work-content">
+                <div className="work-tags">
+                  <span className="work-tag">Web</span>
+                  <span className="work-tag">Logistics ERP</span>
+                </div>
+                <h3>CargoLedger</h3>
+                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Shipment management OS for freight forwarders with status pipelines, airway bills & tracking.</p>
+                <a href="/cargoledger/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch Platform</a>
+              </div>
+            </div>
+            <div className="work-card">
+              <img src="/wifi_master_icon.svg" alt="WiFi Master Security Suite" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#070C12', padding: '20px' }} />
+              <div className="work-content">
+                <div className="work-tags">
+                  <span className="work-tag">Tools</span>
+                  <span className="work-tag">Cybersecurity</span>
+                </div>
+                <h3>WiFi Master</h3>
+                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Automated wireless penetration testing suite with handshake interception & monitor mode diagnostics.</p>
+                <a href="/wifi-master/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch Suite</a>
+              </div>
+            </div>
           </div>
           <div className="text-center" style={{ marginTop: 'var(--spacing-5)' }}>
             <Link to="/projects" className="btn-secondary">Explore All Projects</Link>

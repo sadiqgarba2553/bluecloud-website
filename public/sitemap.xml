@@ -247,4 +247,36 @@
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
+
+  <!-- Tunnel Arcade -->
+  <url>
+    <loc>https://bluecloudai.online/tunnel/index.html</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Mods Social Platform -->
+  <url>
+    <loc>https://bluecloudai.online/mods/index.html</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- CargoLedger Logistics OS -->
+  <url>
+    <loc>https://bluecloudai.online/cargoledger/index.html</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- WiFi Master Security Suite -->
+  <url>
+    <loc>https://bluecloudai.online/wifi-master/index.html</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
 </urlset>

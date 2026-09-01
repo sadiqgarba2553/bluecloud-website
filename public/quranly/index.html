@@ -3,6 +3,19 @@
 
 <head>
   <meta charset="UTF-8" />
+  <script>
+    (function() {
+      try {
+        var mode = localStorage.getItem('quranly_theme') || 'dark';
+        if (mode === 'system') {
+          mode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', mode);
+        var appTheme = localStorage.getItem('quranly_app_theme') || 'white';
+        document.documentElement.setAttribute('data-app-theme', appTheme);
+      } catch (e) {}
+    })();
+  </script>
   <link rel="icon" type="image/png" href="/quranly/logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   
@@ -124,13 +137,13 @@
     ]
   }
   </script>
-  <script type="module" crossorigin src="/quranly/assets/index-B1HE1TUK.js"></script>
+  <script type="module" crossorigin src="/quranly/assets/index-BafbygNx.js"></script>
   <link rel="modulepreload" crossorigin href="/quranly/assets/rolldown-runtime-QTnfLwEv.js">
-  <link rel="modulepreload" crossorigin href="/quranly/assets/vendor-icons-C3qtDBkR.js">
-  <link rel="modulepreload" crossorigin href="/quranly/assets/vendor-react-D7Q_WgZz.js">
-  <link rel="modulepreload" crossorigin href="/quranly/assets/vendor-utils-DumMpCik.js">
+  <link rel="modulepreload" crossorigin href="/quranly/assets/vendor-icons-Cu_EegeF.js">
+  <link rel="modulepreload" crossorigin href="/quranly/assets/vendor-react-MGBKmn7Z.js">
+  <link rel="modulepreload" crossorigin href="/quranly/assets/vendor-utils-Ck9D1qJF.js">
   <link rel="modulepreload" crossorigin href="/quranly/assets/vendor-firebase-CaBrJU-j.js">
-  <link rel="stylesheet" crossorigin href="/quranly/assets/index-B9WkGMug.css">
+  <link rel="stylesheet" crossorigin href="/quranly/assets/index-CObMhkj9.css">
 </head>
 
 <body>

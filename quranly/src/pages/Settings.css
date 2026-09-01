@@ -316,6 +316,17 @@
   letter-spacing: 0.04em;
 }
 
+.pro-badge-micro {
+  font-size: 8px;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  margin-top: 1px;
+}
+
 .locked-theme { opacity: 0.55; }
 
 .active-lang { background: var(--card-bg-hover) !important; }

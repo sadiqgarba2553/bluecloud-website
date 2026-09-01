@@ -27,26 +27,45 @@ const cleanSurahName = (rawName) => {
   return rawName.replace(/^سُورَةُ?\s*/i, '').replace(/^سورة\s*/i, '').trim();
 };
 
-// Custom Authentic Minimalist Ayah End Marker
-const AyahEndBadge = ({ number, onClick, isSelected, isPlaying }) => {
+// Custom Authentic Minimalist Ayah End Marker (MEMOIZED for extreme performance)
+const AyahEndBadge = React.memo(({ number, onClick, ayah, isSelected, isPlaying }) => {
   return (
     <span 
       className={`mushaf-ayah-end-badge ${isSelected ? 'selected' : ''} ${isPlaying ? 'playing' : ''}`}
       onClick={(e) => {
         if (onClick) {
           e.stopPropagation();
-          onClick();
+          onClick(ayah);
         }
       }}
       title={`Ayah ${number}`}
     >
-      <svg className="ayah-badge-svg" viewBox="0 0 40 40">
-        <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.7" />
-      </svg>
+      <span className="ayah-badge-bracket right">﴿</span>
       <span className="ayah-badge-num">{toArabicDigits(number)}</span>
+      <span className="ayah-badge-bracket left">﴾</span>
     </span>
   );
-};
+});
+
+// Memoized Ayah Span to prevent hundreds of nodes re-rendering every second during playback
+const MemoizedAyah = React.memo(({ ayah, text, isSelected, isPlaying, onAyahClick }) => {
+  return (
+    <span 
+      id={`ayah-${ayah.surah?.number || 1}-${ayah.numberInSurah}`}
+      className={`mushaf-ayah-inline ${isSelected ? 'selected-ayah' : ''} ${isPlaying ? 'playing-ayah' : ''}`}
+      onClick={() => onAyahClick(ayah)}
+    >
+      <span className="quran-text">{text}</span>
+      <AyahEndBadge 
+        number={ayah.numberInSurah} 
+        isSelected={isSelected}
+        isPlaying={isPlaying}
+        onClick={onAyahClick}
+        ayah={ayah}
+      />
+    </span>
+  );
+});
 
 const Mushaf = () => {
   // Saved reading state
@@ -77,7 +96,7 @@ const Mushaf = () => {
   // Customization preferences
   const [fontSize, setFontSize] = useState(() => {
     const saved = localStorage.getItem('quranly_mushaf_fontsize');
-    return saved ? parseInt(saved, 10) : 26;
+    return saved ? parseInt(saved, 10) : 34; // Increased default font size for readability
   });
 
   // Hifz & Ayah Audio Playback state
@@ -115,6 +134,11 @@ const Mushaf = () => {
   const { bookmarkedVerses = [] } = useUserData();
   const { toggleBookmark } = usePlayerActions();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  // Stable callback for ayah clicks to maintain memoization
+  const handleAyahClick = React.useCallback((ayah) => {
+    setSelectedAyah(ayah);
+  }, []);
 
   const toggleBookmarkVerse = (verse) => {
     if (!toggleBookmark || !verse?.surahNumber || !verse?.verseNumber) return;
@@ -246,10 +270,10 @@ const Mushaf = () => {
           const key = `${ayah.surah?.number || 1}:${ayah.numberInSurah}:${wordPos}`;
           setActiveWordKey(key);
           
-          // Auto-scroll active word/verse into view smoothly
-          const el = document.getElementById(`word-${key}`) || document.getElementById(`ayah-${ayah.numberInSurah}`);
+          // Auto-scroll active word/verse into center of screen
+          const el = document.getElementById(`word-${key}`) || document.getElementById(`ayah-${ayah.surah?.number || 1}-${ayah.numberInSurah}`);
           if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
         }
       }
@@ -574,19 +598,14 @@ const Mushaf = () => {
                           const isPlaying = playingAyah?.number === ayah.number;
 
                           return (
-                            <span 
-                              key={ayah.number} 
-                              className={`mushaf-ayah-inline ${isSelected ? 'selected-ayah' : ''} ${isPlaying ? 'playing-ayah' : ''}`}
-                              onClick={() => setSelectedAyah(ayah)}
-                            >
-                              <span className="quran-text">{text}</span>
-                              <AyahEndBadge 
-                                number={ayah.numberInSurah} 
-                                isSelected={isSelected}
-                                isPlaying={isPlaying}
-                                onClick={() => setSelectedAyah(ayah)}
-                              />
-                            </span>
+                            <MemoizedAyah 
+                              key={ayah.number}
+                              ayah={ayah}
+                              text={text}
+                              isSelected={isSelected}
+                              isPlaying={isPlaying}
+                              onAyahClick={handleAyahClick}
+                            />
                           );
                         })}
                       </div>

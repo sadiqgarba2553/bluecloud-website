@@ -51,6 +51,44 @@
   50% { opacity: 0.4; transform: scale(0.8); }
 }
 
+@keyframes slideUpModal {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.sleep-modal.closing {
+  animation: none;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1) !important;
+}
+
+.sleep-modal.dragging {
+  transition: none !important;
+}
+
+/* Drag Handle Pill */
+.sheet-drag-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+  pointer-events: none;
+}
+
+.sheet-drag-pill {
+  width: 36px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--text-muted, rgba(255, 255, 255, 0.3));
+  transition: background 0.2s ease;
+}
+
+.sleep-modal.dragging .sheet-drag-pill {
+  background: rgba(255, 255, 255, 0.55);
+}
+
 .clear-timer-btn {
   margin-left: auto;
   padding: 6px 16px;

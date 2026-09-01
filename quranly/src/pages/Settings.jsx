@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Diamond, Tag, Handshake, Gift, Lightbulb, ChevronRight, Globe, Radio, BookOpen, X, Send, Sun, Moon, Monitor, CheckCircle, Check, User, CloudCheck,
-  Sparkles, Waves, CloudRain, Palette, Lock, Zap
+  Sparkles, Waves, CloudRain, Palette, Lock, Zap, Shield, Droplets
 } from 'lucide-react';
 import { useData, useUserData, usePlayerActions } from '../context/PlayerContext';
 import { submitAppFeedback, auth } from '../services/firebase';
@@ -154,8 +154,8 @@ function SuggestModal({ onClose }) {
 const Settings = () => {
   const { apiLanguage, radios = [], tafasir = [], riwayat = [], apiLoading } = useData();
   const {
-    themeMode = 'light', playerNatureTheme = 'stars',
-    appTheme = 'indigo', isPro, currentUser,
+    themeMode = 'dark', playerNatureTheme = 'darkveil',
+    appTheme = 'white', isPro, currentUser,
   } = useUserData();
   const {
     setApiLanguage, setThemeMode, setPlayerNatureTheme,
@@ -316,48 +316,51 @@ const Settings = () => {
       <div className="settings-section">
         <p className="section-subtitle">
           <Sparkles size={14} style={{ display: 'inline', marginRight: 4 }} />
-          Player Nature Background
+          Player Background {!isPro && <span className="pro-badge-mini" style={{ marginLeft: 6 }}>PRO</span>}
         </p>
         <div className="settings-group glass-panel theme-selector-group nature-theme-group">
-          <button
-            className={`theme-option-btn ${playerNatureTheme === 'acid' ? 'active' : ''}`}
-            onClick={() => setPlayerNatureTheme && setPlayerNatureTheme('acid')}
-          >
-            <Zap size={18} />
-            <span>Acid Squares</span>
-          </button>
-
-          <button
-            className={`theme-option-btn ${playerNatureTheme === 'stars' ? 'active' : ''}`}
-            onClick={() => setPlayerNatureTheme && setPlayerNatureTheme('stars')}
-          >
-            <Sparkles size={18} />
-            <span>Night Stars</span>
-          </button>
-
-          <button
-            className={`theme-option-btn ${playerNatureTheme === 'aurora' ? 'active' : ''}`}
-            onClick={() => setPlayerNatureTheme && setPlayerNatureTheme('aurora')}
-          >
-            <Waves size={18} />
-            <span>Aurora Light</span>
-          </button>
-
-          <button
-            className={`theme-option-btn ${playerNatureTheme === 'ocean' ? 'active' : ''}`}
-            onClick={() => setPlayerNatureTheme && setPlayerNatureTheme('ocean')}
-          >
-            <CloudRain size={18} />
-            <span>Ocean Waves</span>
-          </button>
-
-          <button
-            className={`theme-option-btn ${playerNatureTheme === 'none' ? 'active' : ''}`}
-            onClick={() => setPlayerNatureTheme && setPlayerNatureTheme('none')}
-          >
-            <Moon size={18} />
-            <span>Off</span>
-          </button>
+          {[
+            { id: 'darkveil', name: 'Dark Veil', icon: Shield, free: true },
+            { id: 'liquidether', name: 'Liquid Ether', icon: Droplets, free: false },
+            { id: 'prism', name: 'Prism', icon: Diamond, free: false },
+            { id: 'acid', name: 'Acid Squares', icon: Zap, free: false },
+            { id: 'none', name: 'Off', icon: Moon, free: true },
+          ].map((theme) => {
+            const isLocked = !theme.free && !isPro;
+            const isSelected = playerNatureTheme === theme.id;
+            const Icon = theme.icon;
+            return (
+              <button
+                key={theme.id}
+                className={`theme-option-btn ${isSelected ? 'active' : ''} ${isLocked ? 'locked-theme' : ''}`}
+                onClick={() => {
+                  if (isLocked) {
+                    openSubscriptionModal && openSubscriptionModal();
+                  } else if (setPlayerNatureTheme) {
+                    setPlayerNatureTheme(theme.id);
+                  }
+                }}
+              >
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon size={18} />
+                  {isLocked && (
+                    <Lock
+                      size={10}
+                      style={{
+                        position: 'absolute',
+                        top: -5,
+                        right: -8,
+                        color: '#fbbf24',
+                        filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.6))'
+                      }}
+                    />
+                  )}
+                </div>
+                <span>{theme.name}</span>
+                {isLocked && <span className="pro-badge-micro">PRO</span>}
+              </button>
+            );
+          })}
         </div>
       </div>
 
