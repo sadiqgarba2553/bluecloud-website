@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <!-- SEO & Social Meta -->
+  <title>TUNNEL ARCADE // 1980s-90s RETRO GAMING SYSTEM</title>
+  <meta name="description" content="Authentic retro arcade game station. Vector 3D runner, Tetris, Solitaire, Cyber Flyer, Snake, Breakout, 2048, Asteroids. Fast, installable, and offline ready.">
+  <meta name="theme-color" content="#00f0ff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Tunnel Arcade">
+
+  <!-- PWA Manifest & Icons -->
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./icons/icon-192.svg">
+  <link rel="apple-touch-icon" href="./icons/icon-192.svg">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/games.css">
+</head>
+<body class="crt-active">
+
+  <!-- Dynamic 3D Tunnel Warp Background -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- CRT Scanline & Phosphor Overlay -->
+  <div class="crt-overlay"></div>
+
+  <!-- App Shell -->
+  <div id="app-shell">
+    
+    <!-- Top Arcade Marquee Header -->
+    <header class="arcade-header">
+      <div class="brand" onclick="window.location.reload()">
+        <img src="./icons/icon-192.svg" alt="Tunnel Logo" class="brand-icon">
+        <div class="brand-text-block">
+          <h1 class="brand-name">TUNNEL</h1>
+          <span class="brand-sub">ARCADE SYSTEM // ROM v1.0</span>
+        </div>
+      </div>
+
+      <div class="arcade-cabinet-status">
+        <span class="coin-prompt blink">[ FREE PLAY ]</span>
+        <span class="credit-counter">CREDIT(S) 99</span>
+      </div>
+
+      <div class="header-actions">
+        <!-- Online / Offline Status Badge -->
+        <span id="online-status-badge" class="status-badge online">[ ONLINE ]</span>
+
+        <!-- Audio & Visual Toggles -->
+        <button id="toggle-sfx-btn" class="btn btn-tool" title="Toggle Sound Effects">
+          SFX: ON
+        </button>
+        <button id="toggle-music-btn" class="btn btn-tool" title="Toggle Chiptune Synth Music">
+          BGM: OFF
+        </button>
+        <button id="toggle-crt-btn" class="btn btn-tool active" title="Toggle CRT Scanline Shader">
+          CRT: ON
+        </button>
+
+        <!-- Profile & Level Pill -->
+        <div id="profile-btn" class="profile-pill" title="View Player Profile & Achievements">
+          <span id="header-level-badge" class="level-badge">P1: LVL 1</span>
+        </div>
+
+        <!-- PWA Install Button (Shown on supported devices) -->
+        <button id="install-pwa-btn" class="btn btn-install hidden" title="Install App to Device">
+          [ INSTALL APP ]
+        </button>
+      </div>
+    </header>
+
+    <!-- Install Promo Banner -->
+    <div id="install-banner" class="install-banner hidden">
+      <div class="install-banner-content">
+        <span class="banner-tag">[ SYSTEM PROMPT ]</span>
+        <div>
+          <strong>INSTALL TUNNEL APP</strong> &mdash; Direct ROM caching for instant offline play and zero input latency.
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button id="banner-install-btn" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.75rem;">INSTALL NOW</button>
+        <button id="dismiss-banner-btn" class="btn btn-tool" style="padding: 6px 10px;">[ X ]</button>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="arcade-main">
+      
+      <!-- Featured Hero Game Section -->
+      <section id="featured-banner" class="featured-section"></section>
+
+      <!-- Catalog Controls: Search & Category Filter Pills -->
+      <section class="catalog-controls">
+        <div class="controls-top">
+          <div class="search-box">
+            <span class="search-label">&gt; SEARCH:</span>
+            <input type="text" id="search-input" class="search-input" placeholder="Enter title, category, or cartridge tag...">
+          </div>
+          <div id="category-pills" class="category-pills"></div>
+        </div>
+      </section>
+
+      <!-- Games Showcase Grid -->
+      <section id="game-grid" class="game-grid"></section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="arcade-footer">
+      <div>TUNNEL RETRO ARCADE // 1980s-90s NOSTALGIA EDITION</div>
+      <div>60 FPS VECTOR HARDWARE EMULATION // PWA OFFLINE CACHED</div>
+    </footer>
+
+  </div>
+
+  <!-- Game Arena Modal Overlay -->
+  <div id="game-arena-modal" class="arena-modal hidden">
+    
+    <!-- Arena Header Bar -->
+    <div class="arena-header">
+      <div class="arena-title-area">
+        <button id="close-arena-btn" class="btn btn-tool" title="Back to Game Hub">
+          &lt; MAIN MENU
+        </button>
+        <h2 id="arena-game-title" class="arena-game-title">CARTRIDGE</h2>
+      </div>
+
+      <!-- Live Game HUD -->
+      <div class="arena-hud">
+        <div class="hud-item">
+          <span class="hud-label">1UP SCORE</span>
+          <span id="hud-score" class="hud-value">000000</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">HI-SCORE</span>
+          <span id="hud-highscore" class="hud-value">000000</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">STAGE</span>
+          <span id="hud-level" class="hud-value">01</span>
+        </div>
+      </div>
+
+      <!-- Arena Actions -->
+      <div class="arena-controls">
+        <button id="arena-controls-toggle-btn" class="btn btn-tool" title="Toggle Virtual Touch Controls">
+          CONTROLS
+        </button>
+        <button id="arena-pause-btn" class="btn btn-tool" title="Pause Game (P or Esc)">
+          PAUSE
+        </button>
+        <button id="arena-fullscreen-btn" class="btn btn-tool" title="Toggle Fullscreen">
+          [ FULLSCREEN ]
+        </button>
+      </div>
+    </div>
+
+    <!-- Arena Body & Canvas -->
+    <div class="arena-body">
+      
+      <div class="canvas-container">
+        <canvas id="game-canvas"></canvas>
+
+        <!-- Pause Overlay -->
+        <div id="pause-overlay" class="arena-overlay hidden">
+          <div class="overlay-box">
+            <h3 class="overlay-title">** PAUSED **</h3>
+            <p class="overlay-msg">PRESS RESUME TO CONTINUE</p>
+            <div class="overlay-actions">
+              <button id="pause-resume-btn" class="btn btn-primary">RESUME</button>
+              <button id="pause-restart-btn" class="btn btn-tool">RESTART</button>
+              <button id="pause-quit-btn" class="btn btn-tool">EXIT</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Game Over Overlay -->
+        <div id="gameover-overlay" class="arena-overlay hidden">
+          <div class="overlay-box">
+            <h3 class="overlay-title">GAME OVER</h3>
+            <p id="gameover-msg" class="overlay-msg">CONTINUE? 9</p>
+            <div class="overlay-stats">
+              <div class="overlay-stat-item">
+                <span class="stat-label">FINAL SCORE</span>
+                <span id="gameover-final-score" class="stat-val">0</span>
+              </div>
+              <div class="overlay-stat-item">
+                <span class="stat-label">RECORD BEST</span>
+                <span id="gameover-best-score" class="stat-val">0</span>
+              </div>
+            </div>
+            <div class="overlay-actions">
+              <button id="gameover-restart-btn" class="btn btn-primary">PLAY AGAIN</button>
+              <button id="gameover-quit-btn" class="btn btn-tool">MAIN MENU</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Controls & Instructions Bar -->
+      <div class="arena-instructions">
+        <div><strong>DESKTOP:</strong> <span id="arena-ctrl-desktop">Arrow keys / WASD to steer, Space for Action</span></div>
+        <div><strong>CABINET / TOUCH:</strong> <span id="arena-ctrl-mobile">Virtual D-Pad and Buttons A &amp; B</span></div>
+      </div>
+
+      <!-- Touch Virtual Controller (Mobile / Tablet Overlay) -->
+      <div class="virtual-controls">
+        <div class="v-dpad">
+          <button id="vpad-up" class="vpad-btn">&#9650;</button>
+          <button id="vpad-left" class="vpad-btn">&#9664;</button>
+          <button id="vpad-right" class="vpad-btn">&#9654;</button>
+          <button id="vpad-down" class="vpad-btn">&#9660;</button>
+        </div>
+
+        <div class="v-actions">
+          <button id="vbtn-b" class="vbtn-round">B</button>
+          <button id="vbtn-a" class="vbtn-round">A</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Player Profile & Achievements Modal -->
+  <div id="profile-modal" class="modal-overlay hidden">
+    <div class="profile-card">
+      <div class="profile-header">
+        <h3 class="profile-title">[ PILOT PROFILE &amp; STATS ]</h3>
+        <button id="close-profile-btn" class="btn-close">[ X ]</button>
+      </div>
+
+      <div class="xp-container">
+        <div class="xp-header">
+          <span style="color: var(--neon-cyan);">PLAYER 1 // RANK <span id="profile-level-val">1</span></span>
+          <span id="profile-xp-val" style="color: var(--neon-gold);">0 / 100 PTS</span>
+        </div>
+        <div class="xp-bar-bg">
+          <div id="profile-xp-bar" class="xp-bar-fill"></div>
+        </div>
+      </div>
+
+      <div class="profile-stats-grid">
+        <div class="pstat-card">
+          <div class="pstat-val" id="profile-total-score">0</div>
+          <div class="stat-label">TOTAL ACCUMULATED POINTS</div>
+        </div>
+        <div class="pstat-card">
+          <div class="pstat-val" id="profile-total-plays">0</div>
+          <div class="stat-label">TOTAL SESSIONS LOGGED</div>
+        </div>
+      </div>
+
+      <h4 style="font-size: 0.85rem; margin-bottom: 12px; color: var(--neon-cyan); font-family: var(--font-arcade);">ACHIEVEMENT BADGES</h4>
+      <div id="profile-achievements-list" class="achievements-list"></div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Platform Core Scripts -->
+  <script src="./js/pwa.js"></script>
+  <script src="./js/audio.js"></script>
+  <script src="./js/input.js"></script>
+  <script src="./js/tunnel-bg.js"></script>
+  <script src="./js/engine.js"></script>
+
+  <!-- Game Modules -->
+  <script src="./js/games/tunnel-runner.js"></script>
+  <script src="./js/games/space-invaders.js"></script>
+  <script src="./js/games/tetris.js"></script>
+  <script src="./js/games/pac-maze.js"></script>
+  <script src="./js/games/flappy.js"></script>
+  <script src="./js/games/solitaire.js"></script>
+  <script src="./js/games/snake.js"></script>
+  <script src="./js/games/brick-breaker.js"></script>
+  <script src="./js/games/pong.js"></script>
+  <script src="./js/games/game-2048.js"></script>
+  <script src="./js/games/minesweeper.js"></script>
+  <script src="./js/games/asteroids.js"></script>
+
+  <!-- Catalog & App Controller -->
+  <script src="./js/games-registry.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

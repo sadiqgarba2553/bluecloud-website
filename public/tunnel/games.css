@@ -1,0 +1,42 @@
+/* Tunnel Arcade - Game Specific Styles & Animations */
+
+/* In-game canvas focus effect */
+body.in-game #bg-canvas {
+  filter: brightness(0.4) blur(4px);
+  transition: filter 0.4s ease;
+}
+
+/* Custom scrollbar for game cards & modal */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(7, 9, 20, 0.8);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 240, 255, 0.6);
+}
+
+/* Custom keyframes for arcade badges */
+@keyframes neon-flicker {
+  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.8));
+  }
+  20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+    opacity: 0.6;
+    filter: none;
+  }
+}
+
+.brand-icon {
+  animation: neon-flicker 5s infinite;
+}

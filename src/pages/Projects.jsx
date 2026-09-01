@@ -82,6 +82,19 @@ const PROJECTS_DATA = [
     solution: 'Engineered a high-performance cross-platform Progressive Web & Mobile App powered by Gemini AI, responsive audio playback engine, indexedDB caching, and tajweed study analytics.',
     impact: 'Delivered sub-second audio streaming across global CDNs with seamless offline persistence and multi-device sync.',
     link: '/quranly/'
+  },
+  {
+    id: 7,
+    title: 'Tunnel Arcade Gaming Platform',
+    domain: 'tunnel',
+    category: 'App',
+    tags: ['Arcade Gaming', 'PWA & Web Audio', 'Retro Games'],
+    imgSrc: '/tunnel_icon.svg',
+    roi: '12 Games | 60+ FPS Vector Canvas | Full Offline PWA',
+    problem: 'Web gaming portals are often cluttered with invasive ads, slow heavy bundles, and poor cross-device touch controls.',
+    solution: 'Built a next-generation 1980s-90s retro arcade web platform with 12 handcrafted vector games, real-time Web Audio API chiptune synthesis, and 1-click PWA installation.',
+    impact: 'Zero-latency 60 FPS performance across desktop, tablet, and mobile with complete offline standalone play capability.',
+    link: '/tunnel/index.html'
   }
 ];
 
@@ -172,4 +185,5 @@ const Projects = () => {
 };
 
 export default Projects;
+
 

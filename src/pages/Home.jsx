@@ -139,7 +139,7 @@ const Home = () => {
             <h2>Featured Work</h2>
             <p>A glimpse into the robust solutions we've deployed.</p>
           </div>
-          <div className="work-grid">
+                    <div className="work-grid">
             <div className="work-card">
               <img src="/fluxlanguageimage.png" alt="Flux Programming Language" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
               <div className="work-content">
@@ -149,7 +149,8 @@ const Home = () => {
                 </div>
                 <h3>Flux Programming Language</h3>
                 <p className="mb-3">A custom programming language engineered with its own unique toolchain.</p>
-                <a href="/flux-website/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>View Website</a></div>
+                <a href="/flux-website/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>View Website</a>
+              </div>
             </div>
             <div className="work-card">
               <img src="/prism_studio_icon.png" alt="Prism Studio" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
@@ -185,6 +186,18 @@ const Home = () => {
                 <h3>Quranly Platform</h3>
                 <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>High-fidelity Quran audio streaming, 100+ reciters & AI Tafsir companion.</p>
                 <a href="/quranly/" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch App</a>
+              </div>
+            </div>
+            <div className="work-card">
+              <img src="/tunnel_icon.svg" alt="Tunnel Arcade Platform" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#0B0F1E', padding: '20px' }} />
+              <div className="work-content">
+                <div className="work-tags">
+                  <span className="work-tag">App</span>
+                  <span className="work-tag">Arcade Gaming</span>
+                </div>
+                <h3>Tunnel Arcade</h3>
+                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Next-gen 80s-90s retro web arcade with 12 vector games, chiptune audio & offline PWA.</p>
+                <a href="/tunnel/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch Arcade</a>
               </div>
             </div>
           </div>
@@ -264,3 +277,5 @@ const Home = () => {
 };
 
 export default Home;
+
+
