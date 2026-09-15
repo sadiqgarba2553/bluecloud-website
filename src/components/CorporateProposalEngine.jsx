@@ -110,6 +110,9 @@ const CorporateProposalEngine = () => {
               <button type="submit" className="btn-primary" disabled={isSubmitting} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                 <Send size={16} /> {isSubmitting ? 'Generating Board Deck...' : 'Request Formal PDF Proposal & Pitch Deck'}
               </button>
+              <p style={{ fontSize: '0.78rem', color: 'var(--slate-text)', marginTop: '8px', textAlign: 'center' }}>
+                Information is strictly held under NDA & protected by our <a href="/privacy" target="_blank" style={{ textDecoration: 'underline' }}>Privacy Policy</a>.
+              </p>
             </div>
           </form>
         )}

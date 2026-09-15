@@ -162,13 +162,17 @@ const Chatbot = () => {
   return (
     <div className="chatbot-container">
       {!isOpen && (
-        <button className="chatbot-toggle-btn" onClick={() => setIsOpen(true)}>
+        <button 
+          className="chatbot-toggle-btn" 
+          onClick={() => setIsOpen(true)}
+          aria-label="Open chat with BlueCloud AI Assistant Aura"
+        >
           <MessageSquare size={28} />
         </button>
       )}
 
       {isOpen && (
-        <div className="chatbot-window">
+        <div className="chatbot-window" role="dialog" aria-label="BlueCloud AI Assistant chat window">
           <div className="chatbot-header">
             <div className="chatbot-header-info">
               <h3>Aura</h3>
@@ -179,10 +183,15 @@ const Chatbot = () => {
                 className={`chatbot-voice-toggle-btn ${ttsEnabled ? 'active' : ''}`}
                 onClick={() => setTtsEnabled(!ttsEnabled)}
                 title="Toggle Voice Speech Output"
+                aria-label="Toggle voice speech output"
               >
                 {ttsEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
               </button>
-              <button className="chatbot-close-btn" onClick={() => setIsOpen(false)}>
+              <button 
+                className="chatbot-close-btn" 
+                onClick={() => setIsOpen(false)}
+                aria-label="Close chat assistant"
+              >
                 <X size={24} />
               </button>
             </div>
@@ -216,6 +225,7 @@ const Chatbot = () => {
                       placeholder="Your Name" 
                       value={leadName}
                       onChange={(e) => setLeadName(e.target.value)}
+                      aria-label="Your Name"
                       required 
                     />
                     <input 
@@ -223,14 +233,22 @@ const Chatbot = () => {
                       placeholder="Work Email" 
                       value={leadEmail}
                       onChange={(e) => setLeadEmail(e.target.value)}
+                      aria-label="Work Email"
                       required 
                     />
-                    <select value={leadService} onChange={(e) => setLeadService(e.target.value)}>
+                    <select 
+                      value={leadService} 
+                      onChange={(e) => setLeadService(e.target.value)}
+                      aria-label="Service of Interest"
+                    >
                       <option value="Web Development">Web Development</option>
                       <option value="AI Solutions">AI Solutions & Automation</option>
                       <option value="Cybersecurity">Cybersecurity</option>
                     </select>
-                    <button type="submit">Submit Request</button>
+                    <button type="submit" aria-label="Submit quick project request">Submit Request</button>
+                    <p style={{ fontSize: '0.72rem', color: '#94A3B8', marginTop: '6px', textAlign: 'center' }}>
+                      Protected by BlueCloud <a href="/privacy" target="_blank" style={{ color: 'var(--cyan-accent)' }}>Privacy Policy</a>.
+                    </p>
                   </form>
                 )}
               </div>
@@ -240,7 +258,12 @@ const Chatbot = () => {
           </div>
 
           <div className="chatbot-input">
-            <button className={`chatbot-mic-btn ${isListening ? 'listening' : ''}`} onClick={handleMicClick} title="Voice Input">
+            <button 
+              className={`chatbot-mic-btn ${isListening ? 'listening' : ''}`} 
+              onClick={handleMicClick} 
+              title="Voice Input"
+              aria-label="Voice input"
+            >
               <Mic size={18} />
             </button>
             <input 
@@ -249,9 +272,14 @@ const Chatbot = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              aria-label="Type your message"
               disabled={isLoading}
             />
-            <button onClick={handleSend} disabled={isLoading || !input.trim()}>
+            <button 
+              onClick={handleSend} 
+              disabled={isLoading || !input.trim()}
+              aria-label="Send message to Aura"
+            >
               <Send size={18} />
             </button>
           </div>

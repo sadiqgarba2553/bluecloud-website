@@ -243,44 +243,60 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Client Trust Section */}
+      {/* Engineering Standards & Trust Section */}
       <section className="section stats-section">
         <div className="container">
-          <h2>Trusted by Forward-Thinking Teams</h2>
+          <h2>Engineered for Scale & Reliability</h2>
           <div className="stats-grid">
             <div className="stat-item">
-              <h3>50+</h3>
-              <p>Projects Delivered</p>
+              <h3>8+</h3>
+              <p>Production Apps & Tools</p>
             </div>
             <div className="stat-item">
-              <h3>99%</h3>
-              <p>Uptime Guarantee</p>
+              <h3>High-Avail</h3>
+              <p>Resilient Architecture</p>
             </div>
             <div className="stat-item">
-              <h3>24/7</h3>
-              <p>Client Support</p>
+              <h3>NDPA</h3>
+              <p>Data Protection Standard</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="testimonials-section">
+      {/* Engineering Commitments (Authentic replacement for fabricated reviews) */}
+      <section className="section" style={{ backgroundColor: 'var(--white)' }}>
         <div className="container">
-          <h2 className="text-center" style={{ marginBottom: '1rem' }}>What Our Clients Say</h2>
-          <p className="text-center" style={{ color: 'var(--slate-text)', maxWidth: '600px', margin: '0 auto' }}>Don't just take our word for it. Here is what some of our enterprise partners have to say about working with BlueCloud.</p>
-          <div className="testimonials-grid">
-            <div className="testimonial-card">
-              <p className="testimonial-text">"BlueCloud completely transformed our legacy systems. Their AI automation saved us countless hours and the team was a joy to work with."</p>
-              <div className="testimonial-author">— Sarah Johnson, CEO of TechFlow</div>
+          <div className="text-center mb-6">
+            <h2>Our Core Engineering Commitments</h2>
+            <p style={{ maxWidth: '650px', margin: '0 auto' }}>
+              We believe in demonstrable technical delivery, radical transparency, and zero unsupported marketing hype.
+            </p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 'var(--spacing-4)' }}>
+            <div style={{ background: 'var(--light-gray)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
+              <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Milestone-Based Billing</h3>
+              <p style={{ color: 'var(--slate-text)', fontSize: '0.95rem' }}>
+                You inspect and approve verifiable deliverables before payments are released. No opaque retainers or surprise fees.
+              </p>
             </div>
-            <div className="testimonial-card">
-              <p className="testimonial-text">"The web app they built for us is incredibly fast and intuitive. Our customer retention increased by 40% in the first three months."</p>
-              <div className="testimonial-author">— Michael Chen, VP of Product at FinServe</div>
+            <div style={{ background: 'var(--light-gray)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
+              <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Zero Vendor Lock-In</h3>
+              <p style={{ color: 'var(--slate-text)', fontSize: '0.95rem' }}>
+                Full ownership of custom code, documentation, and cloud configurations is transferred directly to your organization.
+              </p>
             </div>
-            <div className="testimonial-card">
-              <p className="testimonial-text">"Security was our top priority, and BlueCloud delivered. Their enterprise architecture is rock solid. Highly recommended."</p>
-              <div className="testimonial-author">— Amina Bello, Director of IT at GlobalTrade</div>
+            <div style={{ background: 'var(--light-gray)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
+              <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Security by Design</h3>
+              <p style={{ color: 'var(--slate-text)', fontSize: '0.95rem' }}>
+                Zero-trust authentication, TLS 256-bit encryption, and NDPA/GDPR compliance baked in from sprint zero.
+              </p>
+            </div>
+            <div style={{ background: 'var(--light-gray)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
+              <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Direct Lead Engineer Access</h3>
+              <p style={{ color: 'var(--slate-text)', fontSize: '0.95rem' }}>
+                Collaborate directly with our senior software architects in Abuja without middlemen or outsourced layers.
+              </p>
             </div>
           </div>
         </div>
@@ -291,11 +307,22 @@ const Home = () => {
         <div className="container">
           <div className="newsletter-content">
             <h2>Stay Ahead of the Curve</h2>
-            <p>Get the latest insights on AI, Web Development, and Enterprise Tech delivered straight to your inbox.</p>
-            <form className="newsletter-form" onSubmit={(e) => { e.preventDefault(); alert('Subscribed successfully!'); }}>
-              <input type="email" placeholder="Enter your email address" className="newsletter-input" required />
-              <button type="submit" className="newsletter-btn">Subscribe</button>
+            <p>Get technical deep-dives on AI, Web Engineering, and Enterprise Tech delivered straight to your inbox.</p>
+            <form className="newsletter-form" onSubmit={(e) => { e.preventDefault(); alert('Thank you for subscribing! You will receive our next engineering briefing.'); }}>
+              <input 
+                type="email" 
+                placeholder="Enter your work email" 
+                className="newsletter-input" 
+                aria-label="Work email address for engineering briefing"
+                required 
+              />
+              <button type="submit" className="newsletter-btn" aria-label="Subscribe to briefing">
+                Subscribe
+              </button>
             </form>
+            <p style={{ fontSize: '0.8rem', color: '#94A3B8', marginTop: '10px' }}>
+              We respect your inbox. Unsubscribe anytime in accordance with our <Link to="/privacy" style={{ color: 'var(--cyan-accent)' }}>Privacy Policy</Link>.
+            </p>
           </div>
         </div>
       </section>

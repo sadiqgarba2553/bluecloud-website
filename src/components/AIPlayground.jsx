@@ -13,7 +13,7 @@ const AIPlayground = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const sampleInputs = {
-    summarizer: `BlueCloud Technologies is an enterprise web engineering and AI integration company headquartered in Mabushi, Abuja. We build custom React web applications, scalable node backends, cloud database infrastructure, and custom Gemini LLM integrations for financial institutions, tech startups, and government entities. Our systems process over 10,000 requests per minute with guaranteed 99.9% uptime and zero security breaches.`,
+    summarizer: `BlueCloud Technologies is an enterprise web engineering and AI integration company headquartered in Mabushi, Abuja. We build custom React web applications, scalable node backends, cloud database infrastructure, and custom Gemini LLM integrations for financial institutions, tech startups, and government entities. Our systems are engineered for high availability with robust zero-trust security and end-to-end data encryption.`,
     code: `function calculateTotal(items) {
   let total = 0;
   for(let i=0; i<items.length; i++) {
@@ -48,7 +48,7 @@ const AIPlayground = () => {
         // Fallback intelligent response generator for demo mode
         setTimeout(() => {
           if (activeTab === 'summarizer') {
-            setOutput(`EXECUTIVE SUMMARY:\n- Core Domain: Enterprise Web Engineering & Applied AI Solutions.\n- Headquarters: Mabushi, Abuja, Nigeria.\n- Performance: 10,000+ req/min, 99.9% guaranteed uptime.\n- Security: High-grade infrastructure with multi-tier encryption.`);
+            setOutput(`EXECUTIVE SUMMARY:\n- Core Domain: Enterprise Web Engineering & Applied AI Solutions.\n- Headquarters: Mabushi, Abuja, Nigeria.\n- Architecture: Resilient cloud infrastructure with high-availability clustering.\n- Security: Zero-trust protocols, NDPA compliance & multi-tier data encryption.`);
           } else if (activeTab === 'code') {
             setOutput(`SECURITY & PERFORMANCE AUDIT:\n1. Array Optimization: Replace imperative 'for' loop with array.reduce() for cleaner functional immutability.\n2. Validation Check: Add explicit null/undefined check for 'items' parameter to prevent runtime crashes.\n3. Floating Point Safety: Format output with Number.prototype.toFixed(2) for currency handling.`);
           } else {

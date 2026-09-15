@@ -225,3 +225,32 @@ img {
     -webkit-backdrop-filter: none !important;
   }
 }
+
+/* =========================================================
+   KEYBOARD ACCESSIBILITY & FOCUS INDICATORS
+   ========================================================= */
+:focus-visible {
+  outline: 2.5px solid var(--primary-blue) !important;
+  outline-offset: 2px !important;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2.5px solid var(--primary-blue) !important;
+  outline-offset: 2px !important;
+}
+
+/* Form input contrast and focus elevation */
+input, textarea, select {
+  border: 1px solid #cbd5e1;
+  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(11, 95, 255, 0.15);
+}
+

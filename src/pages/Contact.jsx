@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { MapPin, Phone, Mail, Clock, ShieldCheck } from 'lucide-react';
 import SEO from '../components/SEO';
 import './Contact.css';
 
 const Contact = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [consentAgreed, setConsentAgreed] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -19,6 +21,10 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!consentAgreed) {
+      alert("Please agree to the Terms & Conditions and Privacy Policy to submit.");
+      return;
+    }
     setIsSubmitting(true);
     
     try {
@@ -30,7 +36,8 @@ const Contact = () => {
         },
         body: JSON.stringify({
           access_key: '0ec62a62-2bec-47cb-9e5f-cb2ac429f907',
-          ...formData
+          ...formData,
+          consent: 'Agreed to Terms and Privacy Policy'
         })
       });
 
@@ -39,6 +46,7 @@ const Contact = () => {
       if (result.success) {
         setIsSubmitted(true);
         setFormData({ name: '', email: '', subject: '', message: '' });
+        setConsentAgreed(false);
         setTimeout(() => setIsSubmitted(false), 5000);
       } else {
         alert("Something went wrong. Please try again.");
@@ -115,6 +123,7 @@ const Contact = () => {
 
             <div className="map-wrapper" style={{ marginTop: 'var(--spacing-4)', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid #CBD5E1' }}>
               <iframe 
+                title="BlueCloud Technologies Office Location, Mabushi, Abuja"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15882.355152541347!2d7.4332906!3d9.0664539!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x104e0b38c2380327%3A0xc0dbbf33dfc2789!2sMabushi%2C%20Abuja!5e0!3m2!1sen!2sng!4v1700000000000!5m2!1sen!2sng" 
                 width="100%" 
                 height="250" 
@@ -148,6 +157,21 @@ const Contact = () => {
               <div className="form-group">
                 <label htmlFor="message" className="form-label">Message</label>
                 <textarea id="message" value={formData.message} onChange={handleChange} className="form-control" placeholder="Describe your project requirements..." required></textarea>
+              </div>
+
+              {/* Form Consent Checkbox */}
+              <div className="form-group" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', margin: '16px 0 20px 0' }}>
+                <input 
+                  type="checkbox" 
+                  id="consentCheckbox" 
+                  checked={consentAgreed} 
+                  onChange={(e) => setConsentAgreed(e.target.checked)} 
+                  required 
+                  style={{ marginTop: '3px', width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--primary-blue)' }}
+                />
+                <label htmlFor="consentCheckbox" style={{ fontSize: '0.88rem', color: 'var(--slate-text)', cursor: 'pointer', lineHeight: '1.4' }}>
+                  I agree to the <Link to="/terms" target="_blank" style={{ color: 'var(--primary-blue)', textDecoration: 'underline' }}>Terms & Conditions</Link> and consent to BlueCloud Technologies processing my details according to the <Link to="/privacy" target="_blank" style={{ color: 'var(--primary-blue)', textDecoration: 'underline' }}>Privacy Policy</Link>.
+                </label>
               </div>
               
               <button type="submit" className="btn-primary" disabled={isSubmitting} style={{ width: '100%', backgroundColor: isSubmitted ? 'var(--mint-accent)' : 'var(--primary-blue)', color: isSubmitted ? 'var(--deep-navy)' : 'var(--white)', opacity: isSubmitting ? 0.7 : 1 }}>
