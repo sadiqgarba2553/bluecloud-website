@@ -381,42 +381,42 @@
                 <tr>
                   <td><strong>Installation successful</strong></td>
                   <td><code>0</code></td>
-                  <td>Installation completed successfully. All application binaries, media codecs, shortcuts, and uninstall keys were written.</td>
+                  <td>Installation completed successfully (ERROR_SUCCESS). All application binaries, media codecs, shortcuts, and uninstall keys were written.</td>
                 </tr>
                 <tr>
                   <td><strong>Installation already in progress</strong></td>
-                  <td><code>2</code></td>
-                  <td>Another setup process is actively running. The NSIS installer mutex is held. The user must finish or terminate the existing installation.</td>
+                  <td><code>1618</code></td>
+                  <td>Another setup process is actively running (ERROR_INSTALL_ALREADY_RUNNING). The installer mutex is held. The user must finish or terminate the existing installation.</td>
                 </tr>
                 <tr>
                   <td><strong>Disk space is full</strong></td>
-                  <td><code>2</code></td>
-                  <td>The target volume does not have sufficient free disk space to extract files. NSIS aborts with code 2.</td>
+                  <td><code>112</code></td>
+                  <td>The target volume does not have sufficient free disk space to extract files (ERROR_DISK_FULL).</td>
                 </tr>
                 <tr>
                   <td><strong>Reboot required</strong></td>
                   <td><code>3010</code></td>
-                  <td>Installation finished but a system restart is required because files in use were queued for replacement on reboot.</td>
+                  <td>Installation finished but a system restart is required (ERROR_SUCCESS_REBOOT_REQUIRED).</td>
                 </tr>
                 <tr>
                   <td><strong>Network failure</strong></td>
-                  <td><code>2</code></td>
-                  <td>Network download or resource fetch failed. All primary Coneic binaries are bundled locally, so network errors during base setup are avoided.</td>
+                  <td><code>12029</code></td>
+                  <td>Network download or remote resource connection failed (ERROR_INTERNET_CANNOT_CONNECT).</td>
                 </tr>
                 <tr>
                   <td><strong>Package rejected during installation</strong></td>
-                  <td><code>2</code></td>
-                  <td>Execution blocked by operating system security policies, missing administrative elevation (UAC), or antivirus restriction.</td>
+                  <td><code>1625</code></td>
+                  <td>Execution blocked by operating system security policies, missing administrative elevation (UAC), or antivirus restriction (ERROR_INSTALL_PACKAGE_REJECTED).</td>
                 </tr>
                 <tr>
                   <td><strong>Installation cancelled by user</strong></td>
-                  <td><code>1</code></td>
-                  <td>The user aborted setup by clicking Cancel, pressing Escape, or closing the installer dialog before completion.</td>
+                  <td><code>1602</code></td>
+                  <td>The user aborted setup by clicking Cancel, pressing Escape, or closing the installer dialog before completion (ERROR_INSTALL_USEREXIT).</td>
                 </tr>
                 <tr>
                   <td><strong>Application already exists</strong></td>
-                  <td><code>0</code></td>
-                  <td>An existing installation was detected and updated in-place cleanly without requiring removal first. Returns 0 on success.</td>
+                  <td><code>1638</code></td>
+                  <td>An existing version is already installed (ERROR_PRODUCT_VERSION).</td>
                 </tr>
               </tbody>
             </table>
