@@ -194,6 +194,10 @@ const ConeicInstallerCodes = () => {
                     <td>LibVLC 3.0.x Media Engine</td>
                   </tr>
                   <tr>
+                    <td><strong>Package Download URL</strong></td>
+                    <td><code>https://bluecloudai.online/coneic/downloads/1.0.0/Coneic.exe</code></td>
+                  </tr>
+                  <tr>
                     <td><strong>Privacy Policy URL</strong></td>
                     <td><a href="https://bluecloudai.online/coneic/privacy">https://bluecloudai.online/coneic/privacy</a></td>
                   </tr>
