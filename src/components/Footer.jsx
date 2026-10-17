@@ -61,6 +61,7 @@ const Footer = () => {
             <h4>Legal & Governance</h4>
             <ul>
               <li><Link to="/privacy">Privacy Policy (NDPA/GDPR)</Link></li>
+              <li><Link to="/coneic/privacy">Coneic Player Privacy</Link></li>
               <li><Link to="/terms">Terms & Conditions</Link></li>
               <li><Link to="/refund">Refund & Cancellation</Link></li>
               <li><Link to="/cookies">Cookie Policy</Link></li>

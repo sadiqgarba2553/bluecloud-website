@@ -26,5 +26,6 @@
 /cargoledger/*               /cargoledger/:splat          200!
 /wifi-master/*                /wifi-master/:splat          200!
 /wifi.html                   /wifi.html                   200!
+/coneic/*                    /coneic/:splat               200!
 /*                           /index.html                  200
 

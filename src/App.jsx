@@ -23,6 +23,8 @@ import Investors from './pages/Investors';
 
 // Legal & Compliance Imports
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import ConeicPrivacyPolicy from './pages/ConeicPrivacyPolicy';
+import ConeicInstallerCodes from './pages/ConeicInstallerCodes';
 import Terms from './pages/Terms';
 import RefundPolicy from './pages/RefundPolicy';
 import CookiesPolicy from './pages/CookiesPolicy';
@@ -61,6 +63,12 @@ function App() {
           {/* Legal & Compliance Routes */}
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/coneic/privacy" element={<ConeicPrivacyPolicy />} />
+          <Route path="/coneic/privacy-policy" element={<ConeicPrivacyPolicy />} />
+          <Route path="/coneic-privacy" element={<ConeicPrivacyPolicy />} />
+          <Route path="/coneic/installer-codes" element={<ConeicInstallerCodes />} />
+          <Route path="/coneic/installer-exit-codes" element={<ConeicInstallerCodes />} />
+          <Route path="/coneic" element={<ConeicPrivacyPolicy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/terms-and-conditions" element={<Terms />} />
           <Route path="/refund" element={<RefundPolicy />} />

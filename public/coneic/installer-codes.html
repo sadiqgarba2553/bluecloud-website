@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coneic Installer Return Codes — NSIS Exit Code Documentation | BlueCloud AI Technologies</title>
+  <meta name="description" content="Official NSIS installer exit codes and return values for Coneic Windows desktop media player. Required documentation for Microsoft Partner Center Store submission, Intune, Winget, and SCCM deployments." />
+  <link rel="canonical" href="https://bluecloudai.online/coneic/installer-codes" />
+  <link rel="icon" type="image/png" href="/icon_no_background.PNG" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Coneic Installer Return Codes — BlueCloud AI Technologies" />
+  <meta property="og:description" content="Official NSIS installer exit codes for Coneic Windows media player. Microsoft Partner Center documentation." />
+  <meta property="og:url" content="https://bluecloudai.online/coneic/installer-codes" />
+  <meta property="og:image" content="https://bluecloudai.online/icon_no_background.PNG" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #070c14;
+      --card-bg: rgba(15, 23, 42, 0.8);
+      --card-border: rgba(56, 189, 248, 0.18);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #38bdf8;
+      --accent: #0284c7;
+      --table-border: #1e293b;
+      --table-header: rgba(30, 41, 59, 0.7);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(ellipse at 50% 0%, rgba(14, 165, 233, 0.15), transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(30, 41, 59, 0.4), transparent 40%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      line-height: 1.75;
+      font-size: 16px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-bar {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      background: rgba(7, 12, 20, 0.85);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-inner {
+      max-width: 960px; margin: 0 auto; padding: 16px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand-link {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; color: #fff; font-weight: 700; font-size: 1.05rem;
+    }
+    .brand-link img { width: 28px; height: 28px; }
+    .nav-actions { display: flex; align-items: center; gap: 12px; }
+    .btn-action {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px; border-radius: 8px; font-size: 0.85rem;
+      font-weight: 600; text-decoration: none; cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-outline {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #e2e8f0;
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      border: 1px solid rgba(56, 189, 248, 0.4); color: #fff;
+    }
+
+    .main-wrap { flex: 1; max-width: 960px; width: 100%; margin: 0 auto; padding: 48px 24px 80px; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25);
+      color: var(--primary); padding: 6px 14px; border-radius: 9999px;
+      font-size: 0.82rem; font-weight: 600; margin-bottom: 18px;
+    }
+    h1 {
+      font-size: 2.5rem; line-height: 1.2; font-weight: 800;
+      letter-spacing: -0.03em; margin-bottom: 16px; color: #fff;
+    }
+    .hero-meta {
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      color: var(--text-muted); font-size: 0.95rem;
+      padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 32px;
+    }
+    .hero-meta strong { color: #e2e8f0; }
+
+    .content-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 16px; padding: 36px;
+      box-shadow: 0 10px 35px -10px rgba(0,0,0,0.5);
+    }
+    .highlight-box {
+      border-left: 4px solid var(--primary); border-radius: 0 10px 10px 0;
+      padding: 18px 22px; margin-bottom: 28px;
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(30, 41, 59, 0.25) 100%);
+    }
+    .highlight-box p { color: #cbd5e1; font-size: 0.98rem; margin: 0; }
+    .highlight-green { border-left-color: #22c55e; }
+
+    h2 {
+      font-size: 1.45rem; color: #fff; margin-top: 36px; margin-bottom: 14px;
+      font-weight: 700; display: flex; align-items: center; gap: 10px;
+      padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    h2:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+
+    p { color: #cbd5e1; margin-bottom: 16px; font-size: 1.02rem; }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.12);
+      color: var(--primary); padding: 2px 7px; border-radius: 6px; font-size: 0.9em;
+    }
+
+    .table-wrap {
+      overflow-x: auto; margin: 20px 0 28px;
+      border-radius: 10px; border: 1px solid var(--table-border);
+    }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem; }
+    th, td { padding: 12px 16px; border: 1px solid var(--table-border); }
+    th { background-color: var(--table-header); color: #fff; font-weight: 600; }
+    td { background-color: rgba(15, 23, 42, 0.4); color: #cbd5e1; }
+    tr:hover td { background-color: rgba(30, 41, 59, 0.5); }
+
+    .contact-card {
+      background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 12px; padding: 24px; margin-top: 36px;
+    }
+    .contact-card h3 { color: #fff; margin-bottom: 12px; font-size: 1.15rem; }
+    .contact-item { display: flex; gap: 10px; margin-bottom: 8px; color: #cbd5e1; }
+    .contact-item a { color: var(--primary); }
+
+    .footer {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      background: rgba(4, 7, 13, 0.95); padding: 32px 24px;
+      text-align: center; color: var(--text-muted); font-size: 0.9rem;
+    }
+    .footer a { color: var(--text-muted); text-decoration: none; margin: 0 8px; }
+    .footer a:hover { color: var(--primary); }
+
+    @media print {
+      body { background: #fff !important; color: #111827 !important; }
+      .header-bar, .footer, .btn-action { display: none !important; }
+      .content-card { border: none !important; box-shadow: none !important; padding: 0 !important; background: transparent !important; }
+      h1, h2, th, strong { color: #111827 !important; }
+      td, p, .hero-meta { color: #374151 !important; }
+      th { background: #f3f4f6 !important; }
+      td { background: #fff !important; }
+    }
+    @media (max-width: 640px) { h1 { font-size: 2rem; } .content-card { padding: 24px 18px; } }
+  </style>
+</head>
+<body>
+
+  <header class="header-bar">
+    <div class="header-inner">
+      <a href="https://bluecloudai.online" class="brand-link">
+        <img src="/icon_no_background.PNG" alt="BlueCloud Logo" />
+        <span>BLUECLOUD</span>
+      </a>
+      <div class="nav-actions">
+        <button onclick="window.print()" class="btn-action btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          Print
+        </button>
+        <a href="https://bluecloudai.online/coneic/privacy" class="btn-action btn-outline">Privacy Policy</a>
+        <a href="https://bluecloudai.online" class="btn-action btn-primary">Main Site</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-wrap">
+    <div class="badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+      CONEIC · MICROSOFT STORE DOCUMENTATION
+    </div>
+
+    <h1>Coneic Installer Return Codes</h1>
+
+    <div class="hero-meta">
+      <div><strong>Application:</strong> Coneic Media Player</div>
+      <div>•</div>
+      <div><strong>Developer:</strong> BlueCloud AI Technologies</div>
+      <div>•</div>
+      <div><strong>Installer:</strong> NSIS (EXE)</div>
+      <div>•</div>
+      <div><strong>Platform:</strong> Windows 10/11 x64</div>
+    </div>
+
+    <article class="content-card">
+
+      <div class="highlight-box">
+        <p>
+          <strong>What are installer return codes?</strong> When an installer process finishes or encounters an error, it returns an integer exit code. Microsoft Partner Center, Intune, SCCM, Winget, and other deployment tools evaluate this code to determine whether installation succeeded, failed, was cancelled, or requires a reboot.
+        </p>
+      </div>
+
+      <h2>1. Microsoft Partner Center — Installer Return Codes</h2>
+      <p>
+        The following table maps every field in the Microsoft Partner Center "Installer parameters and return codes" form to the exact NSIS exit code value for Coneic.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Microsoft Store Field</th>
+              <th>NSIS Exit Code</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Installation successful</strong></td>
+              <td><code>0</code></td>
+              <td>Installation has been successful. All files, registry entries, shortcuts, and uninstaller have been written without error.</td>
+            </tr>
+            <tr>
+              <td><strong>Installation already in progress</strong></td>
+              <td><code>2</code></td>
+              <td>Another installation is already in progress. The NSIS installer mutex is held by a concurrent setup process.</td>
+            </tr>
+            <tr>
+              <td><strong>Disk space is full</strong></td>
+              <td><code>2</code></td>
+              <td>The disk space is full. NSIS returns exit code 2 when a write or extraction operation fails due to insufficient storage.</td>
+            </tr>
+            <tr>
+              <td><strong>Reboot required</strong></td>
+              <td><code>3010</code></td>
+              <td>A restart is required to complete the install. Returned when locked files require replacement after reboot.</td>
+            </tr>
+            <tr>
+              <td><strong>Network failure</strong></td>
+              <td><code>2</code></td>
+              <td>Network-related failure. Coneic bundles all files locally, so network failures are not expected during normal installation.</td>
+            </tr>
+            <tr>
+              <td><strong>Package rejected during installation</strong></td>
+              <td><code>2</code></td>
+              <td>Package rejected due to a security policy. NSIS returns 2 when UAC elevation fails or antivirus blocks execution.</td>
+            </tr>
+            <tr>
+              <td><strong>Installation cancelled by user</strong></td>
+              <td><code>1</code></td>
+              <td>The user clicked Cancel, pressed Escape, or closed the installer window before completion.</td>
+            </tr>
+            <tr>
+              <td><strong>Application already exists</strong></td>
+              <td><code>0</code></td>
+              <td>Coneic performs an in-place upgrade when an existing version is detected, returning 0 on success.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>2. Complete NSIS Exit Code Reference</h2>
+      <p>Standard return values from every NSIS-compiled installer:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Exit Code</th>
+              <th>Status</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>0</code></td>
+              <td>Success</td>
+              <td>Normal execution completed. All files extracted, registry keys written, shortcuts created successfully.</td>
+            </tr>
+            <tr>
+              <td><code>1</code></td>
+              <td>User Abort</td>
+              <td>Installation was cancelled by the user clicking Cancel or closing the installer window.</td>
+            </tr>
+            <tr>
+              <td><code>2</code></td>
+              <td>Script / System Abort</td>
+              <td>Installation aborted by the installer script or OS. Covers extraction failures, CRC errors, insufficient disk, write denials, missing elevation, security blocks, and network failures.</td>
+            </tr>
+            <tr>
+              <td><code>3010</code></td>
+              <td>Reboot Required</td>
+              <td>Installation succeeded but a system restart is required for locked files to be replaced.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>3. Silent Installation Command</h2>
+      <div class="highlight-box">
+        <p>
+          <strong>Install (silent):</strong> <code>ConeicSetup.exe /S</code><br>
+          <strong>Install to custom directory:</strong> <code>ConeicSetup.exe /S /D=C:\Program Files\Coneic</code><br>
+          <strong>Uninstall (silent):</strong> <code>"C:\Program Files\Coneic\uninstall.exe" /S</code>
+        </p>
+      </div>
+      <p>The <code>/S</code> flag runs NSIS in fully silent mode. The <code>/D=</code> switch overrides the default directory. Both are case-sensitive.</p>
+
+      <h2>4. Documentation URL for Partner Center</h2>
+      <p>When the submission form asks for a public documentation URL:</p>
+      <div class="highlight-box highlight-green">
+        <p><code style="font-size: 1.05rem;">https://bluecloudai.online/coneic/installer-codes</code></p>
+      </div>
+
+      <h2>5. Application Details</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Property</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Application Name</strong></td><td>Coneic</td></tr>
+            <tr><td><strong>Publisher</strong></td><td>BlueCloud AI Technologies</td></tr>
+            <tr><td><strong>Category</strong></td><td>Multimedia / Media Player</td></tr>
+            <tr><td><strong>Platform</strong></td><td>Windows 10 and Windows 11 (x64)</td></tr>
+            <tr><td><strong>Installer Technology</strong></td><td>NSIS (Nullsoft Scriptable Install System)</td></tr>
+            <tr><td><strong>Installer Type</strong></td><td>EXE (NSIS-compiled)</td></tr>
+            <tr><td><strong>Runtime</strong></td><td>.NET 8.0 (self-contained, bundled)</td></tr>
+            <tr><td><strong>Media Engine</strong></td><td>LibVLC 3.0.24 via LibVLCSharp 3.10.2</td></tr>
+            <tr><td><strong>UI Framework</strong></td><td>WPF (Windows Presentation Foundation)</td></tr>
+            <tr><td><strong>Silent Install</strong></td><td><code>ConeicSetup.exe /S</code></td></tr>
+            <tr><td><strong>Silent Uninstall</strong></td><td><code>"C:\Program Files\Coneic\uninstall.exe" /S</code></td></tr>
+            <tr><td><strong>Privacy Policy</strong></td><td><a href="https://bluecloudai.online/coneic/privacy">https://bluecloudai.online/coneic/privacy</a></td></tr>
+            <tr><td><strong>Installer Codes</strong></td><td><code>https://bluecloudai.online/coneic/installer-codes</code></td></tr>
+            <tr><td><strong>Publisher Website</strong></td><td><a href="https://bluecloudai.online">https://bluecloudai.online</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="contact-card">
+        <h3>Publisher Contact</h3>
+        <div class="contact-item"><strong>Developer:</strong> BlueCloud AI Technologies</div>
+        <div class="contact-item"><strong>Website:</strong> <a href="https://bluecloudai.online" target="_blank">bluecloudai.online</a></div>
+        <div class="contact-item"><strong>Support:</strong> <a href="mailto:sadeeqsgi@icloud.com">sadeeqsgi@icloud.com</a></div>
+        <div class="contact-item"><strong>Documentation:</strong> <code>https://bluecloudai.online/coneic/installer-codes</code></div>
+      </div>
+
+    </article>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 BlueCloud AI Technologies. Coneic.</p>
+    <div style="margin-top: 10px;">
+      <a href="https://bluecloudai.online/coneic/privacy">Coneic Privacy Policy</a>
+      <span>&bull;</span>
+      <a href="https://bluecloudai.online/privacy">BlueCloud Privacy</a>
+      <span>&bull;</span>
+      <a href="https://bluecloudai.online/terms">Terms of Service</a>
+    </div>
+  </footer>
+
+</body>
+</html>
