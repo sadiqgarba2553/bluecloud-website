@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coneic Privacy Policy — Windows Media Player | BlueCloud AI Technologies</title>
+  <title>Coneic Privacy Policy | BlueCloud AI Technologies</title>
   <meta name="description" content="Official Privacy Policy for Coneic, a Windows desktop media player developed by BlueCloud AI Technologies. Learn about our local data handling, network streams, and security practices." />
   <link rel="canonical" href="https://bluecloudai.online/coneic/privacy" />
   
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="/icon_no_background.PNG" />
 
-  <!-- Open Graph / Meta -->
+  <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Coneic Privacy Policy — BlueCloud AI Technologies" />
   <meta property="og:description" content="Official Privacy Policy for Coneic, a Windows desktop media player developed by BlueCloud AI Technologies." />
@@ -19,22 +19,18 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --bg: #070c14;
-      --card-bg: rgba(15, 23, 42, 0.75);
-      --card-border: rgba(56, 189, 248, 0.15);
-      --card-border-hover: rgba(56, 189, 248, 0.35);
-      --text-main: #f1f5f9;
-      --text-muted: #94a3b8;
-      --primary: #38bdf8;
-      --primary-glow: rgba(56, 189, 248, 0.25);
-      --accent: #0284c7;
-      --highlight: rgba(14, 165, 233, 0.12);
-      --badge-bg: rgba(56, 189, 248, 0.1);
-      --badge-border: rgba(56, 189, 248, 0.25);
+      --primary-blue: #0B5FFF;
+      --deep-navy: #0A1A2F;
+      --cyan-accent: #22D3EE;
+      --white: #FFFFFF;
+      --light-gray: #F4F6F9;
+      --slate-text: #4A5568;
+      --font-heading: 'Poppins', sans-serif;
+      --font-body: 'Inter', sans-serif;
     }
 
     * {
@@ -44,517 +40,409 @@
     }
 
     body {
-      background-color: var(--bg);
-      background-image: 
-        radial-gradient(ellipse at 50% 0%, rgba(14, 165, 233, 0.15), transparent 50%),
-        radial-gradient(circle at 100% 100%, rgba(30, 41, 59, 0.4), transparent 40%);
-      background-attachment: fixed;
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      line-height: 1.75;
-      font-size: 16px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      background-color: var(--white);
+      color: var(--slate-text);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .header-bar {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(12px);
-      background: rgba(7, 12, 20, 0.85);
+    a {
+      color: var(--primary-blue);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    a:hover {
+      color: var(--deep-navy);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header Nav */
+    .site-header {
+      background: var(--white);
+      border-bottom: 1px solid #e2e8f0;
       position: sticky;
       top: 0;
       z-index: 100;
     }
-
-    .header-inner {
-      max-width: 920px;
-      margin: 0 auto;
-      padding: 16px 24px;
+    .nav-container {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      height: 72px;
     }
-
     .brand-link {
       display: flex;
       align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: #ffffff;
+      gap: 10px;
+      font-family: var(--font-heading);
       font-weight: 700;
-      font-size: 1.05rem;
-      letter-spacing: -0.01em;
+      font-size: 1.25rem;
+      color: var(--deep-navy);
     }
-
     .brand-link img {
-      width: 28px;
-      height: 28px;
-      object-fit: contain;
+      height: 32px;
     }
-
-    .nav-actions {
+    .nav-links {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 24px;
+      list-style: none;
     }
-
-    .btn-action {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-
-    .btn-outline {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #e2e8f0;
-    }
-
-    .btn-outline:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.3);
-      color: #ffffff;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      color: #ffffff;
-      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.3);
-    }
-
-    .btn-primary:hover {
-      box-shadow: 0 4px 16px rgba(56, 189, 248, 0.4);
-      transform: translateY(-1px);
-    }
-
-    .main-wrap {
-      flex: 1;
-      max-width: 920px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 48px 24px 80px;
-    }
-
-    .hero-banner {
-      margin-bottom: 40px;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--badge-bg);
-      border: 1px solid var(--badge-border);
-      color: var(--primary);
-      padding: 6px 14px;
-      border-radius: 9999px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      margin-bottom: 18px;
-      letter-spacing: 0.02em;
-    }
-
-    .hero-banner h1 {
-      font-size: 2.75rem;
-      line-height: 1.15;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 16px;
-      background: linear-gradient(180deg, #ffffff 30%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-meta {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      color: var(--text-muted);
+    .nav-links a {
+      color: var(--slate-text);
+      font-weight: 500;
       font-size: 0.95rem;
-      padding-bottom: 24px;
+    }
+    .nav-links a:hover {
+      color: var(--primary-blue);
+    }
+    .btn-quote {
+      background: var(--primary-blue);
+      color: var(--white) !important;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .btn-quote:hover {
+      opacity: 0.9;
+    }
+
+    /* Legal Page Layout */
+    .legal-page {
+      padding: 0 0 96px 0;
+      min-height: 80vh;
+      background-color: var(--white);
+    }
+
+    .legal-header {
+      background: linear-gradient(135deg, var(--deep-navy) 0%, #15253e 100%);
+      color: var(--white);
+      padding: 64px 0;
+      margin-bottom: 48px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .hero-meta strong {
-      color: #e2e8f0;
+    .legal-header h1 {
+      font-family: var(--font-heading);
+      color: var(--white);
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
     }
 
-    .privacy-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 36px;
-      box-shadow: 0 10px 35px -10px rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(10px);
+    .legal-header p {
+      color: #94a3b8;
+      font-size: 1.1rem;
+      max-width: 700px;
     }
 
-    .summary-box {
-      background: linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(30, 41, 59, 0.25) 100%);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      border-radius: 12px;
-      padding: 22px 26px;
-      margin-bottom: 36px;
-    }
-
-    .summary-box h3 {
-      color: var(--primary);
-      font-size: 1rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 12px;
-      display: flex;
+    .legal-meta-badge {
+      display: inline-flex;
       align-items: center;
       gap: 8px;
+      background: rgba(34, 211, 238, 0.12);
+      color: var(--cyan-accent);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      border: 1px solid rgba(34, 211, 238, 0.25);
     }
 
-    .summary-box ul {
-      list-style-type: none;
-      display: grid;
-      gap: 10px;
+    .legal-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
     }
 
-    .summary-box li {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 0.95rem;
-      color: #cbd5e1;
-    }
-
-    .summary-box li::before {
-      content: "✓";
-      color: var(--primary);
-      font-weight: bold;
-    }
-
-    .intro-paragraph {
-      font-size: 1.12rem;
-      color: #cbd5e1;
-      margin-bottom: 32px;
+    .legal-content {
+      color: var(--slate-text);
+      font-size: 1.05rem;
       line-height: 1.8;
     }
 
-    .section {
-      margin-top: 36px;
-      padding-top: 24px;
-      border-top: 1px solid rgba(255, 255, 255, 0.07);
-    }
-
-    .section h2 {
-      font-size: 1.45rem;
-      color: #ffffff;
-      margin-bottom: 14px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .section-num {
-      color: var(--primary);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.1rem;
-    }
-
-    .section p {
-      color: #cbd5e1;
+    .legal-content h2 {
+      font-family: var(--font-heading);
+      color: var(--deep-navy);
+      font-size: 1.6rem;
+      margin-top: 48px;
       margin-bottom: 16px;
-      font-size: 1.02rem;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--light-gray);
+      letter-spacing: -0.015em;
     }
 
-    .section p:last-child {
-      margin-bottom: 0;
+    .legal-content p {
+      margin-bottom: 20px;
     }
 
-    .highlight-pill {
-      background: var(--highlight);
-      border-left: 3px solid var(--primary);
-      padding: 16px 20px;
+    .legal-content strong {
+      color: var(--deep-navy);
+    }
+
+    .legal-highlight-box {
+      background-color: var(--light-gray);
+      border-left: 4px solid var(--primary-blue);
+      padding: 20px 24px;
       border-radius: 0 8px 8px 0;
-      margin: 18px 0;
+      margin: 28px 0;
     }
-
-    .highlight-pill p {
-      color: #e2e8f0;
+    .legal-highlight-box p {
       margin-bottom: 0;
     }
 
-    .contact-card {
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(56, 189, 248, 0.3);
+    .legal-contact-card {
+      background: var(--light-gray);
+      border: 1px solid #e2e8f0;
       border-radius: 12px;
-      padding: 24px;
-      margin-top: 24px;
+      padding: 32px;
+      margin-top: 48px;
     }
 
-    .contact-card h4 {
-      color: #ffffff;
-      font-size: 1.15rem;
-      margin-bottom: 12px;
+    .legal-contact-card h3 {
+      font-family: var(--font-heading);
+      color: var(--deep-navy);
+      margin-bottom: 16px;
+      font-size: 1.25rem;
     }
 
-    .contact-row {
+    .legal-contact-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-      color: #cbd5e1;
-      font-size: 0.98rem;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
     }
 
-    .contact-row a {
-      color: var(--primary);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    .footer {
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(4, 7, 13, 0.95);
-      padding: 32px 24px;
-      text-align: center;
-      color: var(--text-muted);
+    /* Footer */
+    .site-footer {
+      background: #0A1A2F;
+      color: #94a3b8;
+      padding: 64px 0 32px;
       font-size: 0.9rem;
     }
-
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 12px;
-      flex-wrap: wrap;
+    .footer-content {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
     }
-
+    .footer-brand h4 {
+      color: #fff;
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+    }
+    .footer-links h4 {
+      color: #fff;
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+    .footer-links ul {
+      list-style: none;
+    }
+    .footer-links li {
+      margin-bottom: 10px;
+    }
     .footer-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: color 0.2s;
+      color: #94a3b8;
     }
-
     .footer-links a:hover {
-      color: var(--primary);
+      color: #fff;
+    }
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
-    @media print {
-      body {
-        background: #ffffff !important;
-        color: #111827 !important;
-      }
-      .header-bar, .nav-actions, .footer, .btn-action {
-        display: none !important;
-      }
-      .privacy-card {
-        border: none !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-        background: transparent !important;
-      }
-      .hero-banner h1 {
-        color: #111827 !important;
-        -webkit-text-fill-color: initial !important;
-      }
-      .section h2, .section-num, strong, h3, h4 {
-        color: #111827 !important;
-      }
-      .section p, .hero-meta, .summary-box li {
-        color: #374151 !important;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .hero-banner h1 {
+    @media (max-width: 768px) {
+      .legal-header h1 {
         font-size: 2rem;
       }
-      .privacy-card {
-        padding: 24px 18px;
+      .nav-links {
+        display: none;
+      }
+      .footer-content {
+        grid-template-columns: 1fr;
+        gap: 32px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Sticky Nav -->
-  <header class="header-bar">
-    <div class="header-inner">
-      <a href="https://bluecloudai.online" class="brand-link" title="BlueCloud AI Technologies">
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="/" class="brand-link">
         <img src="/icon_no_background.PNG" alt="BlueCloud Logo" />
         <span>BLUECLOUD</span>
       </a>
-      <div class="nav-actions">
-        <button onclick="window.print()" class="btn-action btn-outline" title="Print this policy">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-          <span>Print</span>
-        </button>
-        <a href="https://bluecloudai.online" class="btn-action btn-primary">
-          <span>Main Site</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
-        </a>
-      </div>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/platform">Platform</a></li>
+        <li><a href="/developers">Developers</a></li>
+        <li><a href="/enterprise">Enterprise</a></li>
+        <li><a href="/services">Services</a></li>
+        <li><a href="/projects">Projects</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact" class="btn-quote">Get a Quote</a></li>
+      </ul>
     </div>
   </header>
 
-  <main class="main-wrap">
-    
-    <!-- Hero Banner -->
-    <div class="hero-banner">
-      <div class="badge">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-        <span>CONEIC · BLUECLOUD AI TECHNOLOGIES</span>
-      </div>
-      <h1>Coneic Privacy Policy</h1>
-      <div class="hero-meta">
-        <div><strong>Effective date:</strong> October 17, 2026</div>
-        <div>•</div>
-        <div><strong>Developer:</strong> BlueCloud AI Technologies</div>
-        <div>•</div>
-        <div><strong>Platform:</strong> Windows Desktop Media Player</div>
+  <!-- Legal Page Content -->
+  <div class="legal-page">
+    <div class="legal-header">
+      <div class="container">
+        <div class="legal-meta-badge">
+          <span>&#x1F5A5;</span> Windows Desktop Application
+        </div>
+        <h1>Coneic Privacy Policy</h1>
+        <p>
+          This Privacy Policy describes how Coneic, a Windows desktop media player developed by BlueCloud AI Technologies, handles information when you use the application.
+        </p>
       </div>
     </div>
 
-    <!-- Main Card -->
-    <article class="privacy-card">
+    <div class="container">
+      <div class="legal-container">
+        <div class="legal-content">
 
-      <!-- Summary Box -->
-      <div class="summary-box">
-        <h3>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          Key Privacy Commitments
-        </h3>
-        <ul>
-          <li><strong>Local Playback Only:</strong> Coneic does not require an account or collect personal information to play files.</li>
-          <li><strong>No Data Brokering:</strong> BlueCloud AI Technologies does not sell your personal data.</li>
-          <li><strong>Direct Stream Routing:</strong> Network streams contact only the servers you configure.</li>
-          <li><strong>Open VLC Technology:</strong> Based on battle-tested VideoLAN media player technology.</li>
-        </ul>
-      </div>
+          <div class="legal-highlight-box">
+            <p>
+              <strong>Effective Date:</strong> October 17, 2026 | <strong>Product:</strong> Coneic Windows Media Player | <strong>Publisher:</strong> BlueCloud AI Technologies
+            </p>
+          </div>
 
-      <p class="intro-paragraph">
-        This Privacy Policy describes how <strong>Coneic</strong>, a Windows desktop media player developed by <strong>BlueCloud AI Technologies</strong>, handles information when you use the application. Please read it alongside any privacy notices for external services you choose to access through Coneic.
-      </p>
-
-      <!-- Section 1 -->
-      <div class="section">
-        <h2><span class="section-num">1.</span> Media and local information</h2>
-        <p>
-          Coneic needs access to media files you choose to open in order to play them. Depending on the features enabled in your version, Coneic may store preferences, playlists, playback history, and other application data locally on your computer. These files and settings are used to provide media playback and your selected features.
-        </p>
-      </div>
-
-      <!-- Section 2 -->
-      <div class="section">
-        <h2><span class="section-num">2.</span> Accounts and personal information</h2>
-        <p>
-          Ordinary local playback does not require a Coneic account. Coneic is not designed to request your name, address, or payment information for local playback. This statement does not cover information you independently provide to third-party streaming services.
-        </p>
-      </div>
-
-      <!-- Section 3 -->
-      <div class="section">
-        <h2><span class="section-num">3.</span> Network features</h2>
-        <p>
-          If you open a network stream, your device connects to the selected remote server. That server may receive technical connection information, including your IP address, and may apply its own privacy policy. Depending on the configuration and included components, update checks, metadata retrieval, or other network features may also make requests to external services.
-        </p>
-      </div>
-
-      <!-- Section 4 -->
-      <div class="section">
-        <h2><span class="section-num">4.</span> Analytics, diagnostics, and advertising</h2>
-        <p>
-          BlueCloud AI Technologies should disclose any analytics, crash reporting, telemetry, advertising, or other external data collection implemented in the released version of Coneic. This policy does not authorize undisclosed collection of personal information.
-        </p>
-      </div>
-
-      <!-- Section 5 -->
-      <div class="section">
-        <h2><span class="section-num">5.</span> Sharing and disclosure</h2>
-        <p>
-          BlueCloud AI Technologies does not sell personal information obtained through Coneic. Information may be disclosed when legally required or when necessary to provide a network feature you initiate, subject to the practices of the relevant third-party service.
-        </p>
-      </div>
-
-      <!-- Section 6 -->
-      <div class="section">
-        <h2><span class="section-num">6.</span> Storage, retention, and choices</h2>
-        <p>
-          Locally stored preferences, playlists, and history may remain on your device until you clear them or remove the application data. You control which local files and network streams you open. Removing Coneic may not automatically remove all user-created playlists or configuration files.
-        </p>
-      </div>
-
-      <!-- Section 7 -->
-      <div class="section">
-        <h2><span class="section-num">7.</span> Third-party software</h2>
-        <div class="highlight-pill">
           <p>
-            Coneic is based on VLC media player technology from the VideoLAN project. Third-party libraries and services may be subject to their own licenses and policies. Coneic is not represented as an official VideoLAN product.
+            Please read this policy alongside any privacy notices for external services you choose to access through Coneic.
           </p>
+
+          <h2>1. Media and Local Information</h2>
+          <p>
+            Coneic needs access to media files you choose to open in order to play them. Depending on the features enabled in your version, Coneic may store preferences, playlists, playback history, and other application data locally on your computer. These files and settings are used to provide media playback and your selected features.
+          </p>
+
+          <h2>2. Accounts and Personal Information</h2>
+          <p>
+            Ordinary local playback does not require a Coneic account. Coneic is not designed to request your name, address, or payment information for local playback. This statement does not cover information you independently provide to third-party streaming services.
+          </p>
+
+          <h2>3. Network Features</h2>
+          <p>
+            If you open a network stream, your device connects to the selected remote server. That server may receive technical connection information, including your IP address, and may apply its own privacy policy. Depending on the configuration and included components, update checks, metadata retrieval, or other network features may also make requests to external services.
+          </p>
+
+          <h2>4. Analytics, Diagnostics, and Advertising</h2>
+          <p>
+            BlueCloud AI Technologies should disclose any analytics, crash reporting, telemetry, advertising, or other external data collection implemented in the released version of Coneic. This policy does not authorize undisclosed collection of personal information.
+          </p>
+
+          <h2>5. Sharing and Disclosure</h2>
+          <p>
+            BlueCloud AI Technologies does not sell personal information obtained through Coneic. Information may be disclosed when legally required or when necessary to provide a network feature you initiate, subject to the practices of the relevant third-party service.
+          </p>
+
+          <h2>6. Storage, Retention, and Choices</h2>
+          <p>
+            Locally stored preferences, playlists, and history may remain on your device until you clear them or remove the application data. You control which local files and network streams you open. Removing Coneic may not automatically remove all user-created playlists or configuration files.
+          </p>
+
+          <h2>7. Third-Party Software</h2>
+          <div class="legal-highlight-box">
+            <p>
+              Coneic is based on <strong>VLC media player technology</strong> from the <strong>VideoLAN project</strong>. Third-party libraries and services may be subject to their own licenses and policies. Coneic is not represented as an official VideoLAN product.
+            </p>
+          </div>
+
+          <h2>8. Security</h2>
+          <p>
+            We aim to limit unnecessary handling of personal information. No software or internet connection is completely risk-free. Keep your software updated and use caution when opening untrusted files or streams.
+          </p>
+
+          <h2>9. Children's Privacy</h2>
+          <p>
+            Coneic is a general-purpose media player and is not designed to solicit personal information from children. If you believe personal information has been collected improperly, contact us using the website below.
+          </p>
+
+          <h2>10. Changes to This Policy</h2>
+          <p>
+            We may update this Privacy Policy when Coneic's features, data practices, or legal requirements change. The effective date at the top will be revised when updates are published.
+          </p>
+
+          <h2>11. Contact Information</h2>
+          <p>
+            If you have any questions about this Privacy Policy or Coneic, please contact the development team:
+          </p>
+
+          <div class="legal-contact-card">
+            <h3>BlueCloud AI Technologies</h3>
+            <div class="legal-contact-item">
+              <span>&#x1F4CD;</span>
+              <span>Plot 1743, Cadastral Zone B, Mabushi, Abuja, FCT, Nigeria</span>
+            </div>
+            <div class="legal-contact-item">
+              <span>&#x1F310;</span>
+              <span><strong>Website:</strong> <a href="https://bluecloudai.online" target="_blank" rel="noopener noreferrer">bluecloudai.online</a></span>
+            </div>
+            <div class="legal-contact-item">
+              <span>&#x2709;</span>
+              <span><strong>Inquiries:</strong> <a href="mailto:sadeeqsgi@icloud.com">sadeeqsgi@icloud.com</a></span>
+            </div>
+          </div>
+
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- Section 8 -->
-      <div class="section">
-        <h2><span class="section-num">8.</span> Security</h2>
-        <p>
-          We aim to limit unnecessary handling of personal information. No software or internet connection is completely risk-free. Keep your software updated and use caution when opening untrusted files or streams.
-        </p>
-      </div>
-
-      <!-- Section 9 -->
-      <div class="section">
-        <h2><span class="section-num">9.</span> Children's privacy</h2>
-        <p>
-          Coneic is a general-purpose media player and is not designed to solicit personal information from children. If you believe personal information has been collected improperly, contact us using the website below.
-        </p>
-      </div>
-
-      <!-- Section 10 -->
-      <div class="section">
-        <h2><span class="section-num">10.</span> Changes</h2>
-        <p>
-          We may update this Privacy Policy when Coneic's features, data practices, or legal requirements change. The effective date at the top will be revised when updates are published.
-        </p>
-      </div>
-
-      <!-- Section 11 -->
-      <div class="section">
-        <h2><span class="section-num">11.</span> Contact</h2>
-        <div class="contact-card">
-          <h4>BlueCloud AI Technologies</h4>
-          <div class="contact-row">
-            <strong>Developer:</strong> BlueCloud AI Technologies
-          </div>
-          <div class="contact-row">
-            <strong>Website:</strong> <a href="https://bluecloudai.online/" target="_blank" rel="noopener noreferrer">bluecloudai.online</a>
-          </div>
-          <div class="contact-row">
-            <strong>Direct Inquiries:</strong> <a href="mailto:sadeeqsgi@icloud.com">sadeeqsgi@icloud.com</a>
-          </div>
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h4>BLUECLOUD AI TECHNOLOGIES</h4>
+          <p>Enterprise web development, software engineering, and applied artificial intelligence solutions. Registered and headquartered in Abuja, Nigeria.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Platform & Solutions</h4>
+          <ul>
+            <li><a href="/platform">Platform</a></li>
+            <li><a href="/developers">Developers</a></li>
+            <li><a href="/enterprise">Enterprise</a></li>
+            <li><a href="/services">Services</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Legal & Policies</h4>
+          <ul>
+            <li><a href="/privacy">Main Privacy Policy</a></li>
+            <li><a href="/coneic/privacy">Coneic Player Privacy</a></li>
+            <li><a href="/coneic/installer-codes">Coneic Installer Codes</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
+          </ul>
         </div>
       </div>
-
-    </article>
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <p>© 2026 BlueCloud AI Technologies. Coneic.</p>
-    <div class="footer-links">
-      <a href="https://bluecloudai.online/privacy">BlueCloud Privacy Policy</a>
-      <span>•</span>
-      <a href="https://bluecloudai.online/terms">Terms of Service</a>
-      <span>•</span>
-      <a href="https://bluecloudai.online/contact">Contact Support</a>
+      <div class="footer-bottom">
+        <span>&copy; 2026 BlueCloud AI Technologies. All rights reserved.</span>
+        <span>Abuja, FCT, Nigeria</span>
+      </div>
     </div>
   </footer>
 
