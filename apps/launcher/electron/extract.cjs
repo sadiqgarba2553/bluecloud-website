@@ -1,6 +1,9 @@
 const yauzl=require('yauzl');
-const fs=require('node:fs/promises');
-const {createWriteStream}=require('node:fs');
+// Electron treats .asar paths as virtual directories. Managed app archives
+// contain other apps' .asar files, which must be written as ordinary bytes.
+const disk=process.versions.electron?require('original-fs'):require('node:fs');
+const fs=disk.promises;
+const {createWriteStream}=disk;
 const path=require('node:path');
 const {pipeline}=require('node:stream/promises');
 const {Transform}=require('node:stream');

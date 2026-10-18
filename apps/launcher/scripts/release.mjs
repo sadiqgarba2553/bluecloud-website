@@ -22,7 +22,27 @@ async function hash(file){const h=createHash('sha256');for await(const chunk of 
 async function sum(dir){let size=0;for(const entry of await readdir(dir,{withFileTypes:true})){const file=path.join(dir,entry.name);size+=entry.isDirectory()?await sum(file):(await stat(file)).size;}return size;}
 function assetUrl(name){return `https://github.com/${config.repository}/releases/download/${tag}/${encodeURIComponent(name)}`;}
 const manifestFile=path.join(out,'release-manifest.json');
-if(mode==='prepare'){
+if(mode==='prepare-launcher'){
+  // Reuse the already published app packages for a launcher-only correction.
+  const endpoint=new URL('/rest/v1/bluecloud_release_channels',config.supabaseUrl);endpoint.search=new URLSearchParams({channel:`eq.${config.channel}`,published:'eq.true',select:'envelope'});
+  const response=await fetch(endpoint,{headers:{apikey:config.publishableKey}});if(!response.ok)throw Error('Could not read the current release feed');
+  const rows=await response.json();const {verifyFeed}=require('../electron/security.cjs');const previous=verifyFeed(rows[0]?.envelope,config.publicKey,config.channel,pkg.version);
+  const releases=previous.releases.filter(r=>r.appId!=='launcher');if(releases.length!==3)throw Error('Current app packages are incomplete');
+  const name=`BlueCloud-Launcher-Setup-${pkg.version}-x64.exe`,file=path.join(out,name);await copyFile(path.join(root,'artifacts/launcher',name),file);
+  const assets=[{name,file,size:(await stat(file)).size,sha256:await hash(file)}];const installer=assets[0];
+  releases.push({appId:'launcher',version:pkg.version,minimumLauncher:'0.1.0-alpha',platform:'win32',arch:'x64',packageType:'nsis',size:installer.size,unpackedSize:await sum(path.join(root,'artifacts/launcher/win-unpacked')),sha256:installer.sha256,url:assetUrl(name),notes:'Fix installing Electron app packages containing app.asar files. Existing managed app packages and profiles are retained.'});
+  const published=new Date(),expires=new Date(published);expires.setUTCFullYear(expires.getUTCFullYear()+1);
+  const payload=JSON.stringify({schemaVersion:1,channel:config.channel,publishedAt:published.toISOString(),expiresAt:expires.toISOString(),releases});
+  const privateKey=await readFile(process.env.BLUECLOUD_SIGNING_KEY||path.join(process.env.LOCALAPPDATA||os.homedir(),'BlueCloud','ReleaseSigning','release-private.pem'),'utf8');
+  const envelope={payload,signature:sign(null,Buffer.from(payload),privateKey).toString('base64')};verifyFeed(envelope,config.publicKey,config.channel,pkg.version);
+  const feedFile=path.join(out,'alpha-feed.json');await writeFile(feedFile,JSON.stringify(envelope,null,2)+'\n');assets.push({name:'alpha-feed.json',file:feedFile,size:(await stat(feedFile)).size,sha256:await hash(feedFile)});
+  const checksum=path.join(out,'SHA256SUMS.txt');await writeFile(checksum,assets.map(a=>`${a.sha256}  ${a.name}`).join('\n')+'\n');assets.push({name:'SHA256SUMS.txt',file:checksum,size:(await stat(checksum)).size,sha256:await hash(checksum)});
+  const previousTag=new URL(releases.find(r=>r.appId==='coneic').url).pathname.split('/')[5];
+  const body=`Download **${name}** to install, open and update Coneic Player, Quranly PC and Tooldeck. This correction fixes extraction of Electron app packages.\n\nThe unchanged app archives, separate Tooldeck installer and corresponding Coneic source remain available in the [original app release](https://github.com/${config.repository}/releases/tag/${previousTag}). The signed feed references those verified immutable packages.\n\nStandalone Windows x64 alpha; Windows installers are unsigned. No account is required. App settings are retained during updates.`;
+  await writeFile(manifestFile,JSON.stringify({tag,version:pkg.version,assets,body},null,2)+'\n');
+  await writeFile(path.join(out,'promote-feed.sql'),`insert into public.bluecloud_release_channels(channel,envelope,published,updated_at) values ('${config.channel}','${JSON.stringify(envelope).replaceAll("'","''")}'::jsonb,true,now()) on conflict(channel) do update set envelope=excluded.envelope,published=true,updated_at=now();\n`);
+  console.log(`Prepared launcher-only release ${tag}; existing app URLs retained.`);
+}else if(mode==='prepare'){
   const releases=[],assets=[];
   const add=async file=>{assets.push({file,name:path.basename(file),size:(await stat(file)).size,sha256:await hash(file)});};
   for(const id of ['coneic','quranly','tooldeck']){
@@ -73,7 +93,7 @@ if(mode==='prepare'){
   async function api(url,options={}){const r=await fetch(url,{...options,headers:{...headers,...options.headers}});if(!r.ok)throw Error(`GitHub request failed: ${r.status} ${(await r.text()).slice(0,300)}`);return r.status===204?null:r.json();}
   const base=`https://api.github.com/repos/${config.repository}`;const releases=await api(`${base}/releases?per_page=50`);let release=releases.find(r=>r.tag_name===tag);
   if(!release&&mode==='publish')throw Error('Upload a draft first');
-  if(!release){const commit=spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).stdout.trim();release=await api(`${base}/releases`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({tag_name:tag,target_commitish:commit,name:`BlueCloud Launcher ${pkg.version} · Windows`,draft:true,prerelease:true,body:`Download **BlueCloud-Launcher-Setup-${pkg.version}-x64.exe**, run it, then install Coneic Player, Quranly PC and Tooldeck from the app library. The launcher checks for updates automatically; choose Update or Update all to apply them. A separate Tooldeck installer is also available.\n\nThis is a standalone Windows x64 alpha release. It does not replace or modify bluecloudai.online. Packages are currently unsigned Windows builds; the launcher authenticates its release feed and package hashes. Existing standalone installs stay separate from managed app copies. Settings and app data are retained during updates.\n\nConeic includes its full runtime and third-party notices. Corresponding source and SHA-256 checksums are attached. No account is required to manage apps.`})});}
+  if(!release){const commit=spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).stdout.trim();release=await api(`${base}/releases`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({tag_name:tag,target_commitish:commit,name:`BlueCloud Launcher ${pkg.version} · Windows`,draft:true,prerelease:true,body:manifest.body||`Download **BlueCloud-Launcher-Setup-${pkg.version}-x64.exe**, run it, then install Coneic Player, Quranly PC and Tooldeck from the app library. The launcher checks for updates automatically; choose Update or Update all to apply them. A separate Tooldeck installer is also available.\n\nThis is a standalone Windows x64 alpha release. It does not replace or modify bluecloudai.online. Packages are currently unsigned Windows builds; the launcher authenticates its release feed and package hashes. Existing standalone installs stay separate from managed app copies. Settings and app data are retained during updates.\n\nConeic includes its full runtime and third-party notices. Corresponding source and SHA-256 checksums are attached. No account is required to manage apps.`})});}
   if(mode==='upload'){
     if(!release.draft)throw Error('Published assets are immutable; use a new version');
     for(const asset of manifest.assets){
