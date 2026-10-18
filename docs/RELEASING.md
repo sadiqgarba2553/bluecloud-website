@@ -1,5 +1,7 @@
 # Windows alpha release process
 
+**Cancelled workflow:** the combined ecosystem release below was stopped before publication at the owner's request. Its draft was removed. Current work is limited to separate launcher and Tooldeck executables; do not use this historical workflow to replace or redeploy the website.
+
 The launcher reads a signed feed from the existing Supabase project. BlueCloud release rows are separate from Quranly account tables. Public clients have SELECT access only to published channels; RLS is enabled. The SQL migration is in `infrastructure/supabase/`.
 
 1. Update app versions, release notes and the shared product catalog. Install dependencies using the root README.

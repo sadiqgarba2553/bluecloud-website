@@ -1,5 +1,7 @@
 # BlueCloud workspace
 
+**Scope correction:** the website has been restored to its original source and live presentation at the owner's request. Active work is only on the separate Windows launcher and Tooldeck. Website-related consolidation descriptions below are historical; the original public assets and pages are active again.
+
 Consolidated 18 October 2026. Website source remains at the repository root to preserve its existing Vite deployment. Product source lives in `apps/`. Shared public product metadata is in `packages/product-catalog/`.
 
 | Product | Authoritative BlueCloud source | Original preserved location |

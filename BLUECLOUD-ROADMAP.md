@@ -2,6 +2,8 @@
 
 Planning date: 18 October 2026. Implementation is now in progress. Current workspace details and release procedures are recorded in `docs/WORKSPACE.md` and `docs/RELEASING.md`; the phases below preserve the original plan.
 
+Scope correction: the owner requested restoring bluecloudai.online to its original state. Website changes have been rolled back. Active development is limited to the separate Windows launcher and Tooldeck. The combined ecosystem release was cancelled before publication. The original phases below are planning history, not authorization to redesign or replace the website.
+
 ## Direction
 
 BlueCloud becomes the home for the website, Coneic Player, Quranly PC, Tooldeck and a Windows launcher. Each product keeps its own identity, version, build process and release schedule. The launcher lets users discover, install, open and update supported BlueCloud apps without visiting GitHub.
