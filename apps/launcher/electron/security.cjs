@@ -2,6 +2,7 @@ const crypto = require('node:crypto');
 const path = require('node:path');
 const semver = require('semver');
 const IDS = new Set(['coneic','quranly','tooldeck','launcher']);
+function validAppId(id){return typeof id==='string'&&/^[a-z][a-z0-9-]{0,63}$/.test(id)&&! /^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/.test(id);}
 function safePath(root, relative) {
   if (typeof relative !== 'string' || !relative || relative.includes('\\') || relative.includes(':') || path.posix.isAbsolute(relative) || relative.split('/').some(s=>s==='..'||s==='.'||!s)) throw Error('Invalid package path');
   if(relative.split('/').some(s=>/[<>:"|?*\x00-\x1f]/.test(s)||/[. ]$/.test(s)||/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(s)))throw Error('Invalid Windows package path');
@@ -25,7 +26,7 @@ function verifyFeed(envelope, publicKey, channel, currentVersion, now=Date.now()
   if(!Number.isFinite(published)||!Number.isFinite(expires)||published>now+300000||expires<=now||expires<=published) throw Error('Release feed is expired or not yet valid');
   const seen=new Set();
   for(const r of feed.releases) {
-    if(!IDS.has(r.appId)||seen.has(r.appId)||r.platform!=='win32'||r.arch!=='x64'||!semver.valid(r.version)||!semver.valid(r.minimumLauncher)||!semver.gte(currentVersion,r.minimumLauncher)) throw Error('Unsupported app release or newer launcher required');
+    if(!validAppId(r.appId)||seen.has(r.appId)||r.platform!=='win32'||r.arch!=='x64'||!semver.valid(r.version)||!semver.valid(r.minimumLauncher)) throw Error('Unsupported app release');
     seen.add(r.appId);
     if(!Number.isSafeInteger(r.size)||r.size<1||r.size>1500000000||!/^[a-f0-9]{64}$/.test(r.sha256)) throw Error('Invalid package integrity data');
     if(r.appId==='launcher' ? r.packageType!=='nsis' : r.packageType!=='zip') throw Error('Unsupported package type');
@@ -35,4 +36,4 @@ function verifyFeed(envelope, publicKey, channel, currentVersion, now=Date.now()
   }
   return feed;
 }
-module.exports={safePath,trustedDownload,verifyFeed,IDS};
+module.exports={safePath,trustedDownload,verifyFeed,IDS,validAppId};
