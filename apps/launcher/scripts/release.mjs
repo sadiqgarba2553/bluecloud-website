@@ -7,6 +7,7 @@ import {createRequire} from 'node:module';
 import {Transform} from 'node:stream';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import os from 'node:os';
 const require=createRequire(import.meta.url),appDir=fileURLToPath(new URL('../',import.meta.url)),root=path.resolve(appDir,'../..');
 const config=JSON.parse(await readFile(path.join(appDir,'config.json'),'utf8'));
 const pkg=JSON.parse(await readFile(path.join(appDir,'package.json'),'utf8'));
@@ -51,7 +52,9 @@ if(mode==='prepare'){
   const source=`Coneic-${products.find(p=>p.id==='coneic').version}-source.zip`;await copyFile(path.join(root,'artifacts/releases',source),path.join(out,source));await add(path.join(out,source));
   const published=new Date(),expires=new Date(published);expires.setUTCFullYear(expires.getUTCFullYear()+1);
   const payload=JSON.stringify({schemaVersion:1,channel:config.channel,publishedAt:published.toISOString(),expiresAt:expires.toISOString(),releases});
-  const privateKey=await readFile(path.join(root,'artifacts/signing/release-private.pem'),'utf8');const envelope={payload,signature:sign(null,Buffer.from(payload),privateKey).toString('base64')};
+  const signingKeyPath=process.env.BLUECLOUD_SIGNING_KEY||path.join(process.env.LOCALAPPDATA||os.homedir(),'BlueCloud','ReleaseSigning','release-private.pem');
+  let privateKey;try{privateKey=await readFile(signingKeyPath,'utf8');}catch(error){if(error.code!=='ENOENT')throw error;privateKey=await readFile(path.join(root,'artifacts/signing/release-private.pem'),'utf8');}
+  const envelope={payload,signature:sign(null,Buffer.from(payload),privateKey).toString('base64')};
   const {verifyFeed}=require('../electron/security.cjs');verifyFeed(envelope,config.publicKey,config.channel,pkg.version);
   await writeFile(path.join(out,'alpha-feed.json'),JSON.stringify(envelope,null,2)+'\n');await add(path.join(out,'alpha-feed.json'));
   await writeFile(path.join(out,'SHA256SUMS.txt'),assets.map(a=>`${a.sha256}  ${a.name}`).join('\n')+'\n');await add(path.join(out,'SHA256SUMS.txt'));

@@ -15,7 +15,9 @@ Run commands from this directory. Use Node.js 24 and Windows x64.
 
 For a later app-only release that does not change the launcher version, pass a new immutable tag to each command, for example `npm run release:prepare -- apps-2026.10.19`, then the same tag with `release:upload`, `release:publish` and `release:verify`. Users see updates when a listed app's semantic version increases. Existing version URLs must never be overwritten with different bytes.
 
-The private Ed25519 key is in ignored `artifacts/signing/release-private.pem`; back it up privately. The matching public key is pinned in `config.json`. Do not regenerate or change it for routine releases. Installed launchers reject untrusted signatures, expired feeds, unexpected download hosts and invalid package contents. Renew the signed feed before its expiry even if no app version changes.
+The private Ed25519 key is backed up outside build output in `%LOCALAPPDATA%/BlueCloud/ReleaseSigning/release-private.pem`. `BLUECLOUD_SIGNING_KEY` can override this path; the original ignored `artifacts/signing/release-private.pem` remains a fallback. `node scripts/backup-signing-key.mjs` verifies the key and creates the private backup if missing. Never commit or distribute either copy. The matching public key is pinned in `config.json`. Do not regenerate or change it for routine releases. Installed launchers reject untrusted signatures, expired feeds, unexpected download hosts and invalid package contents. Renew the signed feed before its expiry even if no app version changes.
+
+After publishing, `node scripts/smoke-live.cjs update` uses disposable profiles to download and install the real public packages, open Tooldeck and Quranly, smoke-test Coneic playback and verify a real previous-version Tooldeck update retains app preferences. It leaves the website and real user profiles untouched.
 
 The alpha channel is public read-only in Supabase. Only privileged publishing tools can write the release row. No launcher login is needed. Never put service credentials or private signing keys in the launcher.
 
