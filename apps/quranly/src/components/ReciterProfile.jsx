@@ -13,6 +13,7 @@ import { getQariUniqueAttributes } from '../data/qariBios';
 import { recordProfileView, getReciterAnalytics } from '../utils/reciterAnalytics';
 import ReciterAnalyticsModal from './ReciterAnalyticsModal';
 import './ReciterProfile.css';
+import CollectionDownload from './CollectionDownload';
 
 /**
  * ReciterProfile — Redesigned with Unobstructed Qari Photo Header:
@@ -40,6 +41,8 @@ const ReciterProfile = ({ reciter, onBack }) => {
   const [showMoshafDropdown, setShowMoshafDropdown] = useState(false);
   const [showFullBio, setShowFullBio] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
+  const [showCollection,setShowCollection]=useState(false);
+  useEffect(()=>{if(showCollection)profileRef.current?.querySelector('.collection-panel')?.scrollIntoView({block:'center',behavior:'instant'});},[showCollection]);
   const [analytics, setAnalytics] = useState(null);
 
   // Three dots menu state
@@ -130,14 +133,7 @@ const ReciterProfile = ({ reciter, onBack }) => {
     }
   };
 
-  const handleDownloadAll = async () => {
-    if (!availableSurahs?.length) return;
-    for (const surahItem of availableSurahs.slice(0, 10)) {
-      if (!isDownloaded(surahItem.id, reciter.id)) {
-        await downloadTrack(surahItem, reciter, selectedMoshafIndex);
-      }
-    }
-  };
+  const handleDownloadAll = () => setShowCollection(value=>!value);
 
   const handleShareSurah = (surahItem) => {
     const text = `Listen to Surah ${surahItem.nameEnglish} (${surahItem.nameArabic}) by ${reciter.name} on Quranly!`;
@@ -268,6 +264,8 @@ const ReciterProfile = ({ reciter, onBack }) => {
 
       </section>
 
+      {showCollection&&<CollectionDownload reciter={reciter} surahs={safeSurahs} initialEdition={selectedMoshafIndex} onClose={()=>setShowCollection(false)}/>}
+
       {/* Popular Recitations (Top 5) Section */}
       <div className="popular-recitations-section">
         <h3 className="popular-section-title">
@@ -311,7 +309,7 @@ const ReciterProfile = ({ reciter, onBack }) => {
       {/* Surahs Section Header */}
       <div className="surahs-recorded-header">
         <h2>{availableSurahs.length} surahs recorded</h2>
-        <button className="cloud-header-btn" title="Download surahs for offline listening" onClick={handleDownloadAll}>
+        <button className="cloud-header-btn" title="Download collection" aria-label="Download reciter collection" onClick={handleDownloadAll}>
           <CloudDownload size={20} color="var(--text-primary)" />
         </button>
       </div>

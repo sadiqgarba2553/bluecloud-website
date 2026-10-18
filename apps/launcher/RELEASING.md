@@ -28,3 +28,5 @@ Managed apps have versioned binary folders; updates switch the registry after pa
 These Windows alpha installers are currently unsigned. Feed/package verification is separate from Windows publisher signing; a trusted signing certificate and broader release pilot are still needed before a stable release.
 
 For a Tooldeck-only release, build and validate Tooldeck, then run `node scripts/release.mjs prepare-tooldeck`. Use the emitted `tooldeck-vVERSION` tag with upload and publish, promote the generated signed feed, and verify it. This retains the existing launcher, Coneic and Quranly URLs and uploads the Tooldeck managed archive, installer, source and checksums.
+
+For a Quranly-only release, validate and build apps/quranly with npm run dist:win, then run node scripts/release.mjs prepare-quranly. Publish the emitted quranly-vVERSION tag and promote its signed feed using the same sequence as Tooldeck. This retains the launcher, Coneic and Tooldeck URLs. The installer, managed archive, source and engine notices are included.

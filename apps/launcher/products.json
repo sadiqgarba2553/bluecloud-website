@@ -24,7 +24,7 @@
     "category": "Quran & daily practice",
     "tagline": "Make room for your daily practice.",
     "description": "Read the Quran, listen to recitations, save audio offline and continue your daily practice on Windows.",
-    "version": "0.1.0-alpha",
+    "version": "0.1.0-alpha.1",
     "status": "Alpha",
     "platform": "Windows x64",
     "accent": "#a4a5ff",
