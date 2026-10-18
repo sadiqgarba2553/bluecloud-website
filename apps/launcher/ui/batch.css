@@ -1,0 +1,1 @@
+.batch-actions{display:flex;align-items:center;gap:9px;margin-left:auto}.batch-actions:has(button:not([hidden]))+.channel-badge{margin-left:0}.batch-actions button{font-size:10px;white-space:nowrap;background:#a0bce916;border-color:#9db7df2a;color:#b9ceed}.library-note{flex-wrap:wrap}

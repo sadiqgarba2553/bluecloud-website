@@ -1,0 +1,24 @@
+# Standalone Windows app releases
+
+This workflow publishes desktop app downloads and a signed Supabase update feed. It does not build, replace or modify bluecloudai.online.
+
+Run commands from this directory. Use Node.js 24 and Windows x64.
+
+1. `npm ci` here and in `../tooldeck/`.
+2. Update the relevant app version. The launcher and Tooldeck versions are in their own `package.json`; Coneic and Quranly versions/descriptions are recorded in `products.json`. Build and validate changed apps before publishing.
+3. `npm run dist:win` builds the launcher installer. `npm --prefix ../tooldeck run dist:win` builds Tooldeck. Outputs are in the workspace's ignored `artifacts/launcher/` and `artifacts/tooldeck/` directories.
+4. Provide the validated complete Coneic runtime in `artifacts/coneic/Coneic/` and the validated Quranly unpacked app in `artifacts/quranly/win-unpacked/`. A complete corresponding Coneic source ZIP named `Coneic-VERSION-source.zip` must be in `artifacts/releases/`. Existing application source, data and website files are not modified by packaging.
+5. `npm run release:prepare` builds managed app archives, SHA-256 checksums, a signed feed and a publishing manifest. Initial output is `artifacts/app-releases/launcher-v0.1.0-alpha.1/`. Packaging reuses validated unchanged archives where available.
+6. Commit and push the app source, then `npm run release:upload`. The tool creates a draft GitHub release and uploads/verifies all files. It uses Git's existing credential helper in memory; tokens are not printed or saved. If an upload is interrupted, rerun the same command to skip already verified assets.
+7. `npm run release:publish` publishes the verified release. It does not write a website download catalog. Apply the generated `promote-feed.sql` through authorized server-side Supabase tooling only after publication.
+8. `npm run release:verify` checks the public feed signature, expiry, package URLs and lengths. Test a fresh launcher profile downloading a real app, plus a previous-version update preserving settings.
+
+For a later app-only release that does not change the launcher version, pass a new immutable tag to each command, for example `npm run release:prepare -- apps-2026.10.19`, then the same tag with `release:upload`, `release:publish` and `release:verify`. Users see updates when a listed app's semantic version increases. Existing version URLs must never be overwritten with different bytes.
+
+The private Ed25519 key is in ignored `artifacts/signing/release-private.pem`; back it up privately. The matching public key is pinned in `config.json`. Do not regenerate or change it for routine releases. Installed launchers reject untrusted signatures, expired feeds, unexpected download hosts and invalid package contents. Renew the signed feed before its expiry even if no app version changes.
+
+The alpha channel is public read-only in Supabase. Only privileged publishing tools can write the release row. No launcher login is needed. Never put service credentials or private signing keys in the launcher.
+
+Managed apps have versioned binary folders; updates switch the registry after package validation and retain the previous version for recovery. App settings and downloaded content live in the apps' existing Windows profiles. Existing standalone installations are not automatically adopted or removed. Users choose when to apply updates; the launcher checks on startup and every 30 minutes while visible.
+
+These Windows alpha installers are currently unsigned. Feed/package verification is separate from Windows publisher signing; a trusted signing certificate and broader release pilot are still needed before a stable release.

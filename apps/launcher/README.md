@@ -6,4 +6,6 @@ This is a standalone Windows `.exe`, separate from bluecloudai.online. The origi
 
 The renderer is sandboxed and isolated from Node. Its preload exposes only named library operations and fixed product links. Main-process IPC verifies the sender. Release metadata uses an Ed25519 signature with a pinned public key. Downloads use HTTPS, trusted hosts, declared byte counts and SHA-256 checks. ZIP extraction rejects traversal, symbolic links, special files, duplicate file writes and expanded-size overflow. Installation writes into fresh version folders and updates the library registry atomically after validation.
 
-See `docs/RELEASING.md` for publishing, signing, recovery and alpha limits. The release backend is Supabase; no launcher account or database writes are available to clients.
+Coneic Player, Quranly PC and Tooldeck are available in the app library when their release feed is published. Use Install all apps for a fresh library or Update all for available updates. The launcher checks on startup and every 30 minutes while visible; automatic checks can be disabled in settings. Users choose when downloads and installations happen.
+
+See `RELEASING.md` in this directory for the standalone publishing workflow, signing, recovery and alpha limits. The release backend is Supabase; no launcher account or database writes are available to clients. The website is outside this workflow.

@@ -1,0 +1,31 @@
+const {test,expect,_electron:electron}=require('@playwright/test');
+const {generateKeyPairSync,sign,createHash}=require('node:crypto');
+const {mkdtemp,rm,writeFile,readFile,cp,symlink,mkdir}=require('node:fs/promises');
+const {tmpdir}=require('node:os');const path=require('node:path');const {zipSync}=require('fflate');
+const appDir=path.resolve(__dirname,'../..'),root=path.resolve(appDir,'../..');
+const electronExe=require('electron');
+test('install all apps, update Tooldeck, reject tampering and retain the library offline',async()=>{
+  const profile=await mkdtemp(path.join(tmpdir(),'bluecloud-launcher-test-')),testApp=path.join(profile,'app'),keys=generateKeyPairSync('ed25519');
+  await mkdir(testApp);for(const name of ['electron','ui','assets','package.json','products.json','config.json'])await cp(path.join(appDir,name),path.join(testApp,name),{recursive:true});await symlink(path.join(appDir,'node_modules'),path.join(testApp,'node_modules'),'junction');
+  const cfg=JSON.parse(await readFile(path.join(testApp,'config.json'),'utf8'));cfg.publicKey=keys.publicKey.export({type:'spki',format:'pem'});await writeFile(path.join(testApp,'config.json'),JSON.stringify(cfg));
+  const start=()=>electron.launch({executablePath:electronExe,args:[testApp],env:{...process.env,BLUECLOUD_TEST_PROFILE:profile}});let app=await start();
+  try{
+    let page=await app.firstWindow();await expect(page.getByRole('heading',{name:'Your app library.'})).toBeVisible();
+    await page.getByRole('button',{name:'Table view'}).click();await expect(page.locator('#library')).toHaveClass('app-table');await page.getByRole('button',{name:'Grid view'}).click();
+    await page.getByRole('searchbox',{name:'Search apps'}).fill('quran');await expect(page.locator('#library article')).toHaveCount(1);await page.getByRole('searchbox',{name:'Search apps'}).fill('');
+    async function publishFixture(version,tampered=false){
+      const archives={},releases=['coneic','quranly','tooldeck'].map(id=>{const bytes=Buffer.from(`fixture ${id} ${version}`),zip=Buffer.from(zipSync({[`Fixture-${id}.exe`]:bytes})),url=`https://github.com/sadiqgarba2553/bluecloud-website/releases/download/test/${id}.zip`;archives[url]=zip.toString('base64');return{appId:id,version:id==='tooldeck'?version:'0.1.0-alpha.1',minimumLauncher:'0.1.0-alpha',platform:'win32',arch:'x64',packageType:'zip',executable:`Fixture-${id}.exe`,size:zip.length,unpackedSize:bytes.length,sha256:tampered&&id==='tooldeck'?'0'.repeat(64):createHash('sha256').update(zip).digest('hex'),url};});
+      const payload=JSON.stringify({schemaVersion:1,channel:'alpha',publishedAt:new Date().toISOString(),expiresAt:new Date(Date.now()+3600000).toISOString(),releases}),envelope={payload,signature:sign(null,Buffer.from(payload),keys.privateKey).toString('base64')};
+      await app.evaluate((_electron,data)=>{global.fetch=async url=>String(url).includes('/rest/v1/')?new Response(JSON.stringify([{envelope:data.envelope}]),{headers:{'content-type':'application/json'}}):new Response(Buffer.from(data.archives[String(url)],'base64'));},{envelope,archives});await page.getByRole('button',{name:'Check for updates'}).click();
+    }
+    await publishFixture('0.1.0-alpha.1');await page.getByRole('button',{name:'Install all 3 apps',exact:true}).click();await expect(page.getByRole('button',{name:'Open app ↗',exact:true})).toHaveCount(3);await expect(page.locator('#count-installed')).toHaveText('3');
+    await writeFile(path.join(profile,'user-data.txt'),'preserve this');const before=(await page.evaluate(()=>window.bluecloud.state())).state.installed.tooldeck;
+    await publishFixture('0.1.0-alpha.2');await page.getByRole('button',{name:'Update 1 app',exact:true}).click();await expect(page.getByRole('article',{name:'Tooldeck',exact:true}).locator('.app-version')).toContainText('0.1.0-alpha.2');expect(await readFile(path.join(profile,'user-data.txt'),'utf8')).toBe('preserve this');expect(await readFile(path.join(profile,'library',before.directory,'Fixture-tooldeck.exe'),'utf8')).toContain('fixture tooldeck');
+    const good=(await page.evaluate(()=>window.bluecloud.state())).state.installed.tooldeck;await publishFixture('0.1.0-alpha.3',true);await page.getByRole('article',{name:'Tooldeck',exact:true}).getByRole('button',{name:'Update ↓',exact:true}).click();await expect(page.locator('#notice')).toContainText('verification failed');expect((await page.evaluate(()=>window.bluecloud.state())).state.installed.tooldeck.directory).toBe(good.directory);await expect(page.locator('.download-progress:visible')).toHaveCount(0);
+    await page.getByRole('button',{name:'Launcher settings'}).click();await page.locator('#auto-check').uncheck();await page.getByRole('button',{name:'Done',exact:true}).click();await app.close();app=await start();page=await app.firstWindow();await expect(page.locator('#count-installed')).toHaveText('3');expect(await readFile(path.join(profile,'user-data.txt'),'utf8')).toBe('preserve this');expect(await page.evaluate(()=>typeof window.require)).toBe('undefined');
+  }finally{await app.close();await rm(profile,{recursive:true,force:true});}
+});
+test('packaged Tooldeck runs PDF, QR and text tools without network access',async()=>{
+  const profile=await mkdtemp(path.join(tmpdir(),'bluecloud-tooldeck-test-'));const app=await electron.launch({executablePath:path.join(root,'artifacts/tooldeck/win-unpacked/Tooldeck.exe'),args:[`--user-data-dir=${profile}`]});
+  try{const page=await app.firstWindow();const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.getByRole('button',{name:'Password generator',exact:true}).click();await page.locator('#run').click();expect((await page.locator('#output').inputValue()).length).toBe(20);await page.getByRole('button',{name:'QR code',exact:true}).click();await page.locator('#input').fill('BlueCloud');await page.locator('#run').click();await expect(page.locator('#preview img')).toBeVisible();expect(await page.evaluate(()=>typeof window.require)).toBe('undefined');expect(errors).toEqual([]);}finally{await app.close();await rm(profile,{recursive:true,force:true});}
+});

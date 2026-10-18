@@ -1,16 +1,23 @@
 const $=id=>document.getElementById(id);
 let current,filter='all',view=localStorage.getItem('bluecloud-view')||'grid',uiError='';
+let bulkRunning=false,lastCheck=0;
 const jobs=new Map();
 const asset={coneic:'coneic.png',quranly:'quranly.png',tooldeck:'tooldeck.png'};
 function element(tag,className,text){const e=document.createElement(tag);if(className)e.className=className;if(text!==undefined)e.textContent=text;return e;}
 function updateAvailable(p){const release=current.releases.find(r=>r.appId===p.id);return Boolean(current.installed[p.id]&&release?.updateAvailable);}
 function notice(){const message=uiError||current?.error||'';$('notice').textContent=message;$('notice').hidden=!message;}
 async function action(name,id){
+  let ok=false;
   uiError='';if(name==='install'||name==='uninstall'){jobs.set(id,{phase:name==='install'?'Preparing':'Removing',percent:0});render();}
-  try{const result=await window.bluecloud[name](id);if(!result.ok)throw Error(result.error);current=result.state;if(name==='install')uiError=`${current.products.find(p=>p.id===id)?.name||'App'} is ready to open.`;}
+  try{const result=await window.bluecloud[name](id);if(!result.ok)throw Error(result.error);current=result.state;ok=true;if(name==='refresh')lastCheck=Date.now();if(name==='install')uiError=`${current.products.find(p=>p.id===id)?.name||'App'} is ready to open.`;}
   catch(error){uiError=error.message;}
   finally{jobs.delete(id);if(['install','uninstall','cancel'].includes(name)){try{const result=await window.bluecloud.state();if(result.ok)current=result.state;}catch{}}if(current)render();else notice();}
+  return ok;
 }
+const batch=element('div','batch-actions'),installAll=element('button','secondary','Install all apps'),updateAll=element('button','secondary','Update all');
+batch.append(installAll,updateAll);document.querySelector('.library-note').insertBefore(batch,$('channel'));
+async function runBatch(update){if(bulkRunning||jobs.size)return;const candidates=current.products.filter(p=>p.id!=='launcher'&&(update?updateAvailable(p):!current.installed[p.id]&&current.releases.some(r=>r.appId===p.id)));bulkRunning=true;render();let completed=0;try{for(const p of candidates){if(!await action('install',p.id))return;completed++;}uiError=`${completed} app${completed===1?' is':'s are'} ready to open.`;}finally{bulkRunning=false;render();}}
+installAll.onclick=()=>runBatch(false);updateAll.onclick=()=>runBatch(true);
 function button(label,actionName,id,className='primary') {const b=element('button',className,label);b.dataset.action=actionName;b.dataset.app=id;b.onclick=()=>action(actionName,id);return b;}
 function links(p){const group=element('div','app-links');for(const [label,kind]of [['Website ↗','website'],['Source ↗','source']]){const b=element('button','link-button',label);b.onclick=()=>action('openLink',{id:p.id,kind});group.append(b);}return group;}
 function more(p,release,installed,busy){const detail=element('details','more-menu'),summary=element('summary','','•••');summary.setAttribute('aria-label',`More options for ${p.name}`);const panel=element('div','menu-panel');panel.setAttribute('aria-label',`${p.name} actions`);const notes=element('button','','Release notes');notes.onclick=()=>{detail.open=false;uiError=release?.notes||p.note;notice();};panel.append(notes);if(installed){const remove=button('Remove app','uninstall',p.id,'danger');remove.disabled=busy;panel.append(remove);}detail.append(summary,panel);return detail;}
@@ -23,6 +30,7 @@ function render(){
   if(!current)return;const focus=document.activeElement;const restore=focus?.dataset.action?{action:focus.dataset.action,app:focus.dataset.app}:null;
   const products=current.products.filter(p=>p.id!=='launcher');const counts={all:products.length,installed:products.filter(p=>current.installed[p.id]).length,updates:products.filter(updateAvailable).length,available:products.filter(p=>!current.installed[p.id]).length};
   for(const [key,count]of Object.entries(counts)){$(`count-${key}`).textContent=count;$(key).setAttribute('aria-selected',String(filter===key));$(key).tabIndex=filter===key?0:-1;}
+  const installable=products.filter(p=>!current.installed[p.id]&&current.releases.some(r=>r.appId===p.id));installAll.hidden=!installable.length;installAll.textContent=bulkRunning?'Working…':(installable.length===1?'Install 1 app':`Install all ${installable.length} apps`);installAll.disabled=bulkRunning||jobs.size>0;updateAll.hidden=!counts.updates;updateAll.textContent=(counts.updates===1?'Update 1 app':`Update all ${counts.updates} apps`);updateAll.disabled=bulkRunning||jobs.size>0;
   $('version').textContent=`BLUECLOUD ${current.version}`;$('channel').textContent=`${current.channel.toUpperCase()} CHANNEL`;$('summary').textContent=`${counts.installed} INSTALLED · ${counts.updates} UPDATE${counts.updates===1?'':'S'} AVAILABLE`;$('connection').textContent=current.error?(current.releases.length?'Using saved release information':'Installed apps work offline'):'Release information up to date';
   $('grid').setAttribute('aria-pressed',String(view==='grid'));$('table').setAttribute('aria-pressed',String(view==='table'));notice();
   const q=$('search').value.trim().toLowerCase();const list=products.filter(p=>(filter==='all'||filter==='installed'&&current.installed[p.id]||filter==='updates'&&updateAvailable(p)||filter==='available'&&!current.installed[p.id])&&`${p.name} ${p.category} ${p.description}`.toLowerCase().includes(q));
@@ -50,3 +58,5 @@ document.addEventListener('keydown',event=>{document.body.dataset.keyboard='true
 document.addEventListener('pointerdown',()=>{delete document.body.dataset.keyboard;});
 window.bluecloud.onProgress(data=>{if(data.phase==='Ready'){jobs.delete(data.id);return;}if(data.phase==='Finished'){jobs.delete(data.id);window.bluecloud.state().then(result=>{if(result.ok){current=result.state;render();}});return;}jobs.set(data.id,data);paintProgress(data.id);});
 (async()=>{await action('state');if($('auto-check').checked)await action('refresh');})();
+setInterval(()=>{if($('auto-check').checked&&!jobs.size&&!bulkRunning&&document.visibilityState==='visible')action('refresh');},30*60*1000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&$('auto-check').checked&&current&&!jobs.size&&!bulkRunning&&Date.now()-lastCheck>30*60*1000)action('refresh');});

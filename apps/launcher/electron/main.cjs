@@ -22,7 +22,7 @@ const jobs=new Map(),children=new Map();let saveQueue=Promise.resolve();
 function saveRegistry(){saveQueue=saveQueue.catch(()=>{}).then(async()=>{await fs.mkdir(path.dirname(registryPath),{recursive:true});await fs.writeFile(registryPath+'.tmp',JSON.stringify(installed,null,2));await fs.rename(registryPath+'.tmp',registryPath);});return saveQueue;}
 function sender(event){if(event.sender!==win?.webContents||event.senderFrame?.url.split('#')[0]!==start)throw Error('Untrusted window');}
 function idCheck(id){if(!IDS.has(id))throw Error('Unknown app');}
-async function openLink(input){idCheck(input?.id);const links={website:`https://bluecloudai.online/${input.id==='launcher'?'launcher':`apps/${input.id}`}`,source:`https://github.com/sadiqgarba2553/bluecloud-website/tree/main/apps/${input.id}`,support:'mailto:sadeeqsgi@icloud.com'};if(!Object.hasOwn(links,input.kind))throw Error('Unknown link');await shell.openExternal(links[input.kind]);return state();}
+async function openLink(input){idCheck(input?.id);const links={website:'https://bluecloudai.online/',source:`https://github.com/sadiqgarba2553/bluecloud-website/tree/main/apps/${input.id}`,support:'mailto:sadeeqsgi@icloud.com'};if(!Object.hasOwn(links,input.kind))throw Error('Unknown link');await shell.openExternal(links[input.kind]);return state();}
 function emit(id,phase,percent=0){if(!win?.isDestroyed())win?.webContents.send('progress',{id,phase,percent});}
 function state(){return{products,installed,releases:(feed?.releases||[]).map(r=>({...r,updateAvailable:semver.gt(r.version,r.appId==='launcher'?version:installed[r.appId]?.version||r.version)})),version,channel:config.channel,error:lastError,busy:[...jobs.keys()]};}
 async function refresh(){
@@ -46,7 +46,8 @@ async function download(release,dest,signal){
   }
   if(!response?.ok||!response.body)throw Error(`Download failed (${response?.status})`);
   const hash=crypto.createHash('sha256');let bytes=0;const file=await fs.open(dest,'wx');
-  try{for await(const chunk of response.body){signal.throwIfAborted();bytes+=chunk.length;if(bytes>release.size)throw Error('Package exceeds the expected size');hash.update(chunk);await file.write(chunk);emit(release.appId,'Downloading',Math.round(bytes/release.size*100));}}
+  let lastPercent=-1;
+  try{for await(const chunk of response.body){signal.throwIfAborted();bytes+=chunk.length;if(bytes>release.size)throw Error('Package exceeds the expected size');hash.update(chunk);let offset=0;while(offset<chunk.length){const result=await file.write(chunk,offset,chunk.length-offset);if(result.bytesWritten===0)throw Error('Could not write the downloaded package');offset+=result.bytesWritten;}const percent=Math.round(bytes/release.size*100);if(percent!==lastPercent){lastPercent=percent;emit(release.appId,'Downloading',percent);}}}
   finally{await file.close();}
   if(bytes!==release.size||hash.digest('hex')!==release.sha256)throw Error('Package verification failed. Retry the download.');
 }
@@ -57,9 +58,9 @@ async function install(id){
   const r=feed?.releases.find(r=>r.appId===id);if(!r)throw Error('No trusted release is available. Check for updates first.');
   if(Date.parse(feed.expiresAt)<=Date.now())throw Error('Release information expired. Check for updates again.');
   const old=installed[id];if(old&&!semver.gt(r.version,old.version))throw Error('The installed version is already current.');
-  if(id!=='launcher'&&await running(id))throw Error('Close the app before updating it.');
   const controller=new AbortController();jobs.set(id,controller);const work=path.join(library,`.download-${id}-${crypto.randomUUID()}`);let destination;
   try{
+    if(id!=='launcher'&&await running(id))throw Error('Close the app before updating it.');
     await fs.mkdir(work,{recursive:true});const disk=await fs.statfs(work);if(disk.bavail*disk.bsize<r.size+r.unpackedSize+100000000)throw Error('Not enough free disk space.');
     const archive=path.join(work,r.packageType==='zip'?'package.zip':'setup.exe');await download(r,archive,AbortSignal.any([controller.signal,AbortSignal.timeout(1800000)]));controller.signal.throwIfAborted();emit(id,'Verifying',100);
     if(id==='launcher'){
@@ -78,8 +79,17 @@ async function install(id){
   }finally{jobs.delete(id);if(id!=='launcher'||!app.isQuitting)await fs.rm(work,{recursive:true,force:true}).catch(()=>{});emit(id,'Finished',100);}
   return state();
 }
-async function launch(id){idCheck(id);if(jobs.has(id))throw Error('Wait for the update to finish.');const entry=installed[id];if(!entry)throw Error('Install this app first.');const dir=safePath(library,entry.directory);const exe=safePath(dir,entry.executable);const stat=await fs.lstat(exe);if(!stat.isFile()||stat.isSymbolicLink())throw Error('The installed executable is missing.');const child=spawn(exe,[],{cwd:dir,detached:true,stdio:'ignore'});await new Promise((resolve,reject)=>{child.once('spawn',resolve);child.once('error',reject);});children.set(id,child);child.once('exit',()=>children.delete(id));child.unref();return state();}
-async function uninstall(id){idCheck(id);if(id==='launcher'||jobs.has(id))throw Error('This app cannot be removed during an operation.');if(!installed[id])return state();if(await running(id))throw Error('Close the app before removing it.');const answer=await dialog.showMessageBox(win,{type:'question',message:`Remove ${products.find(p=>p.id===id).name}?`,detail:'Managed app files will be removed. Your app settings and user data are retained.',buttons:['Remove app','Cancel'],defaultId:1,cancelId:1});if(answer.response!==0)return state();jobs.set(id,new AbortController());try{const dir=safePath(library,id);await fs.rm(dir,{recursive:true,force:true});delete installed[id];await saveRegistry();}finally{jobs.delete(id);}return state();}
+async function launch(id){idCheck(id);if(jobs.has(id))throw Error('Wait for the update to finish.');const entry=installed[id];if(!entry)throw Error('Install this app first.');const dir=safePath(library,entry.directory);const exe=safePath(dir,entry.executable);const stat=await fs.lstat(exe);if(!stat.isFile()||stat.isSymbolicLink())throw Error('The installed executable is missing.');if(jobs.has(id))throw Error('Wait for the update to finish.');const child=spawn(exe,[],{cwd:dir,detached:true,stdio:'ignore'});await new Promise((resolve,reject)=>{child.once('spawn',resolve);child.once('error',reject);});children.set(id,child);child.once('exit',()=>children.delete(id));child.unref();return state();}
+async function uninstall(id){
+  idCheck(id);if(id==='launcher'||jobs.has(id))throw Error('This app cannot be removed during an operation.');if(!installed[id])return state();
+  jobs.set(id,new AbortController());
+  try{
+    if(await running(id))throw Error('Close the app before removing it.');
+    const answer=await dialog.showMessageBox(win,{type:'question',message:`Remove ${products.find(p=>p.id===id).name}?`,detail:'Managed app files will be removed. Your app settings and user data are retained.',buttons:['Remove app','Cancel'],defaultId:1,cancelId:1});
+    if(answer.response!==0)return state();const dir=safePath(library,id);await fs.rm(dir,{recursive:true,force:true});delete installed[id];await saveRegistry();
+  }finally{jobs.delete(id);emit(id,'Finished',100);}
+  return state();
+}
 if(!app.requestSingleInstanceLock())app.quit();
 else app.whenReady().then(async()=>{
   app.setAppUserModelId('com.bluecloud.launcher');await fs.mkdir(library,{recursive:true});

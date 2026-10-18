@@ -4,6 +4,7 @@ const semver = require('semver');
 const IDS = new Set(['coneic','quranly','tooldeck','launcher']);
 function safePath(root, relative) {
   if (typeof relative !== 'string' || !relative || relative.includes('\\') || relative.includes(':') || path.posix.isAbsolute(relative) || relative.split('/').some(s=>s==='..'||s==='.'||!s)) throw Error('Invalid package path');
+  if(relative.split('/').some(s=>/[<>:"|?*\x00-\x1f]/.test(s)||/[. ]$/.test(s)||/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(s)))throw Error('Invalid Windows package path');
   const resolved = path.resolve(root, relative);
   if (!resolved.startsWith(path.resolve(root) + path.sep)) throw Error('Package path escapes library');
   return resolved;

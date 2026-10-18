@@ -2,6 +2,7 @@ const { app, BrowserWindow, Menu, shell, session } = require('electron');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 app.setAppUserModelId('com.bluecloud.tooldeck');
+if (app.commandLine.hasSwitch('user-data-dir')) app.setPath('userData', path.resolve(app.commandLine.getSwitchValue('user-data-dir')));
 const start = pathToFileURL(path.join(__dirname, '../dist/index.html')).href;
 if (!app.requestSingleInstanceLock()) app.quit();
 else app.whenReady().then(() => {
