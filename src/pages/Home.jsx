@@ -7,8 +7,8 @@ const Home = () => {
   return (
     <div>
       <SEO
-        title="BlueCloud Technologies â€” Enterprise Web Development, AI Solutions & Software Engineering"
-        description="BlueCloud delivers premium web development, AI-powered solutions, and enterprise software engineering. Based in Abuja, Nigeria â€” serving clients worldwide."
+        title="BlueCloud Technologies — Enterprise Web Development, AI Solutions & Software Engineering"
+        description="BlueCloud delivers premium web development, AI-powered solutions, and enterprise software engineering. Based in Abuja, Nigeria — serving clients worldwide."
         path="/"
         keywords="BlueCloud Technologies, web development Nigeria, AI solutions Abuja, enterprise software engineering, build website Nigeria, app development Africa, tech company Abuja, software company Nigeria, React developer Nigeria, hire web developer Nigeria"
       />
@@ -42,7 +42,7 @@ const Home = () => {
               />
             </div>
             <div className="wyd-home-text">
-              <span className="wyd-home-label">Tomorrow Â· July 15th</span>
+              <span className="wyd-home-label">Tomorrow · July 15th</span>
               <h3 className="wyd-home-title">World Youth Day 2026</h3>
               <p className="wyd-home-desc">
                 BlueCloud marks the day. Read our piece on the global gathering, what it means,

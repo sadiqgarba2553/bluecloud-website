@@ -122,7 +122,7 @@ const Projects = () => {
   return (
     <div className="section container">
       <SEO
-        title="Our Projects & Case Studies â€” BlueCloud Portfolio"
+        title="Our Projects & Case Studies — BlueCloud Portfolio"
         description="Explore our enterprise deployments, ROI metrics, and technical case studies including Cyberion, FastData, Flux Language, Prism Studio, Tool Deck, Quranly PC, Coneic Player, and BlueCloud Launcher."
         path="/projects"
         keywords="BlueCloud projects, web development portfolio Nigeria, case studies, Quranly PC, Coneic Player, BlueCloud Launcher, Cyberion, FastData, Flux programming language, Prism Studio, Tool Deck, Quranly, cybersecurity Nigeria, tech portfolio Abuja"
