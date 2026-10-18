@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Base64 Encode/Decode | ToolDeck</title>
+  <meta name="description" content="Encode text to Base64 or decode Base64 to text instantly.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../tool.css">
+  <style>
+    .workspace { max-width: 1000px; margin: 40px auto; width: 100%; padding: 0 20px; }
+    .ws-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r-xl); padding: 24px; }
+    
+    .toolbar { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+    
+    .text-box { width: 100%; height: 250px; padding: 15px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: monospace; font-size: 0.95rem; line-height: 1.5; resize: vertical; outline: none; transition: border-color 0.2s; word-break: break-all; }
+    .text-box:focus { border-color: var(--accent); }
+    
+    .box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .box-header label { font-size: 0.9rem; font-weight: 600; color: var(--t1); }
+    
+    .error-msg { color: #ef4444; font-size: 0.85rem; font-weight: 500; display: none; margin-top: 8px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="tool-layout">
+    <header class="tool-nav">
+      <a href="../index.html" class="back-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Tools
+      </a>
+      <div class="tool-title">Base64 Encode/Decode</div>
+      <div style="width:100px"></div>
+    </header>
+
+    <main class="tool-main" style="padding-top: 80px;">
+      <div class="workspace">
+        <div class="ws-panel">
+          
+          <div style="margin-bottom: 24px; text-align: center;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 8px;">Base64 Converter</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Instantly encode text to Base64 format, or decode Base64 back to text.</p>
+          </div>
+
+          <div>
+            <div class="box-header">
+              <label>Raw Text</label>
+              <button class="sec-btn" id="copy-raw" style="padding: 4px 10px; font-size: 0.75rem;">Copy</button>
+            </div>
+            <textarea id="text-raw" class="text-box" placeholder="Type text to encode..."></textarea>
+          </div>
+          
+          <div class="toolbar">
+            <button class="cta-btn" id="btn-encode">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px"><path d="M12 19V5M5 12l7 7 7-7"/></svg>
+              Encode
+            </button>
+            <button class="cta-btn" id="btn-decode" style="background:var(--bg3); color:var(--t1); border:1px solid var(--border);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px"><path d="M12 5v14M19 12l-7-7-7 7"/></svg>
+              Decode
+            </button>
+          </div>
+          <div id="error-msg" class="error-msg">Invalid Base64 string</div>
+          
+          <div>
+            <div class="box-header">
+              <label>Base64 String</label>
+              <button class="sec-btn" id="copy-b64" style="padding: 4px 10px; font-size: 0.75rem;">Copy</button>
+            </div>
+            <textarea id="text-b64" class="text-box" placeholder="Paste Base64 to decode..."></textarea>
+          </div>
+          
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="base64-text.js"></script>
+</body>
+</html>

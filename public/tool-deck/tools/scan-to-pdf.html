@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scan to PDF - Create Scanned Documents | ToolDeck</title>
+  <meta name="description" content="Convert photos of documents into clean, professional scanned PDFs. Free and private in your browser.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../tool.css">
+  <style>
+    .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .img-card { position: relative; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background: var(--bg-hover); aspect-ratio: 3/4; cursor: grab; }
+    .img-card img { width: 100%; height: 100%; object-fit: contain; }
+    .img-card.dragging { opacity: 0.5; }
+    .btn-remove { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .btn-remove:hover { }
+  </style>
+</head>
+<body>
+  <div class="tool-layout">
+    <header class="tool-nav">
+      <a href="../index.html" class="back-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Tools
+      </a>
+      <div class="tool-title">Scan to PDF</div>
+      <div style="width:100px"></div>
+    </header>
+
+    <main class="tool-main">
+      <div id="upload-zone" class="upload-zone">
+        <svg class="upl-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+        <h2 class="upl-title">Select Images of Documents</h2>
+        <p class="upl-sub">Or drag and drop photos here</p>
+        <button class="upl-btn" id="btn-select">Select Images</button>
+        <input type="file" id="file-input" accept="image/jpeg, image/png, image/webp" multiple style="display:none">
+      </div>
+
+      <div id="workspace" class="workspace" style="display:none; display: flex; flex-direction: column; height: 100%;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h3 style="margin:0;">Images (Drag to reorder)</h3>
+          <button class="sec-btn" id="btn-add-more">Add More</button>
+        </div>
+
+        <div id="img-grid" class="img-grid">
+          <!-- Images will be injected here -->
+        </div>
+
+        <div class="ws-panel" style="margin-top: auto; padding: 20px;">
+          <h3 style="margin-top: 0; margin-bottom: 15px;">Scanner Settings</h3>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+            <div>
+              <label class="opt-label">Color Mode</label>
+              <select id="color-mode" class="opt-select">
+                <option value="original">Original Color</option>
+                <option value="grayscale">Grayscale</option>
+                <option value="bw" selected>B&W Document (High Contrast)</option>
+              </select>
+            </div>
+            <div>
+              <label class="opt-label">Contrast Enhancement</label>
+              <input type="range" id="contrast-slider" min="0" max="100" value="50" style="width: 100%;">
+            </div>
+            <div>
+              <label class="opt-label">Page Size</label>
+              <select id="page-size" class="opt-select">
+                <option value="A4" selected>A4</option>
+                <option value="Letter">US Letter</option>
+                <option value="fit">Fit to Image</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button class="sec-btn" id="btn-cancel" style="flex: 1;">Cancel</button>
+            <button class="cta-btn" id="btn-start" style="flex: 2; justify-content: center;">Create Scanned PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="progress-wrap" class="progress-wrap" style="display:none">
+        <h3 id="progress-text">Processing Images...</h3>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      </div>
+
+      <div id="result-zone" class="result-zone" style="display:none">
+        <div class="res-card">
+          <div class="res-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg></div>
+          <h3 class="res-title">Scanned PDF Ready!</h3>
+          <p class="res-sub">Your images have been converted to a clean document.</p>
+          <a href="#" id="btn-download" class="cta-btn" download>Download PDF</a>
+          <button class="sec-btn" onclick="location.reload()" style="margin-top:15px">Create Another</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="scan-to-pdf.js"></script>
+</body>
+</html>

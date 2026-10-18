@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Counter - Analyze Text | ToolDeck</title>
+  <meta name="description" content="Count words, characters, sentences, paragraphs, and estimate reading time.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../tool.css">
+  <style>
+    .workspace { max-width: 1000px; margin: 40px auto; width: 100%; padding: 0 20px; }
+    .ws-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r-xl); padding: 24px; }
+    
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .stat-card { background: var(--bg); border: 1px solid var(--border); padding: 15px; border-radius: 8px; text-align: center; }
+    .stat-val { font-size: 1.8rem; font-weight: 700; color: var(--accent); line-height: 1.2; }
+    .stat-label { font-size: 0.8rem; font-weight: 500; color: var(--t2); text-transform: uppercase; letter-spacing: 0.05em; }
+    
+    .output-area { position: relative; margin-bottom: 20px; }
+    .output-text { width: 100%; min-height: 300px; padding: 20px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: inherit; font-size: 1.05rem; line-height: 1.6; resize: vertical; outline: none; transition: border-color 0.2s; }
+    .output-text:focus { border-color: var(--accent); }
+    
+    .toolbar { display: flex; gap: 10px; justify-content: flex-end; }
+  </style>
+</head>
+<body>
+  <div class="tool-layout">
+    <header class="tool-nav">
+      <a href="../index.html" class="back-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Tools
+      </a>
+      <div class="tool-title">Word Counter</div>
+      <div style="width:100px"></div>
+    </header>
+
+    <main class="tool-main" style="padding-top: 80px;">
+      <div class="workspace">
+        <div class="ws-panel">
+          
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-val" id="val-words">0</div>
+              <div class="stat-label">Words</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val" id="val-chars">0</div>
+              <div class="stat-label">Characters</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val" id="val-chars-nospace">0</div>
+              <div class="stat-label">Chars (No Space)</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val" id="val-sentences">0</div>
+              <div class="stat-label">Sentences</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val" id="val-paragraphs">0</div>
+              <div class="stat-label">Paragraphs</div>
+            </div>
+          </div>
+
+          <div class="stats-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 24px;">
+            <div class="stat-card" style="background: var(--bg-hover);">
+              <div class="stat-val" id="val-read" style="font-size: 1.4rem; color: var(--t1);">0 min</div>
+              <div class="stat-label">Reading Time (~250 wpm)</div>
+            </div>
+            <div class="stat-card" style="background: var(--bg-hover);">
+              <div class="stat-val" id="val-speak" style="font-size: 1.4rem; color: var(--t1);">0 min</div>
+              <div class="stat-label">Speaking Time (~130 wpm)</div>
+            </div>
+          </div>
+
+          <div class="output-area">
+            <textarea id="input-text" class="output-text" placeholder="Type or paste your text here..."></textarea>
+          </div>
+          
+          <div class="toolbar">
+            <button class="sec-btn" id="btn-clear">Clear</button>
+            <button class="sec-btn" id="btn-copy">Copy</button>
+          </div>
+          
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="word-counter.js"></script>
+</body>
+</html>

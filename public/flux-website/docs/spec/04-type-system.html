@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>04 Type System — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Language Specification — Type System</h1>
+<p><strong>Version:</strong> 0.1.0-draft<br />
+<strong>Status:</strong> Draft</p>
+<hr />
+<h2>1. Overview</h2>
+<p>Flux has a strong, static type system with extensive type inference. Types are checked at compile time, preventing entire categories of runtime errors. The type system is designed to be expressive enough for systems programming while remaining approachable for developers coming from dynamically typed languages.</p>
+<p><strong>Design goals:</strong>
+- Catch bugs at compile time, not at runtime
+- Minimize the need for explicit type annotations through inference
+- Support zero-cost abstractions via monomorphized generics
+- Enforce null safety and memory safety through the type system</p>
+<hr />
+<h2>2. Primitive Types</h2>
+<h3>2.1 Integer Types</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Size</th>
+<th>Range</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Int</code></td>
+<td>Platform (≥64-bit)</td>
+<td>-(2⁶³) to 2⁶³-1</td>
+<td>Default integer type</td>
+</tr>
+<tr>
+<td><code>Int8</code></td>
+<td>8-bit</td>
+<td>-128 to 127</td>
+<td>Signed byte</td>
+</tr>
+<tr>
+<td><code>Int16</code></td>
+<td>16-bit</td>
+<td>-32,768 to 32,767</td>
+<td>Signed short</td>
+</tr>
+<tr>
+<td><code>Int32</code></td>
+<td>32-bit</td>
+<td>-(2³¹) to 2³¹-1</td>
+<td>Signed 32-bit</td>
+</tr>
+<tr>
+<td><code>Int64</code></td>
+<td>64-bit</td>
+<td>-(2⁶³) to 2⁶³-1</td>
+<td>Signed 64-bit</td>
+</tr>
+<tr>
+<td><code>UInt8</code></td>
+<td>8-bit</td>
+<td>0 to 255</td>
+<td>Unsigned byte</td>
+</tr>
+<tr>
+<td><code>UInt16</code></td>
+<td>16-bit</td>
+<td>0 to 65,535</td>
+<td>Unsigned short</td>
+</tr>
+<tr>
+<td><code>UInt32</code></td>
+<td>32-bit</td>
+<td>0 to 2³²-1</td>
+<td>Unsigned 32-bit</td>
+</tr>
+<tr>
+<td><code>UInt64</code></td>
+<td>64-bit</td>
+<td>0 to 2⁶⁴-1</td>
+<td>Unsigned 64-bit</td>
+</tr>
+<tr>
+<td><code>ISize</code></td>
+<td>Platform</td>
+<td>Architecture-dependent</td>
+<td>Signed pointer size</td>
+</tr>
+<tr>
+<td><code>USize</code></td>
+<td>Platform</td>
+<td>Architecture-dependent</td>
+<td>Unsigned pointer size</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-flux">let a = 42            // Int
+let b: Int8 = 42      // Int8
+let c = 42u32         // UInt32 (suffix)
+let d: USize = 1024   // Pointer-size unsigned
+</code></pre>
+<h3>2.2 Floating-Point Types</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Size</th>
+<th>Precision</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Float32</code></td>
+<td>32-bit</td>
+<td>~7 decimal digits</td>
+<td>IEEE 754 single precision</td>
+</tr>
+<tr>
+<td><code>Float64</code></td>
+<td>64-bit</td>
+<td>~15 decimal digits</td>
+<td>IEEE 754 double precision</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-flux">let pi = 3.14159           // Float64 (default)
+let precise: Float64 = 1.0
+let fast: Float32 = 1.0f32
+</code></pre>
+<h3>2.3 Boolean Type</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Size</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bool</code></td>
+<td>1 byte</td>
+<td><code>true</code>, <code>false</code></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-flux">let enabled = true
+let visible: Bool = false
+</code></pre>
+<h3>2.4 Character Type</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Size</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Char</code></td>
+<td>4 bytes</td>
+<td>Single Unicode scalar value (U+0000 to U+10FFFF, excluding surrogates)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-flux">let letter = 'A'
+let emoji = '🔥'
+let tab = '\t'
+</code></pre>
+<h3>2.5 String Type</h3>
+<p><code>String</code> is a growable, heap-allocated, UTF-8 encoded text type.</p>
+<pre><code class="language-flux">let greeting = &quot;Hello, World!&quot;
+let name = &quot;Flux&quot;
+let interpolated = &quot;Welcome to {name}!&quot;
+</code></pre>
+<p>Strings are immutable value types with copy-on-write semantics. Modifications create a new string.</p>
+<h3>2.6 Byte Type</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Size</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Byte</code></td>
+<td>1 byte</td>
+<td>Alias for <code>UInt8</code>, used for raw binary data</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-flux">let data: [Byte] = [0xFF, 0xAA, 0x00]
+</code></pre>
+<h3>2.7 Void Type</h3>
+<p><code>Void</code> represents the absence of a value. It is the return type of functions that do not return anything.</p>
+<pre><code class="language-flux">fn log(message: String) {   // Return type is implicitly Void
+    print(message)
+}
+</code></pre>
+<h3>2.8 Never Type</h3>
+<p><code>Never</code> (also written <code>!</code>) represents a type with no values. It is used for functions that never return (e.g., infinite loops, panics).</p>
+<pre><code class="language-flux">fn crash(message: String) -&gt; Never {
+    panic(message)
+}
+</code></pre>
+<hr />
+<h2>3. Compound Types</h2>
+<h3>3.1 Tuples</h3>
+<p>Tuples are fixed-size, heterogeneous collections of values.</p>
+<pre><code class="language-flux">let point: (Int, Int) = (10, 20)
+let record: (String, Int, Bool) = (&quot;Alice&quot;, 30, true)
+
+// Access by index
+print(point.0)   // 10
+print(point.1)   // 20
+
+// Named tuples
+let color = (r: 255, g: 128, b: 0)
+print(color.r)   // 255
+
+// Destructuring
+let (x, y) = point
+let (name, age, _) = record
+
+// Unit tuple (empty)
+let unit: () = ()
+</code></pre>
+<h3>3.2 Arrays</h3>
+<p>Arrays are fixed-size, contiguous sequences of values of the same type. Size is part of the type.</p>
+<pre><code class="language-flux">let numbers: [Int; 5] = [1, 2, 3, 4, 5]
+let zeros = [0; 100]   // 100 zeros
+
+// Size is known at compile time
+print(numbers.length)   // 5
+</code></pre>
+<h3>3.3 Slices</h3>
+<p>Slices are dynamically-sized views into a contiguous sequence. They are references — they borrow from an array or other collection.</p>
+<pre><code class="language-flux">let numbers = [1, 2, 3, 4, 5]
+let middle: &amp;[Int] = &amp;numbers[1..4]   // [2, 3, 4]
+</code></pre>
+<h3>3.4 Lists</h3>
+<p><code>List&lt;T&gt;</code> is a growable, heap-allocated sequence.</p>
+<pre><code class="language-flux">let names: List&lt;String&gt; = [&quot;Alice&quot;, &quot;Bob&quot;, &quot;Carol&quot;]
+mut items = List&lt;Int&gt;.new()
+items.append(1)
+items.append(2)
+print(items.length)   // 2
+</code></pre>
+<h3>3.5 Maps</h3>
+<p><code>HashMap&lt;K, V&gt;</code> and <code>TreeMap&lt;K, V&gt;</code> are key-value associative containers.</p>
+<pre><code class="language-flux">let scores: HashMap&lt;String, Int&gt; = {
+    &quot;Alice&quot;: 95
+    &quot;Bob&quot;: 87
+}
+
+// Access
+print(scores[&quot;Alice&quot;])   // Option&lt;Int&gt; — returns Some(95)
+</code></pre>
+<h3>3.6 Sets</h3>
+<p><code>HashSet&lt;T&gt;</code> and <code>TreeSet&lt;T&gt;</code> are collections of unique values.</p>
+<pre><code class="language-flux">let colors = Set{&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;}
+print(colors.contains(&quot;red&quot;))   // true
+</code></pre>
+<hr />
+<h2>4. Option and Result Types</h2>
+<h3>4.1 Option\&lt;T&gt;</h3>
+<p><code>Option&lt;T&gt;</code> represents a value that may or may not exist. It replaces null/nil entirely.</p>
+<pre><code class="language-flux">enum Option&lt;T&gt; {
+    Some(T),
+    None,
+}
+</code></pre>
+<pre><code class="language-flux">fn find_user(id: Int) -&gt; Option&lt;User&gt; {
+    if id == 1 {
+        return Some(User { name: &quot;Alice&quot; })
+    }
+    return None
+}
+
+// Usage
+let user = find_user(1)
+
+// Pattern matching
+match user {
+    Some(u) -&gt; print(&quot;Found: {u.name}&quot;)
+    None    -&gt; print(&quot;Not found&quot;)
+}
+
+// Shorthand syntax
+let user: User? = find_user(1)   // User? is sugar for Option&lt;User&gt;
+
+// Optional chaining
+let name = user?.name ?? &quot;Anonymous&quot;
+
+// If-let unwrapping
+if let Some(u) = find_user(1) {
+    print(&quot;Found: {u.name}&quot;)
+}
+
+// Force unwrap (panics on None — use sparingly)
+let u = find_user(1).unwrap()
+
+// Map and flat_map
+let upper_name = find_user(1).map(fn(u) { u.name.to_upper() })
+</code></pre>
+<h3>4.2 Result\&lt;T, E&gt;</h3>
+<p><code>Result&lt;T, E&gt;</code> represents an operation that may succeed or fail with an error.</p>
+<pre><code class="language-flux">enum Result&lt;T, E&gt; {
+    Ok(T),
+    Err(E),
+}
+</code></pre>
+<pre><code class="language-flux">fn divide(a: Int, b: Int) -&gt; Result&lt;Int, MathError&gt; {
+    if b == 0 {
+        return Err(MathError.DivisionByZero)
+    }
+    return Ok(a / b)
+}
+
+// Error propagation
+fn compute() -&gt; Result&lt;Int, MathError&gt; {
+    let x = divide(10, 2)?   // Unwraps Ok or returns Err
+    let y = divide(x, 3)?
+    return Ok(x + y)
+}
+</code></pre>
+<hr />
+<h2>5. Type Inference</h2>
+<p>Flux uses a Hindley-Milner-inspired type inference algorithm extended with trait bounds. The compiler infers types from:</p>
+<ol>
+<li><strong>Literal types</strong>: <code>42</code> → <code>Int</code>, <code>3.14</code> → <code>Float64</code>, <code>"hello"</code> → <code>String</code></li>
+<li><strong>Variable initialization</strong>: <code>let x = expression</code> infers <code>x</code>'s type from <code>expression</code></li>
+<li><strong>Function return</strong>: The return type can often be inferred (but must be explicitly declared for public functions)</li>
+<li><strong>Generic instantiation</strong>: <code>List.new()</code> infers <code>T</code> from context</li>
+<li><strong>Closure parameters</strong>: <code>items.map((x) =&gt; x * 2)</code> infers <code>x</code>'s type from <code>items</code>'s element type</li>
+</ol>
+<h3>5.1 Where Inference Works</h3>
+<pre><code class="language-flux">let x = 42                           // Int
+let name = &quot;Flux&quot;                    // String
+let items = [1, 2, 3]               // List&lt;Int&gt;
+let map = {&quot;a&quot;: 1, &quot;b&quot;: 2}          // HashMap&lt;String, Int&gt;
+let result = add(1, 2)              // Inferred from add's return type
+let doubled = items.map((x) =&gt; x * 2) // Inferred from List&lt;Int&gt;
+
+// Type flows through assignments
+let a = 42
+let b = a       // Int (inferred from a)
+let c = b + 1   // Int (inferred from + operator)
+</code></pre>
+<h3>5.2 Where Annotations Are Required</h3>
+<pre><code class="language-flux">// Public function signatures (always required)
+pub fn add(a: Int, b: Int) -&gt; Int {
+    return a + b
+}
+
+// Struct/class/enum fields (always required)
+struct Point {
+    x: Float64
+    y: Float64
+}
+
+// Empty collections (type cannot be inferred)
+let items: List&lt;Int&gt; = List.new()
+let map: HashMap&lt;String, Int&gt; = HashMap.new()
+
+// Ambiguous numeric contexts
+let x: Float32 = 1.0   // Could be Float32 or Float64
+</code></pre>
+<h3>5.3 Bidirectional Type Inference</h3>
+<p>Type information flows both forward and backward:</p>
+<pre><code class="language-flux">// Forward: type of `items` determines type of `x` in the closure
+let items: List&lt;Int&gt; = [1, 2, 3]
+let doubled = items.map((x) =&gt; x * 2)  // x is Int
+
+// Backward: expected type of `result` determines generic parameter
+let result: List&lt;String&gt; = items.map((x) =&gt; x.to_string())
+
+// Both directions:
+let callback: fn(Int) -&gt; Bool = (x) =&gt; x &gt; 0
+</code></pre>
+<hr />
+<h2>6. Generics</h2>
+<h3>6.1 Generic Functions</h3>
+<pre><code class="language-flux">fn identity&lt;T&gt;(value: T) -&gt; T {
+    return value
+}
+
+fn swap&lt;A, B&gt;(pair: (A, B)) -&gt; (B, A) {
+    return (pair.1, pair.0)
+}
+</code></pre>
+<h3>6.2 Generic Types</h3>
+<pre><code class="language-flux">struct Pair&lt;A, B&gt; {
+    first: A
+    second: B
+}
+
+enum Tree&lt;T&gt; {
+    Leaf(T),
+    Node(left: Box&lt;Tree&lt;T&gt;&gt;, right: Box&lt;Tree&lt;T&gt;&gt;),
+}
+</code></pre>
+<h3>6.3 Trait Bounds</h3>
+<pre><code class="language-flux">fn largest&lt;T: Comparable&gt;(list: List&lt;T&gt;) -&gt; T {
+    mut max = list[0]
+    for item in list[1..] {
+        if item.greater_than(max) {
+            max = item
+        }
+    }
+    return max
+}
+
+// Multiple bounds
+fn display&lt;T: Printable + Comparable&gt;(item: T) {
+    print(item.to_string())
+}
+
+// Where clause for complex bounds
+fn merge_maps&lt;K, V&gt;(a: HashMap&lt;K, V&gt;, b: HashMap&lt;K, V&gt;) -&gt; HashMap&lt;K, V&gt;
+    where K: Hashable + Eq,
+          V: Clone {
+    mut result = a.clone()
+    for (key, value) in b {
+        result.insert(key, value.clone())
+    }
+    return result
+}
+</code></pre>
+<h3>6.4 Monomorphization</h3>
+<p>Generics are monomorphized at compile time. <code>List&lt;Int&gt;</code> and <code>List&lt;String&gt;</code> generate separate, specialized code. This provides:
+- Zero runtime overhead (no boxing, no virtual dispatch)
+- Optimal performance (LLVM can optimize each specialization)
+- Larger binary size (trade-off)</p>
+<pre><code class="language-flux">// The compiler generates specialized versions:
+// identity_Int(value: Int) -&gt; Int
+// identity_String(value: String) -&gt; String
+let a = identity(42)        // Uses identity&lt;Int&gt;
+let b = identity(&quot;hello&quot;)   // Uses identity&lt;String&gt;
+</code></pre>
+<h3>6.5 Associated Types</h3>
+<pre><code class="language-flux">trait Collection {
+    type Item
+    type Iterator: Iterator&lt;Item = Self.Item&gt;
+
+    fn iter(self) -&gt; Self.Iterator
+    fn length(self) -&gt; Int
+}
+
+impl Collection for List&lt;Int&gt; {
+    type Item = Int
+    type Iterator = ListIterator&lt;Int&gt;
+
+    fn iter(self) -&gt; ListIterator&lt;Int&gt; {
+        return ListIterator.new(self)
+    }
+
+    fn length(self) -&gt; Int {
+        return self.len
+    }
+}
+</code></pre>
+<hr />
+<h2>7. Subtyping and Variance</h2>
+<h3>7.1 Nominal Subtyping</h3>
+<p>Flux uses <strong>nominal subtyping</strong> for classes (through inheritance) and <strong>structural subtyping</strong> for interfaces.</p>
+<pre><code class="language-flux">class Animal { ... }
+class Dog: Animal { ... }
+
+// Dog is a subtype of Animal
+let animal: Animal = Dog(name: &quot;Rex&quot;, breed: &quot;Lab&quot;)
+</code></pre>
+<h3>7.2 Structural Subtyping (Interfaces)</h3>
+<p>A type satisfies an interface if it has all the required methods, even without an explicit <code>impl</code> declaration:</p>
+<pre><code class="language-flux">interface Stringable {
+    fn to_string(self) -&gt; String
+}
+
+struct Point {
+    x: Float64
+    y: Float64
+}
+
+impl Point {
+    fn to_string(self) -&gt; String {
+        return &quot;({self.x}, {self.y})&quot;
+    }
+}
+
+// Point satisfies Stringable without explicit declaration
+fn print_item(item: Stringable) {
+    print(item.to_string())
+}
+
+print_item(Point { x: 1.0, y: 2.0 })  // Works!
+</code></pre>
+<h3>7.3 Variance</h3>
+<table>
+<thead>
+<tr>
+<th>Container</th>
+<th>T Position</th>
+<th>Variance</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List&lt;T&gt;</code></td>
+<td>Output</td>
+<td>Covariant</td>
+<td><code>List&lt;Dog&gt;</code> is subtype of <code>List&lt;Animal&gt;</code> (read-only)</td>
+</tr>
+<tr>
+<td><code>fn(T)</code></td>
+<td>Input</td>
+<td>Contravariant</td>
+<td><code>fn(Animal)</code> is subtype of <code>fn(Dog)</code></td>
+</tr>
+<tr>
+<td><code>Cell&lt;T&gt;</code></td>
+<td>Both</td>
+<td>Invariant</td>
+<td><code>Cell&lt;Dog&gt;</code> is NOT subtype of <code>Cell&lt;Animal&gt;</code></td>
+</tr>
+<tr>
+<td><code>&amp;T</code></td>
+<td>Output</td>
+<td>Covariant</td>
+<td><code>&amp;Dog</code> is subtype of <code>&amp;Animal</code></td>
+</tr>
+<tr>
+<td><code>&amp;mut T</code></td>
+<td>Both</td>
+<td>Invariant</td>
+<td><code>&amp;mut Dog</code> is NOT subtype of <code>&amp;mut Animal</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>8. Type Aliases</h2>
+<pre><code class="language-flux">type StringMap&lt;V&gt; = HashMap&lt;String, V&gt;
+type Callback = fn(Int, Int) -&gt; Int
+type AppResult&lt;T&gt; = Result&lt;T, AppError&gt;
+type Coordinates = (Float64, Float64)
+type Matrix = List&lt;List&lt;Float64&gt;&gt;
+</code></pre>
+<hr />
+<h2>9. Type Conversions</h2>
+<h3>9.1 Implicit Conversions</h3>
+<p>Flux performs very few implicit conversions to prevent subtle bugs:</p>
+<table>
+<thead>
+<tr>
+<th>From</th>
+<th>To</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Int8</code> → <code>Int16</code> → <code>Int32</code> → <code>Int64</code></td>
+<td>Widening</td>
+<td>Always safe</td>
+</tr>
+<tr>
+<td><code>UInt8</code> → <code>UInt16</code> → <code>UInt32</code> → <code>UInt64</code></td>
+<td>Widening</td>
+<td>Always safe</td>
+</tr>
+<tr>
+<td><code>Float32</code> → <code>Float64</code></td>
+<td>Widening</td>
+<td>Always safe</td>
+</tr>
+<tr>
+<td>Integer → Float</td>
+<td>Widening</td>
+<td>When no precision loss</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-flux">let x: Int8 = 42
+let y: Int64 = x   // OK: implicit widening
+</code></pre>
+<h3>9.2 Explicit Conversions (<code>as</code>)</h3>
+<pre><code class="language-flux">let x: Int = 256
+let y: Int8 = x as Int8     // Truncation (wraps to 0)
+let z: Float64 = x as Float64
+let w: Int = 3.14 as Int    // Truncation (3)
+</code></pre>
+<h3>9.3 Safe Conversions (<code>try_into</code>)</h3>
+<pre><code class="language-flux">let big: Int64 = 99999
+let result: Result&lt;Int8, OverflowError&gt; = big.try_into()
+match result {
+    Ok(value) -&gt; print(&quot;Fits: {value}&quot;)
+    Err(_)    -&gt; print(&quot;Too big for Int8&quot;)
+}
+</code></pre>
+<h3>9.4 Custom Conversions</h3>
+<pre><code class="language-flux">trait From&lt;T&gt; {
+    fn from(value: T) -&gt; Self
+}
+
+trait Into&lt;T&gt; {
+    fn into(self) -&gt; T
+}
+
+// Implementing From automatically provides Into
+impl From&lt;String&gt; for UserId {
+    fn from(value: String) -&gt; UserId {
+        return UserId { id: value }
+    }
+}
+
+let id: UserId = UserId.from(&quot;user_123&quot;)
+let id2: UserId = &quot;user_123&quot;.into()   // Works via Into
+</code></pre>
+<hr />
+<h2>10. Dynamic Typing (<code>any</code>)</h2>
+<p>For scripting and interop scenarios, Flux provides an <code>any</code> type that opts into dynamic typing:</p>
+<pre><code class="language-flux">let value: any = 42
+let name: any = &quot;Flux&quot;
+
+// Type checking at runtime
+if value is Int {
+    let n = value as Int
+    print(&quot;Integer: {n}&quot;)
+}
+
+// Dynamic dispatch
+fn process(data: any) {
+    match data {
+        is Int    -&gt; print(&quot;Int: {data as Int}&quot;)
+        is String -&gt; print(&quot;String: {data as String}&quot;)
+        is List&lt;any&gt; -&gt; print(&quot;List with {(data as List&lt;any&gt;).length} items&quot;)
+        _ -&gt; print(&quot;Unknown type&quot;)
+    }
+}
+</code></pre>
+<blockquote>
+<p><strong>Note:</strong> Using <code>any</code> disables compile-time type checking for those values. The linter warns on <code>any</code> usage and suggests typed alternatives.</p>
+</blockquote>
+<hr />
+<h2>11. Function Types</h2>
+<p>Functions are first-class values with explicit types:</p>
+<pre><code class="language-flux">// Function type syntax: fn(ParamTypes...) -&gt; ReturnType
+type BinaryOp = fn(Int, Int) -&gt; Int
+type Predicate&lt;T&gt; = fn(T) -&gt; Bool
+type Action = fn() -&gt; Void
+
+let add: fn(Int, Int) -&gt; Int = fn(a, b) { return a + b }
+let is_even: fn(Int) -&gt; Bool = (n) =&gt; n % 2 == 0
+
+// Higher-order functions
+fn apply(f: fn(Int) -&gt; Int, value: Int) -&gt; Int {
+    return f(value)
+}
+
+let result = apply((x) =&gt; x * 2, 21)  // 42
+</code></pre>
+<hr />
+<h2>12. Phantom Types</h2>
+<p>Phantom types carry type-level information without any runtime representation:</p>
+<pre><code class="language-flux">struct Meters {}
+struct Seconds {}
+
+struct Quantity&lt;Unit&gt; {
+    value: Float64
+    _phantom: PhantomData&lt;Unit&gt;
+}
+
+fn add_quantities&lt;U&gt;(a: Quantity&lt;U&gt;, b: Quantity&lt;U&gt;) -&gt; Quantity&lt;U&gt; {
+    return Quantity { value: a.value + b.value, _phantom: PhantomData }
+}
+
+let distance = Quantity&lt;Meters&gt; { value: 100.0, _phantom: PhantomData }
+let time = Quantity&lt;Seconds&gt; { value: 9.58, _phantom: PhantomData }
+
+// add_quantities(distance, time)  // Compile error: Meters ≠ Seconds
+add_quantities(distance, distance)  // OK
+</code></pre>
+<hr />
+<h2>13. Recursive Types</h2>
+<p>Recursive types are supported through indirection (<code>Box&lt;T&gt;</code>):</p>
+<pre><code class="language-flux">enum JsonValue {
+    Null,
+    Bool(Bool),
+    Number(Float64),
+    Str(String),
+    Array(List&lt;JsonValue&gt;),
+    Object(HashMap&lt;String, JsonValue&gt;),
+}
+
+// Binary tree
+enum Tree&lt;T&gt; {
+    Leaf(T),
+    Node {
+        value: T
+        left: Box&lt;Tree&lt;T&gt;&gt;
+        right: Box&lt;Tree&lt;T&gt;&gt;
+    },
+}
+</code></pre>
+<hr />
+<h2>14. Built-in Traits</h2>
+<p>Flux provides a set of built-in traits that the compiler knows about:</p>
+<table>
+<thead>
+<tr>
+<th>Trait</th>
+<th>Purpose</th>
+<th>Auto-derivable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Copy</code></td>
+<td>Type can be copied bitwise</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>Clone</code></td>
+<td>Type can be explicitly cloned</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>Eq</code></td>
+<td>Equality comparison (<code>==</code>, <code>!=</code>)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>Ord</code></td>
+<td>Ordering comparison (<code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>Hash</code></td>
+<td>Can be hashed (for HashMap/HashSet keys)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>Debug</code></td>
+<td>Debug string representation</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>Display</code></td>
+<td>User-facing string representation</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><code>Default</code></td>
+<td>Has a default value</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>Send</code></td>
+<td>Can be sent between threads</td>
+<td>Auto-implemented</td>
+</tr>
+<tr>
+<td><code>Sync</code></td>
+<td>Can be shared between threads</td>
+<td>Auto-implemented</td>
+</tr>
+<tr>
+<td><code>Drop</code></td>
+<td>Custom destructor</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><code>Iterator</code></td>
+<td>Can produce a sequence of values</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><code>From&lt;T&gt;</code> / <code>Into&lt;T&gt;</code></td>
+<td>Type conversion</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><code>Add</code>, <code>Sub</code>, <code>Mul</code>, <code>Div</code></td>
+<td>Arithmetic operators</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><code>Index</code></td>
+<td>Indexing operator (<code>[]</code>)</td>
+<td>❌</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-flux">#[derive(Debug, Clone, Eq, Hash)]
+struct UserId {
+    value: String
+}
+</code></pre>
+<hr />
+<h2>15. Type Safety Guarantees</h2>
+<p>The Flux type system provides the following guarantees:</p>
+<ol>
+<li><strong>No null pointer dereferences</strong> — All nullable values are <code>Option&lt;T&gt;</code> and must be explicitly unwrapped</li>
+<li><strong>No uninitialized variables</strong> — All variables must be initialized before use</li>
+<li><strong>No implicit type coercions</strong> (except safe widening) — Explicit conversion required</li>
+<li><strong>No data races</strong> — <code>Send</code> and <code>Sync</code> traits enforce thread safety at compile time</li>
+<li><strong>Exhaustive matching</strong> — <code>match</code> expressions must cover all possible cases</li>
+<li><strong>No use-after-move</strong> — The compiler tracks ownership and prevents use of moved values</li>
+<li><strong>No implicit lossy conversions</strong> — Narrowing conversions require explicit <code>as</code> or <code>try_into()</code></li>
+</ol>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

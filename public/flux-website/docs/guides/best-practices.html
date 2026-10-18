@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best Practices — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Best Practices</h1>
+<p>Patterns and guidelines for writing production-quality Flux code.</p>
+<hr />
+<h2>1. Error Handling</h2>
+<h3>Use <code>Result&lt;T, E&gt;</code> for Recoverable Errors</h3>
+<pre><code class="language-flux">// Good — caller decides how to handle
+fn parse_config(path: String) -&gt; Result&lt;Config, ConfigError&gt; {
+    let content = File.read(path)?
+    let config = toml.parse(content)?
+    return Ok(config)
+}
+
+// Bad — panics on failure
+fn parse_config(path: String) -&gt; Config {
+    return toml.parse(File.read(path).unwrap()).unwrap()
+}
+</code></pre>
+<h3>Create Domain-Specific Error Types</h3>
+<pre><code class="language-flux">enum AppError {
+    Config(ConfigError),
+    Database(DbError),
+    Auth(AuthError),
+    Validation(field: String, message: String),
+}
+
+impl Display for AppError {
+    fn to_string(self) -&gt; String {
+        match self {
+            Config(e)   -&gt; &quot;Configuration error: {e}&quot;
+            Database(e) -&gt; &quot;Database error: {e}&quot;
+            Auth(e)     -&gt; &quot;Authentication error: {e}&quot;
+            Validation(field, msg) -&gt; &quot;Validation error on '{field}': {msg}&quot;
+        }
+    }
+}
+</code></pre>
+<h3>Add Context to Errors</h3>
+<pre><code class="language-flux">fn setup_database() -&gt; Result&lt;Connection, AppError&gt; {
+    let config = load_config()
+        .context(&quot;Failed to load database configuration&quot;)?
+
+    let conn = Database.connect(config.db_url)
+        .context(&quot;Failed to connect to database at {config.db_url}&quot;)?
+
+    return Ok(conn)
+}
+</code></pre>
+<hr />
+<h2>2. API Design</h2>
+<h3>Use the Builder Pattern for Complex Construction</h3>
+<pre><code class="language-flux">struct HttpClientBuilder {
+    timeout: Duration
+    max_retries: Int
+    headers: HashMap&lt;String, String&gt;
+    base_url: Option&lt;String&gt;
+}
+
+impl HttpClientBuilder {
+    fn new() -&gt; HttpClientBuilder {
+        return HttpClientBuilder {
+            timeout: Duration.seconds(30)
+            max_retries: 3
+            headers: HashMap.new()
+            base_url: None
+        }
+    }
+
+    fn with_timeout(mut self, timeout: Duration) -&gt; HttpClientBuilder {
+        self.timeout = timeout
+        return self
+    }
+
+    fn with_max_retries(mut self, retries: Int) -&gt; HttpClientBuilder {
+        self.max_retries = retries
+        return self
+    }
+
+    fn with_base_url(mut self, url: String) -&gt; HttpClientBuilder {
+        self.base_url = Some(url)
+        return self
+    }
+
+    fn build(self) -&gt; HttpClient {
+        return HttpClient.from_builder(self)
+    }
+}
+
+// Usage
+let client = HttpClientBuilder.new()
+    .with_timeout(Duration.seconds(10))
+    .with_max_retries(5)
+    .with_base_url(&quot;https://api.example.com&quot;)
+    .build()
+</code></pre>
+<h3>Accept Broad Types, Return Specific Types</h3>
+<pre><code class="language-flux">// Good — accepts anything Iterable, returns specific List
+fn deduplicate&lt;T: Eq + Hash&gt;(items: impl Iterable&lt;T&gt;) -&gt; List&lt;T&gt; {
+    mut seen = HashSet&lt;T&gt;.new()
+    mut result = List&lt;T&gt;.new()
+    for item in items {
+        if seen.insert(item.clone()) {
+            result.append(item)
+        }
+    }
+    return result
+}
+</code></pre>
+<h3>Make Invalid States Unrepresentable</h3>
+<pre><code class="language-flux">// Bad — many invalid combinations possible
+struct Connection {
+    host: String
+    port: Int
+    is_connected: Bool
+    socket: Option&lt;Socket&gt;
+    error: Option&lt;String&gt;
+}
+
+// Good — each state is a distinct variant
+enum Connection {
+    Disconnected(host: String, port: Int),
+    Connecting(host: String, port: Int),
+    Connected(socket: Socket),
+    Error(host: String, error: ConnectionError),
+}
+</code></pre>
+<hr />
+<h2>3. Concurrency</h2>
+<h3>Use Structured Concurrency</h3>
+<pre><code class="language-flux">// Good — all tasks complete before function returns
+async fn process_batch(items: List&lt;Item&gt;) -&gt; List&lt;Result&gt; {
+    let group = TaskGroup&lt;Result&gt;.new()
+    for item in items {
+        group.spawn(async { return await process(item) })
+    }
+    return await group.collect()
+}
+
+// Bad — fire-and-forget tasks (no control over lifetime)
+async fn process_batch_bad(items: List&lt;Item&gt;) {
+    for item in items {
+        spawn async { await process(item) }  // Who owns these tasks?
+    }
+}
+</code></pre>
+<h3>Use Channels for Communication</h3>
+<pre><code class="language-flux">// Good — communicate through channels
+async fn pipeline(input: Receiver&lt;Data&gt;) -&gt; Receiver&lt;Output&gt; {
+    let (tx, rx) = Channel&lt;Output&gt;.bounded(100)
+    spawn async {
+        while let Some(data) = await input.receive() {
+            let output = transform(data)
+            await tx.send(output)
+        }
+        tx.close()
+    }
+    return rx
+}
+</code></pre>
+<h3>Limit Concurrency</h3>
+<pre><code class="language-flux">async fn fetch_all(urls: List&lt;String&gt;) -&gt; List&lt;Response&gt; {
+    let sem = Semaphore.new(10)  // Max 10 concurrent requests
+    let group = TaskGroup&lt;Response&gt;.new()
+
+    for url in urls {
+        let permit = await sem.acquire()
+        group.spawn(async {
+            defer permit.release()
+            return await http.get(url)
+        })
+    }
+
+    return await group.collect()
+}
+</code></pre>
+<hr />
+<h2>4. Performance</h2>
+<h3>Prefer Stack Allocation</h3>
+<pre><code class="language-flux">// Good — struct on the stack
+struct Point { x: Float64, y: Float64 }
+let p = Point { x: 1.0, y: 2.0 }
+
+// Avoid — unnecessary heap allocation
+let p = Box.new(Point { x: 1.0, y: 2.0 })
+</code></pre>
+<h3>Use Iterators Instead of Intermediate Collections</h3>
+<pre><code class="language-flux">// Good — lazy evaluation, no intermediate allocations
+let total = items.iter()
+    .filter((item) =&gt; item.is_active())
+    .map((item) =&gt; item.value)
+    .sum()
+
+// Avoid — creates intermediate collections
+let active = items.filter((item) =&gt; item.is_active())
+let values = active.map((item) =&gt; item.value)
+let total = values.sum()
+</code></pre>
+<h3>Clone Deliberately</h3>
+<pre><code class="language-flux">// Good — explicit about cloning
+let config_copy = config.clone()
+modify(config_copy)
+
+// Good — pass by reference when not modifying
+fn display(config: &amp;Config) {
+    print(config.name)
+}
+</code></pre>
+<hr />
+<h2>5. Testing</h2>
+<h3>Test Behavior, Not Implementation</h3>
+<pre><code class="language-flux">#[test]
+fn test_user_registration() {
+    mut service = UserService.new()
+
+    let result = service.register(&quot;alice@test.com&quot;, &quot;password123&quot;)
+    assert(result.is_ok())
+
+    let user = result.unwrap()
+    assert(user.email == &quot;alice@test.com&quot;)
+    assert(user.is_active)
+}
+</code></pre>
+<h3>Use Table-Driven Tests</h3>
+<pre><code class="language-flux">#[test]
+fn test_parse_int() {
+    let cases = [
+        (&quot;42&quot;, Ok(42)),
+        (&quot;-1&quot;, Ok(-1)),
+        (&quot;0&quot;, Ok(0)),
+        (&quot;abc&quot;, Err(ParseError.InvalidFormat)),
+        (&quot;&quot;, Err(ParseError.EmptyInput)),
+        (&quot;99999999999999999999&quot;, Err(ParseError.Overflow)),
+    ]
+
+    for (input, expected) in cases {
+        let result = parse_int(input)
+        assert(result == expected, &quot;parse_int(\&quot;{input}\&quot;) = {result}, expected {expected}&quot;)
+    }
+}
+</code></pre>
+<h3>Test Error Cases</h3>
+<pre><code class="language-flux">#[test]
+fn test_divide_by_zero() {
+    let result = divide(10, 0)
+    assert(result.is_err())
+    assert(result.unwrap_err() == MathError.DivisionByZero)
+}
+</code></pre>
+<hr />
+<h2>6. Security</h2>
+<h3>Validate All Input</h3>
+<pre><code class="language-flux">fn create_user(input: CreateUserInput) -&gt; Result&lt;User, ValidationError&gt; {
+    if input.email.is_empty() {
+        return Err(ValidationError.required(&quot;email&quot;))
+    }
+    if not is_valid_email(input.email) {
+        return Err(ValidationError.invalid(&quot;email&quot;, &quot;must be a valid email address&quot;))
+    }
+    if input.password.length &lt; 8 {
+        return Err(ValidationError.invalid(&quot;password&quot;, &quot;must be at least 8 characters&quot;))
+    }
+    // ... create user
+}
+</code></pre>
+<h3>Use Type-Safe IDs</h3>
+<pre><code class="language-flux">struct UserId { value: String }
+struct PostId { value: String }
+
+// Prevents accidentally passing a PostId where a UserId is expected
+fn get_user(id: UserId) -&gt; Result&lt;User, DbError&gt; { ... }
+fn get_post(id: PostId) -&gt; Result&lt;Post, DbError&gt; { ... }
+</code></pre>
+<h3>Don't Log Sensitive Data</h3>
+<pre><code class="language-flux">fn authenticate(email: String, password: String) -&gt; Result&lt;Token, AuthError&gt; {
+    log.info(&quot;Authentication attempt for {email}&quot;)
+    // Never: log.info(&quot;Password: {password}&quot;)
+
+    let user = find_user_by_email(email)?
+    if not verify_password(password, user.password_hash) {
+        log.warn(&quot;Failed authentication for {email}&quot;)
+        return Err(AuthError.InvalidCredentials)
+    }
+
+    log.info(&quot;Successful authentication for {email}&quot;)
+    return Ok(generate_token(user))
+}
+</code></pre>
+<hr />
+<h2>7. Project Organization</h2>
+<h3>Keep Modules Focused</h3>
+<pre><code>src/
+├── main.flux           // Entry point — thin, delegates to modules
+├── config.flux         // Configuration loading and validation
+├── models/
+│   ├── mod.flux        // Re-exports
+│   ├── user.flux       // User struct and methods
+│   └── post.flux       // Post struct and methods
+├── services/
+│   ├── mod.flux
+│   ├── auth.flux       // Authentication logic
+│   └── email.flux      // Email sending
+├── handlers/
+│   ├── mod.flux
+│   ├── user_handler.flux
+│   └── post_handler.flux
+└── utils/
+    ├── mod.flux
+    ├── validation.flux
+    └── crypto.flux
+</code></pre>
+<h3>Minimize Public Surface</h3>
+<pre><code class="language-flux">// In mod.flux — only export what external users need
+pub use self.user.User
+pub use self.user.UserRole
+
+// Don't export internal helpers
+// self.user.validate_email stays private
+</code></pre>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

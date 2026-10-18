@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cli Design — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux CLI Design</h1>
+<p>The <code>flux</code> command is the unified entry point for creating, building, testing, managing, and publishing Flux projects.</p>
+<hr />
+<h2>1. Command Reference</h2>
+<h3>1.1 Project Management</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>flux new &lt;name&gt;</code></td>
+<td>Create a new project</td>
+</tr>
+<tr>
+<td><code>flux init</code></td>
+<td>Initialize Flux in current directory</td>
+</tr>
+<tr>
+<td><code>flux build</code></td>
+<td>Compile the project</td>
+</tr>
+<tr>
+<td><code>flux run</code></td>
+<td>Build and run the project</td>
+</tr>
+<tr>
+<td><code>flux clean</code></td>
+<td>Remove build artifacts</td>
+</tr>
+<tr>
+<td><code>flux check</code></td>
+<td>Type-check without generating code</td>
+</tr>
+</tbody>
+</table>
+<h3>1.2 Dependencies</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>flux add &lt;package&gt;</code></td>
+<td>Add a dependency</td>
+</tr>
+<tr>
+<td><code>flux remove &lt;package&gt;</code></td>
+<td>Remove a dependency</td>
+</tr>
+<tr>
+<td><code>flux update</code></td>
+<td>Update dependencies</td>
+</tr>
+<tr>
+<td><code>flux install</code></td>
+<td>Install all dependencies</td>
+</tr>
+<tr>
+<td><code>flux tree</code></td>
+<td>Display dependency tree</td>
+</tr>
+<tr>
+<td><code>flux audit</code></td>
+<td>Check dependencies for vulnerabilities</td>
+</tr>
+</tbody>
+</table>
+<h3>1.3 Code Quality</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>flux format</code></td>
+<td>Format source files</td>
+</tr>
+<tr>
+<td><code>flux lint</code></td>
+<td>Run the linter</td>
+</tr>
+<tr>
+<td><code>flux test</code></td>
+<td>Run tests</td>
+</tr>
+<tr>
+<td><code>flux bench</code></td>
+<td>Run benchmarks</td>
+</tr>
+<tr>
+<td><code>flux doc</code></td>
+<td>Generate documentation</td>
+</tr>
+</tbody>
+</table>
+<h3>1.4 Publishing</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>flux publish</code></td>
+<td>Publish to the package registry</td>
+</tr>
+<tr>
+<td><code>flux login</code></td>
+<td>Authenticate with the registry</td>
+</tr>
+<tr>
+<td><code>flux logout</code></td>
+<td>Clear authentication</td>
+</tr>
+<tr>
+<td><code>flux search &lt;query&gt;</code></td>
+<td>Search the registry</td>
+</tr>
+<tr>
+<td><code>flux info &lt;package&gt;</code></td>
+<td>Show package details</td>
+</tr>
+</tbody>
+</table>
+<h3>1.5 Tools</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>flux doctor</code></td>
+<td>Diagnose installation issues</td>
+</tr>
+<tr>
+<td><code>flux target list</code></td>
+<td>List available compilation targets</td>
+</tr>
+<tr>
+<td><code>flux target add &lt;target&gt;</code></td>
+<td>Add a compilation target</td>
+</tr>
+<tr>
+<td><code>flux self update</code></td>
+<td>Update Flux to the latest version</td>
+</tr>
+<tr>
+<td><code>flux self uninstall</code></td>
+<td>Uninstall Flux</td>
+</tr>
+<tr>
+<td><code>flux completions &lt;shell&gt;</code></td>
+<td>Generate shell completions</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>2. Detailed Command Specifications</h2>
+<h3><code>flux new</code></h3>
+<pre><code class="language-bash">flux new &lt;name&gt; [options]
+
+Options:
+  --lib           Create a library project
+  --bin           Create a binary project (default)
+  --edition &lt;y&gt;   Set the edition (default: 2026)
+  --vcs &lt;type&gt;    Initialize version control (git, none) (default: git)
+  --template &lt;t&gt;  Use a project template
+
+Examples:
+  flux new my_app
+  flux new my_lib --lib
+  flux new web_app --template web
+</code></pre>
+<h3><code>flux build</code></h3>
+<pre><code class="language-bash">flux build [options]
+
+Options:
+  --release          Build in release mode (optimized)
+  --target &lt;triple&gt;  Cross-compile for target
+  --jobs &lt;N&gt;         Number of parallel jobs
+  --verbose          Show detailed build output
+  --opt-level &lt;N&gt;    Optimization level (0, 1, 2, 3, s, z)
+  --features &lt;f&gt;     Enable features (comma-separated)
+  --all-features     Enable all features
+  --no-default       Disable default features
+  --timings          Show build timing breakdown
+
+Examples:
+  flux build
+  flux build --release
+  flux build --target aarch64-apple-darwin
+  flux build --release --opt-level 3
+</code></pre>
+<h3><code>flux test</code></h3>
+<pre><code class="language-bash">flux test [filter] [options]
+
+Options:
+  --release          Run tests in release mode
+  --lib              Test only library
+  --doc              Run documentation tests
+  --jobs &lt;N&gt;         Parallel test threads
+  --no-capture       Show test output
+  --coverage         Generate coverage report
+  --filter &lt;name&gt;    Run tests matching name
+  --ignored          Run ignored tests
+  --timeout &lt;secs&gt;   Set test timeout
+
+Examples:
+  flux test
+  flux test test_parsing
+  flux test --coverage
+  flux test --filter &quot;user::*&quot;
+</code></pre>
+<h3><code>flux format</code></h3>
+<pre><code class="language-bash">flux format [options] [files...]
+
+Options:
+  --check      Check formatting without modifying files
+  --diff       Show formatting diff
+  --config &lt;f&gt; Use custom format configuration
+
+Examples:
+  flux format
+  flux format --check
+  flux format src/main.flux
+</code></pre>
+<h3><code>flux lint</code></h3>
+<pre><code class="language-bash">flux lint [options]
+
+Options:
+  --fix          Auto-fix linting issues
+  --strict       Enable all lint rules
+  --config &lt;f&gt;   Use custom lint configuration
+  --warn &lt;rule&gt;  Set specific rule to warning
+  --deny &lt;rule&gt;  Set specific rule to error
+  --allow &lt;rule&gt; Disable specific rule
+
+Examples:
+  flux lint
+  flux lint --fix
+  flux lint --deny unused-variables
+</code></pre>
+<hr />
+<h2>3. Configuration</h2>
+<h3>3.1 <code>Flux.toml</code> Build Configuration</h3>
+<pre><code class="language-toml">[profile.dev]
+opt_level = 0
+debug = true
+overflow_checks = true
+incremental = true
+
+[profile.release]
+opt_level = 3
+debug = false
+lto = &quot;thin&quot;         # Link-time optimization: &quot;off&quot;, &quot;thin&quot;, &quot;fat&quot;
+strip = true          # Strip debug symbols
+codegen_units = 1     # Single codegen unit for max optimization
+panic = &quot;unwind&quot;      # &quot;unwind&quot; or &quot;abort&quot;
+
+[profile.bench]
+inherits = &quot;release&quot;
+debug = true          # Keep debug info for profiling
+
+[build]
+jobs = 8              # Parallel compilation jobs
+target_dir = &quot;target&quot; # Build output directory
+</code></pre>
+<h3>3.2 Environment Variables</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FLUX_HOME</code></td>
+<td>Flux installation directory</td>
+<td><code>~/.flux</code></td>
+</tr>
+<tr>
+<td><code>FLUX_LOG</code></td>
+<td>Log level</td>
+<td><code>warn</code></td>
+</tr>
+<tr>
+<td><code>FLUX_THREADS</code></td>
+<td>Compilation threads</td>
+<td>CPU count</td>
+</tr>
+<tr>
+<td><code>FLUX_TARGET</code></td>
+<td>Default compilation target</td>
+<td>Host</td>
+</tr>
+<tr>
+<td><code>FLUX_CACHE_DIR</code></td>
+<td>Cache directory</td>
+<td><code>~/.flux/cache</code></td>
+</tr>
+<tr>
+<td><code>FLUX_REGISTRY</code></td>
+<td>Package registry URL</td>
+<td><code>https://packages.flux-lang.org</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>4. Exit Codes</h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Success</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Compilation error</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Usage error (bad arguments)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Test failure</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Lint error</td>
+</tr>
+<tr>
+<td>100</td>
+<td>Internal compiler error (bug)</td>
+</tr>
+<tr>
+<td>101</td>
+<td>Panic</td>
+</tr>
+<tr>
+<td>126</td>
+<td>Command not executable</td>
+</tr>
+<tr>
+<td>127</td>
+<td>Command not found</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>5. Output Format</h2>
+<h3>5.1 Colorized Diagnostics</h3>
+<p>The CLI uses color to improve readability:
+- <strong>Red</strong>: Errors
+- <strong>Yellow</strong>: Warnings
+- <strong>Blue</strong>: Notes and help
+- <strong>Green</strong>: Success messages
+- <strong>Cyan</strong>: File paths</p>
+<p>Color can be disabled with <code>--color never</code> or <code>NO_COLOR=1</code>.</p>
+<h3>5.2 JSON Output</h3>
+<p>For tool integration, all commands support <code>--output json</code>:</p>
+<pre><code class="language-bash">flux build --output json
+flux test --output json
+flux lint --output json
+</code></pre>
+<pre><code class="language-json">{
+  &quot;diagnostics&quot;: [
+    {
+      &quot;severity&quot;: &quot;error&quot;,
+      &quot;code&quot;: &quot;E0382&quot;,
+      &quot;message&quot;: &quot;use of moved value: `name`&quot;,
+      &quot;file&quot;: &quot;src/main.flux&quot;,
+      &quot;line&quot;: 5,
+      &quot;column&quot;: 11,
+      &quot;suggestions&quot;: [
+        {
+          &quot;message&quot;: &quot;consider cloning the value&quot;,
+          &quot;replacement&quot;: &quot;name.clone()&quot;
+        }
+      ]
+    }
+  ]
+}
+</code></pre>
+<hr />
+<h2>6. Shell Completions</h2>
+<pre><code class="language-bash"># Bash
+flux completions bash &gt; /etc/bash_completion.d/flux
+
+# Zsh
+flux completions zsh &gt; ~/.zfunc/_flux
+
+# Fish
+flux completions fish &gt; ~/.config/fish/completions/flux.fish
+
+# PowerShell
+flux completions powershell &gt; flux.ps1
+</code></pre>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

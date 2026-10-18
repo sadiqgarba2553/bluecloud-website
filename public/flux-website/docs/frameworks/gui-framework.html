@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gui Framework — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux UI — Cross-Platform GUI Framework</h1>
+<hr />
+<h2>1. Overview</h2>
+<p>Flux UI is a declarative, cross-platform GUI framework inspired by SwiftUI and Flutter. It compiles to native platform widgets, providing a native look and feel on every platform.</p>
+<hr />
+<h2>2. Basic Syntax</h2>
+<pre><code class="language-flux">use flux.ui.*
+
+fn main() {
+    App.run(MyApp)
+}
+
+struct MyApp: View {
+    fn body(self) -&gt; View {
+        Window(title: &quot;Hello Flux UI&quot;) {
+            VStack(spacing: 16) {
+                Text(&quot;Welcome to Flux UI! ⚡&quot;)
+                    .font(.title)
+                    .color(.primary)
+
+                Text(&quot;Build beautiful cross-platform apps&quot;)
+                    .font(.body)
+                    .color(.secondary)
+
+                Button(&quot;Get Started&quot;) {
+                    print(&quot;Button clicked!&quot;)
+                }
+                .style(.primary)
+                .padding(12)
+            }
+            .padding(24)
+            .alignment(.center)
+        }
+    }
+}
+</code></pre>
+<hr />
+<h2>3. Core Components</h2>
+<h3>3.1 Layout</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>VStack</code></td>
+<td>Vertical stack layout</td>
+</tr>
+<tr>
+<td><code>HStack</code></td>
+<td>Horizontal stack layout</td>
+</tr>
+<tr>
+<td><code>ZStack</code></td>
+<td>Overlay stack (front to back)</td>
+</tr>
+<tr>
+<td><code>Grid</code></td>
+<td>Grid layout</td>
+</tr>
+<tr>
+<td><code>ScrollView</code></td>
+<td>Scrollable container</td>
+</tr>
+<tr>
+<td><code>Spacer</code></td>
+<td>Flexible space</td>
+</tr>
+<tr>
+<td><code>Divider</code></td>
+<td>Visual separator</td>
+</tr>
+<tr>
+<td><code>Padding</code></td>
+<td>Add padding</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-flux">VStack(spacing: 8) {
+    HStack {
+        Image(&quot;avatar.png&quot;)
+            .size(48, 48)
+            .corner_radius(24)
+
+        VStack(alignment: .leading) {
+            Text(user.name).font(.headline)
+            Text(user.email).font(.caption).color(.secondary)
+        }
+
+        Spacer()
+
+        Badge(&quot;Online&quot;).color(.green)
+    }
+
+    Divider()
+
+    Text(user.bio)
+        .font(.body)
+        .line_limit(3)
+}
+</code></pre>
+<h3>3.2 Input Components</h3>
+<pre><code class="language-flux">// Text field
+TextField(&quot;Email&quot;, text: &amp;email)
+    .keyboard_type(.email)
+    .autocomplete(.email)
+
+// Password field
+SecureField(&quot;Password&quot;, text: &amp;password)
+
+// Text area
+TextEditor(text: &amp;content)
+    .frame(height: 200)
+
+// Toggle
+Toggle(&quot;Notifications&quot;, is_on: &amp;notifications_enabled)
+
+// Slider
+Slider(value: &amp;volume, range: 0.0..=1.0)
+
+// Picker / Dropdown
+Picker(&quot;Color&quot;, selection: &amp;selected_color) {
+    Text(&quot;Red&quot;).tag(&quot;red&quot;)
+    Text(&quot;Green&quot;).tag(&quot;green&quot;)
+    Text(&quot;Blue&quot;).tag(&quot;blue&quot;)
+}
+
+// Date picker
+DatePicker(&quot;Birthday&quot;, selection: &amp;birthday)
+</code></pre>
+<h3>3.3 Display Components</h3>
+<pre><code class="language-flux">// Image
+Image(&quot;photo.jpg&quot;)
+    .resizable()
+    .aspect_ratio(.fit)
+    .frame(width: 200, height: 200)
+
+// Icon
+Icon(.heart, size: 24, color: .red)
+
+// Progress
+ProgressBar(value: 0.75)
+ProgressSpinner()
+
+// List
+List(items) { item in
+    HStack {
+        Text(item.name)
+        Spacer()
+        Text(item.value).color(.secondary)
+    }
+}
+
+// Table
+Table(data) {
+    Column(&quot;Name&quot;, key: \.name)
+    Column(&quot;Email&quot;, key: \.email)
+    Column(&quot;Role&quot;, key: \.role)
+}
+</code></pre>
+<hr />
+<h2>4. State Management</h2>
+<h3>4.1 State</h3>
+<pre><code class="language-flux">struct Counter: View {
+    @State mut count: Int = 0
+
+    fn body(self) -&gt; View {
+        VStack {
+            Text(&quot;Count: {self.count}&quot;)
+                .font(.title)
+
+            HStack(spacing: 16) {
+                Button(&quot;-&quot;) { self.count -= 1 }
+                Button(&quot;+&quot;) { self.count += 1 }
+            }
+        }
+    }
+}
+</code></pre>
+<h3>4.2 Binding</h3>
+<pre><code class="language-flux">struct ParentView: View {
+    @State mut name: String = &quot;&quot;
+
+    fn body(self) -&gt; View {
+        VStack {
+            NameEditor(name: &amp;self.name)
+            Text(&quot;Hello, {self.name}!&quot;)
+        }
+    }
+}
+
+struct NameEditor: View {
+    @Binding name: String
+
+    fn body(self) -&gt; View {
+        TextField(&quot;Your name&quot;, text: &amp;self.name)
+    }
+}
+</code></pre>
+<h3>4.3 Observable</h3>
+<pre><code class="language-flux">@Observable
+class UserStore {
+    mut users: List&lt;User&gt; = []
+    mut is_loading: Bool = false
+
+    async fn fetch_users(mut self) {
+        self.is_loading = true
+        self.users = await api.get_users()
+        self.is_loading = false
+    }
+}
+
+struct UserList: View {
+    @ObservedObject store: UserStore
+
+    fn body(self) -&gt; View {
+        VStack {
+            if store.is_loading {
+                ProgressSpinner()
+            } else {
+                List(store.users) { user in
+                    Text(user.name)
+                }
+            }
+        }
+        .on_appear {
+            await store.fetch_users()
+        }
+    }
+}
+</code></pre>
+<h3>4.4 Environment</h3>
+<pre><code class="language-flux">// Define an environment value
+struct Theme {
+    primary_color: Color
+    font_family: String
+}
+
+let dark_theme = Theme {
+    primary_color: Color.hex(&quot;#BB86FC&quot;)
+    font_family: &quot;Inter&quot;
+}
+
+// Provide it
+App.run(MyApp)
+    .environment(\.theme, dark_theme)
+
+// Consume it
+struct ThemedButton: View {
+    @Environment(\.theme) theme: Theme
+    label: String
+
+    fn body(self) -&gt; View {
+        Button(label) { ... }
+            .background(theme.primary_color)
+            .font(.custom(theme.font_family, size: 16))
+    }
+}
+</code></pre>
+<hr />
+<h2>5. Navigation</h2>
+<pre><code class="language-flux">struct MyApp: View {
+    fn body(self) -&gt; View {
+        NavigationStack {
+            List(items) { item in
+                NavigationLink(item.title, destination: DetailView(item: item))
+            }
+            .navigation_title(&quot;Items&quot;)
+        }
+    }
+}
+
+// Tab navigation
+struct MainView: View {
+    @State mut selected_tab: Int = 0
+
+    fn body(self) -&gt; View {
+        TabView(selection: &amp;selected_tab) {
+            HomeView()
+                .tab_item(&quot;Home&quot;, icon: .house)
+                .tag(0)
+
+            SearchView()
+                .tab_item(&quot;Search&quot;, icon: .magnifying_glass)
+                .tag(1)
+
+            ProfileView()
+                .tab_item(&quot;Profile&quot;, icon: .person)
+                .tag(2)
+        }
+    }
+}
+</code></pre>
+<hr />
+<h2>6. Styling and Theming</h2>
+<pre><code class="language-flux">// Modifiers
+Text(&quot;Hello&quot;)
+    .font(.title)
+    .color(.white)
+    .background(.blue)
+    .padding(16)
+    .corner_radius(8)
+    .shadow(radius: 4, color: .black.opacity(0.2))
+    .border(.gray, width: 1)
+
+// Custom styles
+style PrimaryButton: ButtonStyle {
+    fn make_body(config: ButtonConfig) -&gt; View {
+        Text(config.label)
+            .font(.headline)
+            .color(.white)
+            .padding(horizontal: 24, vertical: 12)
+            .background(.blue)
+            .corner_radius(8)
+            .scale(config.is_pressed ? 0.95 : 1.0)
+            .animation(.spring)
+    }
+}
+
+Button(&quot;Login&quot;)
+    .button_style(PrimaryButton)
+</code></pre>
+<hr />
+<h2>7. Animations</h2>
+<pre><code class="language-flux">struct AnimatedView: View {
+    @State mut is_expanded: Bool = false
+
+    fn body(self) -&gt; View {
+        VStack {
+            Rectangle()
+                .fill(.blue)
+                .frame(
+                    width: is_expanded ? 300 : 100,
+                    height: is_expanded ? 300 : 100,
+                )
+                .corner_radius(is_expanded ? 16 : 50)
+                .animation(.ease_in_out(duration: 0.3))
+
+            Button(is_expanded ? &quot;Shrink&quot; : &quot;Expand&quot;) {
+                self.is_expanded = not self.is_expanded
+            }
+        }
+    }
+}
+</code></pre>
+<hr />
+<h2>8. Platform Backends</h2>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Backend</th>
+<th>Rendering</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>macOS</td>
+<td>AppKit / Cocoa</td>
+<td>Native widgets</td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>Win32 / WinUI 3</td>
+<td>Native widgets</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>GTK 4</td>
+<td>Native widgets</td>
+</tr>
+<tr>
+<td>iOS</td>
+<td>UIKit / SwiftUI bridge</td>
+<td>Native widgets</td>
+</tr>
+<tr>
+<td>Android</td>
+<td>Android Views / Jetpack Compose bridge</td>
+<td>Native widgets</td>
+</tr>
+<tr>
+<td>Web</td>
+<td>HTML/CSS/WASM</td>
+<td>DOM elements</td>
+</tr>
+</tbody>
+</table>
+<h3>8.1 Platform-Specific Code</h3>
+<pre><code class="language-flux">#[cfg(target_os: &quot;macos&quot;)]
+fn show_native_dialog(title: String, message: String) {
+    MacOS.alert(title: title, message: message)
+}
+
+#[cfg(target_os: &quot;windows&quot;)]
+fn show_native_dialog(title: String, message: String) {
+    Windows.message_box(title: title, message: message)
+}
+
+#[cfg(target_os: &quot;linux&quot;)]
+fn show_native_dialog(title: String, message: String) {
+    Gtk.dialog(title: title, message: message)
+}
+</code></pre>
+<hr />
+<h2>9. Accessibility</h2>
+<pre><code class="language-flux">Button(&quot;Submit&quot;) {
+    submit_form()
+}
+.accessibility_label(&quot;Submit the registration form&quot;)
+.accessibility_hint(&quot;Double-tap to submit&quot;)
+.accessibility_role(.button)
+
+Image(&quot;chart.png&quot;)
+    .accessibility_label(&quot;Sales chart showing 20% growth&quot;)
+
+VStack {
+    // Semantic grouping
+}
+.accessibility_element(children: .combine)
+.accessibility_label(&quot;User profile section&quot;)
+</code></pre>
+<hr />
+<h2>10. Hot Reload</h2>
+<p>During development, Flux UI supports hot reload:</p>
+<pre><code class="language-bash">flux ui dev
+</code></pre>
+<p>Changes to view code are reflected immediately without restarting the app. State is preserved across reloads.</p>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

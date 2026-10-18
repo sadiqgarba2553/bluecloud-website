@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Tutorial — Build a Task Manager CLI</h1>
+<p>This tutorial teaches Flux by building a complete command-line task manager application. By the end, you'll understand variables, functions, structs, enums, traits, error handling, file I/O, collections, and testing.</p>
+<hr />
+<h2>Chapter 1: Hello World</h2>
+<pre><code class="language-flux">fn main() {
+    print(&quot;Welcome to TaskFlux! ⚡&quot;)
+}
+</code></pre>
+<p>Run it:</p>
+<pre><code class="language-bash">flux new taskflux
+cd taskflux
+flux run
+</code></pre>
+<hr />
+<h2>Chapter 2: Variables and Types</h2>
+<pre><code class="language-flux">fn main() {
+    // Immutable by default
+    let app_name = &quot;TaskFlux&quot;
+    let version = 1
+
+    // Mutable variables
+    mut task_count = 0
+    task_count += 1
+
+    // String interpolation
+    print(&quot;{app_name} v{version} — {task_count} task(s)&quot;)
+
+    // Type annotations (usually optional)
+    let max_tasks: Int = 100
+    let pi: Float64 = 3.14159
+    let enabled: Bool = true
+
+    // Constants — evaluated at compile time
+    const MAX_TITLE_LENGTH = 200
+}
+</code></pre>
+<hr />
+<h2>Chapter 3: Functions</h2>
+<pre><code class="language-flux">fn add(a: Int, b: Int) -&gt; Int {
+    return a + b
+}
+
+// Single-expression function
+fn double(x: Int) -&gt; Int = x * 2
+
+// Default parameters
+fn greet(name: String, prefix: String = &quot;Hello&quot;) {
+    print(&quot;{prefix}, {name}!&quot;)
+}
+
+// Functions returning nothing (Void)
+fn log(message: String) {
+    print(&quot;[LOG] {message}&quot;)
+}
+
+fn main() {
+    print(add(3, 4))       // 7
+    print(double(21))      // 42
+    greet(&quot;Alice&quot;)         // Hello, Alice!
+    greet(&quot;Bob&quot;, prefix: &quot;Hey&quot;)  // Hey, Bob!
+}
+</code></pre>
+<hr />
+<h2>Chapter 3: Structs and Methods</h2>
+<pre><code class="language-flux">use flux.time.DateTime
+
+enum Priority {
+    Low,
+    Medium,
+    High,
+    Critical,
+}
+
+struct Task {
+    id: Int
+    title: String
+    description: String
+    priority: Priority
+    completed: Bool
+    created_at: DateTime
+}
+
+impl Task {
+    fn new(id: Int, title: String, priority: Priority) -&gt; Task {
+        return Task {
+            id: id
+            title: title
+            description: &quot;&quot;
+            priority: priority
+            completed: false
+            created_at: DateTime.now()
+        }
+    }
+
+    fn complete(mut self) {
+        self.completed = true
+    }
+
+    fn display(self) -&gt; String {
+        let status = if self.completed { &quot;✅&quot; } else { &quot;⬜&quot; }
+        let prio = match self.priority {
+            Priority.Low      -&gt; &quot;🟢&quot;
+            Priority.Medium   -&gt; &quot;🟡&quot;
+            Priority.High     -&gt; &quot;🟠&quot;
+            Priority.Critical -&gt; &quot;🔴&quot;
+        }
+        return &quot;{status} [{self.id}] {prio} {self.title}&quot;
+    }
+}
+
+fn main() {
+    mut task = Task.new(1, &quot;Learn Flux&quot;, Priority.High)
+    print(task.display())   // ⬜ [1] 🟠 Learn Flux
+
+    task.complete()
+    print(task.display())   // ✅ [1] 🟠 Learn Flux
+}
+</code></pre>
+<hr />
+<h2>Chapter 4: Collections and Iteration</h2>
+<pre><code class="language-flux">struct TaskManager {
+    tasks: List&lt;Task&gt;
+    next_id: Int
+}
+
+impl TaskManager {
+    fn new() -&gt; TaskManager {
+        return TaskManager { tasks: List.new(), next_id: 1 }
+    }
+
+    fn add_task(mut self, title: String, priority: Priority) -&gt; Int {
+        let id = self.next_id
+        let task = Task.new(id, title, priority)
+        self.tasks.append(task)
+        self.next_id += 1
+        return id
+    }
+
+    fn complete_task(mut self, id: Int) -&gt; Result&lt;Void, String&gt; {
+        for mut task in &amp;mut self.tasks {
+            if task.id == id {
+                task.complete()
+                return Ok(())
+            }
+        }
+        return Err(&quot;Task #{id} not found&quot;)
+    }
+
+    fn list_all(self) {
+        if self.tasks.is_empty() {
+            print(&quot;No tasks yet!&quot;)
+            return
+        }
+
+        print(&quot;--- Tasks ---&quot;)
+        for task in &amp;self.tasks {
+            print(task.display())
+        }
+        print(&quot;--- {self.tasks.length} task(s) ---&quot;)
+    }
+
+    fn list_pending(self) -&gt; List&lt;&amp;Task&gt; {
+        return self.tasks.iter()
+            .filter(fn(t) { not t.completed })
+            .collect()
+    }
+
+    fn remove_task(mut self, id: Int) -&gt; Result&lt;Task, String&gt; {
+        let index = self.tasks.iter()
+            .position(fn(t) { t.id == id })
+
+        match index {
+            Some(i) -&gt; return Ok(self.tasks.remove(i))
+            None    -&gt; return Err(&quot;Task #{id} not found&quot;)
+        }
+    }
+}
+
+fn main() {
+    mut manager = TaskManager.new()
+
+    manager.add_task(&quot;Buy groceries&quot;, Priority.Medium)
+    manager.add_task(&quot;Write report&quot;, Priority.High)
+    manager.add_task(&quot;Fix bug #42&quot;, Priority.Critical)
+    manager.add_task(&quot;Read book&quot;, Priority.Low)
+
+    manager.list_all()
+
+    // Complete a task
+    match manager.complete_task(2) {
+        Ok(())   -&gt; print(&quot;\nTask #2 completed!&quot;)
+        Err(msg) -&gt; print(&quot;Error: {msg}&quot;)
+    }
+
+    // List pending tasks
+    print(&quot;\n--- Pending ---&quot;)
+    for task in manager.list_pending() {
+        print(task.display())
+    }
+}
+</code></pre>
+<hr />
+<h2>Chapter 5: Enums and Pattern Matching</h2>
+<pre><code class="language-flux">enum Command {
+    Add(title: String, priority: Priority),
+    Complete(id: Int),
+    Remove(id: Int),
+    List,
+    ListPending,
+    Help,
+    Quit,
+}
+
+fn parse_command(input: String) -&gt; Result&lt;Command, String&gt; {
+    let parts = input.trim().split(&quot; &quot;)
+    let cmd = parts[0].to_lower()
+
+    match cmd {
+        &quot;add&quot; -&gt; {
+            if parts.length &lt; 2 {
+                return Err(&quot;Usage: add &lt;title&gt; [priority]&quot;)
+            }
+            let title = parts[1..].join(&quot; &quot;)
+            return Ok(Command.Add(title: title, priority: Priority.Medium))
+        }
+        &quot;done&quot; -&gt; {
+            if parts.length &lt; 2 {
+                return Err(&quot;Usage: done &lt;id&gt;&quot;)
+            }
+            let id = parts[1].parse_int()?
+            return Ok(Command.Complete(id: id))
+        }
+        &quot;remove&quot; | &quot;rm&quot; -&gt; {
+            if parts.length &lt; 2 {
+                return Err(&quot;Usage: remove &lt;id&gt;&quot;)
+            }
+            let id = parts[1].parse_int()?
+            return Ok(Command.Remove(id: id))
+        }
+        &quot;list&quot; | &quot;ls&quot;   -&gt; return Ok(Command.List)
+        &quot;pending&quot;       -&gt; return Ok(Command.ListPending)
+        &quot;help&quot; | &quot;?&quot;    -&gt; return Ok(Command.Help)
+        &quot;quit&quot; | &quot;exit&quot; -&gt; return Ok(Command.Quit)
+        _               -&gt; return Err(&quot;Unknown command: {cmd}. Type 'help' for commands.&quot;)
+    }
+}
+
+fn execute_command(manager: &amp;mut TaskManager, cmd: Command) -&gt; Bool {
+    match cmd {
+        Command.Add(title, priority) -&gt; {
+            let id = manager.add_task(title, priority)
+            print(&quot;Added task #{id}: {title}&quot;)
+        }
+        Command.Complete(id) -&gt; {
+            match manager.complete_task(id) {
+                Ok(())   -&gt; print(&quot;Task #{id} completed! ✅&quot;)
+                Err(msg) -&gt; print(&quot;Error: {msg}&quot;)
+            }
+        }
+        Command.Remove(id) -&gt; {
+            match manager.remove_task(id) {
+                Ok(task) -&gt; print(&quot;Removed: {task.title}&quot;)
+                Err(msg) -&gt; print(&quot;Error: {msg}&quot;)
+            }
+        }
+        Command.List        -&gt; manager.list_all()
+        Command.ListPending -&gt; {
+            for task in manager.list_pending() {
+                print(task.display())
+            }
+        }
+        Command.Help -&gt; {
+            print(&quot;Commands:&quot;)
+            print(&quot;  add &lt;title&gt;    — Add a task&quot;)
+            print(&quot;  done &lt;id&gt;      — Complete a task&quot;)
+            print(&quot;  remove &lt;id&gt;    — Remove a task&quot;)
+            print(&quot;  list           — Show all tasks&quot;)
+            print(&quot;  pending        — Show pending tasks&quot;)
+            print(&quot;  help           — Show this help&quot;)
+            print(&quot;  quit           — Exit&quot;)
+        }
+        Command.Quit -&gt; {
+            print(&quot;Goodbye! 👋&quot;)
+            return false  // Signal to stop
+        }
+    }
+    return true  // Continue running
+}
+</code></pre>
+<hr />
+<h2>Chapter 6: Traits and Generics</h2>
+<pre><code class="language-flux">trait Searchable {
+    fn matches(self, query: String) -&gt; Bool
+}
+
+impl Searchable for Task {
+    fn matches(self, query: String) -&gt; Bool {
+        let q = query.to_lower()
+        return self.title.to_lower().contains(q)
+            or self.description.to_lower().contains(q)
+    }
+}
+
+// Generic search function — works with any Searchable type
+fn search&lt;T: Searchable&gt;(items: &amp;List&lt;T&gt;, query: String) -&gt; List&lt;&amp;T&gt; {
+    return items.iter()
+        .filter(fn(item) { item.matches(query) })
+        .collect()
+}
+
+// Extend TaskManager with search
+impl TaskManager {
+    fn search(self, query: String) -&gt; List&lt;&amp;Task&gt; {
+        return search(&amp;self.tasks, query)
+    }
+}
+</code></pre>
+<hr />
+<h2>Chapter 7: Error Handling</h2>
+<pre><code class="language-flux">use flux.io.{File, IoError}
+use flux.json
+
+enum AppError {
+    Io(IoError),
+    Parse(String),
+    NotFound(String),
+}
+
+impl From&lt;IoError&gt; for AppError {
+    fn from(e: IoError) -&gt; AppError = AppError.Io(e)
+}
+
+impl Display for AppError {
+    fn to_string(self) -&gt; String {
+        match self {
+            AppError.Io(e)       -&gt; &quot;I/O error: {e}&quot;
+            AppError.Parse(msg)  -&gt; &quot;Parse error: {msg}&quot;
+            AppError.NotFound(s) -&gt; &quot;Not found: {s}&quot;
+        }
+    }
+}
+
+impl TaskManager {
+    fn save(self, path: String) -&gt; Result&lt;Void, AppError&gt; {
+        let data = json.stringify(self.tasks)?
+        File.write(path, data)?
+        return Ok(())
+    }
+
+    fn load(path: String) -&gt; Result&lt;TaskManager, AppError&gt; {
+        let content = File.read(path)?
+        let tasks: List&lt;Task&gt; = json.parse(content)?
+        let next_id = tasks.iter()
+            .map(fn(t) { t.id })
+            .max()
+            .unwrap_or(0) + 1
+
+        return Ok(TaskManager { tasks: tasks, next_id: next_id })
+    }
+}
+</code></pre>
+<hr />
+<h2>Chapter 8: Testing</h2>
+<pre><code class="language-flux">// tests/task_test.flux
+
+use taskflux.{Task, TaskManager, Priority}
+
+#[test]
+fn test_create_task() {
+    let task = Task.new(1, &quot;Test task&quot;, Priority.Medium)
+    assert(task.id == 1)
+    assert(task.title == &quot;Test task&quot;)
+    assert(not task.completed)
+}
+
+#[test]
+fn test_complete_task() {
+    mut task = Task.new(1, &quot;Test&quot;, Priority.Low)
+    task.complete()
+    assert(task.completed)
+}
+
+#[test]
+fn test_add_and_find_task() {
+    mut manager = TaskManager.new()
+    let id = manager.add_task(&quot;Test task&quot;, Priority.High)
+
+    assert(id == 1)
+    assert(manager.tasks.length == 1)
+}
+
+#[test]
+fn test_complete_nonexistent_task() {
+    mut manager = TaskManager.new()
+    let result = manager.complete_task(999)
+    assert(result.is_err())
+}
+
+#[test]
+fn test_search() {
+    mut manager = TaskManager.new()
+    manager.add_task(&quot;Buy groceries&quot;, Priority.Medium)
+    manager.add_task(&quot;Buy new laptop&quot;, Priority.High)
+    manager.add_task(&quot;Read a book&quot;, Priority.Low)
+
+    let results = manager.search(&quot;buy&quot;)
+    assert(results.length == 2)
+}
+</code></pre>
+<p>Run tests:</p>
+<pre><code class="language-bash">flux test
+</code></pre>
+<hr />
+<h2>Chapter 9: The Complete Application</h2>
+<p>Putting it all together — a REPL loop:</p>
+<pre><code class="language-flux">use flux.io.{read_line, File}
+
+const SAVE_FILE = &quot;tasks.json&quot;
+
+fn main() {
+    // Try to load existing tasks
+    mut manager = match TaskManager.load(SAVE_FILE) {
+        Ok(m)  -&gt; {
+            print(&quot;Loaded {m.tasks.length} task(s)&quot;)
+            m
+        }
+        Err(_) -&gt; TaskManager.new()
+    }
+
+    print(&quot;TaskFlux ⚡ — Type 'help' for commands\n&quot;)
+
+    loop {
+        let input = read_line(&quot;taskflux&gt; &quot;)
+
+        if input.trim().is_empty() {
+            continue
+        }
+
+        match parse_command(input) {
+            Ok(cmd) -&gt; {
+                let should_continue = execute_command(&amp;mut manager, cmd)
+
+                // Auto-save after changes
+                match manager.save(SAVE_FILE) {
+                    Ok(()) -&gt; {}
+                    Err(e) -&gt; print(&quot;Warning: could not save — {e}&quot;)
+                }
+
+                if not should_continue {
+                    break
+                }
+            }
+            Err(msg) -&gt; print(&quot;Error: {msg}&quot;)
+        }
+    }
+}
+</code></pre>
+<hr />
+<h2>Next Steps</h2>
+<p>Congratulations! You've learned:</p>
+<ul>
+<li>✅ Variables, types, and constants</li>
+<li>✅ Functions with default and named parameters</li>
+<li>✅ Structs with methods</li>
+<li>✅ Enums with associated data</li>
+<li>✅ Pattern matching</li>
+<li>✅ Collections and iterators</li>
+<li>✅ Traits and generics</li>
+<li>✅ Error handling with Result</li>
+<li>✅ File I/O</li>
+<li>✅ Testing</li>
+</ul>
+<p>Continue with:
+- <strong><a href="style-guide.md">Style Guide</a></strong> — Write idiomatic Flux
+- <strong><a href="best-practices.md">Best Practices</a></strong> — Production patterns
+- <strong><a href="../stdlib/api-reference.md">Standard Library</a></strong> — Full API reference
+- <strong><a href="../spec/06-concurrency.md">Concurrency</a></strong> — Async/await and parallel programming</p>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

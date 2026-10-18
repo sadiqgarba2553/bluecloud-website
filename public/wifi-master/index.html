@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiFi Master - Wireless Penetration Testing Suite</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        :root {
+            --hacker-green: #00ff00;
+            --hacker-dark: #0a0a0a;
+            --hacker-gray: #1a1a1a;
+            --hacker-red: #ff0033;
+            --hacker-blue: #0099ff;
+            --hacker-purple: #9900ff;
+        }
+
+        body {
+            background-color: var(--hacker-dark);
+            color: var(--hacker-green);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .scan-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--hacker-green), transparent);
+            box-shadow: 0 0 10px var(--hacker-green);
+            z-index: 1000;
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .glitch {
+            position: relative;
+            animation: glitch 5s infinite;
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 0.05em 0 0 var(--hacker-red), -0.05em -0.025em 0 var(--hacker-blue); }
+            14% { text-shadow: 0.05em 0 0 var(--hacker-red), -0.05em -0.025em 0 var(--hacker-blue); }
+            15% { text-shadow: -0.05em -0.025em 0 var(--hacker-red), 0.025em 0.025em 0 var(--hacker-blue); }
+            49% { text-shadow: -0.05em -0.025em 0 var(--hacker-red), 0.025em 0.025em 0 var(--hacker-blue); }
+            50% { text-shadow: 0.025em 0.05em 0 var(--hacker-red), 0.05em 0 0 var(--hacker-blue); }
+            99% { text-shadow: 0.025em 0.05em 0 var(--hacker-red), 0.05em 0 0 var(--hacker-blue); }
+            100% { text-shadow: -0.025em 0 0 var(--hacker-red), -0.025em -0.025em 0 var(--hacker-blue); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            border-bottom: 1px solid var(--hacker-green);
+            padding: 20px 0;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--hacker-green);
+            text-shadow: 0 0 10px var(--hacker-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        .logo-text h1 {
+            font-size: 2.2rem;
+            letter-spacing: 3px;
+            margin-bottom: 5px;
+        }
+
+        .logo-text p {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .tagline {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.1rem;
+            color: var(--hacker-blue);
+            text-shadow: 0 0 5px var(--hacker-blue);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--hacker-green);
+            text-decoration: none;
+            font-weight: bold;
+            letter-spacing: 1px;
+            position: relative;
+            padding: 5px 0;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+            text-shadow: 0 0 10px var(--hacker-green);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--hacker-green);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            margin: 40px 0;
+            border: 1px solid var(--hacker-green);
+            border-radius: 5px;
+            background: rgba(10, 10, 10, 0.8);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, transparent, rgba(0, 255, 0, 0.05) 50%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hero h2 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: #ccc;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: transparent;
+            color: var(--hacker-green);
+            border: 2px solid var(--hacker-green);
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-decoration: none;
+            text-transform: uppercase;
+            margin: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button:hover {
+            background: var(--hacker-green);
+            color: black;
+            box-shadow: 0 0 20px var(--hacker-green);
+            transform: translateY(-3px);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            text-align: center;
+            margin: 60px 0 30px;
+            padding: 10px;
+            border-bottom: 1px solid var(--hacker-green);
+            display: inline-block;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid var(--hacker-gray);
+            border-radius: 5px;
+            padding: 30px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            border-color: var(--hacker-green);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+            transform: translateY(-10px);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 0;
+            background: var(--hacker-green);
+            transition: height 0.3s;
+        }
+
+        .feature-card:hover::before {
+            height: 100%;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--hacker-green);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--hacker-blue);
+        }
+
+        .feature-card p {
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        .terminal-window {
+            background: var(--hacker-dark);
+            border: 2px solid var(--hacker-green);
+            border-radius: 5px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+        }
+
+        .terminal-header {
+            background: var(--hacker-gray);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--hacker-green);
+        }
+
+        .terminal-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-button.red { background: #ff5f56; }
+        .terminal-button.yellow { background: #ffbd2e; }
+        .terminal-button.green { background: #27ca3f; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            color: var(--hacker-green);
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .terminal-body {
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            min-height: 300px;
+            overflow-y: auto;
+        }
+
+        .terminal-line {
+            margin-bottom: 10px;
+            animation: typewriter 0.1s steps(40) forwards;
+            opacity: 0;
+        }
+
+        .terminal-line:nth-child(1) { animation-delay: 0.5s; }
+        .terminal-line:nth-child(2) { animation-delay: 1s; }
+        .terminal-line:nth-child(3) { animation-delay: 1.5s; }
+        .terminal-line:nth-child(4) { animation-delay: 2s; }
+        .terminal-line:nth-child(5) { animation-delay: 2.5s; }
+        .terminal-line:nth-child(6) { animation-delay: 3s; }
+        .terminal-line:nth-child(7) { animation-delay: 3.5s; }
+        .terminal-line:nth-child(8) { animation-delay: 4s; }
+
+        @keyframes typewriter {
+            to { opacity: 1; }
+        }
+
+        .terminal-prompt {
+            color: var(--hacker-green);
+            font-weight: bold;
+        }
+
+        .terminal-command {
+            color: white;
+        }
+
+        .terminal-output {
+            color: var(--hacker-blue);
+        }
+
+        .terminal-error {
+            color: var(--hacker-red);
+        }
+
+        .terminal-success {
+            color: var(--hacker-green);
+        }
+
+        .workflow {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .workflow-step {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid var(--hacker-gray);
+            border-radius: 5px;
+            padding: 25px;
+            width: 200px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .workflow-step:hover {
+            border-color: var(--hacker-green);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            background: var(--hacker-green);
+            color: black;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .step-icon {
+            font-size: 2rem;
+            color: var(--hacker-green);
+            margin: 15px 0;
+        }
+
+        .workflow-step h4 {
+            color: var(--hacker-blue);
+            margin-bottom: 10px;
+        }
+
+        .workflow-connector {
+            align-self: center;
+            color: var(--hacker-green);
+            font-size: 1.5rem;
+        }
+
+        .download-section {
+            text-align: center;
+            padding: 60px 20px;
+            margin: 60px 0;
+            border: 1px solid var(--hacker-green);
+            border-radius: 5px;
+            background: rgba(10, 10, 10, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-section::before {
+            content: 'ACCESS GRANTED';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8rem;
+            font-weight: bold;
+            color: rgba(0, 255, 0, 0.05);
+            z-index: 0;
+            white-space: nowrap;
+        }
+
+        .download-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .requirements {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid var(--hacker-gray);
+            border-radius: 5px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .requirements h3 {
+            color: var(--hacker-blue);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .requirements ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        .requirements li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .requirements li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--hacker-green);
+            font-weight: bold;
+        }
+
+        .code-block {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid var(--hacker-green);
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: 'TERMINAL';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: var(--hacker-dark);
+            color: var(--hacker-green);
+            padding: 0 10px;
+            font-size: 0.8rem;
+        }
+
+        footer {
+            border-top: 1px solid var(--hacker-green);
+            padding: 40px 0;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--hacker-green);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            text-shadow: 0 0 10px var(--hacker-green);
+        }
+
+        .copyright {
+            color: #666;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        .warning {
+            color: var(--hacker-red);
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid var(--hacker-red);
+            border-radius: 5px;
+            background: rgba(255, 0, 51, 0.1);
+            animation: warningPulse 2s infinite;
+        }
+
+        @keyframes warningPulse {
+            0% { box-shadow: 0 0 5px rgba(255, 0, 51, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 0, 51, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(255, 0, 51, 0.5); }
+        }
+
+        .matrix-text {
+            position: fixed;
+            top: 0;
+            color: rgba(0, 255, 0, 0.1);
+            font-size: 14px;
+            z-index: -1;
+            user-select: none;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .nav-links {
+                justify-content: center;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .workflow-connector {
+                display: none;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .hack-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .hack-active {
+            opacity: 1;
+        }
+
+        .binary-rain {
+            color: var(--hacker-green);
+            font-size: 14px;
+            position: absolute;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated scan line -->
+    <div class="scan-line"></div>
+    
+    <!-- Matrix background -->
+    <div class="matrix-bg" id="matrixBg"></div>
+    
+    <!-- Hack effect overlay -->
+    <div class="hack-effect" id="hackEffect"></div>
+    
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1 class="glitch">WiFi<span style="color: var(--hacker-red)">_</span>MASTER</h1>
+                        <p>Wireless Penetration Testing Suite</p>
+                    </div>
+                </div>
+                <div class="tagline">
+                    <span class="blink">>>_</span> UNLEASH THE POWER OF WIRELESS SECURITY TESTING
+                </div>
+                <div class="nav-links">
+                    <a href="#features">FEATURES</a>
+                    <a href="#workflow">WORKFLOW</a>
+                    <a href="#https://www.mediafire.com/file/n38z0ugy950cbg6/wifi_master.py/file">DOWNLOAD</a>
+                    <a href="#about">ABOUT</a>
+                </div>
+            </div>
+        </header>
+        
+        <section class="hero">
+            <h2>PENETRATE. ANALYZE. DOMINATE.</h2>
+            <p>WiFi Master is an advanced Python-based automation wrapper for the aircrack-ng suite, designed to streamline wireless penetration testing from interface selection to password recovery within a unified, intuitive interface.</p>
+            <div>
+                <a href="#https://www.mediafire.com/file/n38z0ugy950cbg6/wifi_master.py/file" class="cta-button" id="downloadBtn">
+                    <i class="fas fa-download"></i> DOWNLOAD NOW
+                </a>
+                <a href="#terminal" class="cta-button" id="demoBtn">
+                    <i class="fas fa-terminal"></i> VIEW DEMO
+                </a>
+            </div>
+        </section>
+        
+        <h2 class="section-title" id="features">CORE FEATURES</h2>
+        
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-satellite-dish"></i>
+                </div>
+                <h3>Interface Discovery</h3>
+                <p>Automatically detects and lists available wireless interfaces capable of monitor mode injection.</p>
+                <div class="terminal-output">>> scanning_wireless_interfaces()</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-broadcast-tower"></i>
+                </div>
+                <h3>Monitor Mode Toggle</h3>
+                <p>Seamlessly switch between managed and monitor modes with a single command.</p>
+                <div class="terminal-output">>> enable_monitor_mode()</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-radar"></i>
+                </div>
+                <h3>Network Scoping</h3>
+                <p>Comprehensive network scanning with detailed target information and signal analysis.</p>
+                <div class="terminal-output">>> scan_networks()</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-handshake-slash"></i>
+                </div>
+                <h3>Handshake Capture</h3>
+                <p>Advanced WPA/WPA2 handshake interception with deauthentication attack capabilities.</p>
+                <div class="terminal-output">>> capture_handshake()</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-unlock-alt"></i>
+                </div>
+                <h3>Password Cracking</h3>
+                <p>Integrated cracking with support for multiple tools (aircrack-ng, hashcat, john, pyrit).</p>
+                <div class="terminal-output">>> crack_password()</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h3>Automated Workflow</h3>
+                <p>Complete step-by-step wizard for beginners and experts alike with interactive control.</p>
+                <div class="terminal-output">>> automated_attack()</div>
+            </div>
+        </div>
+        
+        <h2 class="section-title" id="workflow">ATTACK WORKFLOW</h2>
+        
+        <div class="workflow">
+            <div class="workflow-step">
+                <div class="step-number">1</div>
+                <div class="step-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h4>DISCOVERY</h4>
+                <p>Find wireless interfaces and enable monitor mode</p>
+            </div>
+            
+            <div class="workflow-connector">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+            
+            <div class="workflow-step">
+                <div class="step-number">2</div>
+                <div class="step-icon">
+                    <i class="fas fa-target"></i>
+                </div>
+                <h4>TARGETING</h4>
+                <p>Scan networks and select target BSSID</p>
+            </div>
+            
+            <div class="workflow-connector">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+            
+            <div class="workflow-step">
+                <div class="step-number">3</div>
+                <div class="step-icon">
+                    <i class="fas fa-wifi"></i>
+                </div>
+                <h4>CAPTURE</h4>
+                <p>Intercept WPA handshake with deauth attack</p>
+            </div>
+            
+            <div class="workflow-connector">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+            
+            <div class="workflow-step">
+                <div class="step-number">4</div>
+                <div class="step-icon">
+                    <i class="fas fa-key"></i>
+                </div>
+                <h4>CRACK</h4>
+                <p>Break encryption with selected wordlist</p>
+            </div>
+        </div>
+        
+        <div class="terminal-window" id="terminal">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <div class="terminal-button red"></div>
+                    <div class="terminal-button yellow"></div>
+                    <div class="terminal-button green"></div>
+                </div>
+                <div class="terminal-title">WiFi_MASTER_TERMINAL</div>
+            </div>
+            <div class="terminal-body" id="terminalBody">
+                <div class="terminal-line">
+                    <span class="terminal-prompt">root@kali:~#</span>
+                    <span class="terminal-command"> sudo python3 wifi_master.py</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">[✓] WiFi Master v3.0 initialized</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">[✓] Root privileges confirmed</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">[~] Checking dependencies...</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">  [✓] aircrack-ng</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">  [✓] airodump-ng</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">  [✓] aireplay-ng</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">  [✓] airmon-ng</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">[✓] All dependencies installed</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">root@kali:~#</span>
+                    <span class="terminal-command"> SELECT OPTION [1-6]: </span>
+                    <span class="blink">_</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="warning">
+            <i class="fas fa-exclamation-triangle"></i> WARNING: This tool is for educational and authorized penetration testing only. Use only on networks you own or have explicit permission to test.
+        </div>
+        
+        <div class="requirements">
+            <h3>SYSTEM REQUIREMENTS</h3>
+            <ul>
+                <li>Linux-based operating system (Kali Linux recommended)</li>
+                <li>Python 3.x installed</li>
+                <li>Wireless adapter supporting monitor mode and packet injection</li>
+                <li>Root/sudo privileges</li>
+                <li>Aircrack-ng suite installed</li>
+                <li>At least 2GB RAM, 10GB free disk space</li>
+            </ul>
+        </div>
+        
+        <section class="download-section" id="download">
+            <div class="download-content">
+                <h2>DOWNLOAD WiFi MASTER</h2>
+                <p>Get the latest version of WiFi Master for your penetration testing needs.</p>
+                
+                <div class="code-block">
+                    <span class="terminal-prompt">$</span> git clone https://github.com/sadiqgarba2553/wifi-master.git<br>
+                    <span class="terminal-prompt">$</span> cd wifi-master<br>
+                    <span class="terminal-prompt">$</span> chmod +x wifi_master.py<br>
+                    <span class="terminal-prompt">$</span> sudo python3 wifi_master.py
+                </div>
+                
+                <div style="margin: 30px 0;">
+                    <a href="#" class="cta-button" id="githubBtn">
+                        <i class="fab fa-github"></i> VIEW ON GITHUB
+                    </a>
+                    <a href="https://www.mediafire.com/file/n38z0ugy950cbg6/wifi_master.py/file" class="cta-button" id="DownloadBtn">
+                        <i class="fas fa-file-download"></i>  DOWNLOAD
+                    </a>
+                </div>
+                
+                <div class="requirements">
+                    <h3>QUICK INSTALLATION</h3>
+                    <div class="code-block">
+                        <span class="terminal-prompt">#</span> Update system and install dependencies<br>
+                        <span class="terminal-prompt">$</span> sudo apt-get update<br>
+                        <span class="terminal-prompt">$</span> sudo apt-get install aircrack-ng python3 -y<br>
+                        <span class="terminal-prompt">$</span> sudo apt-get install libpcap-dev -y<br><br>
+                        
+                        <span class="terminal-prompt">#</span> Run WiFi Master<br>
+                        <span class="terminal-prompt">$</span> sudo python3 wifi_master.py
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <h2 class="section-title" id="about">DEVELOPER INFO</h2>
+        
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-user-secret"></i>
+                </div>
+                <h3>Developer</h3>
+                <p>Sadiq Garba Ibrahim</p>
+                <p>Security Researcher & Python Developer</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <h3>Organization</h3>
+                <p>BlueCloud AI</p>
+                <p>Advancing cybersecurity through automation</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h3>Contact</h3>
+                <p>sadeeqsgi@icloud.com</p>
+                <p>bluecloudai.online</p>
+            </div>
+        </div>
+        
+        <footer>
+            <div class="footer-links">
+                <a href="#"><i class="fab fa-github"></i> GitHub</a>
+                <a href="#"><i class="fas fa-file-contract"></i> License</a>
+                <a href="#"><i class="fas fa-shield-alt"></i> Security</a>
+                <a href="#"><i class="fas fa-question-circle"></i> FAQ</a>
+                <a href="#"><i class="fas fa-code"></i> API</a>
+            </div>
+            <div class="copyright">
+                © 2024 WiFi Master - BlueCloud AI. For authorized security testing only.
+            </div>
+            <div class="copyright">
+                This tool is provided "as is" without warranty of any kind. Use at your own risk.
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        // Matrix background effect
+        function createMatrixBackground() {
+            const matrixBg = document.getElementById('matrixBg');
+            const chars = "01";
+            const columns = Math.floor(window.innerWidth / 20);
+            
+            for (let i = 0; i < columns; i++) {
+                const column = document.createElement('div');
+                column.className = 'matrix-text';
+                column.style.left = `${i * 20}px`;
+                column.style.animationDelay = `${Math.random() * 5}s`;
+                column.style.animationDuration = `${10 + Math.random() * 20}s`;
+                
+                let text = '';
+                const rows = Math.floor(window.innerHeight / 20);
+                for (let j = 0; j < rows; j++) {
+                    text += chars[Math.floor(Math.random() * chars.length)];
+                }
+                
+                column.textContent = text;
+                matrixBg.appendChild(column);
+            }
+        }
+        
+        // Binary rain effect for hack
+        function createBinaryRain(container) {
+            const chars = "01";
+            const count = 50;
+            
+            for (let i = 0; i < count; i++) {
+                const binary = document.createElement('div');
+                binary.className = 'binary-rain';
+                binary.textContent = chars[Math.floor(Math.random() * chars.length)];
+                binary.style.left = `${Math.random() * 100}%`;
+                binary.style.animationDuration = `${1 + Math.random() * 3}s`;
+                binary.style.animationDelay = `${Math.random() * 2}s`;
+                container.appendChild(binary);
+            }
+        }
+        
+        // Terminal animation
+        function animateTerminal() {
+            const terminalLines = document.querySelectorAll('.terminal-line');
+            let delay = 0;
+            
+            terminalLines.forEach((line, index) => {
+                setTimeout(() => {
+                    line.style.animation = 'typewriter 0.1s steps(40) forwards';
+                    
+                    // Add blinking cursor to last line
+                    if (index === terminalLines.length - 1) {
+                        setTimeout(() => {
+                            const cursor = line.querySelector('.blink');
+                            if (cursor) {
+                                cursor.style.animation = 'blink 1s infinite';
+                            }
+                        }, 500);
+                    }
+                }, delay);
+                delay += 500;
+            });
+        }
+        
+        // Hack effect trigger
+        function triggerHackEffect() {
+            const hackEffect = document.getElementById('hackEffect');
+            hackEffect.innerHTML = '';
+            hackEffect.classList.add('hack-active');
+            
+            createBinaryRain(hackEffect);
+            
+            // Random glitch text
+            const glitchText = document.createElement('div');
+            glitchText.style.position = 'absolute';
+            glitchText.style.top = '50%';
+            glitchText.style.left = '50%';
+            glitchText.style.transform = 'translate(-50%, -50%)';
+            glitchText.style.fontSize = '5rem';
+            glitchText.style.fontWeight = 'bold';
+            glitchText.style.color = '#ff0033';
+            glitchText.style.textShadow = '0 0 20px #ff0033';
+            glitchText.textContent = 'ACCESSING...';
+            hackEffect.appendChild(glitchText);
+            
+            // Remove effect after 2 seconds
+            setTimeout(() => {
+                hackEffect.classList.remove('hack-active');
+                hackEffect.innerHTML = '';
+            }, 2000);
+        }
+        
+        // Button click effects
+        document.getElementById('downloadBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            triggerHackEffect();
+            setTimeout(() => {
+                alert('Download started! Check your downloads folder.');
+            }, 1500);
+        });
+        
+        document.getElementById('demoBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            triggerHackEffect();
+            document.getElementById('terminal').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        document.getElementById('githubBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            triggerHackEffect();
+            setTimeout(() => {
+                window.open('https://github.com/sadiqgarba2553/wifi-master.git', '_blank');
+            }, 1500);
+        });
+        
+        document.getElementById('DownloadBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            triggerHackEffect();
+            
+            // Create a fake download
+            setTimeout(() => {
+                const link = document.createElement('a');
+                link.href = '#';
+                link.download = 'wifi_master.py';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Show success message
+                const terminalBody = document.getElementById('terminalBody');
+                const successMsg = document.createElement('div');
+                successMsg.className = 'terminal-line';
+                successMsg.innerHTML = '<span class="terminal-success">[✓] Download complete: wifi_master.py</span>';
+                terminalBody.appendChild(successMsg);
+            }, 1500);
+        });
+        
+        // Initialize on page load
+        window.addEventListener('load', function() {
+            createMatrixBackground();
+            animateTerminal();
+            
+            // Add random glitch effect to title every 10 seconds
+            setInterval(() => {
+                document.querySelector('.glitch').classList.add('glitch');
+                setTimeout(() => {
+                    document.querySelector('.glitch').classList.remove('glitch');
+                }, 100);
+            }, 10000);
+            
+            // Add random terminal-like typing to page
+            const elements = document.querySelectorAll('.terminal-output');
+            setInterval(() => {
+                elements.forEach(el => {
+                    if (Math.random() > 0.7) {
+                        const original = el.textContent;
+                        el.textContent = original + '_';
+                        setTimeout(() => {
+                            el.textContent = original;
+                        }, 300);
+                    }
+                });
+            }, 2000);
+        });
+        
+        // Add scroll effect for feature cards
+        window.addEventListener('scroll', function() {
+            const featureCards = document.querySelectorAll('.feature-card');
+            const windowHeight = window.innerHeight;
+            
+            featureCards.forEach(card => {
+                const cardTop = card.getBoundingClientRect().top;
+                if (cardTop < windowHeight - 100) {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }
+            });
+        });
+        
+        // Initialize feature cards with opacity for animation
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.5s, transform 0.5s';
+        });
+    </script>
+</body>
+</html>

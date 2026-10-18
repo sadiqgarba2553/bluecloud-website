@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Converter - Format Text | ToolDeck</title>
+  <meta name="description" content="Convert text between UPPERCASE, lowercase, Title Case, camelCase, snake_case and more.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../tool.css">
+  <style>
+    .workspace { max-width: 1000px; margin: 40px auto; width: 100%; padding: 0 20px; }
+    .ws-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r-xl); padding: 24px; }
+    
+    .output-area { position: relative; margin-bottom: 20px; }
+    .output-text { width: 100%; min-height: 250px; padding: 20px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: inherit; font-size: 1rem; line-height: 1.6; resize: vertical; outline: none; transition: border-color 0.2s; }
+    .output-text:focus { border-color: var(--accent); }
+    
+    .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
+    
+    .toolbar { display: flex; gap: 10px; justify-content: flex-end; }
+  </style>
+</head>
+<body>
+  <div class="tool-layout">
+    <header class="tool-nav">
+      <a href="../index.html" class="back-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Tools
+      </a>
+      <div class="tool-title">Case Converter</div>
+      <div style="width:100px"></div>
+    </header>
+
+    <main class="tool-main" style="padding-top: 80px;">
+      <div class="workspace">
+        <div class="ws-panel">
+          
+          <div style="margin-bottom: 24px;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 8px;">Text Case Converter</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Type or paste your text below, then click the buttons to convert it.</p>
+          </div>
+
+          <div class="output-area">
+            <textarea id="input-text" class="output-text" placeholder="Type or paste your text here..."></textarea>
+          </div>
+          
+          <div class="btn-grid">
+            <button class="cta-btn" id="btn-upper" style="background:var(--bg3); color:var(--text); border:1px solid var(--border);">UPPERCASE</button>
+            <button class="cta-btn" id="btn-lower" style="background:var(--bg3); color:var(--text); border:1px solid var(--border);">lowercase</button>
+            <button class="cta-btn" id="btn-title" style="background:var(--bg3); color:var(--text); border:1px solid var(--border);">Title Case</button>
+            <button class="cta-btn" id="btn-sentence" style="background:var(--bg3); color:var(--text); border:1px solid var(--border);">Sentence case.</button>
+            
+            <button class="cta-btn" id="btn-camel" style="background:var(--bg3); color:var(--text); border:1px solid var(--border);">camelCase</button>
+            <button class="cta-btn" id="btn-pascal" style="background:var(--bg3); color:var(--text); border:1px solid var(--border);">PascalCase</button>
+            <button class="cta-btn" id="btn-snake" style="background:var(--bg3); color:var(--text); border:1px solid var(--border);">snake_case</button>
+            <button class="cta-btn" id="btn-kebab" style="background:var(--bg3); color:var(--text); border:1px solid var(--border);">kebab-case</button>
+            <button class="cta-btn" id="btn-constant" style="background:var(--bg3); color:var(--text); border:1px solid var(--border);">CONSTANT_CASE</button>
+            
+            <button class="cta-btn" id="btn-alt" style="background:var(--bg3); color:var(--text); border:1px solid var(--border);">aLtErNaTiNg</button>
+            <button class="cta-btn" id="btn-inverse" style="background:var(--bg3); color:var(--text); border:1px solid var(--border);">iNVERSE</button>
+          </div>
+          
+          <div class="toolbar">
+            <button class="sec-btn" id="btn-clear">Clear</button>
+            <button class="cta-btn" id="btn-copy">Copy to Clipboard</button>
+          </div>
+          
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="case-converter.js"></script>
+</body>
+</html>

@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlueCloud Technologies ÔÇö Employment Assessment & Technical Interview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0B5FFF;
+            --deep-navy: #0A1A2F;
+            --card-navy: #11233B;
+            --cyan-accent: #22D3EE;
+            --mint-accent: #5EEAD4;
+            --slate-text: #94A3B8;
+            --border-glow: rgba(34, 211, 238, 0.15);
+            --font-heading: 'Poppins', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--deep-navy);
+            color: #F8FAFC;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* BlueCloud Brand Header */
+        header {
+            background-color: rgba(10, 26, 47, 0.95);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 16px 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--primary-blue), #004FD9);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(11, 95, 255, 0.4);
+        }
+
+        .brand-text h1 {
+            font-family: var(--font-heading);
+            font-size: 19px;
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-text p {
+            font-size: 11px;
+            color: var(--cyan-accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .header-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .candidate-chip {
+            background-color: var(--card-navy);
+            border: 1px solid var(--border-glow);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #E2E8F0;
+        }
+
+        .candidate-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyan-accent), var(--mint-accent));
+            color: var(--deep-navy);
+            font-size: 12px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Countdown Timer */
+        .timer-box {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #F87171;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Progress Steps */
+        .progress-bar-container {
+            background-color: #0d213a;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 18px 32px;
+        }
+
+        .steps-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 2;
+            cursor: pointer;
+        }
+
+        .step-num {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background-color: var(--card-navy);
+            color: var(--slate-text);
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--deep-navy);
+            transition: all 0.3s ease;
+        }
+
+        .step-item.active .step-num {
+            background: linear-gradient(135deg, var(--primary-blue), var(--cyan-accent));
+            color: #FFFFFF;
+            box-shadow: 0 0 16px rgba(34, 211, 238, 0.4);
+        }
+
+        .step-item.completed .step-num {
+            background-color: #10B981;
+            color: #FFFFFF;
+        }
+
+        .step-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--slate-text);
+            font-family: var(--font-heading);
+        }
+
+        .step-item.active .step-title {
+            color: #F8FAFC;
+        }
+
+        /* Main Workspace */
+        main {
+            flex: 1;
+            max-width: 960px;
+            width: 100%;
+            margin: 36px auto;
+            padding: 0 20px;
+        }
+
+        .wizard-card {
+            background-color: var(--card-navy);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.6);
+        }
+
+        .section-header {
+            margin-bottom: 32px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 20px;
+        }
+
+        .role-track-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(34, 211, 238, 0.12);
+            color: var(--cyan-accent);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-family: var(--font-heading);
+        }
+
+        .section-header h2 {
+            font-family: var(--font-heading);
+            font-size: 26px;
+            font-weight: 800;
+            color: #F8FAFC;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-header p {
+            font-size: 14px;
+            color: var(--slate-text);
+        }
+
+        /* Form Controls */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #CBD5E1;
+            font-family: var(--font-heading);
+        }
+
+        .form-control {
+            background-color: var(--deep-navy);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #F8FAFC;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--cyan-accent);
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15);
+        }
+
+        /* Question Cards */
+        .q-card {
+            background-color: var(--deep-navy);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .q-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #F8FAFC;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 10px;
+            line-height: 1.5;
+        }
+
+        .q-badge {
+            background: linear-gradient(135deg, var(--primary-blue), #004FD9);
+            color: #FFFFFF;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            height: fit-content;
+            font-family: var(--font-heading);
+            white-space: nowrap;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            background-color: var(--card-navy);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-item:hover {
+            border-color: var(--cyan-accent);
+            background-color: #172d4a;
+        }
+
+        .option-item input[type="radio"],
+        .option-item input[type="checkbox"] {
+            accent-color: var(--primary-blue);
+            width: 18px;
+            height: 18px;
+        }
+
+        .option-item span {
+            font-size: 13px;
+            color: #E2E8F0;
+        }
+
+        /* Code Textarea */
+        textarea.code-area {
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            min-height: 160px;
+            resize: vertical;
+        }
+
+        /* Action Buttons */
+        .actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 36px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 28px;
+        }
+
+        .btn {
+            background-color: #1e3352;
+            color: #F8FAFC;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 13px 26px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            text-decoration: none;
+            font-family: var(--font-heading);
+        }
+
+        .btn:hover {
+            background-color: #274269;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), #004FD9);
+            border-color: var(--primary-blue);
+            color: #FFFFFF;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #004FD9, #003db3);
+            box-shadow: 0 6px 20px rgba(11, 95, 255, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-color: #10B981;
+            color: #FFFFFF;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Success Completion View */
+        .success-card {
+            text-align: center;
+            padding: 48px 24px;
+        }
+
+        .success-icon-ring {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.15);
+            border: 2px solid #10B981;
+            color: #34D399;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 28px auto;
+            box-shadow: 0 0 35px rgba(16, 185, 129, 0.3);
+        }
+
+        .success-card h2 {
+            font-family: var(--font-heading);
+            font-size: 30px;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+        }
+
+        .success-card p {
+            color: var(--slate-text);
+            font-size: 15px;
+            max-width: 540px;
+            margin: 0 auto 32px auto;
+        }
+
+        .meta-summary-box {
+            background-color: var(--deep-navy);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 520px;
+            margin: 0 auto 36px auto;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .meta-row:last-child {
+            border-bottom: none;
+        }
+
+        .meta-label {
+            color: var(--slate-text);
+            font-weight: 500;
+        }
+
+        .meta-val {
+            color: #F8FAFC;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <a href="index.html" class="brand-logo">
+            <div class="logo-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <h1>BlueCloud Technologies</h1>
+                <p>Enterprise Technical Assessment Portal</p>
+            </div>
+        </a>
+
+        <div class="header-meta">
+            <div class="candidate-chip">
+                <div class="candidate-avatar" id="avatarInitial">C</div>
+                <span id="candidateEmailText">candidate@bluecloud.com</span>
+            </div>
+
+            <div class="timer-box">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span id="timerText">25:00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Step Bar -->
+    <div class="progress-bar-container">
+        <div class="steps-wrapper">
+            <div class="step-item active" id="stepIndicator1">
+                <div class="step-num">1</div>
+                <span class="step-title">Personal & Role Profile</span>
+            </div>
+            <div class="step-item" id="stepIndicator2">
+                <div class="step-num">2</div>
+                <span class="step-title">Technical Assessment (20 Questions)</span>
+            </div>
+            <div class="step-item" id="stepIndicator3">
+                <div class="step-num">3</div>
+                <span class="step-title">Engineering Problem Solving</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Wizard Content -->
+    <main>
+
+        <div class="wizard-card" id="wizardCard">
+            
+            <!-- STEP 1: Personal Profile & Role -->
+            <div class="step-content" id="stepContent1">
+                <div class="section-header">
+                    <h2>Candidate Background & Role Details</h2>
+                    <p>Select the job position you are applying for at BlueCloud Technologies.</p>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Full Legal Name</label>
+                        <input type="text" id="fullName" class="form-control" placeholder="e.g. Sadiq Ibrahim" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone / WhatsApp Number</label>
+                        <input type="text" id="phoneNum" class="form-control" placeholder="+234 800 000 0000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Target Career Role</label>
+                        <select id="targetRole" class="form-control" onchange="updateRoleQuestions()">
+                            <option value="Co-Founder">Co-Founder (Product Strategy, Tech Leadership & Business Growth)</option>
+                            <option value="Senior Frontend Engineer">Senior Frontend Engineer (React, TypeScript, CSS Architecture)</option>
+                            <option value="AI / ML Engineer">AI / ML Engineer (Python, TensorFlow, PyTorch)</option>
+                            <option value="Technical Support Specialist">Technical Support Specialist (IT Infrastructure, Customer Success)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Years of Professional Experience</label>
+                        <select id="experienceYears" class="form-control">
+                            <option value="1-3 Years">1-3 Years</option>
+                            <option value="3-5 Years" selected>3-5 Years</option>
+                            <option value="5-8 Years">5-8 Years</option>
+                            <option value="8+ Years (Lead / Principal)">8+ Years (Lead / Principal)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>GitHub Profile / Portfolio Website</label>
+                        <input type="url" id="portfolioUrl" class="form-control" placeholder="https://github.com/yourhandle">
+                    </div>
+                </div>
+
+                <div class="actions-bar">
+                    <div></div>
+                    <button class="btn btn-primary" onclick="goToStep(2)">
+                        Proceed to 20 Questions Ô×ö
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 2: Technical Assessment Questions -->
+            <div class="step-content hidden" id="stepContent2">
+                <div class="section-header">
+                    <div class="role-track-badge" id="roleBadgeStep2">ÔÜí Senior Frontend Engineer Track</div>
+                    <h2 id="step2Title">Technical Assessment (20 Questions)</h2>
+                    <p id="step2Subtitle">Answer the 20 questions below for your selected role.</p>
+                </div>
+
+                <div id="dynamicQuestionsContainer">
+                    <!-- 20 Dynamic Questions injected here -->
+                </div>
+
+                <div class="actions-bar">
+                    <button class="btn" onclick="goToStep(1)">
+                        Ô¼à Back
+                    </button>
+                    <button class="btn btn-primary" onclick="goToStep(3)">
+                        Proceed to Practical Challenge Ô×ö
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Practical Scenario Problem -->
+            <div class="step-content hidden" id="stepContent3">
+                <div class="section-header">
+                    <div class="role-track-badge" id="roleBadgeStep3">ÔÜí Senior Frontend Engineer Track</div>
+                    <h2>Practical Challenge</h2>
+                    <p>Describe your solution or write code/response for the question below.</p>
+                </div>
+
+                <div class="q-card">
+                    <div class="q-title" id="scenarioHeaderTitle">
+                        <span class="q-badge" id="scenarioBadge">Practical Challenge</span>
+                        <span id="scenarioPromptTitle">Problem Statement</span>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 16px;">
+                        <label>Your Solution Code / Response</label>
+                        <textarea id="codeSolution" class="form-control code-area" placeholder=""></textarea>
+                    </div>
+                </div>
+
+                <div class="actions-bar">
+                    <button class="btn" onclick="goToStep(2)">
+                        Ô¼à Back
+                    </button>
+                    <button class="btn btn-success" onclick="submitAssessment()">
+                        ­ƒÜÇ Submit 20-Question Assessment
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUCCESS CONFIRMATION VIEW -->
+            <div class="step-content hidden" id="stepSuccess">
+                <div class="success-card">
+                    <div class="success-icon-ring">
+                        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <h2>Assessment Completed!</h2>
+                    <p>Thank you for completing the BlueCloud 20-Question Technical Interview Assessment. Your responses have been saved and sent to our hiring team.</p>
+
+                    <div class="meta-summary-box">
+                        <div class="meta-row">
+                            <span class="meta-label">Candidate Reference ID:</span>
+                            <span class="meta-val" id="resRefId">REF-894021</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-label">Email:</span>
+                            <span class="meta-val" id="resEmail">candidate@bluecloud.com</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-label">Applied Career Role:</span>
+                            <span class="meta-val" id="resRole">Senior Frontend Engineer</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-label">Questions Completed:</span>
+                            <span class="meta-val" style="color: #34D399;">20 / 20 Questions Submitted</span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
+                        <a href="spreadsheet.html" class="btn btn-primary">
+                            ­ƒôè View Live Spreadsheet Entry
+                        </a>
+                        <a href="index.html" class="btn">
+                            ­ƒÅá Return to Hub
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+          apiKey: "AIzaSyCtHUgmHporXc4fPczkG-fbky6J1n2BJ3g",
+          authDomain: "ssuk-237d0.firebaseapp.com",
+          projectId: "ssuk-237d0",
+          storageBucket: "ssuk-237d0.firebasestorage.app",
+          messagingSenderId: "661175783750",
+          appId: "1:661175783750:web:76657796ed3a41f54d1547",
+          measurementId: "G-WDE2B0TKJJ"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        let currentStep = 1;
+        let timerSeconds = 25 * 60; // 25 minutes for 20 questions
+        let candidateEmail = 'candidate@bluecloud.com';
+        let candidatePlatform = 'Direct Application';
+
+        // 20 Questions Bank per Role
+        const ROLE_QUESTIONS_20 = {
+            'Co-Founder': {
+                trackLabel: '­ƒææ Co-Founder Track (Product Strategy & Business Growth)',
+                title: 'Co-Founder Strategic Assessment (20 Questions)',
+                subtitle: 'Key concepts in Product Strategy, Equity, Startups, Business Models, and Leadership',
+                questions: [
+                    { q: "Q1", title: "What is the primary responsibility of a startup Co-Founder during early stage execution?", opts: ["Setting vision, product strategy, technical direction, and driving company growth", "Focusing solely on filing tax paperwork", "Waiting for external managers to give daily assignments"] },
+                    { q: "Q2", title: "What is a Minimum Viable Product (MVP)?", opts: ["The simplest version of a product with core features to test market demand with real users", "A complete 10-year enterprise product build", "A private offline document not shared with customers"] },
+                    { q: "Q3", title: "What does Equity distribution mean among co-founders?", opts: ["Ownership percentage share in the company based on contribution and vesting", "A monthly bank transaction fee", "A type of server database query"] },
+                    { q: "Q4", title: "What is Product-Market Fit (PMF)?", opts: ["When a product satisfies strong market demand and customers actively use and pay for it", "When a product design matches company logo colors", "When a server hard drive is 100% full"] },
+                    { q: "Q5", title: "What is a Pitch Deck in business and startup operations?", opts: ["A brief presentation outlining business model, market opportunity, team, and financial projections", "A slide deck for company birthday parties", "A software license contract"] },
+                    { q: "Q6", title: "What does Burn Rate mean in startup financial management?", opts: ["The rate at which a company spends its cash capital before reaching positive cash flow", "The physical heat generated by data center servers", "The speed of internet downloading"] },
+                    { q: "Q7", title: "What is a Cap Table (Capitalization Table)?", opts: ["A spreadsheet showing company equity ownership percentages, shares, and options", "A table listing office furniture inventory", "A database backup table"] },
+                    { q: "Q8", title: "What is the purpose of a Vesting Schedule for co-founder equity?", opts: ["To earn equity ownership over a period of time (e.g. 4 years with 1-year cliff) to ensure long-term commitment", "To pay monthly office rent", "To grant 100% equity on day one with no commitment"] },
+                    { q: "Q9", title: "What is Customer Acquisition Cost (CAC)?", opts: ["The total cost of marketing and sales required to acquire a single new paying customer", "The price of buying an office laptop", "The monthly domain renewal fee"] },
+                    { q: "Q10", title: "What is Lifetime Value (LTV) of a customer?", opts: ["The total net revenue a single customer generates for the business throughout their relationship", "The age of the founding CEO", "The duration of a domain registration"] },
+                    { q: "Q11", title: "What is a Business Model Canvas?", opts: ["A strategic management template for developing new or documenting existing business models", "A graphic design painting tool", "A website CSS stylesheet"] },
+                    { q: "Q12", title: "What does B2B stand for in enterprise business?", opts: ["Business-to-Business (selling products/services directly to other companies)", "Back-to-Back server connections", "Browser-to-Browser network"] },
+                    { q: "Q13", title: "What does B2C stand for in consumer software?", opts: ["Business-to-Consumer (selling products/services directly to individual end-users)", "Binary-to-Code compiler", "Base-to-Cloud infrastructure"] },
+                    { q: "Q14", title: "What is a Term Sheet in startup fundraising?", opts: ["A non-binding agreement outlining basic terms and conditions under which an investment will be made", "A list of technical programming terms", "A glossary of dictionary words"] },
+                    { q: "Q15", title: "What is Bootstrapping in startup business strategy?", opts: ["Building and growing a company using existing revenues or personal savings without external venture capital", "Rebooting a cloud server", "Installing an operating system"] },
+                    { q: "Q16", title: "What is the role of a CTO (Chief Technology Officer) in a tech startup?", opts: ["Leading technical strategy, software architecture, engineering team execution, and technology innovation", "Managing office cleaning schedules", "Handling routine customer phone calls"] },
+                    { q: "Q17", title: "What is Runway in startup finance?", opts: ["The amount of time (usually in months) a company has before running out of cash at its current burn rate", "An airport flight path", "A CSS animation keyframe duration"] },
+                    { q: "Q18", title: "What is a Pivot in lean startup methodology?", opts: ["A structured shift in business model or product strategy to test a new hypothesis based on user feedback", "Rotating a laptop screen 90 degrees", "Changing the company font size"] },
+                    { q: "Q19", title: "What is a SAFE (Simple Agreement for Future Equity)?", opts: ["A simplified convertible investment instrument allowing investors to fund startups in exchange for future equity", "A physical office vault", "An SSL security certificate"] },
+                    { q: "Q20", title: "Why is clear communication and alignment between co-founders essential?", opts: ["To resolve strategic disagreements smoothly, align on long-term execution, and prevent founder conflict", "To reduce internet bills", "To speed up computer boot times"] }
+                ],
+                scenario: {
+                    badge: 'Co-Founder Challenge',
+                    title: 'Write a short executive summary describing your vision, strategic roadmap, and key technical/business strengths as a Co-Founder at BlueCloud Technologies.',
+                    placeholder: `// Write your executive vision summary here...
+Vision & Strategy:
+1. Build scalable AI and enterprise tech solutions across emerging markets.
+2. Oversee technical architecture, engineering team hiring, and product execution.`
+                }
+            },
+            'Senior Frontend Engineer': {
+                trackLabel: '­ƒÄ¿ Senior Frontend Track (React, TypeScript, CSS)',
+                title: 'Senior Frontend Engineering Assessment (20 Questions)',
+                subtitle: 'Key concepts in React, TypeScript, HTML, CSS, JavaScript, and Web Development',
+                questions: [
+                    { q: "Q1", title: "What is the primary purpose of the React useState hook?", opts: ["To store and update dynamic component state in memory", "To change the background color of the browser window", "To delete HTML elements permanently from disk"] },
+                    { q: "Q2", title: "Which modern CSS layout property is best for aligning items in flexible rows and columns?", opts: ["Flexbox (display: flex) and CSS Grid (display: grid)", "Fixed absolute pixel margins", "Float left with clear fixes"] },
+                    { q: "Q3", title: "What key feature does TypeScript bring to JavaScript development?", opts: ["Static type checking and auto-complete to catch errors early", "Allows websites to load without internet access", "Replaces HTML markup with database queries"] },
+                    { q: "Q4", title: "What does HTML stand for in web development?", opts: ["HyperText Markup Language", "High-Tech Machine Language", "Home Tool Markup Logic"] },
+                    { q: "Q5", title: "What is the purpose of the useEffect hook in React?", opts: ["To perform side effects like fetching data or setting timers", "To design custom CSS buttons", "To encrypt user passwords in the browser"] },
+                    { q: "Q6", title: "Which HTML tag is used to create a clickable hyperlink?", opts: ["<a> tag with href attribute", "<link> tag", "<button> tag only"] },
+                    { q: "Q7", title: "What is the DOM (Document Object Model)?", opts: ["The tree-structure representation of HTML elements in memory", "A physical server in a data center", "A database table query language"] },
+                    { q: "Q8", title: "In CSS, what does the margin property control?", opts: ["The space outside an element's border", "The inner spacing inside an element", "The font thickness of text"] },
+                    { q: "Q9", title: "Which package manager command installs dependencies in a Node.js project?", opts: ["npm install", "git push", "python setup.py"] },
+                    { q: "Q10", title: "What is the key difference between const and let in JavaScript?", opts: ["const variables cannot be re-assigned, while let variables can", "let is only for numbers, const is for text", "const only works inside loops"] },
+                    { q: "Q11", title: "What is a Component in React?", opts: ["A reusable building block of UI that returns JSX markup", "A physical microchip on the motherboard", "A CSS animation keyframe"] },
+                    { q: "Q12", title: "Which CSS property changes the text color of an element?", opts: ["color", "font-weight", "background-color"] },
+                    { q: "Q13", title: "What does JSON.stringify() do in JavaScript?", opts: ["Converts a JavaScript object into a JSON string", "Parses a JSON string into an object", "Deletes all properties from an object"] },
+                    { q: "Q14", title: "What is the purpose of the alt attribute on an <img> tag?", opts: ["Provides alternative descriptive text if the image fails to load or for screen readers", "Specifies the image file size in kilobytes", "Changes the image brightness"] },
+                    { q: "Q15", title: "Which JavaScript array method creates a new array by transforming every item?", opts: [".map()", ".filter()", ".reduce()"] },
+                    { q: "Q16", title: "What does event.preventDefault() do in a form submission handler?", opts: ["Prevents the browser from reloading the page on submit", "Deletes the form inputs", "Closes the browser window"] },
+                    { q: "Q17", title: "Which Git command uploads local commits to a remote repository like GitHub?", opts: ["git push", "git pull", "git status"] },
+                    { q: "Q18", title: "In CSS Flexbox, which property aligns items along the main axis?", opts: ["justify-content", "align-items", "flex-direction"] },
+                    { q: "Q19", title: "What is the purpose of props in React components?", opts: ["To pass data and handlers down from parent to child components", "To store local component state", "To write database queries"] },
+                    { q: "Q20", title: "What does Responsive Web Design mean?", opts: ["Designing layouts that automatically adapt cleanly to desktop, tablet, and mobile screens", "Making a website load faster than 1 second", "Adding voice control features"] }
+                ],
+                scenario: {
+                    badge: 'Frontend Code Challenge',
+                    title: 'Write a JavaScript function greeting(name) that returns "Hello " + name + ", welcome to BlueCloud!".',
+                    placeholder: `// Write your function here:
+function greeting(name) {
+    return "Hello " + name + ", welcome to BlueCloud!";
+}`
+                }
+            },
+
+            'AI / ML Engineer': {
+                trackLabel: '­ƒñû AI / ML Engineer Track (Python, TensorFlow, PyTorch)',
+                title: 'AI & Machine Learning Assessment (20 Questions)',
+                subtitle: 'Key concepts in Python, AI Prompts, Machine Learning, and Embeddings',
+                questions: [
+                    { q: "Q1", title: "Which Python library is most popular for data manipulation and working with DataFrames?", opts: ["Pandas", "HTML5", "Bootstrap"] },
+                    { q: "Q2", title: "What is a Prompt when interacting with AI models (such as Gemini or GPT)?", opts: ["The input text instruction or question provided to the AI model", "A hardware cable connecting the monitor", "A database admin password"] },
+                    { q: "Q3", title: "Why are AI models trained on dataset samples before deployment?", opts: ["To allow the neural network to learn patterns and make accurate predictions", "To fill up computer hard drive storage", "To change the color of the application dashboard"] },
+                    { q: "Q4", title: "What does API stand for in software and AI systems?", opts: ["Application Programming Interface", "Automated Python Integration", "Artificial Program Index"] },
+                    { q: "Q5", title: "Which Python keyword is used to define a function?", opts: ["def", "function", "create"] },
+                    { q: "Q6", title: "What is Supervised Learning in Machine Learning?", opts: ["Training a model on labeled input-output data pairs", "Running code without an internet connection", "Writing HTML code manually"] },
+                    { q: "Q7", title: "Which mathematical concept forms the core of neural network weight updates?", opts: ["Gradient Descent & Backpropagation", "Basic Division", "Alphabetical Sorting"] },
+                    { q: "Q8", title: "What is the primary purpose of PyTorch or TensorFlow?", opts: ["Open-source frameworks for building and training neural networks", "Web browser extensions", "Database backup tools"] },
+                    { q: "Q9", title: "What is an AI Token in Large Language Models?", opts: ["A piece of text (word or sub-word) processed by the model", "A physical security key token", "A cryptocurrency coin"] },
+                    { q: "Q10", title: "What does CSV stand for when loading tabular data into Python?", opts: ["Comma-Separated Values", "Computer System Vector", "Code Syntax Variable"] },
+                    { q: "Q11", title: "What is Overfitting in Machine Learning?", opts: ["When a model learns training data noise too closely and performs poorly on new test data", "When a dataset is too small to open", "When a computer runs out of RAM"] },
+                    { q: "Q12", title: "What is Natural Language Processing (NLP)?", opts: ["A field of AI focused on enabling computers to understand and generate human text/speech", "A tool for fixing broken hardware", "A database backup script"] },
+                    { q: "Q13", title: "Which Python data structure stores key-value pairs?", opts: ["Dictionary ({})", "List ([])", "Tuple (())"] },
+                    { q: "Q14", title: "What is a Vector Embedding in AI systems?", opts: ["A numerical vector representation of semantic text or images", "A JPEG image file", "A CSS font style"] },
+                    { q: "Q15", title: "What does LLM stand for in artificial intelligence?", opts: ["Large Language Model", "Linear Logic Machine", "Local Learning Module"] },
+                    { q: "Q16", title: "Why is data scaling/normalization performed before model training?", opts: ["To bring numeric features to a uniform scale for faster gradient convergence", "To make text uppercase", "To encrypt output files"] },
+                    { q: "Q17", title: "Which Python loop is best for iterating through items in a list?", opts: ["for item in list:", "while True:", "loop(list)"] },
+                    { q: "Q18", title: "What is Computer Vision in Artificial Intelligence?", opts: ["AI techniques for processing and analyzing visual images and video", "A monitor eye-care screen filter", "A webcam hardware device"] },
+                    { q: "Q19", title: "What does JSON stand for when exchanging API data?", opts: ["JavaScript Object Notation", "Java System Online Network", "Joint Syntax Output Node"] },
+                    { q: "Q20", title: "Why are GPUs preferred over CPUs for deep learning training?", opts: ["GPUs feature thousands of parallel cores optimized for matrix math operations", "GPUs have larger hard drives", "GPUs run on less electricity"] }
+                ],
+                scenario: {
+                    badge: 'AI Coding Challenge',
+                    title: 'Write a Python function format_prompt(user_query) that formats a prompt string into "User asked: " + user_query and returns it.',
+                    placeholder: `# Write your Python function here:
+def format_prompt(user_query):
+    return f"User asked: {user_query}"`
+                }
+            },
+
+            'Technical Support Specialist': {
+                trackLabel: '­ƒøá´©Å Technical Support Track (IT Infrastructure, Support)',
+                title: 'Technical Support Assessment (20 Questions)',
+                subtitle: 'Key concepts in IT Infrastructure, Networking, Diagnostics, and Customer Support',
+                questions: [
+                    { q: "Q1", title: "If a client reports that a web page is not loading at all, what is the first simple check to try?", opts: ["Verify their internet connection and refresh the webpage", "Buy a brand new computer immediately", "Delete the database server"] },
+                    { q: "Q2", title: "What is an IP Address used for on a network?", opts: ["To uniquely identify a computer device connected to the internet/network", "To print documents on physical paper", "To change the text font size"] },
+                    { q: "Q3", title: "How should a technical support specialist handle a frustrated client experiencing an issue?", opts: ["Remain calm, listen empathetically, and provide clear step-by-step guidance", "Ignore the client and close the support ticket", "Argue back with complicated technical jargon"] },
+                    { q: "Q4", title: "What is a Web Browser?", opts: ["A software application used to access and view websites (e.g. Chrome, Edge, Safari)", "An antivirus software program", "A physical internet router"] },
+                    { q: "Q5", title: "What does DNS stand for in computer networking?", opts: ["Domain Name System (resolves domain names to IP addresses)", "Digital Network Storage", "Direct Node Server"] },
+                    { q: "Q6", title: "What is the purpose of clearing a browser's cache and cookies?", opts: ["To remove outdated temporary web files and resolve site loading/formatting glitches", "To uninstall the web browser", "To speed up internet typing"] },
+                    { q: "Q7", title: "What does RAM stand for in computer hardware?", opts: ["Random Access Memory", "Read Always Media", "Rapid Application Module"] },
+                    { q: "Q8", title: "What is a Firewall used for in computer security?", opts: ["To monitor and filter incoming/outgoing network traffic according to security rules", "To cool down computer fans", "To speed up printer printing"] },
+                    { q: "Q9", title: "What does HTTP / HTTPS stand for in web addresses?", opts: ["HyperText Transfer Protocol (Secure)", "High Technical Transport Program", "Home Text Transmission Protocol"] },
+                    { q: "Q10", title: "What is a VPN (Virtual Private Network)?", opts: ["A encrypted tunnel that secures your connection over public networks", "A wireless mouse adapter", "A website domain name"] },
+                    { q: "Q11", title: "If a office printer is not responding to print jobs, what basic physical check should be verified first?", opts: ["Ensure power cables and network/USB connections are plugged in and paper is loaded", "Reinstall Windows operating system", "Replace computer monitor"] },
+                    { q: "Q12", title: "What is Malware in computer security?", opts: ["Malicious software designed to harm or gain unauthorized access to computer systems", "A hardware keyboard component", "A cloud server backup"] },
+                    { q: "Q13", title: "What does SLA stand for in technical support service desks?", opts: ["Service Level Agreement (commitment to response/resolution times)", "System Logic Access", "Standard Line Authorization"] },
+                    { q: "Q14", title: "What is a Ticketing System used for in IT Support?", opts: ["To log, track, assign, and resolve customer support requests and issues", "To sell event tickets online", "To calculate employee salaries"] },
+                    { q: "Q15", title: "Which keyboard shortcut reloads a webpage in most web browsers?", opts: ["F5 or Ctrl + R (Cmd + R on Mac)", "Ctrl + C", "Alt + F4"] },
+                    { q: "Q16", title: "What is Phishing in cybersecurity?", opts: ["Fraudulent attempts to trick users into revealing sensitive data via fake emails/sites", "Connecting an ethernet cable", "Formatting a USB flash drive"] },
+                    { q: "Q17", title: "What does SSD stand for in computer storage?", opts: ["Solid State Drive", "System Security Device", "Standard Storage Disk"] },
+                    { q: "Q18", title: "What is the purpose of Two-Factor Authentication (2FA)?", opts: ["To add an extra layer of security beyond just a password (e.g. SMS/Authenticator code)", "To double internet download speed", "To allow two users to type simultaneously"] },
+                    { q: "Q19", title: "What does Wi-Fi stand for in wireless networking?", opts: ["Wireless Fidelity (wireless local networking protocol)", "Web Internet File Interface", "Wide Informational Network"] },
+                    { q: "Q20", title: "Why is backing up data regularly important for organizations?", opts: ["To recover critical files in the event of hardware failure, ransomware, or accidental deletion", "To save physical desk space", "To speed up keyboard typing"] }
+                ],
+                scenario: {
+                    badge: 'Support Response Challenge',
+                    title: 'Write a brief, polite email response assisting a client who forgot their account password.',
+                    placeholder: `Dear Client,
+
+Thank you for reaching out to BlueCloud Technical Support!
+
+To reset your password, please click the "Forgot Password" link on the login page or visit:
+https://bluecloudai.online/reset-password
+
+Please let us know if you need any further assistance.
+
+Best regards,
+BlueCloud Support Team`
+                }
+            }
+        };
+
+        // Update Dynamic Questions according to selected Role
+        function updateRoleQuestions() {
+            const roleSelect = document.getElementById('targetRole');
+            const selectedRole = roleSelect.value;
+            const config = ROLE_QUESTIONS_20[selectedRole] || ROLE_QUESTIONS_20['Senior Frontend Engineer'];
+
+            // Update Badges & Titles
+            document.getElementById('roleBadgeStep2').textContent = config.trackLabel;
+            document.getElementById('roleBadgeStep3').textContent = config.trackLabel;
+            document.getElementById('step2Title').textContent = config.title;
+            document.getElementById('step2Subtitle').textContent = config.subtitle;
+
+            // Inject 20 Questions
+            const container = document.getElementById('dynamicQuestionsContainer');
+            container.innerHTML = config.questions.map((item, idx) => `
+                <div class="q-card">
+                    <div class="q-title">
+                        <span class="q-badge">${item.q} (${idx + 1}/20)</span>
+                        ${item.title}
+                    </div>
+                    <div class="options-list">
+                        ${item.opts.map((opt, i) => `
+                            <label class="option-item">
+                                <input type="radio" name="q_${idx}" value="${opt}" ${i === 0 ? 'checked' : ''}>
+                                <span>${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            // Inject Scenario Problem
+            document.getElementById('scenarioBadge').textContent = config.scenario.badge;
+            document.getElementById('scenarioPromptTitle').textContent = config.scenario.title;
+            document.getElementById('codeSolution').placeholder = config.scenario.placeholder;
+        }
+
+        // Read URL Parameters on load
+        function initPage() {
+            const params = new URLSearchParams(window.location.search);
+            const emailParam = params.get('email');
+            const platformParam = params.get('platform');
+            const roleParam = params.get('role');
+
+            if (emailParam) candidateEmail = decodeURIComponent(emailParam);
+            if (platformParam) candidatePlatform = decodeURIComponent(platformParam);
+
+            document.getElementById('candidateEmailText').textContent = candidateEmail;
+            document.getElementById('avatarInitial').textContent = candidateEmail.charAt(0).toUpperCase();
+
+            // Pre-select role if passed in query param
+            if (roleParam) {
+                const decodedRole = decodeURIComponent(roleParam);
+                const roleSelect = document.getElementById('targetRole');
+                for (let i = 0; i < roleSelect.options.length; i++) {
+                    if (roleSelect.options[i].value.toLowerCase().includes(decodedRole.toLowerCase())) {
+                        roleSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            // Pre-fill full name if possible
+            const namePart = candidateEmail.split('@')[0].replace(/[\._-]/g, ' ');
+            document.getElementById('fullName').value = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+
+            updateRoleQuestions();
+            startTimer();
+        }
+
+        // Timer Logic
+        function startTimer() {
+            const timerEl = document.getElementById('timerText');
+            setInterval(() => {
+                if (timerSeconds <= 0) return;
+                timerSeconds--;
+                const mins = Math.floor(timerSeconds / 60);
+                const secs = timerSeconds % 60;
+                timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // Wizard Step Switcher
+        function goToStep(step) {
+            currentStep = step;
+
+            // Make sure questions match current selected role
+            updateRoleQuestions();
+
+            // Hide all step contents
+            document.getElementById('stepContent1').classList.add('hidden');
+            document.getElementById('stepContent2').classList.add('hidden');
+            document.getElementById('stepContent3').classList.add('hidden');
+            document.getElementById('stepSuccess').classList.add('hidden');
+
+            // Show target step
+            document.getElementById(`stepContent${step}`).classList.remove('hidden');
+
+            // Update step indicators
+            for (let i = 1; i <= 3; i++) {
+                const indicator = document.getElementById(`stepIndicator${i}`);
+                indicator.classList.remove('active', 'completed');
+                if (i === step) {
+                    indicator.classList.add('active');
+                } else if (i < step) {
+                    indicator.classList.add('completed');
+                }
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Complete & Save Assessment
+        function submitAssessment() {
+            const fullName = document.getElementById('fullName').value.trim() || 'Candidate';
+            const phoneNum = document.getElementById('phoneNum').value.trim() || 'N/A';
+            const targetRole = document.getElementById('targetRole').value;
+            const expYears = document.getElementById('experienceYears').value;
+            const codeSol = document.getElementById('codeSolution').value.trim() || 'Provided solution';
+
+            const refId = 'REF-' + Math.floor(100000 + Math.random() * 900000);
+
+            // Update LocalStorage Records with completed interview details
+            try {
+                let submissions = JSON.parse(localStorage.getItem('career_application_submissions') || '[]');
+                
+                // Check if candidate already has a submission record, update it or add new
+                let existingIndex = submissions.findIndex(s => s.email === candidateEmail);
+                
+                const interviewData = {
+                    id: refId,
+                    timestamp: new Date().toLocaleString(),
+                    platform: candidatePlatform,
+                    email: candidateEmail,
+                    status: 'Interview Completed (20/20 Qs)',
+                    candidateName: fullName,
+                    phone: phoneNum,
+                    role: targetRole,
+                    experience: expYears,
+                    codeSnippet: codeSol
+                };
+
+                if (existingIndex >= 0) {
+                    submissions[existingIndex] = { ...submissions[existingIndex], ...interviewData };
+                } else {
+                    submissions.unshift(interviewData);
+                }
+
+                localStorage.setItem('career_application_submissions', JSON.stringify(submissions));
+
+                // Save to Firebase Firestore Cloud DB (Real-time sync)
+                db.collection("career_submissions").doc(refId).set({
+                    ...interviewData,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+            } catch(e) {
+                console.error('Save error:', e);
+            }
+
+            // Populate Success Screen
+            document.getElementById('resRefId').textContent = refId;
+            document.getElementById('resEmail').textContent = candidateEmail;
+            document.getElementById('resRole').textContent = targetRole;
+
+            // Show Success Card
+            document.getElementById('stepContent1').classList.add('hidden');
+            document.getElementById('stepContent2').classList.add('hidden');
+            document.getElementById('stepContent3').classList.add('hidden');
+            document.getElementById('stepSuccess').classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onload = initPage;
+    </script>
+</body>
+</html>

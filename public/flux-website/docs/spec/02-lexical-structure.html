@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>02 Lexical Structure — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Language Specification — Lexical Structure</h1>
+<p><strong>Version:</strong> 0.1.0-draft<br />
+<strong>Status:</strong> Draft</p>
+<hr />
+<h2>1. Source Encoding</h2>
+<p>All Flux source files are encoded in <strong>UTF-8</strong>. The compiler rejects files with invalid UTF-8 sequences.</p>
+<p>Source files use the <code>.flux</code> extension.</p>
+<p>The compiler recognizes the following line endings and normalizes them internally to <code>\n</code>:
+- <code>\n</code> (Unix/macOS)
+- <code>\r\n</code> (Windows)
+- <code>\r</code> (legacy macOS)</p>
+<hr />
+<h2>2. Lexical Grammar Overview</h2>
+<p>A Flux source file is a sequence of <strong>tokens</strong>. The lexer (tokenizer) converts raw source text into a stream of tokens. Whitespace and comments are discarded during tokenization (except for their role in separating tokens).</p>
+<pre><code>source_file = token*
+token       = keyword / identifier / literal / operator / delimiter / comment
+</code></pre>
+<hr />
+<h2>3. Whitespace</h2>
+<p>Whitespace characters are used to separate tokens and are otherwise ignored. Flux is <strong>not</strong> whitespace-sensitive (unlike Python).</p>
+<pre><code>whitespace = [ \t\r\n]+
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Character</th>
+<th>Name</th>
+<th>Unicode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code></code></td>
+<td>Space</td>
+<td>U+0020</td>
+</tr>
+<tr>
+<td><code>\t</code></td>
+<td>Tab</td>
+<td>U+0009</td>
+</tr>
+<tr>
+<td><code>\r</code></td>
+<td>Carriage Return</td>
+<td>U+000D</td>
+</tr>
+<tr>
+<td><code>\n</code></td>
+<td>Line Feed</td>
+<td>U+000A</td>
+</tr>
+</tbody>
+</table>
+<p>Flux uses <strong>curly braces</strong> for block structure, not indentation. However, the official formatter (<code>flux format</code>) enforces consistent indentation of <strong>4 spaces</strong> (no tabs).</p>
+<hr />
+<h2>4. Comments</h2>
+<p>Flux supports three styles of comments:</p>
+<h3>4.1 Line Comments</h3>
+<pre><code class="language-flux">// This is a line comment
+let x = 42  // Inline comment
+</code></pre>
+<p>Grammar:</p>
+<pre><code>line_comment = '//' (!'\n' .)*
+</code></pre>
+<h3>4.2 Block Comments</h3>
+<p>Block comments can span multiple lines and <strong>can be nested</strong>.</p>
+<pre><code class="language-flux">/* This is a block comment */
+
+/*
+ * Multi-line block comment.
+ * The asterisks on each line are conventional but not required.
+ */
+
+/* Nested /* comments */ are supported */
+</code></pre>
+<p>Grammar:</p>
+<pre><code>block_comment = '/*' (block_comment / !'*/' .)* '*/'
+</code></pre>
+<h3>4.3 Documentation Comments</h3>
+<p>Documentation comments are attached to the following item and are used by the documentation generator.</p>
+<pre><code class="language-flux">/// Computes the factorial of a non-negative integer.
+///
+/// # Parameters
+/// - `n` — The integer to compute the factorial of.
+///
+/// # Returns
+/// The factorial of `n`.
+///
+/// # Examples
+/// ```flux
+/// assert(factorial(5) == 120)
+/// assert(factorial(0) == 1)
+/// ```
+fn factorial(n: Int) -&gt; Int {
+    if n &lt;= 1 {
+        return 1
+    }
+    return n * factorial(n - 1)
+}
+</code></pre>
+<p>Module-level documentation uses <code>//!</code>:</p>
+<pre><code class="language-flux">//! This module provides utilities for working with dates and times.
+//! It supports parsing, formatting, and arithmetic operations on
+//! temporal values.
+
+use flux.time.Duration
+</code></pre>
+<p>Grammar:</p>
+<pre><code>doc_comment    = '///' (!'\n' .)*
+module_comment = '//!' (!'\n' .)*
+</code></pre>
+<hr />
+<h2>5. Keywords</h2>
+<p>The following identifiers are reserved as keywords and cannot be used as identifiers:</p>
+<h3>5.1 Declaration Keywords</h3>
+<table>
+<thead>
+<tr>
+<th>Keyword</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>let</code></td>
+<td>Immutable variable binding</td>
+</tr>
+<tr>
+<td><code>mut</code></td>
+<td>Mutable variable modifier</td>
+</tr>
+<tr>
+<td><code>const</code></td>
+<td>Compile-time constant</td>
+</tr>
+<tr>
+<td><code>fn</code></td>
+<td>Function declaration</td>
+</tr>
+<tr>
+<td><code>struct</code></td>
+<td>Struct declaration</td>
+</tr>
+<tr>
+<td><code>class</code></td>
+<td>Class declaration</td>
+</tr>
+<tr>
+<td><code>enum</code></td>
+<td>Enum declaration</td>
+</tr>
+<tr>
+<td><code>trait</code></td>
+<td>Trait declaration</td>
+</tr>
+<tr>
+<td><code>interface</code></td>
+<td>Interface declaration</td>
+</tr>
+<tr>
+<td><code>impl</code></td>
+<td>Implementation block</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>Type alias</td>
+</tr>
+<tr>
+<td><code>mod</code></td>
+<td>Module declaration</td>
+</tr>
+<tr>
+<td><code>use</code></td>
+<td>Import declaration</td>
+</tr>
+<tr>
+<td><code>pub</code></td>
+<td>Public visibility</td>
+</tr>
+<tr>
+<td><code>self</code></td>
+<td>Current instance reference</td>
+</tr>
+<tr>
+<td><code>Self</code></td>
+<td>Current type reference</td>
+</tr>
+</tbody>
+</table>
+<h3>5.2 Control Flow Keywords</h3>
+<table>
+<thead>
+<tr>
+<th>Keyword</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>if</code></td>
+<td>Conditional branch</td>
+</tr>
+<tr>
+<td><code>else</code></td>
+<td>Alternative branch</td>
+</tr>
+<tr>
+<td><code>match</code></td>
+<td>Pattern matching</td>
+</tr>
+<tr>
+<td><code>for</code></td>
+<td>Iteration loop</td>
+</tr>
+<tr>
+<td><code>while</code></td>
+<td>Condition loop</td>
+</tr>
+<tr>
+<td><code>loop</code></td>
+<td>Infinite loop</td>
+</tr>
+<tr>
+<td><code>break</code></td>
+<td>Exit loop</td>
+</tr>
+<tr>
+<td><code>continue</code></td>
+<td>Skip to next iteration</td>
+</tr>
+<tr>
+<td><code>return</code></td>
+<td>Return from function</td>
+</tr>
+<tr>
+<td><code>yield</code></td>
+<td>Yield from generator/coroutine</td>
+</tr>
+</tbody>
+</table>
+<h3>5.3 Expression Keywords</h3>
+<table>
+<thead>
+<tr>
+<th>Keyword</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>true</code></td>
+<td>Boolean true</td>
+</tr>
+<tr>
+<td><code>false</code></td>
+<td>Boolean false</td>
+</tr>
+<tr>
+<td><code>none</code></td>
+<td>Absence of value (Option)</td>
+</tr>
+<tr>
+<td><code>and</code></td>
+<td>Logical AND</td>
+</tr>
+<tr>
+<td><code>or</code></td>
+<td>Logical OR</td>
+</tr>
+<tr>
+<td><code>not</code></td>
+<td>Logical NOT</td>
+</tr>
+<tr>
+<td><code>is</code></td>
+<td>Type check</td>
+</tr>
+<tr>
+<td><code>as</code></td>
+<td>Type cast</td>
+</tr>
+<tr>
+<td><code>in</code></td>
+<td>Containment check / for-in</td>
+</tr>
+<tr>
+<td><code>new</code></td>
+<td>Object instantiation (optional syntax)</td>
+</tr>
+</tbody>
+</table>
+<h3>5.4 Concurrency Keywords</h3>
+<table>
+<thead>
+<tr>
+<th>Keyword</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>async</code></td>
+<td>Asynchronous function</td>
+</tr>
+<tr>
+<td><code>await</code></td>
+<td>Await asynchronous result</td>
+</tr>
+<tr>
+<td><code>spawn</code></td>
+<td>Spawn a concurrent task</td>
+</tr>
+</tbody>
+</table>
+<h3>5.5 Safety and Scope Keywords</h3>
+<table>
+<thead>
+<tr>
+<th>Keyword</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>unsafe</code></td>
+<td>Unsafe code block</td>
+</tr>
+<tr>
+<td><code>where</code></td>
+<td>Generic constraints</td>
+</tr>
+<tr>
+<td><code>comptime</code></td>
+<td>Compile-time evaluation</td>
+</tr>
+<tr>
+<td><code>extern</code></td>
+<td>External function linkage</td>
+</tr>
+<tr>
+<td><code>static</code></td>
+<td>Static lifetime / storage</td>
+</tr>
+<tr>
+<td><code>ref</code></td>
+<td>Reference parameter</td>
+</tr>
+<tr>
+<td><code>move</code></td>
+<td>Move capture in closures</td>
+</tr>
+<tr>
+<td><code>defer</code></td>
+<td>Deferred execution</td>
+</tr>
+</tbody>
+</table>
+<h3>5.6 Reserved Keywords</h3>
+<p>These keywords are reserved for future use and cannot be used as identifiers:</p>
+<pre><code>abstract    become    do       final    macro
+override    priv      virtual  throws   catch
+try         throw     with     internal guard
+</code></pre>
+<h3>5.7 Contextual Keywords</h3>
+<p>These words have special meaning in certain contexts but can be used as identifiers elsewhere:</p>
+<pre><code>get   set   init   deinit   operator   test
+from  where  it     _
+</code></pre>
+<hr />
+<h2>6. Identifiers</h2>
+<h3>6.1 Rules</h3>
+<p>Identifiers are names for variables, functions, types, modules, and other program entities.</p>
+<pre><code>identifier      = ident_start ident_continue*
+ident_start     = [a-zA-Z_] / unicode_letter
+ident_continue  = [a-zA-Z0-9_] / unicode_letter / unicode_digit
+</code></pre>
+<ul>
+<li>Identifiers are case-sensitive: <code>foo</code>, <code>Foo</code>, and <code>FOO</code> are distinct</li>
+<li>Identifiers must not be keywords (see §5)</li>
+<li>Identifiers beginning with <code>_</code> are considered unused (suppress unused-variable warnings)</li>
+<li>The single identifier <code>_</code> is the wildcard pattern (discards a value)</li>
+</ul>
+<h3>6.2 Unicode Support</h3>
+<p>Identifiers may contain Unicode letters and digits, enabling code in non-English languages:</p>
+<pre><code class="language-flux">let π = 3.14159
+let 名前 = &quot;Flux&quot;
+let café = &quot;☕&quot;
+</code></pre>
+<p>The definition of "Unicode letter" and "Unicode digit" follows Unicode Standard categories:
+- <strong>Letter</strong>: Lu, Ll, Lt, Lm, Lo, Nl
+- <strong>Digit</strong>: Nd</p>
+<h3>6.3 Naming Conventions</h3>
+<p>While not enforced by the compiler (only by the linter), Flux follows these conventions:</p>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Convention</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Variables</td>
+<td><code>snake_case</code></td>
+<td><code>user_count</code></td>
+</tr>
+<tr>
+<td>Functions</td>
+<td><code>snake_case</code></td>
+<td><code>get_user</code></td>
+</tr>
+<tr>
+<td>Types (struct, class, enum, trait)</td>
+<td><code>PascalCase</code></td>
+<td><code>HttpClient</code></td>
+</tr>
+<tr>
+<td>Constants</td>
+<td><code>SCREAMING_SNAKE_CASE</code></td>
+<td><code>MAX_RETRIES</code></td>
+</tr>
+<tr>
+<td>Modules</td>
+<td><code>snake_case</code></td>
+<td><code>flux.http</code></td>
+</tr>
+<tr>
+<td>Type parameters</td>
+<td>Single uppercase or <code>PascalCase</code></td>
+<td><code>T</code>, <code>Key</code>, <code>Value</code></td>
+</tr>
+<tr>
+<td>Lifetimes</td>
+<td><code>'lowercase</code></td>
+<td><code>'a</code>, <code>'src</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>7. Literals</h2>
+<h3>7.1 Integer Literals</h3>
+<pre><code>integer_literal = decimal_literal / hex_literal / octal_literal / binary_literal
+decimal_literal = [0-9] [0-9_]*
+hex_literal     = '0x' [0-9a-fA-F] [0-9a-fA-F_]*
+octal_literal   = '0o' [0-7] [0-7_]*
+binary_literal  = '0b' [01] [01_]*
+</code></pre>
+<p>Underscores may be used as visual separators in numeric literals. They are ignored by the compiler.</p>
+<pre><code class="language-flux">let million = 1_000_000
+let flags = 0b1010_0011
+let color = 0xFF_AA_00
+let permissions = 0o755
+</code></pre>
+<p>Integer literals have no fixed type until inference determines one. The default type is <code>Int</code> (platform-native signed integer, at least 64 bits).</p>
+<p>An optional type suffix can force a specific integer type:</p>
+<pre><code class="language-flux">let a = 42          // Int (inferred)
+let b = 42i8        // Int8
+let c = 42u32       // UInt32
+let d = 42i64       // Int64
+</code></pre>
+<h3>7.2 Floating-Point Literals</h3>
+<pre><code>float_literal   = decimal_literal '.' decimal_literal exponent?
+                / decimal_literal exponent
+exponent        = [eE] [+-]? decimal_literal
+</code></pre>
+<pre><code class="language-flux">let pi = 3.14159
+let avogadro = 6.022e23
+let tiny = 1.0e-10
+let formatted = 1_234.567_89
+</code></pre>
+<p>The default floating-point type is <code>Float64</code>. Type suffixes:</p>
+<pre><code class="language-flux">let a = 3.14        // Float64 (inferred)
+let b = 3.14f32     // Float32
+let c = 3.14f64     // Float64
+</code></pre>
+<h3>7.3 Boolean Literals</h3>
+<pre><code>bool_literal = 'true' / 'false'
+</code></pre>
+<pre><code class="language-flux">let enabled = true
+let visible = false
+</code></pre>
+<h3>7.4 Character Literals</h3>
+<p>Character literals represent a single Unicode scalar value, enclosed in single quotes:</p>
+<pre><code>char_literal = &quot;'&quot; (escape_sequence / ![&quot;'\\&quot;] .) &quot;'&quot;
+</code></pre>
+<pre><code class="language-flux">let letter = 'A'
+let emoji = '🔥'
+let newline = '\n'
+let unicode = '\u{1F600}'
+</code></pre>
+<h3>7.5 String Literals</h3>
+<h4>Regular Strings</h4>
+<p>String literals are enclosed in double quotes and support escape sequences:</p>
+<pre><code>string_literal = '&quot;' string_content* '&quot;'
+string_content = escape_sequence / interpolation / ![&quot;\\\n] .
+</code></pre>
+<pre><code class="language-flux">let greeting = &quot;Hello, World!&quot;
+let path = &quot;C:\\Users\\flux&quot;
+let multiline = &quot;Line 1\nLine 2&quot;
+</code></pre>
+<h4>Escape Sequences</h4>
+<table>
+<thead>
+<tr>
+<th>Sequence</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>\\</code></td>
+<td>Backslash</td>
+</tr>
+<tr>
+<td><code>\"</code></td>
+<td>Double quote</td>
+</tr>
+<tr>
+<td><code>\'</code></td>
+<td>Single quote</td>
+</tr>
+<tr>
+<td><code>\n</code></td>
+<td>Newline (LF)</td>
+</tr>
+<tr>
+<td><code>\r</code></td>
+<td>Carriage return (CR)</td>
+</tr>
+<tr>
+<td><code>\t</code></td>
+<td>Tab</td>
+</tr>
+<tr>
+<td><code>\0</code></td>
+<td>Null character</td>
+</tr>
+<tr>
+<td><code>\u{XXXX}</code></td>
+<td>Unicode scalar (1–6 hex digits)</td>
+</tr>
+</tbody>
+</table>
+<h4>String Interpolation</h4>
+<p>Expressions can be embedded in strings using curly braces:</p>
+<pre><code>interpolation = '{' expression '}'
+</code></pre>
+<pre><code class="language-flux">let name = &quot;Flux&quot;
+let version = 1
+print(&quot;Welcome to {name} version {version}!&quot;)
+print(&quot;2 + 2 = {2 + 2}&quot;)
+print(&quot;User: {user.name}, Age: {user.age}&quot;)
+</code></pre>
+<p>To include a literal <code>{</code> or <code>}</code> in a string, double them:</p>
+<pre><code class="language-flux">let json = &quot;{{\&quot;key\&quot;: \&quot;value\&quot;}}&quot;  // {&quot;key&quot;: &quot;value&quot;}
+</code></pre>
+<h4>Raw Strings</h4>
+<p>Raw strings do not process escape sequences. They are prefixed with <code>r</code>:</p>
+<pre><code class="language-flux">let regex = r&quot;^\d{3}-\d{4}$&quot;
+let path = r&quot;C:\Users\flux\file.txt&quot;
+</code></pre>
+<p>Raw strings do <strong>not</strong> support interpolation. To combine raw and interpolation, use <code>r</code> strings with explicit concatenation.</p>
+<h4>Multi-line Strings</h4>
+<p>Multi-line strings use triple quotes and automatically strip common leading whitespace:</p>
+<pre><code class="language-flux">let html = &quot;&quot;&quot;
+    &lt;html&gt;
+        &lt;body&gt;
+            &lt;h1&gt;Hello&lt;/h1&gt;
+        &lt;/body&gt;
+    &lt;/html&gt;
+    &quot;&quot;&quot;
+// Result has no leading indentation; the indentation is relative to the closing &quot;&quot;&quot;
+</code></pre>
+<p>Multi-line strings support interpolation:</p>
+<pre><code class="language-flux">let page = &quot;&quot;&quot;
+    &lt;html&gt;
+        &lt;body&gt;
+            &lt;h1&gt;{title}&lt;/h1&gt;
+            &lt;p&gt;{content}&lt;/p&gt;
+        &lt;/body&gt;
+    &lt;/html&gt;
+    &quot;&quot;&quot;
+</code></pre>
+<h3>7.6 None Literal</h3>
+<pre><code>none_literal = 'none'
+</code></pre>
+<p><code>none</code> represents the absence of a value and is the single inhabitant of the <code>None</code> type. It is used with <code>Option&lt;T&gt;</code>:</p>
+<pre><code class="language-flux">let result: Option&lt;Int&gt; = none
+</code></pre>
+<h3>7.7 Collection Literals</h3>
+<pre><code class="language-flux">// Array literal
+let numbers = [1, 2, 3, 4, 5]
+
+// Map literal
+let colors = {
+    &quot;red&quot;: &quot;#FF0000&quot;
+    &quot;green&quot;: &quot;#00FF00&quot;
+    &quot;blue&quot;: &quot;#0000FF&quot;
+}
+
+// Set literal
+let unique = Set{1, 2, 3, 4, 5}
+
+// Tuple literal
+let point = (10, 20)
+let named = (x: 10, y: 20)
+</code></pre>
+<hr />
+<h2>8. Operators</h2>
+<h3>8.1 Arithmetic Operators</h3>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Name</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>+</code></td>
+<td>Addition</td>
+<td><code>a + b</code></td>
+</tr>
+<tr>
+<td><code>-</code></td>
+<td>Subtraction / Negation</td>
+<td><code>a - b</code> / <code>-a</code></td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td>Multiplication</td>
+<td><code>a * b</code></td>
+</tr>
+<tr>
+<td><code>/</code></td>
+<td>Division</td>
+<td><code>a / b</code></td>
+</tr>
+<tr>
+<td><code>%</code></td>
+<td>Remainder (modulo)</td>
+<td><code>a % b</code></td>
+</tr>
+<tr>
+<td><code>**</code></td>
+<td>Power (exponentiation)</td>
+<td><code>a ** b</code></td>
+</tr>
+</tbody>
+</table>
+<h3>8.2 Comparison Operators</h3>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Name</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>==</code></td>
+<td>Equal</td>
+<td><code>a == b</code></td>
+</tr>
+<tr>
+<td><code>!=</code></td>
+<td>Not equal</td>
+<td><code>a != b</code></td>
+</tr>
+<tr>
+<td><code>&lt;</code></td>
+<td>Less than</td>
+<td><code>a &lt; b</code></td>
+</tr>
+<tr>
+<td><code>&gt;</code></td>
+<td>Greater than</td>
+<td><code>a &gt; b</code></td>
+</tr>
+<tr>
+<td><code>&lt;=</code></td>
+<td>Less than or equal</td>
+<td><code>a &lt;= b</code></td>
+</tr>
+<tr>
+<td><code>&gt;=</code></td>
+<td>Greater than or equal</td>
+<td><code>a &gt;= b</code></td>
+</tr>
+</tbody>
+</table>
+<h3>8.3 Logical Operators</h3>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Name</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>and</code></td>
+<td>Logical AND</td>
+<td><code>a and b</code></td>
+</tr>
+<tr>
+<td><code>or</code></td>
+<td>Logical OR</td>
+<td><code>a or b</code></td>
+</tr>
+<tr>
+<td><code>not</code></td>
+<td>Logical NOT</td>
+<td><code>not a</code></td>
+</tr>
+</tbody>
+</table>
+<p>Flux uses English words for logical operators instead of <code>&amp;&amp;</code>, <code>||</code>, <code>!</code> for readability. The symbolic forms are <strong>not</strong> supported.</p>
+<h3>8.4 Bitwise Operators</h3>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Name</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&amp;</code></td>
+<td>Bitwise AND</td>
+<td><code>a &amp; b</code></td>
+</tr>
+<tr>
+<td><code>\|</code></td>
+<td>Bitwise OR</td>
+<td><code>a \| b</code></td>
+</tr>
+<tr>
+<td><code>^</code></td>
+<td>Bitwise XOR</td>
+<td><code>a ^ b</code></td>
+</tr>
+<tr>
+<td><code>~</code></td>
+<td>Bitwise NOT</td>
+<td><code>~a</code></td>
+</tr>
+<tr>
+<td><code>&lt;&lt;</code></td>
+<td>Left shift</td>
+<td><code>a &lt;&lt; b</code></td>
+</tr>
+<tr>
+<td><code>&gt;&gt;</code></td>
+<td>Right shift (arithmetic)</td>
+<td><code>a &gt;&gt; b</code></td>
+</tr>
+<tr>
+<td><code>&gt;&gt;&gt;</code></td>
+<td>Right shift (logical)</td>
+<td><code>a &gt;&gt;&gt; b</code></td>
+</tr>
+</tbody>
+</table>
+<h3>8.5 Assignment Operators</h3>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Equivalent</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>=</code></td>
+<td>Assignment</td>
+<td><code>x = 5</code></td>
+</tr>
+<tr>
+<td><code>+=</code></td>
+<td>Add and assign</td>
+<td><code>x += 1</code></td>
+</tr>
+<tr>
+<td><code>-=</code></td>
+<td>Subtract and assign</td>
+<td><code>x -= 1</code></td>
+</tr>
+<tr>
+<td><code>*=</code></td>
+<td>Multiply and assign</td>
+<td><code>x *= 2</code></td>
+</tr>
+<tr>
+<td><code>/=</code></td>
+<td>Divide and assign</td>
+<td><code>x /= 2</code></td>
+</tr>
+<tr>
+<td><code>%=</code></td>
+<td>Remainder and assign</td>
+<td><code>x %= 3</code></td>
+</tr>
+<tr>
+<td><code>**=</code></td>
+<td>Power and assign</td>
+<td><code>x **= 2</code></td>
+</tr>
+<tr>
+<td><code>&amp;=</code></td>
+<td>Bitwise AND and assign</td>
+<td><code>x &amp;= mask</code></td>
+</tr>
+<tr>
+<td><code>\|=</code></td>
+<td>Bitwise OR and assign</td>
+<td><code>x \|= flag</code></td>
+</tr>
+<tr>
+<td><code>^=</code></td>
+<td>Bitwise XOR and assign</td>
+<td><code>x ^= bits</code></td>
+</tr>
+<tr>
+<td><code>&lt;&lt;=</code></td>
+<td>Left shift and assign</td>
+<td><code>x &lt;&lt;= 2</code></td>
+</tr>
+<tr>
+<td><code>&gt;&gt;=</code></td>
+<td>Right shift and assign</td>
+<td><code>x &gt;&gt;= 1</code></td>
+</tr>
+</tbody>
+</table>
+<h3>8.6 Range Operators</h3>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Name</th>
+<th>Example</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>..</code></td>
+<td>Exclusive range</td>
+<td><code>0..5</code></td>
+<td>0, 1, 2, 3, 4</td>
+</tr>
+<tr>
+<td><code>..=</code></td>
+<td>Inclusive range</td>
+<td><code>0..=5</code></td>
+<td>0, 1, 2, 3, 4, 5</td>
+</tr>
+</tbody>
+</table>
+<h3>8.7 Other Operators</h3>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Name</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>?</code></td>
+<td>Error propagation</td>
+<td><code>file.read()?</code></td>
+</tr>
+<tr>
+<td><code>\|&gt;</code></td>
+<td>Pipe</td>
+<td><code>data \|&gt; transform \|&gt; display</code></td>
+</tr>
+<tr>
+<td><code>?.</code></td>
+<td>Optional chaining</td>
+<td><code>user?.address?.city</code></td>
+</tr>
+<tr>
+<td><code>??</code></td>
+<td>None coalescing</td>
+<td><code>name ?? "Anonymous"</code></td>
+</tr>
+<tr>
+<td><code>as</code></td>
+<td>Type cast</td>
+<td><code>value as Float64</code></td>
+</tr>
+<tr>
+<td><code>is</code></td>
+<td>Type check</td>
+<td><code>value is String</code></td>
+</tr>
+<tr>
+<td><code>in</code></td>
+<td>Containment</td>
+<td><code>item in collection</code></td>
+</tr>
+<tr>
+<td><code>..</code></td>
+<td>Spread</td>
+<td><code>[...array1, ...array2]</code></td>
+</tr>
+<tr>
+<td><code>-&gt;</code></td>
+<td>Arrow (match/return type)</td>
+<td><code>match</code>, <code>fn() -&gt; Int</code></td>
+</tr>
+<tr>
+<td><code>=&gt;</code></td>
+<td>Fat arrow (lambda)</td>
+<td><code>(x) =&gt; x * 2</code></td>
+</tr>
+</tbody>
+</table>
+<h3>8.8 Operator Precedence</h3>
+<p>From highest to lowest precedence:</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Operators</th>
+<th>Associativity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>.</code> <code>?.</code> <code>()</code> <code>[]</code></td>
+<td>Left</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Unary <code>-</code> <code>not</code> <code>~</code> <code>&amp;</code> <code>&amp;mut</code> <code>*</code></td>
+<td>Right</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>**</code></td>
+<td>Right</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>*</code> <code>/</code> <code>%</code></td>
+<td>Left</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>+</code> <code>-</code></td>
+<td>Left</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>&lt;&lt;</code> <code>&gt;&gt;</code> <code>&gt;&gt;&gt;</code></td>
+<td>Left</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>&amp;</code></td>
+<td>Left</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>^</code></td>
+<td>Left</td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>\|</code></td>
+<td>Left</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>..</code> <code>..=</code></td>
+<td>Non-associative</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>\|&gt;</code></td>
+<td>Left</td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>as</code> <code>is</code></td>
+<td>Left</td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>==</code> <code>!=</code> <code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code></td>
+<td>Non-associative</td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>in</code></td>
+<td>Left</td>
+</tr>
+<tr>
+<td>15</td>
+<td><code>and</code></td>
+<td>Left</td>
+</tr>
+<tr>
+<td>16</td>
+<td><code>or</code></td>
+<td>Left</td>
+</tr>
+<tr>
+<td>17</td>
+<td><code>??</code></td>
+<td>Right</td>
+</tr>
+<tr>
+<td>18</td>
+<td><code>?</code></td>
+<td>Postfix</td>
+</tr>
+<tr>
+<td>19</td>
+<td><code>=</code> <code>+=</code> <code>-=</code> <code>*=</code> <code>/=</code> <code>%=</code> <code>**=</code> <code>&amp;=</code> <code>\|=</code> <code>^=</code> <code>&lt;&lt;=</code> <code>&gt;&gt;=</code></td>
+<td>Right</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>9. Delimiters</h2>
+<table>
+<thead>
+<tr>
+<th>Delimiter</th>
+<th>Name</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{</code> <code>}</code></td>
+<td>Curly braces</td>
+<td>Blocks, struct/map literals</td>
+</tr>
+<tr>
+<td><code>(</code> <code>)</code></td>
+<td>Parentheses</td>
+<td>Grouping, function calls, tuples</td>
+</tr>
+<tr>
+<td><code>[</code> <code>]</code></td>
+<td>Square brackets</td>
+<td>Array literals, indexing</td>
+</tr>
+<tr>
+<td><code>,</code></td>
+<td>Comma</td>
+<td>Separator in lists (optional in many contexts)</td>
+</tr>
+<tr>
+<td><code>:</code></td>
+<td>Colon</td>
+<td>Type annotations, map entries, named arguments</td>
+</tr>
+<tr>
+<td><code>.</code></td>
+<td>Dot</td>
+<td>Member access</td>
+</tr>
+<tr>
+<td><code>@</code></td>
+<td>At sign</td>
+<td>Attributes / decorators</td>
+</tr>
+<tr>
+<td><code>#</code></td>
+<td>Hash</td>
+<td>Compiler directives</td>
+</tr>
+</tbody>
+</table>
+<h3>9.1 Trailing Commas</h3>
+<p>Trailing commas are allowed (and encouraged by the formatter) in all comma-separated lists:</p>
+<pre><code class="language-flux">let colors = [
+    &quot;red&quot;,
+    &quot;green&quot;,
+    &quot;blue&quot;,   // trailing comma is valid
+]
+
+fn create_user(
+    name: String,
+    email: String,
+    age: Int,   // trailing comma is valid
+) -&gt; User {
+    // ...
+}
+</code></pre>
+<h3>9.2 Comma Elision</h3>
+<p>In <strong>struct literals</strong>, <strong>map literals</strong>, and <strong>multi-line function parameters</strong>, commas may be omitted when each entry is on its own line:</p>
+<pre><code class="language-flux">// Commas optional — each field on its own line
+let user = User {
+    name: &quot;Alice&quot;
+    email: &quot;alice@example.com&quot;
+    age: 30
+}
+
+// Commas required — same line
+let user = User { name: &quot;Alice&quot;, email: &quot;alice@example.com&quot;, age: 30 }
+</code></pre>
+<hr />
+<h2>10. Token Classification Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Keywords</strong></td>
+<td><code>let</code>, <code>mut</code>, <code>fn</code>, <code>struct</code>, <code>class</code>, <code>if</code>, <code>match</code>, <code>for</code>, <code>return</code>, <code>async</code></td>
+</tr>
+<tr>
+<td><strong>Identifiers</strong></td>
+<td><code>user_name</code>, <code>HttpClient</code>, <code>π</code>, <code>_unused</code></td>
+</tr>
+<tr>
+<td><strong>Integer Literals</strong></td>
+<td><code>42</code>, <code>0xFF</code>, <code>0b1010</code>, <code>0o755</code>, <code>1_000_000</code></td>
+</tr>
+<tr>
+<td><strong>Float Literals</strong></td>
+<td><code>3.14</code>, <code>1.0e-10</code>, <code>6.022e23</code></td>
+</tr>
+<tr>
+<td><strong>String Literals</strong></td>
+<td><code>"hello"</code>, <code>"a {b} c"</code>, <code>r"raw"</code>, <code>"""multi"""</code></td>
+</tr>
+<tr>
+<td><strong>Char Literals</strong></td>
+<td><code>'A'</code>, <code>'🔥'</code>, <code>'\n'</code></td>
+</tr>
+<tr>
+<td><strong>Bool Literals</strong></td>
+<td><code>true</code>, <code>false</code></td>
+</tr>
+<tr>
+<td><strong>None Literal</strong></td>
+<td><code>none</code></td>
+</tr>
+<tr>
+<td><strong>Operators</strong></td>
+<td><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>==</code>, <code>!=</code>, <code>-&gt;</code>, <code>\|&gt;</code>, <code>?</code></td>
+</tr>
+<tr>
+<td><strong>Delimiters</strong></td>
+<td><code>{</code>, <code>}</code>, <code>(</code>, <code>)</code>, <code>[</code>, <code>]</code>, <code>,</code>, <code>:</code>, <code>.</code></td>
+</tr>
+<tr>
+<td><strong>Comments</strong></td>
+<td><code>// line</code>, <code>/* block */</code>, <code>/// doc</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>11. Automatic Semicolon Handling</h2>
+<p>Flux does <strong>not</strong> use semicolons. Statements are terminated by newlines. The lexer automatically determines statement boundaries using the following rule:</p>
+<p>A newline terminates a statement if the <strong>last token before the newline</strong> is one of:
+- An identifier
+- A literal (integer, float, string, char, bool, <code>none</code>)
+- <code>break</code>, <code>continue</code>, <code>return</code>, <code>yield</code>
+- <code>)</code>
+- <code>]</code>
+- <code>}</code>
+- <code>?</code>
+- <code>++</code> / <code>--</code> (if ever added)</p>
+<p>A newline does <strong>not</strong> terminate a statement if the <strong>last token before the newline</strong> is one of:
+- An operator (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>=</code>, <code>==</code>, <code>-&gt;</code>, <code>=&gt;</code>, <code>|&gt;</code>, etc.)
+- An opening delimiter (<code>{</code>, <code>(</code>, <code>[</code>)
+- A comma (<code>,</code>)
+- A colon (<code>:</code>)
+- A keyword that expects a continuation (<code>if</code>, <code>else</code>, <code>for</code>, <code>while</code>, <code>fn</code>, etc.)</p>
+<p>This means multi-line expressions work naturally:</p>
+<pre><code class="language-flux">let total = price
+    + tax
+    + shipping    // Continuation: line ends with `+`
+
+let result = some_function(
+    arg1,
+    arg2,
+    arg3,         // Continuation: inside parentheses
+)
+</code></pre>
+<hr />
+<h2>12. Lexer Error Handling</h2>
+<p>The lexer reports errors with precise source locations and helpful messages:</p>
+<table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Example</th>
+<th>Message</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Invalid character</td>
+<td><code>let x = §</code></td>
+<td><code>error: unexpected character '§' (U+00A7)</code></td>
+</tr>
+<tr>
+<td>Unterminated string</td>
+<td><code>let s = "hello</code></td>
+<td><code>error: unterminated string literal</code></td>
+</tr>
+<tr>
+<td>Unterminated block comment</td>
+<td><code>/* comment</code></td>
+<td><code>error: unterminated block comment — did you forget '*/'?</code></td>
+</tr>
+<tr>
+<td>Invalid escape sequence</td>
+<td><code>"\q"</code></td>
+<td><code>error: invalid escape sequence '\q' — valid escapes are: \\, \n, \r, \t, \0, \", \', \u{...}</code></td>
+</tr>
+<tr>
+<td>Invalid Unicode escape</td>
+<td><code>"\u{ZZZZ}"</code></td>
+<td><code>error: invalid Unicode escape — expected hex digits</code></td>
+</tr>
+<tr>
+<td>Invalid number</td>
+<td><code>0x</code></td>
+<td><code>error: incomplete hexadecimal literal</code></td>
+</tr>
+<tr>
+<td>Keyword as identifier</td>
+<td><code>let fn = 5</code></td>
+<td><code>error: 'fn' is a keyword and cannot be used as an identifier</code></td>
+</tr>
+</tbody>
+</table>
+<p>The lexer continues after errors to report multiple issues in a single compilation pass (error recovery).</p>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

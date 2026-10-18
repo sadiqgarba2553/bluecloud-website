@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compiler Architecture — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Compiler Architecture</h1>
+<hr />
+<h2>1. Pipeline Overview</h2>
+<pre><code>Source Code (.flux)
+       │
+       ▼
+┌─────────────┐
+│    Lexer     │  → Token Stream
+│ (flux_lexer) │
+└──────┬──────┘
+       ▼
+┌─────────────┐
+│   Parser     │  → Abstract Syntax Tree (AST)
+│(flux_parser) │
+└──────┬──────┘
+       ▼
+┌─────────────┐
+│  Name Res.   │  → Resolved AST (symbols linked to declarations)
+│ (flux_sema)  │
+└──────┬──────┘
+       ▼
+┌─────────────┐
+│ Type Checker │  → Typed AST (every expression has a verified type)
+│(flux_types)  │
+└──────┬──────┘
+       ▼
+┌─────────────┐
+│  MIR Lower   │  → Mid-Level IR (simplified, desugared)
+│ (flux_mir)   │
+└──────┬──────┘
+       ▼
+┌─────────────┐
+│  Borrow Ck.  │  → Verified MIR (ownership/borrowing valid)
+│ (flux_mir)   │
+└──────┬──────┘
+       ▼
+┌─────────────┐
+│  Optimizer   │  → Optimized MIR
+│(flux_optim)  │
+└──────┬──────┘
+       ▼
+┌─────────────┐
+│  LLVM IR Gen │  → LLVM IR (.ll)
+│(flux_codegen)│
+└──────┬──────┘
+       ▼
+┌─────────────┐
+│  LLVM        │  → Object File (.o)
+│  Backend     │
+└──────┬──────┘
+       ▼
+┌─────────────┐
+│   Linker     │  → Executable / Library
+└─────────────┘
+</code></pre>
+<hr />
+<h2>2. Module Architecture</h2>
+<h3>2.1 Crate Graph</h3>
+<pre><code>flux_driver (orchestration)
+├── flux_lexer        (tokenization)
+├── flux_parser       (syntax analysis)
+├── flux_ast          (AST data structures)
+├── flux_sema         (name resolution + semantic analysis)
+├── flux_types        (type checking + inference)
+├── flux_mir          (mid-level IR + borrow checking)
+├── flux_optim        (optimization passes)
+├── flux_codegen      (LLVM IR generation)
+├── flux_diagnostics  (error reporting)
+├── flux_session      (compilation session state)
+└── flux_target       (target platform definitions)
+</code></pre>
+<h3>2.2 Data Flow Between Crates</h3>
+<table>
+<thead>
+<tr>
+<th>From</th>
+<th>To</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>flux_lexer</code></td>
+<td><code>flux_parser</code></td>
+<td><code>TokenStream</code></td>
+</tr>
+<tr>
+<td><code>flux_parser</code></td>
+<td><code>flux_sema</code></td>
+<td><code>Ast</code> (unresolved)</td>
+</tr>
+<tr>
+<td><code>flux_sema</code></td>
+<td><code>flux_types</code></td>
+<td><code>ResolvedAst</code> + <code>SymbolTable</code></td>
+</tr>
+<tr>
+<td><code>flux_types</code></td>
+<td><code>flux_mir</code></td>
+<td><code>TypedAst</code> + <code>TypeTable</code></td>
+</tr>
+<tr>
+<td><code>flux_mir</code></td>
+<td><code>flux_optim</code></td>
+<td><code>MirBody</code> (per function)</td>
+</tr>
+<tr>
+<td><code>flux_optim</code></td>
+<td><code>flux_codegen</code></td>
+<td><code>OptimizedMir</code></td>
+</tr>
+<tr>
+<td><code>flux_codegen</code></td>
+<td>LLVM</td>
+<td><code>llvm::Module</code></td>
+</tr>
+<tr>
+<td><code>flux_diagnostics</code></td>
+<td>All</td>
+<td><code>Diagnostic</code> (errors, warnings, notes)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>3. Lexer (<code>flux_lexer</code>)</h2>
+<h3>3.1 Responsibilities</h3>
+<ul>
+<li>Convert UTF-8 source text into a stream of tokens</li>
+<li>Track source locations (file, line, column, byte offset)</li>
+<li>Handle string interpolation (nested lexing)</li>
+<li>Error recovery (skip invalid characters, report errors, continue)</li>
+</ul>
+<h3>3.2 Key Types</h3>
+<pre><code class="language-rust">pub struct Token {
+    pub kind: TokenKind,
+    pub span: Span,
+    pub text: SmolStr,  // Interned string for identifiers/keywords
+}
+
+pub struct Span {
+    pub file_id: FileId,
+    pub start: u32,   // Byte offset
+    pub end: u32,
+}
+
+pub enum TokenKind {
+    // Keywords
+    Let, Mut, Fn, Struct, Class, Enum, Trait, ...
+    // Literals
+    IntLiteral, FloatLiteral, StringLiteral, ...
+    // Operators
+    Plus, Minus, Star, Slash, Eq, EqEq, ...
+    // Delimiters
+    LBrace, RBrace, LParen, RParen, LBracket, RBracket, ...
+    // Special
+    Eof, Error,
+}
+</code></pre>
+<h3>3.3 Performance</h3>
+<ul>
+<li>Single-pass, zero-allocation lexing (arena allocator for tokens)</li>
+<li>SIMD-accelerated whitespace/identifier scanning where possible</li>
+<li>Lazy string interning</li>
+</ul>
+<hr />
+<h2>4. Parser (<code>flux_parser</code>)</h2>
+<h3>4.1 Design</h3>
+<ul>
+<li>Recursive descent parser (Pratt parsing for expressions)</li>
+<li>Produces a concrete syntax tree (CST) that preserves all tokens</li>
+<li>CST is then lowered to AST (abstract syntax tree) with whitespace/comments stripped</li>
+<li>Full error recovery — always produces a tree, even from invalid input</li>
+</ul>
+<h3>4.2 Error Recovery Strategies</h3>
+<ul>
+<li><strong>Synchronization</strong>: On error, skip tokens until a synchronization point (<code>;</code>, <code>}</code>, keyword)</li>
+<li><strong>Insertion</strong>: Insert expected tokens (e.g., missing closing brace)</li>
+<li><strong>Deletion</strong>: Skip unexpected tokens</li>
+<li><strong>Error nodes</strong>: Wrap invalid syntax in <code>ErrorNode</code> in the tree</li>
+</ul>
+<h3>4.3 Key Types</h3>
+<pre><code class="language-rust">pub enum Expr {
+    Literal(LiteralExpr),
+    Ident(IdentExpr),
+    Binary(BinaryExpr),
+    Unary(UnaryExpr),
+    Call(CallExpr),
+    Index(IndexExpr),
+    Member(MemberExpr),
+    If(IfExpr),
+    Match(MatchExpr),
+    Closure(ClosureExpr),
+    Block(BlockExpr),
+    Await(AwaitExpr),
+    // ...
+}
+
+pub enum Stmt {
+    Let(LetStmt),
+    Expr(ExprStmt),
+    Return(ReturnStmt),
+    For(ForStmt),
+    While(WhileStmt),
+    Loop(LoopStmt),
+    // ...
+}
+
+pub enum Item {
+    Function(FunctionItem),
+    Struct(StructItem),
+    Class(ClassItem),
+    Enum(EnumItem),
+    Trait(TraitItem),
+    Impl(ImplItem),
+    Use(UseItem),
+    Mod(ModItem),
+    // ...
+}
+</code></pre>
+<hr />
+<h2>5. Semantic Analysis (<code>flux_sema</code>)</h2>
+<h3>5.1 Name Resolution</h3>
+<ul>
+<li>Build a scope tree from the AST</li>
+<li>Resolve all identifiers to their declarations</li>
+<li>Handle imports (<code>use</code> declarations)</li>
+<li>Detect duplicate definitions and shadowing</li>
+<li>Build the symbol table</li>
+</ul>
+<h3>5.2 Symbol Table</h3>
+<pre><code class="language-rust">pub struct SymbolTable {
+    symbols: HashMap&lt;SymbolId, Symbol&gt;,
+    scopes: Vec&lt;Scope&gt;,
+}
+
+pub struct Symbol {
+    pub id: SymbolId,
+    pub name: String,
+    pub kind: SymbolKind,
+    pub visibility: Visibility,
+    pub span: Span,
+    pub type_id: Option&lt;TypeId&gt;,
+}
+
+pub enum SymbolKind {
+    Variable, Function, Struct, Class, Enum, Trait, 
+    TypeParam, Module, Constant, Field, Method, EnumVariant,
+}
+</code></pre>
+<hr />
+<h2>6. Type Checker (<code>flux_types</code>)</h2>
+<h3>6.1 Algorithm</h3>
+<ul>
+<li>Extended Hindley-Milner with trait bounds</li>
+<li>Bidirectional type inference (checking mode + synthesis mode)</li>
+<li>Constraint generation → constraint solving → substitution application</li>
+<li>Monomorphization tracking for generic instantiations</li>
+</ul>
+<h3>6.2 Key Operations</h3>
+<ul>
+<li><strong>Synthesis</strong>: Compute the type of an expression bottom-up</li>
+<li><strong>Checking</strong>: Verify an expression has an expected type top-down</li>
+<li><strong>Unification</strong>: Find a substitution that makes two types equal</li>
+<li><strong>Trait resolution</strong>: Determine which <code>impl</code> block satisfies a trait bound</li>
+<li><strong>Exhaustiveness checking</strong>: Verify <code>match</code> expressions cover all cases</li>
+</ul>
+<hr />
+<h2>7. Mid-Level IR (<code>flux_mir</code>)</h2>
+<h3>7.1 Design</h3>
+<p>MIR is a simplified, desugared representation of the program:
+- All control flow is explicit (no <code>for</code> loops — lowered to <code>loop</code> + iterator)
+- All pattern matching is lowered to decision trees
+- All method calls are resolved to concrete functions
+- All generics are monomorphized
+- Suitable for borrow checking and optimization</p>
+<h3>7.2 Borrow Checker</h3>
+<ul>
+<li>Track the liveness of each variable (when it is first used, last used)</li>
+<li>Track all borrows (shared and mutable)</li>
+<li>Verify borrowing rules at each program point</li>
+<li>Detect use-after-move errors</li>
+<li>Check lifetime constraints</li>
+</ul>
+<hr />
+<h2>8. Optimizer (<code>flux_optim</code>)</h2>
+<h3>8.1 MIR-Level Optimizations (before LLVM)</h3>
+<ul>
+<li>Constant folding and propagation</li>
+<li>Dead code elimination</li>
+<li>Inlining (small functions)</li>
+<li>Devirtualization (convert trait calls to direct calls when possible)</li>
+<li>Copy elision</li>
+<li>Unused allocation elimination</li>
+</ul>
+<h3>8.2 LLVM Optimization Passes</h3>
+<p>Flux delegates heavy optimization to LLVM:</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Flag</th>
+<th>Passes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><code>--opt-level 0</code></td>
+<td>No optimization (fastest compilation)</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>--opt-level 1</code></td>
+<td>Basic optimizations</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>--opt-level 2</code></td>
+<td>Most optimizations (default for release)</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>--opt-level 3</code></td>
+<td>Aggressive optimization (may increase binary size)</td>
+</tr>
+<tr>
+<td>s</td>
+<td><code>--opt-level s</code></td>
+<td>Optimize for size</td>
+</tr>
+<tr>
+<td>z</td>
+<td><code>--opt-level z</code></td>
+<td>Aggressively optimize for size</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>9. Code Generation (<code>flux_codegen</code>)</h2>
+<h3>9.1 LLVM IR Generation</h3>
+<ul>
+<li>Translate optimized MIR to LLVM IR</li>
+<li>Generate debug information (DWARF format)</li>
+<li>Handle ABI differences across targets</li>
+<li>Emit metadata for link-time optimization (LTO)</li>
+</ul>
+<h3>9.2 Target Support</h3>
+<pre><code class="language-rust">pub struct TargetSpec {
+    pub triple: String,        // e.g., &quot;x86_64-unknown-linux-gnu&quot;
+    pub arch: Architecture,
+    pub os: OperatingSystem,
+    pub abi: Abi,
+    pub pointer_width: u32,
+    pub endian: Endian,
+    pub features: Vec&lt;String&gt;, // CPU features (e.g., &quot;avx2&quot;, &quot;neon&quot;)
+}
+</code></pre>
+<hr />
+<h2>10. Diagnostics (<code>flux_diagnostics</code>)</h2>
+<h3>10.1 Error Message Philosophy</h3>
+<ul>
+<li>Every error message must explain <strong>what</strong> went wrong</li>
+<li>Every error message should suggest <strong>how</strong> to fix it</li>
+<li>Use color and formatting to highlight relevant code</li>
+<li>Show related code spans (e.g., where a variable was defined)</li>
+</ul>
+<h3>10.2 Diagnostic Structure</h3>
+<pre><code class="language-rust">pub struct Diagnostic {
+    pub severity: Severity,     // Error, Warning, Note, Help
+    pub message: String,
+    pub code: Option&lt;String&gt;,   // E0001, W0042, etc.
+    pub primary_span: Span,
+    pub labels: Vec&lt;Label&gt;,
+    pub suggestions: Vec&lt;Suggestion&gt;,
+    pub notes: Vec&lt;String&gt;,
+}
+</code></pre>
+<h3>10.3 Example Output</h3>
+<pre><code>error[E0382]: use of moved value: `name`
+  --&gt; src/main.flux:5:11
+  |
+3 |     let name = &quot;Alice&quot;
+  |         ---- move occurs because `name` has type `String`
+4 |     let greeting = name
+  |                    ---- value moved here
+5 |     print(name)
+  |           ^^^^ value used here after move
+  |
+help: consider cloning the value
+  |
+4 |     let greeting = name.clone()
+  |                        ++++++++
+</code></pre>
+<hr />
+<h2>11. Incremental Compilation</h2>
+<h3>11.1 Strategy</h3>
+<ul>
+<li>File-level granularity: only re-analyze changed files</li>
+<li>Dependency tracking: if <code>a.flux</code> imports from <code>b.flux</code>, changing <code>b.flux</code> triggers re-checking of <code>a.flux</code></li>
+<li>Content hashing: skip re-compilation if file content hash unchanged</li>
+<li>Query-based architecture: computation results are cached by query key</li>
+</ul>
+<h3>11.2 Cache Structure</h3>
+<pre><code>.flux-cache/
+├── dep-graph.bin       # Dependency graph
+├── queries/            # Cached query results
+├── incremental/        # Incremental compilation data
+│   ├── ast/            # Cached ASTs
+│   ├── types/          # Cached type information
+│   └── mir/            # Cached MIR
+└── artifacts/          # Compiled object files
+</code></pre>
+<hr />
+<h2>12. Parallel Compilation</h2>
+<h3>12.1 Parallelism Points</h3>
+<ul>
+<li><strong>File lexing/parsing</strong>: Each file can be lexed and parsed independently</li>
+<li><strong>Type checking</strong>: Independent modules can be type-checked in parallel</li>
+<li><strong>MIR lowering</strong>: Each function can be lowered independently</li>
+<li><strong>Code generation</strong>: Each function's LLVM IR can be generated independently</li>
+<li><strong>LLVM optimization</strong>: LLVM modules can be optimized in parallel</li>
+</ul>
+<h3>12.2 Thread Pool</h3>
+<p>Use a work-stealing thread pool (Rayon) for parallel compilation:
+- Default: number of available CPU cores
+- Configurable via <code>FLUX_THREADS</code> environment variable or <code>Flux.toml</code></p>
+<hr />
+<h2>13. Cross-Compilation</h2>
+<pre><code class="language-bash"># List available targets
+flux target list
+
+# Add a target
+flux target add aarch64-apple-darwin
+
+# Build for a specific target
+flux build --target aarch64-apple-darwin
+flux build --target wasm32-unknown-unknown
+flux build --target x86_64-pc-windows-msvc
+</code></pre>
+<h3>13.1 Target Triples</h3>
+<p>Format: <code>&lt;arch&gt;-&lt;vendor&gt;-&lt;os&gt;-&lt;abi&gt;</code></p>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>x86_64-unknown-linux-gnu</code></td>
+<td>Linux x64 (glibc)</td>
+</tr>
+<tr>
+<td><code>x86_64-unknown-linux-musl</code></td>
+<td>Linux x64 (musl, static)</td>
+</tr>
+<tr>
+<td><code>x86_64-apple-darwin</code></td>
+<td>macOS x64</td>
+</tr>
+<tr>
+<td><code>aarch64-apple-darwin</code></td>
+<td>macOS ARM64 (Apple Silicon)</td>
+</tr>
+<tr>
+<td><code>x86_64-pc-windows-msvc</code></td>
+<td>Windows x64</td>
+</tr>
+<tr>
+<td><code>aarch64-unknown-linux-gnu</code></td>
+<td>Linux ARM64</td>
+</tr>
+<tr>
+<td><code>aarch64-linux-android</code></td>
+<td>Android ARM64</td>
+</tr>
+<tr>
+<td><code>aarch64-apple-ios</code></td>
+<td>iOS ARM64</td>
+</tr>
+<tr>
+<td><code>wasm32-unknown-unknown</code></td>
+<td>WebAssembly</td>
+</tr>
+</tbody>
+</table>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

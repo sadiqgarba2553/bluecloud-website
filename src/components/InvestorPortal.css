@@ -1,0 +1,81 @@
+.inv-portal-container {
+  padding: var(--spacing-6) 0;
+}
+
+.inv-portal-header {
+  text-align: center;
+  margin-bottom: var(--spacing-6);
+}
+
+.inv-portal-header h1 {
+  font-size: 2.25rem;
+  margin-bottom: var(--spacing-2);
+}
+
+.inv-roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+}
+
+.inv-roadmap-card {
+  background-color: var(--white);
+  border: 1px solid var(--light-gray);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.inv-roadmap-phase {
+  display: inline-block;
+  background-color: var(--light-gray);
+  color: var(--primary-blue);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.inv-roadmap-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--deep-navy);
+  margin-bottom: 8px;
+}
+
+.inv-form-card {
+  background-color: var(--deep-navy);
+  color: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-5);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.inv-form-card h2 {
+  color: var(--white);
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-1);
+  text-align: center;
+}
+
+.inv-form-card input,
+.inv-form-card textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.3);
+  color: var(--white);
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.inv-form-card input:focus,
+.inv-form-card textarea:focus {
+  border-color: var(--cyan-accent);
+}

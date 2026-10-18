@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration Guide — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Migration Guide — From Other Languages to Flux</h1>
+<p>This guide helps developers coming from other languages transition to Flux by showing equivalent patterns side by side.</p>
+<hr />
+<h2>From Python to Flux</h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Python</th>
+<th>Flux</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Variable</td>
+<td><code>x = 42</code></td>
+<td><code>let x = 42</code></td>
+</tr>
+<tr>
+<td>Mutable variable</td>
+<td><code>x = 42; x = 43</code></td>
+<td><code>mut x = 42; x = 43</code></td>
+</tr>
+<tr>
+<td>Type annotation</td>
+<td><code>x: int = 42</code></td>
+<td><code>let x: Int = 42</code></td>
+</tr>
+<tr>
+<td>String format</td>
+<td><code>f"Hello {name}"</code></td>
+<td><code>"Hello {name}"</code></td>
+</tr>
+<tr>
+<td>Function</td>
+<td><code>def add(a, b): return a + b</code></td>
+<td><code>fn add(a: Int, b: Int) -&gt; Int { return a + b }</code></td>
+</tr>
+<tr>
+<td>List</td>
+<td><code>[1, 2, 3]</code></td>
+<td><code>[1, 2, 3]</code></td>
+</tr>
+<tr>
+<td>Dictionary</td>
+<td><code>{"a": 1}</code></td>
+<td><code>{"a": 1}</code></td>
+</tr>
+<tr>
+<td>For loop</td>
+<td><code>for i in range(10):</code></td>
+<td><code>for i in 0..10 {</code></td>
+</tr>
+<tr>
+<td>None check</td>
+<td><code>if x is None:</code></td>
+<td><code>if x is None {</code> or <code>match x { None -&gt; ... }</code></td>
+</tr>
+<tr>
+<td>Class</td>
+<td><code>class Foo:</code></td>
+<td><code>class Foo {</code> or <code>struct Foo {</code></td>
+</tr>
+<tr>
+<td>Import</td>
+<td><code>from os import path</code></td>
+<td><code>use flux.os.path</code></td>
+</tr>
+<tr>
+<td>Lambda</td>
+<td><code>lambda x: x * 2</code></td>
+<td><code>(x) =&gt; x * 2</code></td>
+</tr>
+<tr>
+<td>List comprehension</td>
+<td><code>[x*2 for x in items]</code></td>
+<td><code>items.map((x) =&gt; x * 2)</code></td>
+</tr>
+<tr>
+<td>Exception</td>
+<td><code>try: ... except:</code></td>
+<td><code>try { ... } catch { ... }</code></td>
+</tr>
+<tr>
+<td>Async</td>
+<td><code>async def f(): await g()</code></td>
+<td><code>async fn f() { await g() }</code></td>
+</tr>
+</tbody>
+</table>
+<h3>Key Differences</h3>
+<ul>
+<li>Flux is <strong>statically typed</strong> — types are checked at compile time</li>
+<li>Flux uses <strong>curly braces</strong> instead of indentation for blocks</li>
+<li>No <code>self</code> parameter in methods — use <code>self</code> keyword directly</li>
+<li>Flux variables are <strong>immutable by default</strong> — use <code>mut</code> for mutation</li>
+<li>Flux has no <code>None</code> by default — use <code>Option&lt;T&gt;</code> explicitly</li>
+</ul>
+<hr />
+<h2>From Rust to Flux</h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Rust</th>
+<th>Flux</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Variable</td>
+<td><code>let x = 42;</code></td>
+<td><code>let x = 42</code></td>
+</tr>
+<tr>
+<td>Mutable</td>
+<td><code>let mut x = 42;</code></td>
+<td><code>mut x = 42</code></td>
+</tr>
+<tr>
+<td>String format</td>
+<td><code>format!("Hello {name}")</code></td>
+<td><code>"Hello {name}"</code></td>
+</tr>
+<tr>
+<td>Function</td>
+<td><code>fn add(a: i32, b: i32) -&gt; i32 { a + b }</code></td>
+<td><code>fn add(a: Int, b: Int) -&gt; Int { return a + b }</code></td>
+</tr>
+<tr>
+<td>Struct</td>
+<td><code>struct Foo { x: i32 }</code></td>
+<td><code>struct Foo { x: Int }</code></td>
+</tr>
+<tr>
+<td>Enum</td>
+<td><code>enum Foo { A, B(i32) }</code></td>
+<td><code>enum Foo { A, B(Int) }</code></td>
+</tr>
+<tr>
+<td>Pattern match</td>
+<td><code>match x { ... }</code></td>
+<td><code>match x { ... }</code></td>
+</tr>
+<tr>
+<td>Error propagation</td>
+<td><code>file.read()?</code></td>
+<td><code>file.read()?</code></td>
+</tr>
+<tr>
+<td>Trait</td>
+<td><code>trait Foo { fn bar(&amp;self); }</code></td>
+<td><code>trait Foo { fn bar(self) }</code></td>
+</tr>
+<tr>
+<td>Impl</td>
+<td><code>impl Foo for Bar { ... }</code></td>
+<td><code>impl Foo for Bar { ... }</code></td>
+</tr>
+<tr>
+<td>Generic</td>
+<td><code>fn foo&lt;T: Clone&gt;(x: T)</code></td>
+<td><code>fn foo&lt;T: Clone&gt;(x: T)</code></td>
+</tr>
+<tr>
+<td>Closure</td>
+<td><code>\|x\| x * 2</code></td>
+<td><code>(x) =&gt; x * 2</code></td>
+</tr>
+<tr>
+<td>Semicolons</td>
+<td>Required</td>
+<td>Not used</td>
+</tr>
+<tr>
+<td>Implicit return</td>
+<td>Last expression</td>
+<td>Explicit <code>return</code> required</td>
+</tr>
+<tr>
+<td>Logical AND</td>
+<td><code>&amp;&amp;</code></td>
+<td><code>and</code></td>
+</tr>
+<tr>
+<td>Logical OR</td>
+<td><code>\|\|</code></td>
+<td><code>or</code></td>
+</tr>
+<tr>
+<td>Logical NOT</td>
+<td><code>!</code></td>
+<td><code>not</code></td>
+</tr>
+<tr>
+<td>String type</td>
+<td><code>String</code> / <code>&amp;str</code></td>
+<td><code>String</code> (unified)</td>
+</tr>
+<tr>
+<td>Integer types</td>
+<td><code>i32</code>, <code>u64</code>, etc.</td>
+<td><code>Int32</code>, <code>UInt64</code>, etc.</td>
+</tr>
+<tr>
+<td>Classes</td>
+<td>Not available</td>
+<td><code>class</code> keyword with inheritance</td>
+</tr>
+<tr>
+<td>ARC</td>
+<td><code>Rc&lt;T&gt;</code> / <code>Arc&lt;T&gt;</code> (manual)</td>
+<td>Automatic for classes</td>
+</tr>
+<tr>
+<td>Macros</td>
+<td><code>macro_rules!</code></td>
+<td><code>macro name!() { }</code></td>
+</tr>
+</tbody>
+</table>
+<h3>Key Differences</h3>
+<ul>
+<li>Flux uses <code>return</code> keyword explicitly (no implicit last-expression return in blocks)</li>
+<li>No semicolons in Flux</li>
+<li>English logical operators (<code>and</code>, <code>or</code>, <code>not</code>) instead of symbols</li>
+<li>Unified <code>String</code> type (no <code>&amp;str</code> vs <code>String</code> split)</li>
+<li>Classes with single inheritance (in addition to structs)</li>
+<li>ARC is automatic for class types</li>
+<li>Simpler lifetime elision — annotations rarely needed</li>
+</ul>
+<hr />
+<h2>From Go to Flux</h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Go</th>
+<th>Flux</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Variable</td>
+<td><code>x := 42</code></td>
+<td><code>let x = 42</code></td>
+</tr>
+<tr>
+<td>Typed variable</td>
+<td><code>var x int = 42</code></td>
+<td><code>let x: Int = 42</code></td>
+</tr>
+<tr>
+<td>Constant</td>
+<td><code>const x = 42</code></td>
+<td><code>const X = 42</code></td>
+</tr>
+<tr>
+<td>Function</td>
+<td><code>func add(a, b int) int { return a + b }</code></td>
+<td><code>fn add(a: Int, b: Int) -&gt; Int { return a + b }</code></td>
+</tr>
+<tr>
+<td>Struct</td>
+<td><code>type Foo struct { X int }</code></td>
+<td><code>struct Foo { x: Int }</code></td>
+</tr>
+<tr>
+<td>Method</td>
+<td><code>func (f Foo) Bar() {}</code></td>
+<td><code>impl Foo { fn bar(self) {} }</code></td>
+</tr>
+<tr>
+<td>Interface</td>
+<td><code>type Foo interface { Bar() }</code></td>
+<td><code>interface Foo { fn bar(self) }</code></td>
+</tr>
+<tr>
+<td>Error</td>
+<td><code>err error</code></td>
+<td><code>Result&lt;T, E&gt;</code></td>
+</tr>
+<tr>
+<td>Error check</td>
+<td><code>if err != nil { return err }</code></td>
+<td><code>value?</code> (or <code>match</code>)</td>
+</tr>
+<tr>
+<td>Nil</td>
+<td><code>nil</code></td>
+<td><code>none</code> / <code>Option&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td>Goroutine</td>
+<td><code>go func() {}()</code></td>
+<td><code>spawn async { }</code></td>
+</tr>
+<tr>
+<td>Channel</td>
+<td><code>ch := make(chan int)</code></td>
+<td><code>let (tx, rx) = Channel&lt;Int&gt;.bounded(10)</code></td>
+</tr>
+<tr>
+<td>Map</td>
+<td><code>map[string]int{}</code></td>
+<td><code>HashMap&lt;String, Int&gt;.new()</code></td>
+</tr>
+<tr>
+<td>Slice</td>
+<td><code>[]int{1, 2, 3}</code></td>
+<td><code>[1, 2, 3]</code></td>
+</tr>
+<tr>
+<td>For</td>
+<td><code>for i := 0; i &lt; 10; i++</code></td>
+<td><code>for i in 0..10 {</code></td>
+</tr>
+<tr>
+<td>Switch</td>
+<td><code>switch x { case 1: }</code></td>
+<td><code>match x { 1 -&gt; ... }</code></td>
+</tr>
+<tr>
+<td>Import</td>
+<td><code>import "fmt"</code></td>
+<td><code>use flux.io</code></td>
+</tr>
+<tr>
+<td>Public</td>
+<td>Capitalized name</td>
+<td><code>pub</code> keyword</td>
+</tr>
+<tr>
+<td>Package</td>
+<td><code>package main</code></td>
+<td>File/directory-based modules</td>
+</tr>
+</tbody>
+</table>
+<h3>Key Differences</h3>
+<ul>
+<li>Flux has <strong>generics</strong> with trait bounds (Go's are more limited)</li>
+<li>Flux has <strong>pattern matching</strong> with exhaustiveness checking</li>
+<li>Flux enforces <strong>null safety</strong> through <code>Option&lt;T&gt;</code> — no <code>nil</code> panics</li>
+<li>Error handling uses <code>Result&lt;T, E&gt;</code> instead of multi-return <code>(value, error)</code></li>
+<li>Flux uses <code>pub</code> keyword for visibility instead of capitalization</li>
+<li>Flux has classes with inheritance (Go relies on composition)</li>
+</ul>
+<hr />
+<h2>From TypeScript to Flux</h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>TypeScript</th>
+<th>Flux</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Variable</td>
+<td><code>const x = 42</code></td>
+<td><code>let x = 42</code></td>
+</tr>
+<tr>
+<td>Mutable</td>
+<td><code>let x = 42</code></td>
+<td><code>mut x = 42</code></td>
+</tr>
+<tr>
+<td>Function</td>
+<td><code>function add(a: number, b: number): number</code></td>
+<td><code>fn add(a: Int, b: Int) -&gt; Int</code></td>
+</tr>
+<tr>
+<td>Arrow function</td>
+<td><code>(x) =&gt; x * 2</code></td>
+<td><code>(x) =&gt; x * 2</code></td>
+</tr>
+<tr>
+<td>Interface</td>
+<td><code>interface Foo { bar(): void }</code></td>
+<td><code>interface Foo { fn bar(self) }</code></td>
+</tr>
+<tr>
+<td>Class</td>
+<td><code>class Foo { constructor() {} }</code></td>
+<td><code>class Foo { init() {} }</code></td>
+</tr>
+<tr>
+<td>Generic</td>
+<td><code>function foo&lt;T&gt;(x: T): T</code></td>
+<td><code>fn foo&lt;T&gt;(x: T) -&gt; T</code></td>
+</tr>
+<tr>
+<td>Optional</td>
+<td><code>x?: string</code></td>
+<td><code>x: String?</code> or <code>x: Option&lt;String&gt;</code></td>
+</tr>
+<tr>
+<td>Null check</td>
+<td><code>x ?? 'default'</code></td>
+<td><code>x ?? "default"</code></td>
+</tr>
+<tr>
+<td>Optional chain</td>
+<td><code>x?.y?.z</code></td>
+<td><code>x?.y?.z</code></td>
+</tr>
+<tr>
+<td>Template literal</td>
+<td><code>`Hello ${name}`</code></td>
+<td><code>"Hello {name}"</code></td>
+</tr>
+<tr>
+<td>Array</td>
+<td><code>[1, 2, 3]</code></td>
+<td><code>[1, 2, 3]</code></td>
+</tr>
+<tr>
+<td>Map</td>
+<td><code>new Map()</code></td>
+<td><code>HashMap.new()</code></td>
+</tr>
+<tr>
+<td>Enum</td>
+<td><code>enum Color { Red, Green }</code></td>
+<td><code>enum Color { Red, Green }</code></td>
+</tr>
+<tr>
+<td>Async/await</td>
+<td><code>async function f() { await g() }</code></td>
+<td><code>async fn f() { await g() }</code></td>
+</tr>
+<tr>
+<td>Import</td>
+<td><code>import { foo } from 'bar'</code></td>
+<td><code>use bar.foo</code></td>
+</tr>
+<tr>
+<td>Spread</td>
+<td><code>[...a, ...b]</code></td>
+<td><code>[...a, ...b]</code></td>
+</tr>
+<tr>
+<td>Destructuring</td>
+<td><code>const { x, y } = point</code></td>
+<td><code>let { x, y } = point</code></td>
+</tr>
+</tbody>
+</table>
+<h3>Key Differences</h3>
+<ul>
+<li>Flux <strong>compiles to native code</strong> — not transpiled to JavaScript</li>
+<li>Flux has <strong>ownership and borrowing</strong> for memory safety</li>
+<li>Flux has <strong>pattern matching</strong> with exhaustiveness</li>
+<li>No <code>null</code> or <code>undefined</code> — only <code>Option&lt;T&gt;</code></li>
+<li>Flux is much <strong>faster</strong> — native performance</li>
+<li>Flux types are <strong>sound</strong> — no <code>any</code> escape hatch (except opted-in)</li>
+</ul>
+<hr />
+<h2>From Swift to Flux</h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Swift</th>
+<th>Flux</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Variable</td>
+<td><code>let x = 42</code></td>
+<td><code>let x = 42</code></td>
+</tr>
+<tr>
+<td>Mutable</td>
+<td><code>var x = 42</code></td>
+<td><code>mut x = 42</code></td>
+</tr>
+<tr>
+<td>Function</td>
+<td><code>func add(_ a: Int, _ b: Int) -&gt; Int</code></td>
+<td><code>fn add(a: Int, b: Int) -&gt; Int</code></td>
+</tr>
+<tr>
+<td>Struct</td>
+<td><code>struct Foo { var x: Int }</code></td>
+<td><code>struct Foo { x: Int }</code></td>
+</tr>
+<tr>
+<td>Class</td>
+<td><code>class Foo { init() {} }</code></td>
+<td><code>class Foo { init() {} }</code></td>
+</tr>
+<tr>
+<td>Enum</td>
+<td><code>enum Foo { case bar(Int) }</code></td>
+<td><code>enum Foo { Bar(Int) }</code></td>
+</tr>
+<tr>
+<td>Protocol</td>
+<td><code>protocol Foo { func bar() }</code></td>
+<td><code>trait Foo { fn bar(self) }</code></td>
+</tr>
+<tr>
+<td>Optional</td>
+<td><code>var x: Int?</code></td>
+<td><code>let x: Int?</code> or <code>let x: Option&lt;Int&gt;</code></td>
+</tr>
+<tr>
+<td>Unwrap</td>
+<td><code>x!</code></td>
+<td><code>x.unwrap()</code></td>
+</tr>
+<tr>
+<td>Optional chaining</td>
+<td><code>x?.y</code></td>
+<td><code>x?.y</code></td>
+</tr>
+<tr>
+<td>Nil coalescing</td>
+<td><code>x ?? 0</code></td>
+<td><code>x ?? 0</code></td>
+</tr>
+<tr>
+<td>Guard</td>
+<td><code>guard let x = y else { return }</code></td>
+<td><code>if let Some(x) = y { } else { return }</code></td>
+</tr>
+<tr>
+<td>Switch</td>
+<td><code>switch x { case .a: break }</code></td>
+<td><code>match x { A -&gt; ... }</code></td>
+</tr>
+<tr>
+<td>String interp</td>
+<td><code>"\(name)"</code></td>
+<td><code>"{name}"</code></td>
+</tr>
+<tr>
+<td>Closure</td>
+<td><code>{ (x: Int) -&gt; Int in x * 2 }</code></td>
+<td><code>(x: Int) =&gt; x * 2</code></td>
+</tr>
+<tr>
+<td>async/await</td>
+<td><code>async { await f() }</code></td>
+<td><code>async { await f() }</code></td>
+</tr>
+</tbody>
+</table>
+<h3>Key Differences</h3>
+<ul>
+<li>Flux uses <code>fn</code> not <code>func</code></li>
+<li>Flux uses <code>mut</code> not <code>var</code></li>
+<li>Flux uses <code>trait</code> not <code>protocol</code></li>
+<li>Flux has <strong>ownership and borrowing</strong> in addition to ARC</li>
+<li>Flux uses <code>match</code> with <code>-&gt;</code> arrow (not <code>switch</code>/<code>case</code>)</li>
+<li>Flux has <code>{name}</code> interpolation (not <code>\(name)</code>)</li>
+</ul>
+<hr />
+<h2>From Kotlin to Flux</h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Kotlin</th>
+<th>Flux</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Variable</td>
+<td><code>val x = 42</code></td>
+<td><code>let x = 42</code></td>
+</tr>
+<tr>
+<td>Mutable</td>
+<td><code>var x = 42</code></td>
+<td><code>mut x = 42</code></td>
+</tr>
+<tr>
+<td>Function</td>
+<td><code>fun add(a: Int, b: Int): Int</code></td>
+<td><code>fn add(a: Int, b: Int) -&gt; Int</code></td>
+</tr>
+<tr>
+<td>Lambda</td>
+<td><code>{ x -&gt; x * 2 }</code></td>
+<td><code>(x) =&gt; x * 2</code></td>
+</tr>
+<tr>
+<td>Class</td>
+<td><code>class Foo(val x: Int)</code></td>
+<td><code>class Foo { x: Int; init(x: Int) { ... } }</code></td>
+</tr>
+<tr>
+<td>Data class</td>
+<td><code>data class Foo(val x: Int)</code></td>
+<td><code>#[derive(Debug, Eq, Clone)] struct Foo { x: Int }</code></td>
+</tr>
+<tr>
+<td>Sealed class</td>
+<td><code>sealed class Result</code></td>
+<td><code>enum Result { Ok(T), Err(E) }</code></td>
+</tr>
+<tr>
+<td>Null safety</td>
+<td><code>val x: Int? = null</code></td>
+<td><code>let x: Option&lt;Int&gt; = None</code></td>
+</tr>
+<tr>
+<td>Safe call</td>
+<td><code>x?.y</code></td>
+<td><code>x?.y</code></td>
+</tr>
+<tr>
+<td>Elvis</td>
+<td><code>x ?: 0</code></td>
+<td><code>x ?? 0</code></td>
+</tr>
+<tr>
+<td>When</td>
+<td><code>when(x) { 1 -&gt; ... }</code></td>
+<td><code>match x { 1 -&gt; ... }</code></td>
+</tr>
+<tr>
+<td>Coroutine</td>
+<td><code>suspend fun f() {}</code></td>
+<td><code>async fn f() {}</code></td>
+</tr>
+<tr>
+<td>Extension</td>
+<td><code>fun String.foo() {}</code></td>
+<td><code>extend String { fn foo(self) {} }</code></td>
+</tr>
+<tr>
+<td>String template</td>
+<td><code>"Hello $name"</code></td>
+<td><code>"Hello {name}"</code></td>
+</tr>
+<tr>
+<td>Companion</td>
+<td><code>companion object {}</code></td>
+<td>Static methods / module-level functions</td>
+</tr>
+</tbody>
+</table>
+<h3>Key Differences</h3>
+<ul>
+<li>Flux uses <code>fn</code> not <code>fun</code></li>
+<li>Flux compiles to <strong>native code</strong> (not JVM)</li>
+<li>Flux uses <code>Option&lt;T&gt;</code> instead of nullable types</li>
+<li>Flux has <strong>ownership and borrowing</strong> for memory safety</li>
+<li>Flux uses <code>match</code> (not <code>when</code>)</li>
+<li>No implicit <code>it</code> parameter in lambdas</li>
+</ul>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

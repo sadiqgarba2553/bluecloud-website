@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Features — Flux. Flux is a modern programming language. Simple like Python, fast like Rust. Built by BlueCloud Technologies.">
+    <meta name="keywords" content="Flux Features, Flux programming language, compiled language, software engineering">
+    <meta name="author" content="BlueCloud Technologies">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://bluecloudai.online/flux-website/features.html">
+
+    <title>Features — Flux</title>
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bluecloudai.online/flux-website/features.html">
+    <meta property="og:title" content="Features — Flux">
+    <meta property="og:description" content="Flux is a modern programming language. Simple like Python, fast like Rust.">
+    <meta property="og:image" content="https://bluecloudai.online/flux-website/assets/fluxlogo.png">
+    <meta property="og:site_name" content="Flux Programming Language">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Features — Flux">
+    <meta name="twitter:description" content="Flux is a modern programming language. Simple like Python, fast like Rust.">
+    <meta name="twitter:image" content="https://bluecloudai.online/flux-website/assets/fluxlogo.png">
+
+    <!-- JSON-LD Structured Data: SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Flux Programming Language",
+      "operatingSystem": "Linux, macOS, Windows",
+      "applicationCategory": "DeveloperApplication",
+      "description": "A modern, fast, and simple programming language built by BlueCloud Technologies.",
+      "url": "https://bluecloudai.online/flux-website/index.html",
+      "author": {
+        "@type": "Organization",
+        "name": "BlueCloud Technologies",
+        "url": "https://bluecloudai.online"
+      }
+    }
+    </script>
+
+    <link rel="icon" href="assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="index.html" class="nav-logo">
+            <img src="assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="examples.html">Examples</a></li>
+            <li><a href="features.html" class="active">Features</a></li>
+            <li><a href="roadmap.html">Roadmap</a></li>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+
+<section id="features" style="padding-top: 120px;">
+    <div class="container">
+        <div class="section-label">Features</div>
+        <h2 class="section-title">What's inside</h2>
+        <p class="section-desc">Flux ships with everything you need. No third-party packages required for the basics.</p>
+
+        <div class="features-grid">
+            <div class="feature">
+                <div class="feature-title">Interpreted by default</div>
+                <div class="feature-desc">Run scripts instantly with zero compilation. Like Python, but with static types.</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">Native compilation</div>
+                <div class="feature-desc">Compile to machine code via LLVM when you need performance. Same code, two modes.</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">System builtins</div>
+                <div class="feature-desc">CPU info, memory stats, disk usage, process count â€” built into the language, not a library.</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">Structs + field access</div>
+                <div class="feature-desc">Define data structures and access fields with dot notation. Clean and predictable.</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">String operations</div>
+                <div class="feature-desc">String literals, concatenation with +, automatic type conversion with str().</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">Scoped variables</div>
+                <div class="feature-desc">Lexical scoping with proper shadowing. Variables are resolved innermost-first.</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">HTTP server</div>
+                <div class="feature-desc">Native POSIX HTTP server compiled directly to LLVM IR. No dependencies.</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">Pattern matching</div>
+                <div class="feature-desc">Match expressions with exhaustiveness checking. Enums and algebraic types.</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">LSP support</div>
+                <div class="feature-desc">Language server protocol for editor integration. Autocomplete and diagnostics.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="comparison">
+    <div class="container">
+        <div class="section-label">Comparison</div>
+        <h2 class="section-title">How it compares</h2>
+        <p class="section-desc">An honest look at how Flux stacks up today.</p>
+
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Python</th>
+                    <th>Go</th>
+                    <th>Rust</th>
+                    <th>Flux</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Hello world</td>
+                    <td>print("hi")</td>
+                    <td>fmt.Println</td>
+                    <td>println! macro</td>
+                    <td>print("hi")</td>
+                </tr>
+                <tr>
+                    <td>Run a script</td>
+                    <td>python f.py</td>
+                    <td>go run f.go</td>
+                    <td>cargo run</td>
+                    <td>flux f.flux</td>
+                </tr>
+                <tr>
+                    <td>Semicolons</td>
+                    <td>No</td>
+                    <td>No (auto)</td>
+                    <td>Yes</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td>Type system</td>
+                    <td>Dynamic</td>
+                    <td>Static</td>
+                    <td>Static</td>
+                    <td>Static</td>
+                </tr>
+                <tr>
+                    <td>System info</td>
+                    <td>import psutil</td>
+                    <td>os package</td>
+                    <td>sysinfo crate</td>
+                    <td>Built-in</td>
+                </tr>
+                <tr>
+                    <td>Compilation</td>
+                    <td>Interpreted</td>
+                    <td>Compiled</td>
+                    <td>Compiled</td>
+                    <td>Both</td>
+                </tr>
+                <tr>
+                    <td>Learning curve</td>
+                    <td>Low</td>
+                    <td>Low-Medium</td>
+                    <td>High</td>
+                    <td>Low</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language Â· MIT License Â· 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="docs.html">Documentation</a></li>
+                <li><a href="about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
+

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ide Support — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux IDE Support</h1>
+<hr />
+<h2>1. Overview</h2>
+<p>Flux provides first-class IDE support through the Language Server Protocol (LSP) and Debug Adapter Protocol (DAP). Official extensions are provided for VS Code and JetBrains IDEs.</p>
+<hr />
+<h2>2. Language Server (<code>flux-lsp</code>)</h2>
+<h3>2.1 Architecture</h3>
+<pre><code>IDE (VS Code / JetBrains / Neovim / etc.)
+    │
+    │  LSP Protocol (JSON-RPC over stdio/TCP)
+    ▼
+flux-lsp (Language Server)
+    │
+    ├── Lexer + Parser (incremental)
+    ├── Semantic Analysis (incremental)
+    ├── Type Checker (incremental)
+    └── Query Engine (cached)
+</code></pre>
+<h3>2.2 Supported LSP Features</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Diagnostics</strong></td>
+<td><code>textDocument/publishDiagnostics</code></td>
+<td>Real-time error/warning reporting</td>
+</tr>
+<tr>
+<td><strong>Completion</strong></td>
+<td><code>textDocument/completion</code></td>
+<td>Context-aware autocomplete</td>
+</tr>
+<tr>
+<td><strong>Hover</strong></td>
+<td><code>textDocument/hover</code></td>
+<td>Type info and docs on hover</td>
+</tr>
+<tr>
+<td><strong>Go to Definition</strong></td>
+<td><code>textDocument/definition</code></td>
+<td>Jump to symbol definition</td>
+</tr>
+<tr>
+<td><strong>Find References</strong></td>
+<td><code>textDocument/references</code></td>
+<td>Find all usages of a symbol</td>
+</tr>
+<tr>
+<td><strong>Rename</strong></td>
+<td><code>textDocument/rename</code></td>
+<td>Rename a symbol across files</td>
+</tr>
+<tr>
+<td><strong>Code Actions</strong></td>
+<td><code>textDocument/codeAction</code></td>
+<td>Quick fixes and refactorings</td>
+</tr>
+<tr>
+<td><strong>Formatting</strong></td>
+<td><code>textDocument/formatting</code></td>
+<td>Format document</td>
+</tr>
+<tr>
+<td><strong>Signature Help</strong></td>
+<td><code>textDocument/signatureHelp</code></td>
+<td>Function parameter hints</td>
+</tr>
+<tr>
+<td><strong>Document Symbols</strong></td>
+<td><code>textDocument/documentSymbol</code></td>
+<td>Outline view</td>
+</tr>
+<tr>
+<td><strong>Workspace Symbols</strong></td>
+<td><code>workspace/symbol</code></td>
+<td>Search symbols across project</td>
+</tr>
+<tr>
+<td><strong>Semantic Tokens</strong></td>
+<td><code>textDocument/semanticTokens</code></td>
+<td>Rich syntax highlighting</td>
+</tr>
+<tr>
+<td><strong>Inlay Hints</strong></td>
+<td><code>textDocument/inlayHint</code></td>
+<td>Inline type annotations</td>
+</tr>
+<tr>
+<td><strong>Folding Ranges</strong></td>
+<td><code>textDocument/foldingRange</code></td>
+<td>Code folding</td>
+</tr>
+<tr>
+<td><strong>Call Hierarchy</strong></td>
+<td><code>callHierarchy/incomingCalls</code></td>
+<td>Incoming/outgoing calls</td>
+</tr>
+<tr>
+<td><strong>Type Hierarchy</strong></td>
+<td><code>typeHierarchy/subtypes</code></td>
+<td>Type inheritance hierarchy</td>
+</tr>
+</tbody>
+</table>
+<h3>2.3 Completion Capabilities</h3>
+<p>The completion engine provides:</p>
+<ul>
+<li><strong>Keyword completion</strong>: Context-appropriate keywords</li>
+<li><strong>Type completion</strong>: Available types from imports and current scope</li>
+<li><strong>Method completion</strong>: Methods available on the current type</li>
+<li><strong>Field completion</strong>: Fields of structs/classes</li>
+<li><strong>Import completion</strong>: Available modules and packages</li>
+<li><strong>Snippet completion</strong>: Common code patterns</li>
+<li><strong>Postfix completion</strong>: <code>.if</code>, <code>.match</code>, <code>.let</code> on expressions</li>
+</ul>
+<pre><code>user.    →  .name, .email, .age, .greet(), .is_adult()
+items.fi →  .filter(), .find(), .first()
+Result.  →  .Ok(), .Err(), .is_ok(), .is_err()
+</code></pre>
+<h3>2.4 Code Actions</h3>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Trigger</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Import missing symbol</strong></td>
+<td>Unresolved identifier</td>
+</tr>
+<tr>
+<td><strong>Implement trait methods</strong></td>
+<td>Incomplete <code>impl</code> block</td>
+</tr>
+<tr>
+<td><strong>Generate match arms</strong></td>
+<td>Incomplete <code>match</code> expression</td>
+</tr>
+<tr>
+<td><strong>Convert to if-let</strong></td>
+<td><code>match</code> with two arms</td>
+</tr>
+<tr>
+<td><strong>Add type annotation</strong></td>
+<td>Variable without explicit type</td>
+</tr>
+<tr>
+<td><strong>Extract function</strong></td>
+<td>Selected code block</td>
+</tr>
+<tr>
+<td><strong>Extract variable</strong></td>
+<td>Selected expression</td>
+</tr>
+<tr>
+<td><strong>Inline variable</strong></td>
+<td>Variable used only once</td>
+</tr>
+<tr>
+<td><strong>Add missing fields</strong></td>
+<td>Struct literal with missing fields</td>
+</tr>
+<tr>
+<td><strong>Remove unused import</strong></td>
+<td>Unused <code>use</code> declaration</td>
+</tr>
+<tr>
+<td><strong>Fix borrow issues</strong></td>
+<td>Suggest <code>&amp;</code>, <code>clone()</code>, etc.</td>
+</tr>
+</tbody>
+</table>
+<h3>2.5 Inlay Hints</h3>
+<pre><code class="language-flux">let x/* : Int */ = 42
+let name/* : String */ = get_user_name()
+let items/* : List&lt;User&gt; */ = fetch_users()
+
+// Function parameter names
+greet(/* name: */ &quot;Alice&quot;, /* greeting: */ &quot;Hi&quot;)
+</code></pre>
+<hr />
+<h2>3. Debug Adapter (<code>flux-dap</code>)</h2>
+<h3>3.1 Supported DAP Features</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Breakpoints</strong></td>
+<td>Line, conditional, function, and exception breakpoints</td>
+</tr>
+<tr>
+<td><strong>Step execution</strong></td>
+<td>Step over, step into, step out</td>
+</tr>
+<tr>
+<td><strong>Variable inspection</strong></td>
+<td>View local, global, and closure variables</td>
+</tr>
+<tr>
+<td><strong>Watch expressions</strong></td>
+<td>Evaluate expressions during debugging</td>
+</tr>
+<tr>
+<td><strong>Call stack</strong></td>
+<td>Full call stack with source locations</td>
+</tr>
+<tr>
+<td><strong>Threads</strong></td>
+<td>Multi-threaded debugging</td>
+</tr>
+<tr>
+<td><strong>Evaluate</strong></td>
+<td>REPL-style expression evaluation</td>
+</tr>
+<tr>
+<td><strong>Hot reload</strong></td>
+<td>(Future) — reload code without restarting</td>
+</tr>
+</tbody>
+</table>
+<h3>3.2 Debug Configuration</h3>
+<pre><code class="language-json">// .vscode/launch.json
+{
+    &quot;version&quot;: &quot;0.2.0&quot;,
+    &quot;configurations&quot;: [
+        {
+            &quot;type&quot;: &quot;flux&quot;,
+            &quot;request&quot;: &quot;launch&quot;,
+            &quot;name&quot;: &quot;Debug&quot;,
+            &quot;program&quot;: &quot;${workspaceFolder}/src/main.flux&quot;,
+            &quot;args&quot;: [],
+            &quot;cwd&quot;: &quot;${workspaceFolder}&quot;,
+            &quot;env&quot;: {}
+        },
+        {
+            &quot;type&quot;: &quot;flux&quot;,
+            &quot;request&quot;: &quot;launch&quot;,
+            &quot;name&quot;: &quot;Debug Tests&quot;,
+            &quot;program&quot;: &quot;${workspaceFolder}&quot;,
+            &quot;args&quot;: [&quot;test&quot;],
+            &quot;cwd&quot;: &quot;${workspaceFolder}&quot;
+        }
+    ]
+}
+</code></pre>
+<hr />
+<h2>4. VS Code Extension</h2>
+<h3>4.1 Extension ID</h3>
+<p><code>flux-lang.flux</code></p>
+<h3>4.2 Features</h3>
+<ul>
+<li>Syntax highlighting (TextMate grammar + semantic tokens)</li>
+<li>Full LSP integration</li>
+<li>Integrated debugger (DAP)</li>
+<li>Test explorer integration</li>
+<li>Task provider (<code>flux build</code>, <code>flux test</code>, <code>flux run</code>)</li>
+<li>Problem matcher for compiler output</li>
+<li>Snippets for common patterns</li>
+<li>Status bar (compiler version, target, errors/warnings count)</li>
+</ul>
+<h3>4.3 TextMate Grammar Scopes</h3>
+<table>
+<thead>
+<tr>
+<th>Scope</th>
+<th>Elements</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>keyword.control.flux</code></td>
+<td><code>if</code>, <code>else</code>, <code>match</code>, <code>for</code>, <code>while</code>, <code>loop</code>, <code>return</code></td>
+</tr>
+<tr>
+<td><code>keyword.declaration.flux</code></td>
+<td><code>fn</code>, <code>let</code>, <code>mut</code>, <code>const</code>, <code>struct</code>, <code>class</code>, <code>enum</code>, <code>trait</code></td>
+</tr>
+<tr>
+<td><code>keyword.operator.flux</code></td>
+<td><code>and</code>, <code>or</code>, <code>not</code>, <code>is</code>, <code>as</code>, <code>in</code></td>
+</tr>
+<tr>
+<td><code>entity.name.function.flux</code></td>
+<td>Function names</td>
+</tr>
+<tr>
+<td><code>entity.name.type.flux</code></td>
+<td>Type names</td>
+</tr>
+<tr>
+<td><code>variable.other.flux</code></td>
+<td>Variable names</td>
+</tr>
+<tr>
+<td><code>constant.numeric.flux</code></td>
+<td>Numeric literals</td>
+</tr>
+<tr>
+<td><code>string.quoted.double.flux</code></td>
+<td>String literals</td>
+</tr>
+<tr>
+<td><code>comment.line.flux</code></td>
+<td><code>//</code> comments</td>
+</tr>
+<tr>
+<td><code>comment.block.flux</code></td>
+<td><code>/* */</code> comments</td>
+</tr>
+<tr>
+<td><code>comment.documentation.flux</code></td>
+<td><code>///</code> doc comments</td>
+</tr>
+</tbody>
+</table>
+<h3>4.4 Snippets</h3>
+<table>
+<thead>
+<tr>
+<th>Prefix</th>
+<th>Expansion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fn</code></td>
+<td>Function declaration</td>
+</tr>
+<tr>
+<td><code>struct</code></td>
+<td>Struct declaration</td>
+</tr>
+<tr>
+<td><code>impl</code></td>
+<td>Implementation block</td>
+</tr>
+<tr>
+<td><code>match</code></td>
+<td>Match expression</td>
+</tr>
+<tr>
+<td><code>if let</code></td>
+<td>If-let unwrapping</td>
+</tr>
+<tr>
+<td><code>for</code></td>
+<td>For loop</td>
+</tr>
+<tr>
+<td><code>test</code></td>
+<td>Test function</td>
+</tr>
+<tr>
+<td><code>enum</code></td>
+<td>Enum declaration</td>
+</tr>
+<tr>
+<td><code>trait</code></td>
+<td>Trait declaration</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>5. JetBrains Plugin</h2>
+<h3>5.1 Plugin ID</h3>
+<p><code>com.flux-lang.flux</code></p>
+<h3>5.2 Features</h3>
+<ul>
+<li>PSI-based parser for syntax analysis</li>
+<li>Full LSP integration as backend</li>
+<li>Run configurations (build, run, test)</li>
+<li>Integrated debugger</li>
+<li>Code structure view</li>
+<li>Refactoring support</li>
+<li>Inspections and quick-fixes</li>
+<li>Flux REPL tool window</li>
+<li>New Flux project wizard</li>
+</ul>
+<h3>5.3 Supported IDEs</h3>
+<ul>
+<li>IntelliJ IDEA (Community and Ultimate)</li>
+<li>CLion</li>
+<li>WebStorm</li>
+<li>All JetBrains IDEs (via plugin)</li>
+</ul>
+<hr />
+<h2>6. Syntax Highlighting</h2>
+<h3>6.1 Token Types</h3>
+<table>
+<thead>
+<tr>
+<th>Token Type</th>
+<th>Color (Dark Theme)</th>
+<th>Elements</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Keyword</td>
+<td><code>#C678DD</code> (purple)</td>
+<td><code>fn</code>, <code>let</code>, <code>struct</code>, <code>if</code>, etc.</td>
+</tr>
+<tr>
+<td>Type</td>
+<td><code>#E5C07B</code> (yellow)</td>
+<td><code>Int</code>, <code>String</code>, <code>Option</code>, etc.</td>
+</tr>
+<tr>
+<td>Function</td>
+<td><code>#61AFEF</code> (blue)</td>
+<td>Function names</td>
+</tr>
+<tr>
+<td>Variable</td>
+<td><code>#ABB2BF</code> (white)</td>
+<td>Variable names</td>
+</tr>
+<tr>
+<td>Parameter</td>
+<td><code>#E06C75</code> (red)</td>
+<td>Function parameters</td>
+</tr>
+<tr>
+<td>String</td>
+<td><code>#98C379</code> (green)</td>
+<td>String literals</td>
+</tr>
+<tr>
+<td>Number</td>
+<td><code>#D19A66</code> (orange)</td>
+<td>Numeric literals</td>
+</tr>
+<tr>
+<td>Comment</td>
+<td><code>#5C6370</code> (gray)</td>
+<td>All comments</td>
+</tr>
+<tr>
+<td>Operator</td>
+<td><code>#56B6C2</code> (cyan)</td>
+<td>Operators</td>
+</tr>
+<tr>
+<td>Attribute</td>
+<td><code>#C678DD</code> (purple)</td>
+<td><code>#[...]</code> attributes</td>
+</tr>
+<tr>
+<td>Lifetime</td>
+<td><code>#E06C75</code> (red italic)</td>
+<td><code>'a</code>, <code>'static</code></td>
+</tr>
+<tr>
+<td>Macro</td>
+<td><code>#61AFEF</code> (blue bold)</td>
+<td>Macro invocations</td>
+</tr>
+<tr>
+<td>Enum variant</td>
+<td><code>#E5C07B</code> (yellow)</td>
+<td>Enum variants</td>
+</tr>
+<tr>
+<td>Trait</td>
+<td><code>#E5C07B</code> (yellow italic)</td>
+<td>Trait names</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>7. Configuration Files</h2>
+<h3>7.1 LSP Settings</h3>
+<pre><code class="language-json">// .vscode/settings.json
+{
+    &quot;flux.server.path&quot;: &quot;flux-lsp&quot;,
+    &quot;flux.inlayHints.typeHints&quot;: true,
+    &quot;flux.inlayHints.parameterHints&quot;: true,
+    &quot;flux.inlayHints.chainingHints&quot;: false,
+    &quot;flux.checkOnSave&quot;: true,
+    &quot;flux.formatOnSave&quot;: true,
+    &quot;flux.lintOnSave&quot;: true,
+    &quot;flux.target&quot;: &quot;x86_64-unknown-linux-gnu&quot;,
+    &quot;flux.features&quot;: [&quot;json&quot;, &quot;yaml&quot;],
+    &quot;flux.diagnostics.disabled&quot;: [],
+    &quot;flux.completion.postfix&quot;: true,
+    &quot;flux.completion.snippets&quot;: true
+}
+</code></pre>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ai Framework — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux AI Framework</h1>
+<hr />
+<h2>1. Overview</h2>
+<p>Flux includes a built-in AI/ML framework for tensor computation, neural networks, inference, and integration with existing ML ecosystems (PyTorch, TensorFlow, ONNX).</p>
+<hr />
+<h2>2. Tensor API</h2>
+<h3>2.1 Creating Tensors</h3>
+<pre><code class="language-flux">use flux.ai.{Tensor, Device}
+
+// From data
+let t = Tensor.from([1.0, 2.0, 3.0, 4.0])
+let matrix = Tensor.from([[1.0, 2.0], [3.0, 4.0]])
+
+// Zeros and ones
+let zeros = Tensor.zeros([3, 4])
+let ones = Tensor.ones([2, 2])
+
+// Random
+let random = Tensor.randn([32, 784])  // Normal distribution
+let uniform = Tensor.rand([10, 10])   // Uniform [0, 1)
+
+// On GPU
+let gpu_tensor = Tensor.zeros([1024, 1024]).to(Device.CUDA(0))
+</code></pre>
+<h3>2.2 Operations</h3>
+<pre><code class="language-flux">let a = Tensor.from([[1.0, 2.0], [3.0, 4.0]])
+let b = Tensor.from([[5.0, 6.0], [7.0, 8.0]])
+
+// Arithmetic
+let sum = a + b
+let product = a * b        // Element-wise
+let matmul = a.matmul(b)   // Matrix multiplication
+
+// Reduction
+let total = a.sum()
+let mean = a.mean()
+let max_val = a.max()
+
+// Reshaping
+let flat = a.reshape([4])
+let expanded = a.unsqueeze(0)  // Add batch dimension
+
+// Slicing
+let row = matrix[0]            // First row
+let col = matrix[:, 0]        // First column
+let sub = matrix[0..2, 1..3]  // Submatrix
+</code></pre>
+<h3>2.3 Automatic Differentiation</h3>
+<pre><code class="language-flux">use flux.ai.autograd
+
+let x = Tensor.from([2.0]).requires_grad()
+let y = x * x + 3 * x + 1    // y = x² + 3x + 1
+
+y.backward()                   // Compute gradients
+print(x.grad)                 // dy/dx = 2x + 3 = 7.0
+</code></pre>
+<hr />
+<h2>3. Neural Networks</h2>
+<h3>3.1 Defining Models</h3>
+<pre><code class="language-flux">use flux.ai.nn.*
+
+struct MLP: Module {
+    fc1: Linear
+    fc2: Linear
+    fc3: Linear
+
+    fn new(input_size: Int, hidden_size: Int, output_size: Int) -&gt; MLP {
+        return MLP {
+            fc1: Linear.new(input_size, hidden_size)
+            fc2: Linear.new(hidden_size, hidden_size)
+            fc3: Linear.new(hidden_size, output_size)
+        }
+    }
+
+    fn forward(self, x: Tensor) -&gt; Tensor {
+        let h1 = self.fc1.forward(x).relu()
+        let h2 = self.fc2.forward(h1).relu()
+        return self.fc3.forward(h2)
+    }
+}
+</code></pre>
+<h3>3.2 Common Layers</h3>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Linear(in, out)</code></td>
+<td>Fully connected layer</td>
+</tr>
+<tr>
+<td><code>Conv2d(in_ch, out_ch, kernel)</code></td>
+<td>2D convolution</td>
+</tr>
+<tr>
+<td><code>BatchNorm(features)</code></td>
+<td>Batch normalization</td>
+</tr>
+<tr>
+<td><code>Dropout(rate)</code></td>
+<td>Dropout regularization</td>
+</tr>
+<tr>
+<td><code>LSTM(input, hidden)</code></td>
+<td>LSTM recurrent layer</td>
+</tr>
+<tr>
+<td><code>TransformerEncoder(d_model, nhead)</code></td>
+<td>Transformer encoder</td>
+</tr>
+<tr>
+<td><code>Embedding(vocab, dim)</code></td>
+<td>Embedding layer</td>
+</tr>
+<tr>
+<td><code>LayerNorm(features)</code></td>
+<td>Layer normalization</td>
+</tr>
+</tbody>
+</table>
+<h3>3.3 Training Loop</h3>
+<pre><code class="language-flux">use flux.ai.{nn, optim, data}
+
+fn train(model: &amp;mut MLP, dataset: Dataset, epochs: Int) {
+    let optimizer = optim.Adam.new(model.parameters(), lr: 0.001)
+    let loss_fn = nn.CrossEntropyLoss.new()
+
+    for epoch in 0..epochs {
+        mut total_loss = 0.0
+        mut batches = 0
+
+        for (inputs, targets) in dataset.batches(batch_size: 32) {
+            // Forward pass
+            let predictions = model.forward(inputs)
+            let loss = loss_fn.compute(predictions, targets)
+
+            // Backward pass
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+            total_loss += loss.item()
+            batches += 1
+        }
+
+        let avg_loss = total_loss / batches as Float64
+        print(&quot;Epoch {epoch + 1}/{epochs} — Loss: {avg_loss:.4}&quot;)
+    }
+}
+</code></pre>
+<hr />
+<h2>4. Model Loading</h2>
+<h3>4.1 ONNX Runtime</h3>
+<pre><code class="language-flux">use flux.ai.onnx
+
+let model = onnx.load(&quot;model.onnx&quot;)
+
+let input = Tensor.randn([1, 3, 224, 224])
+let output = model.run({&quot;input&quot;: input})
+
+let predictions = output[&quot;output&quot;]
+let class_id = predictions.argmax()
+print(&quot;Predicted class: {class_id}&quot;)
+</code></pre>
+<h3>4.2 PyTorch Models</h3>
+<pre><code class="language-flux">use flux.ai.torch_interop
+
+let model = torch_interop.load(&quot;model.pt&quot;)
+let output = model.forward(input_tensor)
+</code></pre>
+<h3>4.3 TensorFlow Models</h3>
+<pre><code class="language-flux">use flux.ai.tf_interop
+
+let model = tf_interop.load_saved_model(&quot;saved_model/&quot;)
+let output = model.predict(input_tensor)
+</code></pre>
+<hr />
+<h2>5. GPU Acceleration</h2>
+<pre><code class="language-flux">use flux.ai.{Device, Tensor}
+
+// Check GPU availability
+if Device.cuda_available() {
+    print(&quot;CUDA GPUs: {Device.cuda_count()}&quot;)
+}
+
+if Device.metal_available() {
+    print(&quot;Metal GPU available&quot;)
+}
+
+// Move model to GPU
+let device = Device.CUDA(0)
+let model = MLP.new(784, 256, 10).to(device)
+
+// Data on GPU
+let input = Tensor.randn([32, 784]).to(device)
+let output = model.forward(input)
+</code></pre>
+<h3>5.1 Supported Backends</h3>
+<table>
+<thead>
+<tr>
+<th>Backend</th>
+<th>Platforms</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CUDA</td>
+<td>NVIDIA GPUs</td>
+<td>Training and inference</td>
+</tr>
+<tr>
+<td>Metal</td>
+<td>Apple GPUs</td>
+<td>macOS/iOS inference</td>
+</tr>
+<tr>
+<td>Vulkan Compute</td>
+<td>Cross-platform</td>
+<td>General GPU compute</td>
+</tr>
+<tr>
+<td>CPU (BLAS)</td>
+<td>All</td>
+<td>Fallback, small models</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>6. LLM Inference</h2>
+<pre><code class="language-flux">use flux.ai.llm
+
+// Load a language model
+let model = llm.load(&quot;models/llama-7b.gguf&quot;, config: LlmConfig {
+    context_length: 4096
+    gpu_layers: 32
+    threads: 8
+})
+
+// Generate text
+let response = model.generate(&quot;What is Flux?&quot;, config: GenerateConfig {
+    max_tokens: 256
+    temperature: 0.7
+    top_p: 0.9
+})
+
+print(response.text)
+
+// Streaming generation
+for token in model.stream(&quot;Explain quantum computing&quot;) {
+    print(token, end: &quot;&quot;)
+}
+
+// Chat interface
+let chat = model.chat()
+chat.system(&quot;You are a helpful assistant.&quot;)
+let reply = chat.user(&quot;What is the capital of France?&quot;)
+print(reply)
+</code></pre>
+<hr />
+<h2>7. Embeddings</h2>
+<pre><code class="language-flux">use flux.ai.embeddings
+
+let model = embeddings.load(&quot;all-MiniLM-L6-v2&quot;)
+
+// Generate embeddings
+let embedding = model.encode(&quot;Hello, World!&quot;)
+print(&quot;Dimension: {embedding.shape}&quot;)  // [384]
+
+// Batch encoding
+let texts = [&quot;Hello&quot;, &quot;World&quot;, &quot;Flux is awesome&quot;]
+let embeddings = model.encode_batch(texts)
+
+// Similarity
+let similarity = embeddings.cosine_similarity(embeddings[0], embeddings[2])
+print(&quot;Similarity: {similarity}&quot;)
+</code></pre>
+<hr />
+<h2>8. Computer Vision</h2>
+<pre><code class="language-flux">use flux.ai.vision
+
+// Image classification
+let classifier = vision.ImageClassifier.load(&quot;resnet50&quot;)
+let image = vision.load_image(&quot;photo.jpg&quot;)
+let predictions = classifier.predict(image, top_k: 5)
+
+for (label, confidence) in predictions {
+    print(&quot;{label}: {confidence:.2%}&quot;)
+}
+
+// Object detection
+let detector = vision.ObjectDetector.load(&quot;yolov8&quot;)
+let detections = detector.detect(image, threshold: 0.5)
+
+for det in detections {
+    print(&quot;{det.label} ({det.confidence:.2%}) at [{det.x}, {det.y}, {det.w}, {det.h}]&quot;)
+}
+</code></pre>
+<hr />
+<h2>9. Speech</h2>
+<pre><code class="language-flux">use flux.ai.speech
+
+// Speech recognition
+let recognizer = speech.Recognizer.load(&quot;whisper-base&quot;)
+let transcript = recognizer.transcribe(&quot;audio.wav&quot;)
+print(&quot;Transcript: {transcript.text}&quot;)
+
+// Text to speech
+let synthesizer = speech.Synthesizer.load(&quot;tts-model&quot;)
+let audio = synthesizer.speak(&quot;Hello from Flux!&quot;)
+audio.save(&quot;output.wav&quot;)
+</code></pre>
+<hr />
+<h2>10. Data Processing</h2>
+<pre><code class="language-flux">use flux.ai.data
+
+// Dataset
+let dataset = data.ImageFolder(&quot;data/train/&quot;, transform: data.Compose([
+    data.Resize(256, 256),
+    data.CenterCrop(224, 224),
+    data.Normalize(mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225]),
+    data.ToTensor(),
+]))
+
+// DataLoader
+let loader = data.DataLoader.new(dataset, batch_size: 32, shuffle: true, num_workers: 4)
+
+for (images, labels) in loader {
+    let output = model.forward(images)
+    // ...
+}
+
+// CSV Dataset
+let tabular = data.CsvDataset.load(&quot;data.csv&quot;, target_column: &quot;price&quot;)
+let (train, test) = tabular.split(ratio: 0.8)
+</code></pre>
+<hr />
+<h2>11. Model Saving and Deployment</h2>
+<pre><code class="language-flux">// Save model
+model.save(&quot;model.flux-model&quot;)
+
+// Load model
+let loaded = MLP.load(&quot;model.flux-model&quot;)
+
+// Export to ONNX
+model.export_onnx(&quot;model.onnx&quot;, sample_input: Tensor.randn([1, 784]))
+
+// Serve model as API
+use flux.ai.serving
+
+let server = serving.ModelServer.new(model, port: 8080)
+server.start()
+// POST /predict with JSON body → returns predictions
+</code></pre>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

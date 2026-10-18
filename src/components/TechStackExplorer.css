@@ -1,0 +1,89 @@
+.tech-explorer-container {
+  margin-top: var(--spacing-6);
+  padding: var(--spacing-5);
+  background-color: var(--white);
+  border: 1px solid var(--light-gray);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.tech-explorer-header {
+  text-align: center;
+  margin-bottom: var(--spacing-4);
+}
+
+.tech-explorer-header h2 {
+  font-size: 1.75rem;
+  margin-bottom: var(--spacing-1);
+}
+
+.tech-filter-tabs {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-5);
+  flex-wrap: wrap;
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--spacing-3);
+}
+
+.tech-card {
+  border: 1px solid var(--light-gray);
+  background-color: var(--light-gray);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-3);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.tech-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary-blue);
+  background-color: var(--white);
+}
+
+.tech-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.tech-card-name {
+  font-weight: 700;
+  color: var(--deep-navy);
+  font-size: 1rem;
+}
+
+.tech-card-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+  background-color: var(--white);
+  border: 1px solid var(--light-gray);
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.tech-card-desc {
+  font-size: 0.85rem;
+  color: var(--slate-text);
+  margin-bottom: 12px;
+}
+
+.tech-progress-bar {
+  height: 6px;
+  background-color: var(--light-gray);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.tech-progress-fill {
+  height: 100%;
+  background-color: var(--primary-blue);
+  border-radius: 3px;
+}

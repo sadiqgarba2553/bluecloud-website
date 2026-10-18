@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CargoLedger — Shipment & Logistics Management Platform</title>
+  <meta name="description" content="Shipment management software for small freight forwarders and logistics operators. High-precision status pipelines, automated manifests, and milestone tracking." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,600;0,8..60,700;0,8..60,800;1,8..60,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1C1F26;
+      --paper: #F6F6F3;
+      --paper-pure: #FFFFFF;
+      --rule: #D8D6CF;
+      --accent: #1E4D3B;
+      --accent-hover: #15382b;
+      --ink-muted: #6B6A63;
+      --status-good: #1E4D3B;
+      --status-attention: #9C7A3C;
+      --status-problem: #8C4A3A;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .num-data {
+      font-variant-numeric: tabular-nums;
+    }
+
+    header {
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+      padding: 18px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    .brand-logo {
+      height: 28px;
+      width: auto;
+    }
+
+    .brand-title {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 8px;
+      border: 1px solid var(--rule);
+      color: var(--ink-muted);
+      background: var(--paper-pure);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-links a {
+      color: var(--ink-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--ink);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'Public Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      border: 1px solid var(--rule);
+      transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--paper-pure);
+      color: var(--ink);
+      border-color: var(--rule);
+    }
+
+    .btn-secondary:hover {
+      background: #EFEFEA;
+      border-color: var(--ink-muted);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 56px 0 40px;
+      border-bottom: 1px solid var(--rule);
+      background: var(--paper);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .partner-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-muted);
+      margin-bottom: 14px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .hero h1 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 2.75rem;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      color: var(--ink-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .tracking-search-card {
+      background: var(--paper-pure);
+      border: 1px solid var(--rule);
+      padding: 24px;
+    }
+
+    .card-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-muted);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .tracking-form {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .tracking-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--rule);
+      font-family: 'Public Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      background: var(--paper);
+      border-radius: 2px;
+      outline: none;
+    }
+
+    .tracking-input:focus {
+      border-color: var(--ink);
+      background: #FFFFFF;
+    }
+
+    .sample-tags {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+    }
+
+    .sample-btn {
+      background: none;
+      border: 1px solid var(--rule);
+      padding: 2px 6px;
+      font-family: 'Public Sans', sans-serif;
+      font-size: 0.75rem;
+      color: var(--accent);
+      cursor: pointer;
+      border-radius: 2px;
+    }
+
+    .sample-btn:hover {
+      background: #EFEFEA;
+    }
+
+    /* Live Pipeline Ledger View */
+    .ledger-section {
+      padding: 48px 0;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .section-desc {
+      font-size: 0.88rem;
+      color: var(--ink-muted);
+      margin-top: 4px;
+    }
+
+    /* Tables */
+    .table-container {
+      background: var(--paper-pure);
+      border: 1px solid var(--rule);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    th {
+      background: var(--paper);
+      color: var(--ink-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+
+    th:last-child {
+      border-right: none;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+      vertical-align: middle;
+    }
+
+    td:last-child {
+      border-right: none;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: #FAFAFA;
+    }
+
+    /* Status Dots */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+      font-size: 0.82rem;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot-good {
+      background-color: var(--status-good);
+    }
+
+    .dot-attention {
+      background-color: var(--status-attention);
+    }
+
+    .dot-problem {
+      background-color: var(--status-problem);
+    }
+
+    /* Rubber Ink Stamp Signature Element */
+    .ink-stamp {
+      display: inline-block;
+      font-family: 'Source Serif 4', Georgia, serif;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      border: 1.5px solid var(--accent);
+      padding: 3px 8px;
+      transform: rotate(-3deg);
+      border-radius: 1px;
+      background: rgba(30, 77, 59, 0.04);
+      box-shadow: 0 0 0 1px rgba(30, 77, 59, 0.1);
+    }
+
+    /* Tracking Modal / Result Card */
+    .tracking-result-box {
+      margin-top: 24px;
+      background: var(--paper-pure);
+      border: 1px solid var(--rule);
+      padding: 24px;
+      display: none;
+    }
+
+    .tracking-result-box.visible {
+      display: block;
+    }
+
+    .timeline-wrap {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+      position: relative;
+    }
+
+    .timeline-step {
+      border-top: 2px solid var(--rule);
+      padding-top: 10px;
+      font-size: 0.8rem;
+    }
+
+    .timeline-step.done {
+      border-top-color: var(--accent);
+    }
+
+    .timeline-step.active {
+      border-top-color: var(--ink);
+    }
+
+    .step-name {
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+
+    .step-time {
+      color: var(--ink-muted);
+      font-size: 0.72rem;
+    }
+
+    /* Core Features */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 36px;
+    }
+
+    .feature-card {
+      background: var(--paper-pure);
+      border: 1px solid var(--rule);
+      padding: 24px;
+    }
+
+    .feature-num {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .feature-title {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .feature-desc {
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+      line-height: 1.6;
+    }
+
+    footer {
+      margin-top: auto;
+      background: var(--paper);
+      border-top: 1px solid var(--rule);
+      padding: 32px 0;
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    @media (max-width: 860px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+      .timeline-wrap {
+        grid-template-columns: 1fr 1fr;
+      }
+      .nav-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header>
+    <div class="container nav-row">
+      <a href="/" class="brand">
+        <img src="/cargoledger_logo.svg" alt="CargoLedger Logo" class="brand-logo" onerror="this.style.display='none'" />
+        <span class="brand-title">CargoLedger</span>
+        <span class="brand-badge">Logistics OS</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#pipeline" class="active">Live Pipeline</a>
+        <a href="#features">Architecture</a>
+        <a href="#tracking">Track Consignment</a>
+        <a href="/projects" class="btn btn-secondary">← Back to BlueCloud</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero & Tracking Interface -->
+  <section class="hero" id="tracking">
+    <div class="container hero-grid">
+      <div>
+        <div class="partner-tag">
+          Design Partner: Cyberion Company Ltd · Abuja
+        </div>
+        <h1>Shipment Management Without Spreadsheets.</h1>
+        <p>
+          CargoLedger is the dedicated operating system for freight forwarders and logistics handlers. Move consignments across milestones, automate digital airway bills, and keep clients informed in real time.
+        </p>
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <a href="#pipeline" class="btn btn-primary">Inspect Active Ledger</a>
+          <a href="/contact" class="btn btn-secondary">Request Enterprise Setup</a>
+        </div>
+      </div>
+
+      <!-- Quick Track Portal -->
+      <div class="tracking-search-card">
+        <span class="card-label">Quick Waybill Lookup</span>
+        <form class="tracking-form" onsubmit="searchTracking(event)">
+          <input type="text" id="trackInput" class="tracking-input" placeholder="e.g. CY-90412 or CL-88219" value="CY-90412" required />
+          <button type="submit" class="btn btn-primary">Track</button>
+        </form>
+        <div class="sample-tags">
+          <span>Try sample:</span>
+          <button type="button" class="sample-btn" onclick="setTracking('CY-90412')">CY-90412 (Cleared)</button>
+          <button type="button" class="sample-btn" onclick="setTracking('CL-88219')">CL-88219 (In Transit)</button>
+          <button type="button" class="sample-btn" onclick="setTracking('CY-77031')">CY-77031 (Customs Hold)</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Tracking Interactive Result -->
+  <div class="container">
+    <div id="trackingResult" class="tracking-result-box">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--rule); padding-bottom: 14px; margin-bottom: 16px;">
+        <div>
+          <span class="card-label" style="margin-bottom: 4px;">Consignment Record</span>
+          <h2 id="resWaybill" style="font-family: 'Source Serif 4', Georgia, serif; font-size: 1.4rem;">CY-90412</h2>
+          <div id="resRoute" style="font-size: 0.85rem; color: var(--ink-muted); margin-top: 2px;">London (LHR) → Abuja (ABV) · 420 kg Industrial Components</div>
+        </div>
+        <div id="resStamp">
+          <span class="ink-stamp">DELIVERED</span>
+        </div>
+      </div>
+
+      <div class="timeline-wrap" id="resTimeline">
+        <div class="timeline-step done">
+          <div class="step-name">1. Manifest Created</div>
+          <div class="step-time">Aug 28 · 09:14 AM</div>
+        </div>
+        <div class="timeline-step done">
+          <div class="step-name">2. Origin Cleared</div>
+          <div class="step-time">Aug 29 · 02:30 PM</div>
+        </div>
+        <div class="timeline-step done">
+          <div class="step-name">3. Port of Entry (ABV)</div>
+          <div class="step-time">Aug 30 · 11:45 AM</div>
+        </div>
+        <div class="timeline-step done">
+          <div class="step-name">4. Handover Complete</div>
+          <div class="step-time">Aug 31 · 04:10 PM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Pipeline Ledger Table -->
+  <section class="ledger-section" id="pipeline">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Active Shipment Pipeline</h2>
+          <p class="section-desc">Sample production ledger synchronized with Cyberion's handling operations.</p>
+        </div>
+        <div style="font-size: 0.78rem; color: var(--ink-muted); font-weight: 500;">
+          Auto-refreshing: <span style="color: var(--accent); font-weight: 600;">Active</span>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Waybill No.</th>
+              <th>Consignee / Client</th>
+              <th>Route</th>
+              <th>Weight / Pcs</th>
+              <th>Status</th>
+              <th>Verification</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="num-data"><strong>CY-90412</strong></td>
+              <td>Cyberion Operations Ltd</td>
+              <td>LHR → ABV</td>
+              <td class="num-data">420 kg · 8 Pallets</td>
+              <td>
+                <span class="status-badge">
+                  <span class="dot dot-good"></span> Delivered
+                </span>
+              </td>
+              <td><span class="ink-stamp">CLEARED</span></td>
+              <td>
+                <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="setTracking('CY-90412')">Inspect</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="num-data"><strong>CL-88219</strong></td>
+              <td>Apex Energy Powerworks</td>
+              <td>DXB → LOS</td>
+              <td class="num-data">1,250 kg · Heavy Mach.</td>
+              <td>
+                <span class="status-badge">
+                  <span class="dot dot-attention"></span> In Transit (Air)
+                </span>
+              </td>
+              <td><span style="font-size: 0.75rem; color: var(--ink-muted);">En Route ABV-04</span></td>
+              <td>
+                <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="setTracking('CL-88219')">Inspect</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="num-data"><strong>CY-77031</strong></td>
+              <td>Sahel Mining Equip Ltd</td>
+              <td>IST → KAN</td>
+              <td class="num-data">890 kg · Hydraulic Valves</td>
+              <td>
+                <span class="status-badge">
+                  <span class="dot dot-problem"></span> Customs Inspection
+                </span>
+              </td>
+              <td><span style="font-size: 0.75rem; color: var(--status-problem); font-weight: 600;">Doc Verification</span></td>
+              <td>
+                <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="setTracking('CY-77031')">Inspect</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="num-data"><strong>CL-66104</strong></td>
+              <td>Prime Medical Diagnostics</td>
+              <td>FRA → ABV</td>
+              <td class="num-data">110 kg · Reagents (Cold)</td>
+              <td>
+                <span class="status-badge">
+                  <span class="dot dot-good"></span> Cleared Customs
+                </span>
+              </td>
+              <td><span class="ink-stamp">RELEASED</span></td>
+              <td>
+                <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="setTracking('CL-66104')">Inspect</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Core Features Grid -->
+      <div class="features-grid" id="features">
+        <div class="feature-card">
+          <div class="feature-num">01</div>
+          <h3 class="feature-title">Bank-Ledger Clarity</h3>
+          <p class="feature-desc">
+            No cluttered dashboards or distracting animations. Crisp 1px hairline rules, tabular number alignment, and high-density readability built for heavy freight operators.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-num">02</div>
+          <h3 class="feature-title">Automated Status Pipelines</h3>
+          <p class="feature-desc">
+            Advance shipments through clear checkpoints: Manifest Created → Origin Departure → Port Inspection → Customs Cleared → Delivered Handover.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-num">03</div>
+          <h3 class="feature-title">Signature Ink-Stamp Seals</h3>
+          <p class="feature-desc">
+            Every verified terminal shipment receives an authentic rendered ink-stamp verification seal for immutable handover records and client invoice verification.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-row">
+      <div>
+        <strong>CargoLedger</strong> is engineered by <strong>BlueCloud Technologies</strong> for enterprise logistics forwarders.
+      </div>
+      <div>
+        <a href="/projects" style="color: var(--accent); text-decoration: none; font-weight: 600;">BlueCloud Enterprise Portfolio →</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const SAMPLE_DATA = {
+      'CY-90412': {
+        waybill: 'CY-90412',
+        route: 'London (LHR) → Abuja (ABV) · 420 kg Industrial Components',
+        stamp: '<span class="ink-stamp">DELIVERED</span>',
+        steps: [
+          { name: '1. Manifest Created', time: 'Aug 28 · 09:14 AM', state: 'done' },
+          { name: '2. Origin Cleared', time: 'Aug 29 · 02:30 PM', state: 'done' },
+          { name: '3. Port of Entry (ABV)', time: 'Aug 30 · 11:45 AM', state: 'done' },
+          { name: '4. Handover Complete', time: 'Aug 31 · 04:10 PM', state: 'done' }
+        ]
+      },
+      'CL-88219': {
+        waybill: 'CL-88219',
+        route: 'Dubai (DXB) → Lagos (LOS) · 1,250 kg Heavy Machinery Parts',
+        stamp: '<span style="font-size: 0.85rem; color: var(--status-attention); font-weight: 600; border: 1px solid var(--status-attention); padding: 2px 8px;">IN TRANSIT</span>',
+        steps: [
+          { name: '1. Booking Confirmed', time: 'Aug 31 · 10:00 AM', state: 'done' },
+          { name: '2. Loaded on Aircraft', time: 'Sep 01 · 06:15 AM', state: 'done' },
+          { name: '3. In Flight (EK-782)', time: 'Estimated Arrival 19:30', state: 'active' },
+          { name: '4. Customs Clearance', time: 'Pending Arrival', state: '' }
+        ]
+      },
+      'CY-77031': {
+        waybill: 'CY-77031',
+        route: 'Istanbul (IST) → Kano (KAN) · 890 kg Hydraulic Valves',
+        stamp: '<span style="font-size: 0.85rem; color: var(--status-problem); font-weight: 600; border: 1px solid var(--status-problem); padding: 2px 8px;">INSPECTION</span>',
+        steps: [
+          { name: '1. Manifest Created', time: 'Aug 26 · 11:20 AM', state: 'done' },
+          { name: '2. Arrived at Port KAN', time: 'Aug 29 · 08:00 AM', state: 'done' },
+          { name: '3. Customs Form 104', time: 'Awaiting Doc Stamp', state: 'active' },
+          { name: '4. Dispatch to Consignee', time: 'Scheduled Post-Release', state: '' }
+        ]
+      },
+      'CL-66104': {
+        waybill: 'CL-66104',
+        route: 'Frankfurt (FRA) → Abuja (ABV) · 110 kg Temperature-Controlled Medical Reagents',
+        stamp: '<span class="ink-stamp">RELEASED</span>',
+        steps: [
+          { name: '1. Cold Chain Logged', time: 'Aug 30 · 04:00 AM', state: 'done' },
+          { name: '2. Direct Cargo Flight', time: 'Aug 30 · 01:20 PM', state: 'done' },
+          { name: '3. Priority Customs Entry', time: 'Aug 31 · 09:10 AM', state: 'done' },
+          { name: '4. Out for Delivery', time: 'Sep 01 · 08:30 AM', state: 'done' }
+        ]
+      }
+    };
+
+    function searchTracking(e) {
+      if (e) e.preventDefault();
+      const val = document.getElementById('trackInput').value.trim().toUpperCase();
+      renderTracking(val);
+    }
+
+    function setTracking(code) {
+      document.getElementById('trackInput').value = code;
+      renderTracking(code);
+      document.getElementById('trackingResult').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function renderTracking(code) {
+      const resultBox = document.getElementById('trackingResult');
+      const data = SAMPLE_DATA[code] || {
+        waybill: code,
+        route: 'International Cargo Consignment · Standard Air Freight',
+        stamp: '<span style="font-size: 0.85rem; color: var(--ink-muted); border: 1px solid var(--rule); padding: 2px 8px;">REGISTERED</span>',
+        steps: [
+          { name: '1. Manifest Logged', time: 'Logged in Central DB', state: 'done' },
+          { name: '2. Transit Checkpoint', time: 'Active Pipeline', state: 'active' },
+          { name: '3. Destination Clearance', time: 'Pending Checkpoint', state: '' },
+          { name: '4. Terminal Delivery', time: 'Scheduled', state: '' }
+        ]
+      };
+
+      document.getElementById('resWaybill').textContent = data.waybill;
+      document.getElementById('resRoute').textContent = data.route;
+      document.getElementById('resStamp').innerHTML = data.stamp;
+
+      const timelineEl = document.getElementById('resTimeline');
+      timelineEl.innerHTML = data.steps.map(s => `
+        <div class="timeline-step ${s.state}">
+          <div class="step-name">${s.name}</div>
+          <div class="step-time">${s.time}</div>
+        </div>
+      `).join('');
+
+      resultBox.classList.add('visible');
+    }
+
+    // Initialize with default waybill
+    renderTracking('CY-90412');
+  </script>
+</body>
+</html>

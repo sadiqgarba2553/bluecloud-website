@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>07 Modules And Packages — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Language Specification — Modules and Packages</h1>
+<p><strong>Version:</strong> 0.1.0-draft<br />
+<strong>Status:</strong> Draft</p>
+<hr />
+<h2>1. Overview</h2>
+<p>Flux uses a hierarchical module system for code organization and a package system for dependency management. Modules provide namespacing and encapsulation. Packages are distributable units of code with versioned dependencies.</p>
+<hr />
+<h2>2. Modules</h2>
+<h3>2.1 Module Declaration</h3>
+<p>Every <code>.flux</code> file implicitly defines a module. The module name is derived from the file name.</p>
+<pre><code>src/
+├── main.flux          → root module
+├── utils.flux         → module `utils`
+├── models/
+│   ├── mod.flux       → module `models`
+│   ├── user.flux      → module `models.user`
+│   └── post.flux      → module `models.post`
+└── services/
+    ├── mod.flux        → module `services`
+    └── auth.flux       → module `services.auth`
+</code></pre>
+<h3>2.2 Inline Modules</h3>
+<p>Modules can be declared inline within a file:</p>
+<pre><code class="language-flux">mod math {
+    pub fn abs(x: Int) -&gt; Int {
+        if x &lt; 0 { return -x }
+        return x
+    }
+
+    pub fn clamp(value: Int, min: Int, max: Int) -&gt; Int {
+        if value &lt; min { return min }
+        if value &gt; max { return max }
+        return value
+    }
+}
+
+// Usage
+let result = math.abs(-42)
+</code></pre>
+<h3>2.3 File Modules</h3>
+<p>Declare a module that loads from a separate file:</p>
+<pre><code class="language-flux">// In main.flux
+mod utils       // Loads from utils.flux or utils/mod.flux
+mod models      // Loads from models/mod.flux
+
+fn main() {
+    let user = models.user.User { name: &quot;Alice&quot; }
+}
+</code></pre>
+<h3>2.4 Module Documentation</h3>
+<pre><code class="language-flux">//! This module provides HTTP client and server functionality.
+//!
+//! # Examples
+//!
+//! ```flux
+//! use flux.http.{Client, Request}
+//!
+//! async fn fetch() {
+//!     let client = Client.new()
+//!     let response = await client.get(&quot;https://example.com&quot;)
+//! }
+//! ```
+
+pub struct Client { ... }
+pub struct Server { ... }
+</code></pre>
+<hr />
+<h2>3. Visibility</h2>
+<h3>3.1 Visibility Modifiers</h3>
+<table>
+<thead>
+<tr>
+<th>Modifier</th>
+<th>Scope</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(none)</td>
+<td>Private</td>
+<td>Only accessible within the current module</td>
+</tr>
+<tr>
+<td><code>pub</code></td>
+<td>Public</td>
+<td>Accessible from anywhere</td>
+</tr>
+<tr>
+<td><code>pub(crate)</code></td>
+<td>Crate-public</td>
+<td>Accessible within the current package</td>
+</tr>
+<tr>
+<td><code>pub(super)</code></td>
+<td>Parent-public</td>
+<td>Accessible in the parent module</td>
+</tr>
+<tr>
+<td><code>pub(mod)</code></td>
+<td>Module-public</td>
+<td>Accessible in the current module and submodules</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-flux">mod shapes {
+    // Public — accessible everywhere
+    pub struct Circle {
+        pub radius: Float64           // Public field
+        center: Point                 // Private field
+    }
+
+    // Crate-public — only within this package
+    pub(crate) fn internal_helper() { ... }
+
+    // Private — only within this module
+    fn calculate_area(r: Float64) -&gt; Float64 {
+        return PI * r * r
+    }
+}
+</code></pre>
+<h3>3.2 Default Visibility</h3>
+<ul>
+<li><strong>Items</strong> (functions, types, constants) are <strong>private</strong> by default</li>
+<li><strong>Struct fields</strong> are <strong>private</strong> by default</li>
+<li><strong>Enum variants</strong> are <strong>public</strong> if the enum is public</li>
+<li><strong>Trait methods</strong> are <strong>public</strong> (traits define public contracts)</li>
+<li><strong>Impl methods</strong> follow their <code>pub</code> annotation</li>
+</ul>
+<hr />
+<h2>4. Imports (Use Declarations)</h2>
+<h3>4.1 Basic Imports</h3>
+<pre><code class="language-flux">use flux.io.print                        // Single item
+use flux.collections.HashMap             // Type import
+use flux.math.{sin, cos, tan}           // Multiple items
+use flux.http.*                          // Glob import (discouraged)
+use flux.json.parse as json_parse       // Aliased import
+</code></pre>
+<h3>4.2 Nested Imports</h3>
+<pre><code class="language-flux">use flux.collections.{
+    HashMap
+    HashSet
+    TreeMap
+    List.{sort, reverse}      // Nested
+}
+</code></pre>
+<h3>4.3 Re-exports</h3>
+<pre><code class="language-flux">// In models/mod.flux
+pub use self.user.User          // Re-export User from submodule
+pub use self.post.Post
+pub use self.comment.Comment
+
+// Now external code can do:
+use mypackage.models.User       // Instead of mypackage.models.user.User
+</code></pre>
+<h3>4.4 Import Rules</h3>
+<ol>
+<li>Imports are resolved at compile time</li>
+<li>Circular imports are allowed (the compiler handles them)</li>
+<li>Unused imports generate a warning</li>
+<li>The <code>_</code> prefix suppresses unused import warnings: <code>use flux.io._</code></li>
+</ol>
+<hr />
+<h2>5. Package System</h2>
+<h3>5.1 Package Manifest (<code>Flux.toml</code>)</h3>
+<p>Every Flux package has a <code>Flux.toml</code> manifest file:</p>
+<pre><code class="language-toml">[package]
+name = &quot;my_app&quot;
+version = &quot;1.2.3&quot;
+edition = &quot;2026&quot;
+authors = [&quot;Alice &lt;alice@example.com&gt;&quot;]
+description = &quot;A sample Flux application&quot;
+license = &quot;MIT&quot;
+repository = &quot;https://github.com/alice/my_app&quot;
+homepage = &quot;https://my-app.dev&quot;
+keywords = [&quot;web&quot;, &quot;server&quot;, &quot;api&quot;]
+categories = [&quot;web-programming&quot;]
+
+[dependencies]
+flux_http = &quot;2.1&quot;
+flux_json = &quot;1.0&quot;
+flux_db = { version = &quot;3.0&quot;, features = [&quot;postgres&quot;, &quot;mysql&quot;] }
+my_lib = { git = &quot;https://github.com/alice/my_lib.git&quot;, branch = &quot;main&quot; }
+local_lib = { path = &quot;../local_lib&quot; }
+
+[dev-dependencies]
+flux_testing = &quot;1.0&quot;
+flux_mock = &quot;0.5&quot;
+
+[build-dependencies]
+flux_codegen = &quot;1.0&quot;
+
+[features]
+default = [&quot;json&quot;, &quot;yaml&quot;]
+json = [&quot;flux_json&quot;]
+yaml = [&quot;flux_yaml&quot;]
+full = [&quot;json&quot;, &quot;yaml&quot;, &quot;xml&quot;, &quot;csv&quot;]
+
+[profile.release]
+opt_level = 3
+lto = true
+strip = true
+
+[profile.dev]
+opt_level = 0
+debug = true
+</code></pre>
+<h3>5.2 Version Constraints</h3>
+<table>
+<thead>
+<tr>
+<th>Syntax</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"1.2.3"</code></td>
+<td>Compatible with 1.2.3 (≥1.2.3, &lt;2.0.0)</td>
+</tr>
+<tr>
+<td><code>"=1.2.3"</code></td>
+<td>Exactly 1.2.3</td>
+</tr>
+<tr>
+<td><code>"&gt;=1.2, &lt;2.0"</code></td>
+<td>Range constraint</td>
+</tr>
+<tr>
+<td><code>"~1.2.3"</code></td>
+<td>Patch-compatible (≥1.2.3, &lt;1.3.0)</td>
+</tr>
+<tr>
+<td><code>"^1.2.3"</code></td>
+<td>Compatible (same as <code>"1.2.3"</code>)</td>
+</tr>
+<tr>
+<td><code>"*"</code></td>
+<td>Any version</td>
+</tr>
+</tbody>
+</table>
+<h3>5.3 Lock File (<code>Flux.lock</code>)</h3>
+<p>The lock file records exact resolved versions for reproducible builds:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;flux_http&quot;
+version = &quot;2.1.4&quot;
+source = &quot;registry+https://packages.flux-lang.org&quot;
+checksum = &quot;sha256:abc123...&quot;
+
+[[package]]
+name = &quot;flux_json&quot;
+version = &quot;1.0.2&quot;
+source = &quot;registry+https://packages.flux-lang.org&quot;
+dependencies = [&quot;flux_io 1.0.1&quot;]
+</code></pre>
+<h3>5.4 Workspaces</h3>
+<p>Multi-package projects use workspaces:</p>
+<pre><code class="language-toml"># Root Flux.toml
+[workspace]
+members = [
+    &quot;compiler/flux_lexer&quot;,
+    &quot;compiler/flux_parser&quot;,
+    &quot;compiler/flux_ast&quot;,
+    &quot;cli&quot;,
+    &quot;stdlib&quot;,
+]
+
+[workspace.dependencies]
+flux_ast = { path = &quot;compiler/flux_ast&quot; }
+</code></pre>
+<hr />
+<h2>6. Conditional Compilation</h2>
+<h3>6.1 Configuration Attributes</h3>
+<pre><code class="language-flux">#[cfg(target_os: &quot;linux&quot;)]
+fn get_home_dir() -&gt; String {
+    return env(&quot;HOME&quot;)
+}
+
+#[cfg(target_os: &quot;windows&quot;)]
+fn get_home_dir() -&gt; String {
+    return env(&quot;USERPROFILE&quot;)
+}
+
+#[cfg(target_os: &quot;macos&quot;)]
+fn get_home_dir() -&gt; String {
+    return env(&quot;HOME&quot;)
+}
+</code></pre>
+<h3>6.2 Available Configuration Options</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>target_os</code></td>
+<td><code>"linux"</code>, <code>"macos"</code>, <code>"windows"</code>, <code>"android"</code>, <code>"ios"</code></td>
+</tr>
+<tr>
+<td><code>target_arch</code></td>
+<td><code>"x86_64"</code>, <code>"aarch64"</code>, <code>"arm"</code>, <code>"wasm32"</code></td>
+</tr>
+<tr>
+<td><code>target_family</code></td>
+<td><code>"unix"</code>, <code>"windows"</code>, <code>"wasm"</code></td>
+</tr>
+<tr>
+<td><code>target_endian</code></td>
+<td><code>"little"</code>, <code>"big"</code></td>
+</tr>
+<tr>
+<td><code>target_pointer_width</code></td>
+<td><code>"32"</code>, <code>"64"</code></td>
+</tr>
+<tr>
+<td><code>debug</code></td>
+<td><code>true</code>, <code>false</code></td>
+</tr>
+<tr>
+<td><code>test</code></td>
+<td><code>true</code> (when running tests)</td>
+</tr>
+<tr>
+<td><code>feature</code></td>
+<td>Any feature name from <code>Flux.toml</code></td>
+</tr>
+</tbody>
+</table>
+<h3>6.3 Combining Conditions</h3>
+<pre><code class="language-flux">#[cfg(all(target_os: &quot;linux&quot;, target_arch: &quot;x86_64&quot;))]
+fn optimized_linux_x64() { ... }
+
+#[cfg(any(target_os: &quot;linux&quot;, target_os: &quot;macos&quot;))]
+fn unix_function() { ... }
+
+#[cfg(not(target_os: &quot;windows&quot;))]
+fn non_windows() { ... }
+
+#[cfg(feature: &quot;json&quot;)]
+use flux.json
+</code></pre>
+<h3>6.4 Feature Flags</h3>
+<pre><code class="language-flux">// In library code
+#[cfg(feature: &quot;async&quot;)]
+pub async fn fetch(url: String) -&gt; Response { ... }
+
+#[cfg(not(feature: &quot;async&quot;))]
+pub fn fetch(url: String) -&gt; Response { ... }
+</code></pre>
+<hr />
+<h2>7. Build Scripts</h2>
+<p>Packages can include a <code>build.flux</code> script that runs before compilation:</p>
+<pre><code class="language-flux">// build.flux
+use flux.build.{Config, generate_bindings}
+
+fn main() {
+    let config = Config.new()
+
+    // Generate FFI bindings from a C header
+    generate_bindings(&quot;vendor/sqlite3.h&quot;)
+        .output(&quot;src/bindings.flux&quot;)
+        .generate()
+
+    // Link a native library
+    config.link_lib(&quot;sqlite3&quot;)
+    config.link_search(&quot;/usr/local/lib&quot;)
+
+    // Set compile-time environment variables
+    config.set_env(&quot;BUILD_TIMESTAMP&quot;, time.now().to_string())
+}
+</code></pre>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

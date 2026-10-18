@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Examples — Flux. Flux is a modern programming language. Simple like Python, fast like Rust. Built by BlueCloud Technologies.">
+    <meta name="keywords" content="Flux Examples, Flux programming language, compiled language, software engineering">
+    <meta name="author" content="BlueCloud Technologies">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://bluecloudai.online/flux-website/examples.html">
+
+    <title>Examples — Flux</title>
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bluecloudai.online/flux-website/examples.html">
+    <meta property="og:title" content="Examples — Flux">
+    <meta property="og:description" content="Flux is a modern programming language. Simple like Python, fast like Rust.">
+    <meta property="og:image" content="https://bluecloudai.online/flux-website/assets/fluxlogo.png">
+    <meta property="og:site_name" content="Flux Programming Language">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Examples — Flux">
+    <meta name="twitter:description" content="Flux is a modern programming language. Simple like Python, fast like Rust.">
+    <meta name="twitter:image" content="https://bluecloudai.online/flux-website/assets/fluxlogo.png">
+
+    <!-- JSON-LD Structured Data: SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Flux Programming Language",
+      "operatingSystem": "Linux, macOS, Windows",
+      "applicationCategory": "DeveloperApplication",
+      "description": "A modern, fast, and simple programming language built by BlueCloud Technologies.",
+      "url": "https://bluecloudai.online/flux-website/index.html",
+      "author": {
+        "@type": "Organization",
+        "name": "BlueCloud Technologies",
+        "url": "https://bluecloudai.online"
+      }
+    }
+    </script>
+
+    <link rel="icon" href="assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="index.html" class="nav-logo">
+            <img src="assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="examples.html" class="active">Examples</a></li>
+            <li><a href="features.html">Features</a></li>
+            <li><a href="roadmap.html">Roadmap</a></li>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+
+<section id="examples" style="padding-top: 120px;">
+    <div class="container">
+        <div class="section-label">Code</div>
+        <h2 class="section-title">What Flux looks like</h2>
+        <p class="section-desc">No semicolons. No imports. No boilerplate. You write what you mean and it runs.</p>
+
+        <div class="examples-grid">
+            <div class="example-card">
+                <div class="example-label">Hello World</div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        hello.flux
+                    </div>
+                    <div class="code-body"><pre><span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="fn">print</span>(<span class="str">"Hello, World!"</span>)
+}</pre></div>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <div class="example-label">Structs</div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        point.flux
+                    </div>
+                    <div class="code-body"><pre><span class="kw">struct</span> <span class="type">Point</span> {
+    x: <span class="type">Int</span>
+    y: <span class="type">Int</span>
+}
+
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="kw">let</span> pt <span class="op">=</span> <span class="type">Point</span> { x: <span class="num">10</span>, y: <span class="num">20</span> }
+    <span class="fn">print</span>(pt.x <span class="op">+</span> pt.y)  <span class="cmt">// 30</span>
+}</pre></div>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <div class="example-label">Functions</div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        math.flux
+                    </div>
+                    <div class="code-body"><pre><span class="kw">fn</span> <span class="fn">factorial</span>(n: <span class="type">Int</span>) <span class="op">-></span> <span class="type">Int</span> {
+    <span class="kw">if</span> (n <span class="op"><=</span> <span class="num">1</span>) {
+        <span class="kw">return</span> <span class="num">1</span>
+    }
+    <span class="kw">return</span> n <span class="op">*</span> <span class="fn">factorial</span>(n <span class="op">-</span> <span class="num">1</span>)
+}
+
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="fn">print</span>(<span class="fn">factorial</span>(<span class="num">10</span>))
+}</pre></div>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <div class="example-label">System Monitor</div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        sysmon.flux
+                    </div>
+                    <div class="code-body"><pre><span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="fn">print</span>(<span class="str">"Host: "</span> <span class="op">+</span> <span class="fn">sys_hostname</span>())
+    <span class="fn">print</span>(<span class="str">"CPU:  "</span> <span class="op">+</span> <span class="fn">sys_cpu_model</span>())
+
+    <span class="kw">let</span> used <span class="op">=</span> <span class="fn">sys_mem_used</span>() <span class="op">/</span> <span class="num">1024</span>
+    <span class="kw">let</span> total <span class="op">=</span> <span class="fn">sys_mem_total</span>() <span class="op">/</span> <span class="num">1024</span>
+    <span class="fn">print</span>(<span class="str">"RAM:  "</span> <span class="op">+</span> <span class="fn">str</span>(used) <span class="op">+</span> <span class="str">"/"</span> <span class="op">+</span> <span class="fn">str</span>(total) <span class="op">+</span> <span class="str">" MB"</span>)
+}</pre></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="demo">
+    <div class="container">
+        <div class="section-label">Demo</div>
+        <h2 class="section-title">See it run</h2>
+        <p class="section-desc">This is actual output from the Flux system monitor running on a Debian machine.</p>
+
+        <div class="terminal">
+            <div class="terminal-header">Terminal â€” flux sysmon.flux</div>
+            <div class="terminal-body"><span class="prompt">$ flux sysmon.flux</span>
+
+â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+â•‘       âš¡ Flux System Monitor âš¡          â•‘
+â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+ðŸ§  System
+  Hostname:    debian
+  Kernel:      Linux version 6.12.90+deb13.1-amd64
+  Uptime:      47h 53m
+  Processes:   441
+
+ðŸ–¥  CPU
+  Model:       13th Gen Intel(R) Core(TM) i7-1355U
+  Cores:       12
+  Load Avg:    0.92
+
+ðŸ’¾  Memory
+  Total:       15710 MB
+  Used:        7918 MB
+  Available:   7792 MB
+  Usage:       50%
+  Swap:        0 / 0 MB
+
+ðŸ’¿  Disk (/)
+  Total:       194817 MB
+  Used:        111407 MB
+  Free:        83410 MB
+  Usage:       57%
+
+Powered by Flux âš¡</div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language Â· MIT License Â· 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="docs.html">Documentation</a></li>
+                <li><a href="about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
+

@@ -1,0 +1,202 @@
+/* ─── Rate Card Header ─── */
+.rate-card-header {
+  background: linear-gradient(135deg, var(--deep-navy) 0%, #0d2a50 100%);
+  padding: var(--spacing-8) 0;
+  color: var(--white);
+}
+
+.rate-card-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cyan-accent);
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+  margin-bottom: var(--spacing-5);
+  transition: opacity 0.2s ease;
+  letter-spacing: 0.02em;
+}
+
+.rate-card-back-link:hover {
+  color: var(--cyan-accent);
+  opacity: 0.75;
+}
+
+/* ─── Hero Two-Column Layout ─── */
+.rate-card-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-6);
+  align-items: center;
+}
+
+/* ─── Left Column ─── */
+.rate-card-hero-left h1 {
+  color: var(--white);
+  font-size: 3rem;
+  margin-bottom: var(--spacing-2);
+  line-height: 1.15;
+}
+
+.rate-card-hero-left p {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: var(--spacing-4);
+  max-width: 480px;
+}
+
+.rate-card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(34, 211, 238, 0.12);
+  border: 1px solid rgba(34, 211, 238, 0.3);
+  color: var(--cyan-accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 100px;
+  margin-bottom: var(--spacing-2);
+}
+
+.rate-card-actions {
+  display: flex;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+}
+
+.rate-card-dl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  padding: 13px var(--spacing-3);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    background-color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease,
+    color var(--duration-fast) ease;
+}
+
+.rate-card-dl-btn.btn-secondary {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.rate-card-dl-btn.btn-secondary:hover {
+  border-color: var(--cyan-accent);
+  color: var(--cyan-accent);
+  background: transparent;
+}
+
+/* ─── Right Column: Document Preview Card ─── */
+.rate-card-doc-preview {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-4);
+  backdrop-filter: blur(8px);
+}
+
+.doc-preview-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-3);
+  color: var(--cyan-accent);
+}
+
+.doc-preview-header > svg {
+  flex-shrink: 0;
+}
+
+.doc-preview-name {
+  display: block;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--white);
+  font-size: 1rem;
+}
+
+.doc-preview-type {
+  display: block;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 2px;
+}
+
+.doc-preview-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin-bottom: var(--spacing-3);
+}
+
+.doc-preview-highlights {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+}
+
+.doc-preview-highlights li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+}
+
+.doc-preview-highlights li svg {
+  color: var(--mint-accent);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.doc-preview-download {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--cyan-accent);
+  color: var(--deep-navy);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 13px var(--spacing-3);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.doc-preview-download:hover {
+  opacity: 0.88;
+  color: var(--deep-navy);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .rate-card-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .rate-card-hero-left h1 {
+    font-size: 2.2rem;
+  }
+
+  .rate-card-actions {
+    flex-direction: column;
+  }
+
+  .rate-card-dl-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown to HTML Converter | ToolDeck</title>
+  <meta name="description" content="Convert Markdown text to raw HTML instantly in your browser.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../tool.css">
+  <style>
+    .workspace { max-width: 1200px; margin: 40px auto; width: 100%; padding: 0 20px; }
+    .ws-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r-xl); padding: 24px; }
+    
+    .md-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+    @media (max-width: 768px) { .md-grid { grid-template-columns: 1fr; } }
+    
+    .text-box-wrap { display: flex; flex-direction: column; gap: 8px; }
+    .text-box-wrap label { font-size: 0.9rem; font-weight: 600; color: var(--t1); display: flex; justify-content: space-between; align-items: center; }
+    .text-box { width: 100%; height: 400px; padding: 15px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: monospace; font-size: 0.9rem; line-height: 1.5; resize: vertical; outline: none; transition: border-color 0.2s; }
+    .text-box:focus { border-color: var(--accent); }
+    
+    .preview-box { width: 100%; height: 400px; padding: 15px; border: 1px solid var(--border); border-radius: 8px; color: #000; overflow-y: auto; font-family: system-ui, sans-serif; display: none; }
+    .preview-box.active { display: block; }
+    
+    /* Basic markdown preview styles */
+    .preview-box h1, .preview-box h2, .preview-box h3 { margin-top: 0; margin-bottom: 10px; }
+    .preview-box p { margin-bottom: 15px; line-height: 1.6; }
+    .preview-box code { padding: 2px 4px; border-radius: 4px; font-family: monospace; }
+    .preview-box pre { padding: 10px; border-radius: 4px; overflow-x: auto; margin-bottom: 15px; }
+    .preview-box pre code { background: none; padding: 0; }
+    .preview-box blockquote { border-left: 4px solid #ccc; margin: 0 0 15px; padding-left: 15px; color: #555; }
+    
+    .toolbar { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 10px; }
+    
+    .view-toggle { display: flex; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .view-btn { background: none; border: none; padding: 4px 12px; color: var(--t2); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.1s; }
+    .view-btn.active { background: var(--accent); color: #fff; }
+    
+    .copy-sm { background: none; border: none; color: var(--t2); cursor: pointer; transition: 0.15s; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; }
+    .copy-sm:hover { background: var(--bg3); color: var(--t1); }
+  </style>
+</head>
+<body>
+  <div class="tool-layout">
+    <header class="tool-nav">
+      <a href="../index.html" class="back-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Tools
+      </a>
+      <div class="tool-title">Markdown to HTML</div>
+      <div style="width:100px"></div>
+    </header>
+
+    <main class="tool-main" style="padding-top: 80px;">
+      <div class="workspace">
+        <div class="ws-panel">
+          
+          <div style="margin-bottom: 24px;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 8px;">Markdown Converter</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Type markdown on the left to instantly generate HTML code and live preview.</p>
+          </div>
+
+          <div class="md-grid">
+            <div class="text-box-wrap">
+              <label>
+                Markdown Input
+                <button class="sec-btn" id="btn-clear" style="padding: 2px 8px; font-size: 0.75rem;">Clear</button>
+              </label>
+              <textarea id="text-md" class="text-box" placeholder="# Hello World&#10;Type **markdown** here..."></textarea>
+            </div>
+            <div class="text-box-wrap">
+              <label>
+                Output
+                <div style="display:flex; gap:10px; align-items:center;">
+                  <div class="view-toggle">
+                    <button class="view-btn active" id="view-code">Code</button>
+                    <button class="view-btn" id="view-prev">Preview</button>
+                  </div>
+                  <button class="copy-sm" id="btn-copy" title="Copy Output">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  </button>
+                </div>
+              </label>
+              <textarea id="text-html" class="text-box" readonly placeholder="HTML output will appear here..."></textarea>
+              <div id="preview-box" class="preview-box"></div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
+  <script src="md-to-html.js"></script>
+</body>
+</html>

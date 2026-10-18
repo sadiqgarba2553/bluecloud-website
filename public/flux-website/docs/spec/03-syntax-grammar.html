@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>03 Syntax Grammar — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Language Specification — Syntax Grammar</h1>
+<p><strong>Version:</strong> 0.1.0-draft<br />
+<strong>Status:</strong> Draft</p>
+<hr />
+<h2>1. Overview</h2>
+<p>This document defines the complete syntax of the Flux programming language using Parsing Expression Grammar (PEG) notation. Every syntactic construct is specified with its formal grammar rule, a description, and one or more code examples.</p>
+<hr />
+<h2>2. Program Structure</h2>
+<pre><code>program         = module_comment* item*
+item            = use_decl / fn_decl / struct_decl / class_decl / enum_decl
+                / trait_decl / interface_decl / impl_block / type_alias
+                / const_decl / static_decl / mod_decl / extern_block
+                / macro_decl / test_decl
+</code></pre>
+<p>A Flux program is a sequence of top-level items. There is no required ordering, but the convention is:</p>
+<ol>
+<li>Module documentation comments (<code>//!</code>)</li>
+<li>Imports (<code>use</code>)</li>
+<li>Constants and type aliases</li>
+<li>Types (structs, classes, enums)</li>
+<li>Traits and interfaces</li>
+<li>Implementations</li>
+<li>Functions</li>
+</ol>
+<pre><code class="language-flux">//! A simple user management module.
+
+use flux.collections.HashMap
+use flux.io.print
+
+const MAX_USERS = 1000
+
+struct User {
+    name: String
+    email: String
+}
+
+fn main() {
+    let user = User { name: &quot;Alice&quot;, email: &quot;alice@flux.dev&quot; }
+    print(&quot;Welcome, {user.name}!&quot;)
+}
+</code></pre>
+<hr />
+<h2>3. Declarations</h2>
+<h3>3.1 Variable Declarations</h3>
+<pre><code>let_decl    = 'let' pattern (':' type)? ('=' expression)?
+mut_decl    = 'mut' IDENT (':' type)? ('=' expression)?
+const_decl  = 'const' IDENT (':' type)? '=' expression
+static_decl = 'static' 'mut'? IDENT ':' type '=' expression
+</code></pre>
+<p>Variables are <strong>immutable by default</strong>. Use <code>mut</code> for mutable bindings.</p>
+<pre><code class="language-flux">let x = 42                    // Immutable, type inferred as Int
+let y: Float64 = 3.14         // Immutable, explicit type
+mut counter = 0               // Mutable
+const PI = 3.14159265358979   // Compile-time constant
+static mut GLOBAL_COUNT: Int = 0  // Mutable static (requires unsafe to access)
+</code></pre>
+<h4>Destructuring</h4>
+<pre><code class="language-flux">let (x, y) = get_coordinates()          // Tuple destructuring
+let (first, ...rest) = [1, 2, 3, 4]     // Array destructuring
+let User { name, email } = get_user()   // Struct destructuring
+let { name, email: mail } = get_user()  // With renaming
+</code></pre>
+<h3>3.2 Function Declarations</h3>
+<pre><code>fn_decl     = attribute* visibility? 'async'? 'fn' IDENT generic_params?
+              '(' param_list? ')' ('-&gt;' type)? where_clause? block
+param_list  = param (',' param)* ','?
+param       = IDENT ':' type ('=' expression)?
+visibility  = 'pub' ('(' visibility_scope ')')?
+visibility_scope = 'crate' / 'super' / 'mod'
+</code></pre>
+<pre><code class="language-flux">// Basic function
+fn add(a: Int, b: Int) -&gt; Int {
+    return a + b
+}
+
+// Single-expression function
+fn double(x: Int) -&gt; Int = x * 2
+
+// Default parameters
+fn greet(name: String, greeting: String = &quot;Hello&quot;) -&gt; String {
+    return &quot;{greeting}, {name}!&quot;
+}
+
+// Named arguments at call site
+greet(name: &quot;World&quot;, greeting: &quot;Hi&quot;)
+
+// Generic function
+fn first&lt;T&gt;(items: List&lt;T&gt;) -&gt; Option&lt;T&gt; {
+    return items.get(0)
+}
+
+// Async function
+async fn fetch(url: String) -&gt; Result&lt;String, HttpError&gt; {
+    let response = await http.get(url)?
+    return Ok(response.body)
+}
+
+// Public function
+pub fn public_api() -&gt; Int {
+    return 42
+}
+
+// Function with trait bounds
+fn print_all&lt;T&gt;(items: List&lt;T&gt;) where T: Printable {
+    for item in items {
+        print(item.to_string())
+    }
+}
+</code></pre>
+<h4>Return Type</h4>
+<ul>
+<li>If the return type is omitted, it defaults to <code>Void</code> (no return value).</li>
+<li>The <code>return</code> keyword is required for explicit returns. The last expression in a block is <strong>not</strong> implicitly returned (unlike Rust). Use <code>return</code> for clarity.</li>
+<li>Exception: single-expression functions using <code>= expression</code> syntax return the expression's value.</li>
+</ul>
+<pre><code class="language-flux">// Explicit return required
+fn compute(x: Int) -&gt; Int {
+    let result = x * 2 + 1
+    return result
+}
+
+// Single-expression shorthand — no `return` needed
+fn square(x: Int) -&gt; Int = x * x
+
+// Void function — no return type
+fn log(message: String) {
+    print(&quot;[LOG] {message}&quot;)
+}
+</code></pre>
+<h3>3.3 Struct Declarations</h3>
+<pre><code>struct_decl = attribute* visibility? 'struct' IDENT generic_params? where_clause?
+              '{' struct_field* '}'
+struct_field = attribute* visibility? IDENT ':' type ('=' expression)?
+</code></pre>
+<p>Structs are value types with no inheritance. They are allocated on the stack by default.</p>
+<pre><code class="language-flux">struct Point {
+    x: Float64
+    y: Float64
+}
+
+struct Color {
+    r: UInt8
+    g: UInt8
+    b: UInt8
+    a: UInt8 = 255  // Default value
+}
+
+// Generic struct
+struct Pair&lt;A, B&gt; {
+    first: A
+    second: B
+}
+
+// Instantiation
+let origin = Point { x: 0.0, y: 0.0 }
+let red = Color { r: 255, g: 0, b: 0 }  // a defaults to 255
+let pair = Pair { first: &quot;hello&quot;, second: 42 }
+</code></pre>
+<h3>3.4 Class Declarations</h3>
+<pre><code>class_decl = attribute* visibility? 'class' IDENT generic_params?
+             (':' type_list)? where_clause? '{' class_member* '}'
+class_member = struct_field / fn_decl / init_decl / deinit_decl
+init_decl    = visibility? 'init' '(' param_list? ')' block
+deinit_decl  = 'deinit' block
+</code></pre>
+<p>Classes are reference types with single inheritance. They are heap-allocated and managed by ARC (Automatic Reference Counting).</p>
+<pre><code class="language-flux">class Animal {
+    name: String
+    sound: String
+
+    init(name: String, sound: String) {
+        self.name = name
+        self.sound = sound
+    }
+
+    fn speak(self) -&gt; String {
+        return &quot;{self.name} says {self.sound}!&quot;
+    }
+
+    deinit {
+        print(&quot;{self.name} is being deallocated&quot;)
+    }
+}
+
+// Inheritance
+class Dog: Animal {
+    breed: String
+
+    init(name: String, breed: String) {
+        super.init(name: name, sound: &quot;Woof&quot;)
+        self.breed = breed
+    }
+
+    fn fetch(self, item: String) -&gt; String {
+        return &quot;{self.name} fetches the {item}!&quot;
+    }
+}
+
+let dog = Dog(name: &quot;Rex&quot;, breed: &quot;Labrador&quot;)
+print(dog.speak())     // &quot;Rex says Woof!&quot;
+print(dog.fetch(&quot;ball&quot;)) // &quot;Rex fetches the ball!&quot;
+</code></pre>
+<h3>3.5 Enum Declarations</h3>
+<pre><code>enum_decl    = attribute* visibility? 'enum' IDENT generic_params? where_clause?
+               '{' enum_variant (',' enum_variant)* ','? '}'
+enum_variant = IDENT enum_variant_data?
+enum_variant_data = '(' field_list ')' / '{' struct_field* '}'
+field_list   = field (',' field)* ','?
+field        = (IDENT ':')? type
+</code></pre>
+<p>Enums are algebraic data types (sum types). Each variant can optionally carry data.</p>
+<pre><code class="language-flux">// Simple enum
+enum Direction {
+    North,
+    South,
+    East,
+    West,
+}
+
+// Enum with associated data
+enum Shape {
+    Circle(radius: Float64),
+    Rectangle(width: Float64, height: Float64),
+    Triangle(base: Float64, height: Float64),
+    Point,
+}
+
+// Generic enum
+enum Option&lt;T&gt; {
+    Some(T),
+    None,
+}
+
+enum Result&lt;T, E&gt; {
+    Ok(T),
+    Err(E),
+}
+
+// Complex enum
+enum Token {
+    Integer(value: Int),
+    Float(value: Float64),
+    String(value: String),
+    Identifier(name: String),
+    Keyword(kind: KeywordKind),
+    Eof,
+}
+
+// Usage
+let shape = Shape.Circle(radius: 5.0)
+let result: Result&lt;Int, String&gt; = Ok(42)
+</code></pre>
+<h3>3.6 Trait Declarations</h3>
+<pre><code>trait_decl    = attribute* visibility? 'trait' IDENT generic_params?
+               (':' type_list)? where_clause? '{' trait_member* '}'
+trait_member  = fn_signature / fn_decl / type_alias / const_decl
+fn_signature  = 'fn' IDENT generic_params? '(' param_list? ')' ('-&gt;' type)? where_clause?
+</code></pre>
+<p>Traits define shared behavior. They can contain:
+- Required methods (signature only)
+- Default methods (with implementation)
+- Associated types
+- Associated constants</p>
+<pre><code class="language-flux">trait Printable {
+    fn to_string(self) -&gt; String
+}
+
+trait Comparable: Equatable {
+    fn compare(self, other: Self) -&gt; Ordering
+
+    // Default methods
+    fn less_than(self, other: Self) -&gt; Bool {
+        return self.compare(other) == Ordering.Less
+    }
+
+    fn greater_than(self, other: Self) -&gt; Bool {
+        return self.compare(other) == Ordering.Greater
+    }
+}
+
+trait Iterator {
+    type Item  // Associated type
+
+    fn next(mut self) -&gt; Option&lt;Self.Item&gt;
+
+    // Default method using the required method
+    fn count(mut self) -&gt; Int {
+        mut n = 0
+        while self.next() is Some(_) {
+            n += 1
+        }
+        return n
+    }
+}
+
+trait Addable {
+    const ZERO: Self  // Associated constant
+
+    fn add(self, other: Self) -&gt; Self
+}
+</code></pre>
+<h3>3.7 Interface Declarations</h3>
+<pre><code>interface_decl = attribute* visibility? 'interface' IDENT generic_params?
+                 '{' fn_signature* '}'
+</code></pre>
+<p>Interfaces are like traits but <strong>cannot</strong> have default implementations or associated types. They define a pure contract. Interfaces support structural subtyping — a type satisfies an interface if it has all the required methods, even without an explicit <code>impl</code> declaration.</p>
+<pre><code class="language-flux">interface Serializable {
+    fn serialize(self) -&gt; Bytes
+    fn deserialize(data: Bytes) -&gt; Self
+}
+
+interface Cloneable {
+    fn clone(self) -&gt; Self
+}
+</code></pre>
+<h3>3.8 Implementation Blocks</h3>
+<pre><code>impl_block = 'impl' generic_params? type ('for' type)? where_clause? '{' fn_decl* '}'
+</code></pre>
+<pre><code class="language-flux">// Methods on a type
+impl Point {
+    fn distance_to(self, other: Point) -&gt; Float64 {
+        let dx = self.x - other.x
+        let dy = self.y - other.y
+        return (dx * dx + dy * dy).sqrt()
+    }
+
+    fn translate(self, dx: Float64, dy: Float64) -&gt; Point {
+        return Point { x: self.x + dx, y: self.y + dy }
+    }
+}
+
+// Implementing a trait for a type
+impl Printable for Point {
+    fn to_string(self) -&gt; String {
+        return &quot;({self.x}, {self.y})&quot;
+    }
+}
+
+// Generic implementation
+impl&lt;T: Printable&gt; Printable for List&lt;T&gt; {
+    fn to_string(self) -&gt; String {
+        let items = self.map(fn(item) { item.to_string() }).join(&quot;, &quot;)
+        return &quot;[{items}]&quot;
+    }
+}
+</code></pre>
+<h3>3.9 Type Aliases</h3>
+<pre><code>type_alias = 'type' IDENT generic_params? '=' type
+</code></pre>
+<pre><code class="language-flux">type StringMap&lt;V&gt; = HashMap&lt;String, V&gt;
+type Callback = fn(Int, Int) -&gt; Int
+type Result&lt;T&gt; = flux.Result&lt;T, AppError&gt;
+</code></pre>
+<h3>3.10 Module Declarations</h3>
+<pre><code>mod_decl = visibility? 'mod' IDENT ('{' item* '}' / ';')
+</code></pre>
+<p>Modules organize code into namespaces. A module can be declared inline or in a separate file.</p>
+<pre><code class="language-flux">// Inline module
+mod math {
+    pub fn abs(x: Int) -&gt; Int {
+        if x &lt; 0 { return -x }
+        return x
+    }
+}
+
+// File module — compiler looks for `utils.flux` or `utils/mod.flux`
+mod utils
+</code></pre>
+<h3>3.11 Use Declarations (Imports)</h3>
+<pre><code>use_decl    = 'use' use_path
+use_path    = path_segment ('.' path_segment)* use_suffix?
+use_suffix  = '.{' use_item (',' use_item)* ','? '}'
+            / '.' '*'
+            / 'as' IDENT
+use_item    = IDENT ('as' IDENT)?
+</code></pre>
+<pre><code class="language-flux">use flux.io.print                     // Import a single item
+use flux.collections.{HashMap, List}  // Import multiple items
+use flux.math.*                       // Import everything (glob)
+use flux.http.Client as HttpClient    // Import with alias
+use flux.json.{parse, stringify as to_json}  // Mixed
+</code></pre>
+<hr />
+<h2>4. Expressions</h2>
+<h3>4.1 Literal Expressions</h3>
+<pre><code>literal_expr = integer_literal / float_literal / string_literal
+             / char_literal / bool_literal / none_literal
+             / array_literal / map_literal / tuple_literal
+</code></pre>
+<p>See <a href="02-lexical-structure.md#7-literals">Lexical Structure §7</a> for literal formats.</p>
+<h3>4.2 Identifier Expressions</h3>
+<pre><code>ident_expr = IDENT ('.' IDENT)*
+</code></pre>
+<pre><code class="language-flux">x
+user.name
+flux.io.print
+</code></pre>
+<h3>4.3 Unary Expressions</h3>
+<pre><code>unary_expr = ('-' / 'not' / '~' / '&amp;' / '&amp;mut' / '*') expression
+</code></pre>
+<pre><code class="language-flux">-x          // Negation
+not enabled // Logical NOT
+~bits       // Bitwise NOT
+&amp;value      // Shared reference
+&amp;mut value  // Mutable reference
+*ptr        // Dereference
+</code></pre>
+<h3>4.4 Binary Expressions</h3>
+<pre><code>binary_expr = expression operator expression
+</code></pre>
+<p>All binary operators and their precedence are defined in <a href="02-lexical-structure.md#8-operators">Lexical Structure §8</a>.</p>
+<h3>4.5 Function Call Expressions</h3>
+<pre><code>call_expr = expression '(' arg_list? ')'
+arg_list  = arg (',' arg)* ','?
+arg       = (IDENT ':')? expression
+</code></pre>
+<pre><code class="language-flux">print(&quot;Hello&quot;)
+add(1, 2)
+greet(name: &quot;Alice&quot;, greeting: &quot;Hi&quot;)
+user.method()
+list.map(fn(x) { x * 2 })
+</code></pre>
+<h3>4.6 Index Expressions</h3>
+<pre><code>index_expr = expression '[' expression ']'
+</code></pre>
+<pre><code class="language-flux">let first = array[0]
+let value = map[&quot;key&quot;]
+matrix[row][col] = 42
+</code></pre>
+<h3>4.7 Member Access Expressions</h3>
+<pre><code>member_expr = expression '.' IDENT
+optional_chain_expr = expression '?.' IDENT
+</code></pre>
+<pre><code class="language-flux">user.name
+point.x
+user?.address?.city    // Returns none if any step is none
+</code></pre>
+<h3>4.8 If Expressions</h3>
+<pre><code>if_expr = 'if' expression block ('else' 'if' expression block)* ('else' block)?
+</code></pre>
+<p><code>if</code> is an <strong>expression</strong> — it returns a value:</p>
+<pre><code class="language-flux">// As a statement
+if temperature &gt; 100 {
+    print(&quot;Too hot!&quot;)
+} else if temperature &lt; 0 {
+    print(&quot;Too cold!&quot;)
+} else {
+    print(&quot;Just right.&quot;)
+}
+
+// As an expression
+let status = if score &gt;= 90 {
+    &quot;A&quot;
+} else if score &gt;= 80 {
+    &quot;B&quot;
+} else {
+    &quot;C&quot;
+}
+
+// If-let for Option unwrapping
+if let Some(user) = find_user(id) {
+    print(&quot;Found: {user.name}&quot;)
+} else {
+    print(&quot;User not found&quot;)
+}
+</code></pre>
+<h3>4.9 Match Expressions</h3>
+<pre><code>match_expr    = 'match' expression '{' match_arm+ '}'
+match_arm     = pattern ('if' expression)? '-&gt;' (expression / block)
+pattern       = literal_pattern / ident_pattern / tuple_pattern
+              / struct_pattern / enum_pattern / wildcard_pattern
+              / range_pattern / or_pattern / binding_pattern
+wildcard_pattern = '_'
+or_pattern       = pattern ('|' pattern)+
+binding_pattern  = IDENT '@' pattern
+</code></pre>
+<p>Pattern matching must be <strong>exhaustive</strong> — all possible values must be covered.</p>
+<pre><code class="language-flux">// Simple value matching
+match direction {
+    Direction.North -&gt; print(&quot;Going north&quot;)
+    Direction.South -&gt; print(&quot;Going south&quot;)
+    Direction.East  -&gt; print(&quot;Going east&quot;)
+    Direction.West  -&gt; print(&quot;Going west&quot;)
+}
+
+// Matching with data extraction
+match shape {
+    Shape.Circle(r)        -&gt; 3.14159 * r * r
+    Shape.Rectangle(w, h)  -&gt; w * h
+    Shape.Triangle(b, h)   -&gt; 0.5 * b * h
+    Shape.Point            -&gt; 0.0
+}
+
+// Guard clauses
+match value {
+    x if x &lt; 0    -&gt; print(&quot;Negative: {x}&quot;)
+    x if x == 0   -&gt; print(&quot;Zero&quot;)
+    x if x &lt; 100  -&gt; print(&quot;Small positive: {x}&quot;)
+    x              -&gt; print(&quot;Large: {x}&quot;)
+}
+
+// Nested patterns
+match result {
+    Ok(Some(value)) -&gt; print(&quot;Got: {value}&quot;)
+    Ok(None)        -&gt; print(&quot;Empty result&quot;)
+    Err(error)      -&gt; print(&quot;Error: {error}&quot;)
+}
+
+// Or patterns
+match key {
+    'a' | 'e' | 'i' | 'o' | 'u' -&gt; print(&quot;Vowel&quot;)
+    _                              -&gt; print(&quot;Consonant&quot;)
+}
+
+// Range patterns
+match age {
+    0..=12   -&gt; &quot;Child&quot;
+    13..=17  -&gt; &quot;Teenager&quot;
+    18..=64  -&gt; &quot;Adult&quot;
+    _        -&gt; &quot;Senior&quot;
+}
+
+// Binding patterns
+match value {
+    n @ 1..=100 -&gt; print(&quot;In range: {n}&quot;)
+    n           -&gt; print(&quot;Out of range: {n}&quot;)
+}
+
+// Struct patterns
+match point {
+    Point { x: 0, y: 0 }     -&gt; print(&quot;Origin&quot;)
+    Point { x, y: 0 }        -&gt; print(&quot;On x-axis at {x}&quot;)
+    Point { x: 0, y }        -&gt; print(&quot;On y-axis at {y}&quot;)
+    Point { x, y }            -&gt; print(&quot;At ({x}, {y})&quot;)
+}
+</code></pre>
+<h3>4.10 Closure Expressions</h3>
+<pre><code>closure_expr = ('fn' / 'move')? '(' param_list? ')' ('-&gt;' type)? block
+             / ('fn' / 'move')? '(' param_list? ')' '=&gt;' expression
+</code></pre>
+<pre><code class="language-flux">// Full closure
+let add = fn(a: Int, b: Int) -&gt; Int {
+    return a + b
+}
+
+// Arrow closure (single expression)
+let double = (x: Int) =&gt; x * 2
+
+// Type-inferred parameters
+let square = (x) =&gt; x * x
+
+// Used inline
+let evens = numbers.filter((n) =&gt; n % 2 == 0)
+
+// Multi-line closure
+let process = fn(items: List&lt;Int&gt;) -&gt; List&lt;Int&gt; {
+    mut result = List&lt;Int&gt;.new()
+    for item in items {
+        if item &gt; 0 {
+            result.append(item * 2)
+        }
+    }
+    return result
+}
+
+// Move closure (takes ownership of captured variables)
+let name = &quot;Alice&quot;
+let greet = move fn() -&gt; String {
+    return &quot;Hello, {name}!&quot;
+}
+</code></pre>
+<h3>4.11 Block Expressions</h3>
+<pre><code>block = '{' statement* '}'
+</code></pre>
+<p>A block is a sequence of statements enclosed in curly braces. Blocks create a new scope.</p>
+<pre><code class="language-flux">let result = {
+    let a = compute_a()
+    let b = compute_b()
+    a + b   // Note: blocks don't implicitly return; use `return` in functions
+}
+</code></pre>
+<h3>4.12 Tuple Expressions</h3>
+<pre><code>tuple_expr = '(' expression ',' expression (',' expression)* ','? ')'
+</code></pre>
+<pre><code class="language-flux">let point = (10, 20)
+let (x, y) = point
+print(point.0)   // Access by index
+
+let named = (x: 10, y: 20)
+print(named.x)   // Access by name
+</code></pre>
+<h3>4.13 Array Expressions</h3>
+<pre><code>array_expr = '[' (expression (',' expression)* ','?)? ']'
+           / '[' expression ';' expression ']'
+</code></pre>
+<pre><code class="language-flux">let numbers = [1, 2, 3, 4, 5]
+let zeros = [0; 100]              // 100 zeros
+let matrix = [[1, 2], [3, 4]]    // Nested arrays
+</code></pre>
+<h3>4.14 Map Expressions</h3>
+<pre><code>map_expr = '{' (map_entry (',' map_entry)* ','?)? '}'
+map_entry = expression ':' expression
+</code></pre>
+<pre><code class="language-flux">let scores = {
+    &quot;Alice&quot;: 95
+    &quot;Bob&quot;: 87
+    &quot;Carol&quot;: 92
+}
+</code></pre>
+<h3>4.15 Range Expressions</h3>
+<pre><code>range_expr = expression '..' expression
+           / expression '..=' expression
+</code></pre>
+<pre><code class="language-flux">for i in 0..10 {       // 0 to 9
+    print(i)
+}
+
+for i in 0..=10 {      // 0 to 10
+    print(i)
+}
+</code></pre>
+<h3>4.16 Pipe Expressions</h3>
+<pre><code>pipe_expr = expression '|&gt;' expression
+</code></pre>
+<p>The pipe operator passes the left-hand side as the first argument to the right-hand side function.</p>
+<pre><code class="language-flux">let result = data
+    |&gt; parse
+    |&gt; validate
+    |&gt; transform
+    |&gt; serialize
+
+// Equivalent to:
+let result = serialize(transform(validate(parse(data))))
+</code></pre>
+<h3>4.17 Type Cast Expressions</h3>
+<pre><code>cast_expr  = expression 'as' type
+check_expr = expression 'is' type
+</code></pre>
+<pre><code class="language-flux">let x: Float64 = 42 as Float64
+let n: Int = 3.14 as Int         // Truncates to 3
+
+if value is String {
+    print(&quot;It's a string: {value as String}&quot;)
+}
+</code></pre>
+<h3>4.18 None Coalescing and Optional Chaining</h3>
+<pre><code>coalesce_expr = expression '??' expression
+chain_expr    = expression '?.' IDENT
+</code></pre>
+<pre><code class="language-flux">let name = user.name ?? &quot;Anonymous&quot;
+let city = user?.address?.city ?? &quot;Unknown&quot;
+</code></pre>
+<h3>4.19 Await Expressions</h3>
+<pre><code>await_expr = 'await' expression
+</code></pre>
+<pre><code class="language-flux">let response = await http.get(&quot;https://api.example.com&quot;)
+let (a, b) = await (fetch_a(), fetch_b())  // Concurrent await
+</code></pre>
+<hr />
+<h2>5. Statements</h2>
+<h3>5.1 Expression Statements</h3>
+<p>Any expression can be used as a statement.</p>
+<pre><code class="language-flux">print(&quot;hello&quot;)
+x + y           // Warning: result unused
+user.save()
+</code></pre>
+<h3>5.2 Assignment Statements</h3>
+<pre><code>assignment = expression '=' expression
+           / expression compound_assign expression
+compound_assign = '+=' / '-=' / '*=' / '/=' / '%=' / '**='
+                / '&amp;=' / '|=' / '^=' / '&lt;&lt;=' / '&gt;&gt;='
+</code></pre>
+<pre><code class="language-flux">mut x = 10
+x = 20
+x += 5
+x *= 2
+</code></pre>
+<h3>5.3 Return Statements</h3>
+<pre><code>return_stmt = 'return' expression?
+</code></pre>
+<pre><code class="language-flux">fn compute() -&gt; Int {
+    return 42
+}
+
+fn do_nothing() {
+    return   // Returns Void
+}
+</code></pre>
+<h3>5.4 Defer Statements</h3>
+<pre><code>defer_stmt = 'defer' (block / expression)
+</code></pre>
+<p><code>defer</code> schedules code to run when the enclosing scope exits, regardless of how it exits (return, error, etc.). Multiple defers execute in LIFO (reverse) order.</p>
+<pre><code class="language-flux">fn read_file(path: String) -&gt; Result&lt;String, IoError&gt; {
+    let file = File.open(path)?
+    defer file.close()
+
+    return file.read_all()
+}
+
+fn transaction() {
+    db.begin()
+    defer db.rollback()  // Runs if we don't commit
+
+    // ... operations ...
+
+    db.commit()
+}
+</code></pre>
+<hr />
+<h2>6. Control Flow</h2>
+<h3>6.1 For Loops</h3>
+<pre><code>for_stmt = 'for' pattern 'in' expression block
+</code></pre>
+<pre><code class="language-flux">// Iterate over a range
+for i in 0..10 {
+    print(i)
+}
+
+// Iterate over a collection
+for item in items {
+    print(item)
+}
+
+// Destructuring in for loop
+for (index, value) in items.enumerate() {
+    print(&quot;{index}: {value}&quot;)
+}
+
+// Iterate over map entries
+for (key, value) in scores {
+    print(&quot;{key} = {value}&quot;)
+}
+
+// For with filter (syntactic sugar)
+for item in items if item.is_valid() {
+    process(item)
+}
+</code></pre>
+<h3>6.2 While Loops</h3>
+<pre><code>while_stmt = 'while' expression block
+while_let  = 'while' 'let' pattern '=' expression block
+</code></pre>
+<pre><code class="language-flux">mut count = 0
+while count &lt; 10 {
+    print(count)
+    count += 1
+}
+
+// While-let
+while let Some(item) = iterator.next() {
+    process(item)
+}
+</code></pre>
+<h3>6.3 Loop (Infinite)</h3>
+<pre><code>loop_stmt = 'loop' block
+</code></pre>
+<pre><code class="language-flux">loop {
+    let input = read_line()
+    if input == &quot;quit&quot; {
+        break
+    }
+    process(input)
+}
+
+// Loop with value (break returns a value)
+let result = loop {
+    let attempt = try_operation()
+    if attempt.is_ok() {
+        break attempt.unwrap()
+    }
+}
+</code></pre>
+<h3>6.4 Break and Continue</h3>
+<pre><code>break_stmt    = 'break' expression?
+continue_stmt = 'continue'
+</code></pre>
+<pre><code class="language-flux">for item in items {
+    if item.is_invalid() {
+        continue     // Skip this iteration
+    }
+    if item.is_final() {
+        break        // Exit the loop
+    }
+    process(item)
+}
+
+// Labeled loops
+outer: for i in 0..10 {
+    for j in 0..10 {
+        if i * j &gt; 50 {
+            break outer  // Break the outer loop
+        }
+    }
+}
+</code></pre>
+<hr />
+<h2>7. Generics</h2>
+<pre><code>generic_params = '&lt;' generic_param (',' generic_param)* ','? '&gt;'
+generic_param  = IDENT (':' type_bound)?
+type_bound     = type ('+' type)*
+where_clause   = 'where' where_predicate (',' where_predicate)* ','?
+where_predicate = type ':' type_bound
+</code></pre>
+<pre><code class="language-flux">// Generic function
+fn max&lt;T: Comparable&gt;(a: T, b: T) -&gt; T {
+    if a.greater_than(b) {
+        return a
+    }
+    return b
+}
+
+// Generic struct
+struct Stack&lt;T&gt; {
+    items: List&lt;T&gt;
+}
+
+impl&lt;T&gt; Stack&lt;T&gt; {
+    fn new() -&gt; Stack&lt;T&gt; {
+        return Stack { items: List.new() }
+    }
+
+    fn push(mut self, item: T) {
+        self.items.append(item)
+    }
+
+    fn pop(mut self) -&gt; Option&lt;T&gt; {
+        return self.items.pop()
+    }
+}
+
+// Multiple bounds
+fn process&lt;T: Printable + Comparable&gt;(item: T) {
+    print(item.to_string())
+}
+
+// Where clause (for complex bounds)
+fn merge&lt;A, B, C&gt;(a: A, b: B) -&gt; C
+    where A: Into&lt;C&gt;,
+          B: Into&lt;C&gt;,
+          C: Addable {
+    return a.into().add(b.into())
+}
+
+// Generic enum
+enum Either&lt;L, R&gt; {
+    Left(L),
+    Right(R),
+}
+</code></pre>
+<hr />
+<h2>8. Type Annotations</h2>
+<pre><code>type        = simple_type / generic_type / function_type / tuple_type
+            / array_type / reference_type / optional_type
+simple_type = IDENT ('.' IDENT)*
+generic_type = simple_type '&lt;' type (',' type)* '&gt;'
+function_type = 'fn' '(' type_list? ')' '-&gt;' type
+tuple_type   = '(' type ',' type (',' type)* ')'
+array_type   = '[' type ']'
+reference_type = '&amp;' 'mut'? type
+optional_type  = type '?'
+</code></pre>
+<pre><code class="language-flux">let x: Int = 42
+let name: String = &quot;Flux&quot;
+let items: List&lt;Int&gt; = [1, 2, 3]
+let callback: fn(Int, Int) -&gt; Int = add
+let point: (Float64, Float64) = (1.0, 2.0)
+let numbers: [Int] = [1, 2, 3]
+let reference: &amp;String = &amp;name
+let optional: Int? = none     // Shorthand for Option&lt;Int&gt;
+let map: HashMap&lt;String, List&lt;Int&gt;&gt; = HashMap.new()
+</code></pre>
+<hr />
+<h2>9. Attributes and Annotations</h2>
+<pre><code>attribute    = '#[' attr_path attr_args? ']'
+attr_path    = IDENT ('.' IDENT)*
+attr_args    = '(' attr_arg_list ')'
+attr_arg_list = attr_arg (',' attr_arg)*
+attr_arg     = IDENT '=' literal / IDENT / literal
+</code></pre>
+<pre><code class="language-flux">#[derive(Debug, Clone, Eq, Hash)]
+struct Point {
+    x: Float64
+    y: Float64
+}
+
+#[deprecated(since: &quot;2.0&quot;, note: &quot;Use new_function instead&quot;)]
+fn old_function() {
+    // ...
+}
+
+#[cfg(target_os: &quot;linux&quot;)]
+fn linux_specific() {
+    // Only compiled on Linux
+}
+
+#[inline]
+fn fast_function(x: Int) -&gt; Int {
+    return x * 2
+}
+
+#[test]
+fn test_addition() {
+    assert(1 + 1 == 2)
+}
+
+#[bench]
+fn bench_sort(b: Bencher) {
+    b.iter(fn() {
+        let data = generate_random_data(1000)
+        data.sort()
+    })
+}
+</code></pre>
+<hr />
+<h2>10. Test Declarations</h2>
+<pre><code>test_decl = '#[test]' fn_decl
+          / 'test' STRING_LITERAL block
+</code></pre>
+<p>Flux supports two styles of test declarations:</p>
+<pre><code class="language-flux">// Attribute style (preferred for unit tests)
+#[test]
+fn test_addition() {
+    assert(add(2, 3) == 5)
+    assert(add(-1, 1) == 0)
+}
+
+// Block style (for descriptive integration tests)
+test &quot;user creation should validate email&quot; {
+    let result = User.create(name: &quot;Alice&quot;, email: &quot;invalid&quot;)
+    assert(result.is_err())
+    assert(result.unwrap_err().message.contains(&quot;email&quot;))
+}
+
+// Test with expected failure
+#[test]
+#[should_panic(message: &quot;division by zero&quot;)]
+fn test_division_by_zero() {
+    let _ = 1 / 0
+}
+</code></pre>
+<hr />
+<h2>11. Extern Blocks</h2>
+<pre><code>extern_block = 'extern' STRING_LITERAL '{' extern_item* '}'
+extern_item  = 'fn' IDENT '(' param_list? ')' ('-&gt;' type)?
+</code></pre>
+<pre><code class="language-flux">extern &quot;C&quot; {
+    fn printf(format: *Byte, ...) -&gt; Int
+    fn malloc(size: USize) -&gt; *mut Byte
+    fn free(ptr: *mut Byte)
+}
+</code></pre>
+<hr />
+<h2>12. Operator Overloading</h2>
+<p>Operators are overloaded by implementing the corresponding trait:</p>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Trait</th>
+<th>Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>+</code></td>
+<td><code>Add</code></td>
+<td><code>fn add(self, rhs: Rhs) -&gt; Output</code></td>
+</tr>
+<tr>
+<td><code>-</code></td>
+<td><code>Sub</code></td>
+<td><code>fn sub(self, rhs: Rhs) -&gt; Output</code></td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td><code>Mul</code></td>
+<td><code>fn mul(self, rhs: Rhs) -&gt; Output</code></td>
+</tr>
+<tr>
+<td><code>/</code></td>
+<td><code>Div</code></td>
+<td><code>fn div(self, rhs: Rhs) -&gt; Output</code></td>
+</tr>
+<tr>
+<td><code>%</code></td>
+<td><code>Rem</code></td>
+<td><code>fn rem(self, rhs: Rhs) -&gt; Output</code></td>
+</tr>
+<tr>
+<td><code>==</code></td>
+<td><code>Eq</code></td>
+<td><code>fn eq(self, rhs: Rhs) -&gt; Bool</code></td>
+</tr>
+<tr>
+<td><code>&lt;</code></td>
+<td><code>Ord</code></td>
+<td><code>fn cmp(self, rhs: Rhs) -&gt; Ordering</code></td>
+</tr>
+<tr>
+<td><code>[]</code></td>
+<td><code>Index</code></td>
+<td><code>fn index(self, idx: Idx) -&gt; Output</code></td>
+</tr>
+<tr>
+<td><code>-</code> (unary)</td>
+<td><code>Neg</code></td>
+<td><code>fn neg(self) -&gt; Output</code></td>
+</tr>
+<tr>
+<td><code>~</code></td>
+<td><code>BitNot</code></td>
+<td><code>fn bit_not(self) -&gt; Output</code></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-flux">impl Add for Point {
+    type Output = Point
+
+    fn add(self, rhs: Point) -&gt; Point {
+        return Point { x: self.x + rhs.x, y: self.y + rhs.y }
+    }
+}
+
+let a = Point { x: 1.0, y: 2.0 }
+let b = Point { x: 3.0, y: 4.0 }
+let c = a + b  // Point { x: 4.0, y: 6.0 }
+</code></pre>
+<hr />
+<h2>13. Extension Methods</h2>
+<pre><code>extend_block = 'extend' type where_clause? '{' fn_decl* '}'
+</code></pre>
+<p>Extension methods add new methods to existing types without modifying their source:</p>
+<pre><code class="language-flux">extend String {
+    fn is_blank(self) -&gt; Bool {
+        return self.trim().is_empty()
+    }
+
+    fn repeat(self, n: Int) -&gt; String {
+        mut result = &quot;&quot;
+        for _ in 0..n {
+            result += self
+        }
+        return result
+    }
+}
+
+let s = &quot;hello&quot;
+print(s.repeat(3))    // &quot;hellohellohello&quot;
+print(&quot;  &quot;.is_blank()) // true
+</code></pre>
+<hr />
+<h2>14. Async and Concurrency Syntax</h2>
+<h3>14.1 Async Functions</h3>
+<pre><code class="language-flux">async fn fetch_user(id: Int) -&gt; Result&lt;User, ApiError&gt; {
+    let response = await http.get(&quot;/api/users/{id}&quot;)?
+    let user: User = json.parse(response.body)?
+    return Ok(user)
+}
+</code></pre>
+<h3>14.2 Spawn Tasks</h3>
+<pre><code class="language-flux">async fn main() {
+    let task1 = spawn fetch_user(1)
+    let task2 = spawn fetch_user(2)
+
+    let user1 = await task1
+    let user2 = await task2
+
+    print(&quot;{user1.name}, {user2.name}&quot;)
+}
+</code></pre>
+<h3>14.3 Task Groups</h3>
+<pre><code class="language-flux">async fn fetch_all_users(ids: List&lt;Int&gt;) -&gt; List&lt;User&gt; {
+    let group = TaskGroup&lt;User&gt;.new()
+
+    for id in ids {
+        group.spawn(async {
+            return await fetch_user(id)
+        })
+    }
+
+    return await group.collect()
+}
+</code></pre>
+<h3>14.4 Channels</h3>
+<pre><code class="language-flux">async fn producer_consumer() {
+    let (sender, receiver) = Channel&lt;Int&gt;.new(buffer: 10)
+
+    spawn async {
+        for i in 0..100 {
+            await sender.send(i)
+        }
+        sender.close()
+    }
+
+    while let Some(value) = await receiver.receive() {
+        print(&quot;Received: {value}&quot;)
+    }
+}
+</code></pre>
+<hr />
+<h2>15. Error Handling Syntax</h2>
+<h3>15.1 Result and Option</h3>
+<pre><code class="language-flux">fn divide(a: Int, b: Int) -&gt; Result&lt;Int, MathError&gt; {
+    if b == 0 {
+        return Err(MathError.DivisionByZero)
+    }
+    return Ok(a / b)
+}
+
+fn find_user(id: Int) -&gt; Option&lt;User&gt; {
+    return database.users.get(id)
+}
+</code></pre>
+<h3>15.2 Error Propagation (<code>?</code>)</h3>
+<pre><code class="language-flux">fn process_file(path: String) -&gt; Result&lt;Data, AppError&gt; {
+    let content = File.read(path)?        // Propagates IoError
+    let parsed = json.parse(content)?     // Propagates ParseError
+    let validated = validate(parsed)?     // Propagates ValidationError
+    return Ok(validated)
+}
+</code></pre>
+<h3>15.3 Try-Catch</h3>
+<p><code>try</code>/<code>catch</code> is syntactic sugar over <code>match</code> on <code>Result</code>:</p>
+<pre><code class="language-flux">try {
+    let file = File.open(&quot;data.txt&quot;)?
+    let content = file.read_all()?
+    process(content)
+} catch IoError.NotFound {
+    print(&quot;File not found&quot;)
+} catch IoError.PermissionDenied {
+    print(&quot;Permission denied&quot;)
+} catch error {
+    print(&quot;Unexpected error: {error}&quot;)
+}
+</code></pre>
+<hr />
+<h2>16. Complete Formal Grammar Summary</h2>
+<pre><code>// === Program ===
+program         = item*
+item            = use_decl / fn_decl / struct_decl / class_decl / enum_decl
+                / trait_decl / interface_decl / impl_block / type_alias
+                / const_decl / static_decl / mod_decl / extern_block / test_decl
+
+// === Declarations ===
+let_decl        = 'let' pattern (':' type)? '=' expression
+mut_decl        = 'mut' IDENT (':' type)? '=' expression
+const_decl      = 'const' IDENT (':' type)? '=' expression
+fn_decl         = attribute* visibility? 'async'? 'fn' IDENT generic_params?
+                  '(' param_list? ')' ('-&gt;' type)? where_clause? (block / '=' expression)
+struct_decl     = attribute* visibility? 'struct' IDENT generic_params? '{' struct_field* '}'
+class_decl      = attribute* visibility? 'class' IDENT generic_params? (':' type_list)?
+                  '{' class_member* '}'
+enum_decl       = attribute* visibility? 'enum' IDENT generic_params? '{' enum_variant+ '}'
+trait_decl      = attribute* visibility? 'trait' IDENT generic_params? (':' type_list)?
+                  '{' trait_member* '}'
+interface_decl  = attribute* visibility? 'interface' IDENT generic_params? '{' fn_signature* '}'
+impl_block      = 'impl' generic_params? type ('for' type)? where_clause? '{' fn_decl* '}'
+type_alias      = 'type' IDENT generic_params? '=' type
+mod_decl        = visibility? 'mod' IDENT ('{' item* '}' / ';')
+use_decl        = 'use' use_path
+extern_block    = 'extern' STRING '{' extern_item* '}'
+extend_block    = 'extend' type '{' fn_decl* '}'
+
+// === Expressions ===
+expression      = assignment_expr
+assignment_expr = pipe_expr (('=' / '+=' / '-=' / '*=' / '/=' / '%=') pipe_expr)?
+pipe_expr       = or_expr ('|&gt;' or_expr)*
+or_expr         = and_expr ('or' and_expr)*
+and_expr        = equality_expr ('and' equality_expr)*
+equality_expr   = comparison_expr (('==' / '!=') comparison_expr)?
+comparison_expr = range_expr (('&lt;' / '&gt;' / '&lt;=' / '&gt;=') range_expr)?
+range_expr      = additive_expr (('..' / '..=') additive_expr)?
+additive_expr   = multiplicative_expr (('+' / '-') multiplicative_expr)*
+multiplicative_expr = power_expr (('*' / '/' / '%') power_expr)*
+power_expr      = unary_expr ('**' unary_expr)?
+unary_expr      = ('-' / 'not' / '~' / '&amp;' / '&amp;mut' / '*') unary_expr / postfix_expr
+postfix_expr    = primary_expr (call_suffix / index_suffix / member_suffix / '?' / 'as' type / 'is' type)*
+primary_expr    = literal / IDENT / '(' expression ')' / if_expr / match_expr
+                / block / closure_expr / array_expr / map_expr / 'await' expression
+
+// === Statements ===
+statement       = let_decl / mut_decl / expression / return_stmt / defer_stmt
+                / for_stmt / while_stmt / loop_stmt / break_stmt / continue_stmt
+
+// === Control Flow ===
+if_expr         = 'if' ('let' pattern '=')? expression block ('else' (if_expr / block))?
+match_expr      = 'match' expression '{' match_arm+ '}'
+match_arm       = pattern ('if' expression)? '-&gt;' (expression / block)
+for_stmt        = 'for' pattern 'in' expression ('if' expression)? block
+while_stmt      = 'while' ('let' pattern '=')? expression block
+loop_stmt       = 'loop' block
+
+// === Types ===
+type            = IDENT ('&lt;' type_list '&gt;')? / fn_type / tuple_type / array_type
+                / '&amp;' 'mut'? type / type '?'
+fn_type         = 'fn' '(' type_list? ')' '-&gt;' type
+tuple_type      = '(' type ',' type_list ')'
+array_type      = '[' type ']'
+
+// === Patterns ===
+pattern         = '_' / literal / IDENT ('@' pattern)? / '(' pattern_list ')'
+                / IDENT '{' field_pattern_list '}' / IDENT '.' IDENT ('(' pattern_list ')')?
+                / pattern '|' pattern / pattern '..' pattern
+</code></pre>
+<p>This grammar serves as the definitive reference for the Flux parser implementation. All ambiguities are resolved by operator precedence (§8.8 of the Lexical Structure) and the ordered-choice semantics of PEG.</p>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,435 @@
+/* Hero Section */
+.hero-section {
+  padding: var(--spacing-8) 0;
+  background-color: var(--light-gray);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -5%;
+  width: 40%;
+  height: 100%;
+  background-color: var(--white);
+  transform: skewX(-15deg);
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  line-height: 1.1;
+  margin-bottom: var(--spacing-3);
+  color: var(--deep-navy);
+}
+
+.hero-title span {
+  color: var(--primary-blue);
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: var(--slate-text);
+  margin-bottom: var(--spacing-4);
+}
+
+.hero-cta-group {
+  display: flex;
+  gap: var(--spacing-3);
+}
+
+/* Services Overview */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-5);
+}
+
+.service-card {
+  background-color: var(--white);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--light-gray);
+  /* Stagger entrance */
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeInUp 300ms var(--ease-out) forwards;
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.service-card:nth-child(1) { animation-delay: 0ms; }
+.service-card:nth-child(2) { animation-delay: 50ms; }
+.service-card:nth-child(3) { animation-delay: 100ms; }
+.service-card:nth-child(4) { animation-delay: 150ms; }
+
+@media (hover: hover) and (pointer: fine) {
+  .service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-blue);
+  }
+}
+
+.service-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  background-color: var(--light-gray);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-3);
+  color: var(--primary-blue);
+}
+
+.service-card h3 {
+  font-size: 1.25rem;
+  margin-bottom: var(--spacing-2);
+}
+
+/* Why BlueCloud */
+.why-section {
+  background-color: var(--deep-navy);
+  color: var(--white);
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-5);
+  margin-top: var(--spacing-5);
+}
+
+.why-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.why-icon {
+  color: var(--cyan-accent);
+}
+
+.why-item h3 {
+  color: var(--white);
+  margin-bottom: 0;
+}
+
+.why-item p {
+  color: #94A3B8;
+}
+
+/* Featured Work */
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-5);
+}
+
+.work-card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background-color: var(--white);
+  /* Stagger entrance */
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeInUp 300ms var(--ease-out) forwards;
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.work-card:nth-child(1) { animation-delay: 0ms; }
+.work-card:nth-child(2) { animation-delay: 60ms; }
+.work-card:nth-child(3) { animation-delay: 120ms; }
+
+@media (hover: hover) and (pointer: fine) {
+  .work-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.work-img-placeholder {
+  height: 200px;
+  background-color: var(--light-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--slate-text);
+  font-weight: 500;
+}
+
+.work-content {
+  padding: var(--spacing-3);
+}
+
+.work-tags {
+  display: flex;
+  gap: var(--spacing-1);
+  margin-bottom: var(--spacing-2);
+}
+
+.work-tag {
+  background-color: var(--mint-accent);
+  color: var(--deep-navy);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Client Trust / Stats */
+.stats-section {
+  background-color: var(--primary-blue);
+  color: var(--white);
+  text-align: center;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-4);
+}
+
+.stat-item h3 {
+  font-size: 3rem;
+  color: var(--white);
+  margin-bottom: var(--spacing-1);
+}
+
+/* CTA Banner */
+.cta-banner {
+  background-color: var(--light-gray);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  text-align: center;
+  margin: var(--spacing-8) auto;
+  max-width: 800px;
+}
+
+/* Testimonials */
+.testimonials-section {
+  padding: var(--spacing-8) 0;
+  background-color: var(--white);
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-6);
+}
+
+.testimonial-card {
+  background: var(--light-gray);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  /* Stagger entrance */
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeInUp 300ms var(--ease-out) forwards;
+}
+
+.testimonial-card:nth-child(1) { animation-delay: 0ms; }
+.testimonial-card:nth-child(2) { animation-delay: 50ms; }
+.testimonial-card:nth-child(3) { animation-delay: 100ms; }
+
+.testimonial-text {
+  font-style: italic;
+  margin-bottom: var(--spacing-3);
+  color: var(--slate-text);
+}
+
+.testimonial-author {
+  font-weight: 600;
+  color: var(--deep-navy);
+}
+
+/* Newsletter */
+.newsletter-section {
+  padding: var(--spacing-8) 0;
+  background: var(--gradient-primary);
+  color: var(--white);
+  text-align: center;
+}
+
+.newsletter-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.newsletter-form {
+  display: flex;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-4);
+}
+
+.newsletter-input {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  border-radius: 30px;
+  border: none;
+  font-size: 1rem;
+}
+
+.newsletter-btn {
+  background: var(--deep-navy);
+  color: var(--white);
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    background var(--duration-fast) ease,
+    color var(--duration-fast) ease;
+}
+
+.newsletter-btn:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .newsletter-btn:hover {
+    background: var(--white);
+    color: var(--deep-navy);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section::after {
+    display: none;
+  }
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  .hero-cta-group {
+    flex-direction: column;
+  }
+}
+
+/* =========================================================
+   WORLD YOUTH DAY HOME BANNER
+   ========================================================= */
+.wyd-home-banner {
+  background: #0d1f1d;
+  border-top: 1px solid rgba(15, 118, 110, 0.3);
+  border-bottom: 1px solid rgba(15, 118, 110, 0.3);
+}
+
+.wyd-home-inner {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.75rem 0;
+  text-decoration: none;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .wyd-home-inner:hover {
+    opacity: 0.88;
+  }
+}
+
+.wyd-home-logo-wrap {
+  flex-shrink: 0;
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 118, 110, 0.12);
+  border: 1px solid rgba(15, 118, 110, 0.25);
+  border-radius: 14px;
+  padding: 8px;
+}
+
+.wyd-home-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.wyd-home-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.wyd-home-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #84cc16;
+}
+
+.wyd-home-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #f0fdf4;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.wyd-home-desc {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 560px;
+}
+
+.wyd-home-cta {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #84cc16;
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  transition: gap var(--duration-normal) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .wyd-home-inner:hover .wyd-home-cta {
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .wyd-home-inner {
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    padding: 1.5rem 0;
+  }
+  .wyd-home-logo-wrap {
+    width: 80px;
+    height: 80px;
+  }
+  .wyd-home-cta {
+    display: none;
+  }
+}

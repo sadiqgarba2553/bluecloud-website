@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package Manager — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Package Manager</h1>
+<hr />
+<h2>1. Overview</h2>
+<p>The Flux package manager is integrated into the <code>flux</code> CLI. It handles dependency resolution, package building, publishing, and registry interaction. Design is inspired by Cargo (Rust), npm (Node.js), and Go modules.</p>
+<hr />
+<h2>2. Registry Architecture</h2>
+<h3>2.1 Official Registry</h3>
+<p>URL: <code>https://packages.flux-lang.org</code></p>
+<p>The registry provides:
+- Package metadata (name, version, description, dependencies)
+- Compressed package archives (<code>.flux-pkg</code>)
+- Download statistics and popularity metrics
+- Security advisories
+- Search API
+- User authentication (API tokens)</p>
+<h3>2.2 Package Naming</h3>
+<ul>
+<li>Names: lowercase letters, digits, hyphens, underscores</li>
+<li>Must start with a letter</li>
+<li>3–64 characters</li>
+<li>Must be unique in the registry</li>
+<li>Namespace support: <code>@org/package</code> for organization-scoped packages</li>
+</ul>
+<h3>2.3 Private Registries</h3>
+<pre><code class="language-toml"># Flux.toml
+[registries]
+my-company = { url = &quot;https://flux-registry.mycompany.com&quot; }
+
+[dependencies]
+internal-lib = { version = &quot;1.0&quot;, registry = &quot;my-company&quot; }
+</code></pre>
+<hr />
+<h2>3. Dependency Resolution</h2>
+<h3>3.1 Version Constraints</h3>
+<p>Follows <a href="https://semver.org/">Semantic Versioning</a>:</p>
+<table>
+<thead>
+<tr>
+<th>Syntax</th>
+<th>Meaning</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"1.2.3"</code></td>
+<td>Compatible</td>
+<td>≥1.2.3, &lt;2.0.0</td>
+</tr>
+<tr>
+<td><code>"=1.2.3"</code></td>
+<td>Exact</td>
+<td>Exactly 1.2.3</td>
+</tr>
+<tr>
+<td><code>"~1.2.3"</code></td>
+<td>Patch-compatible</td>
+<td>≥1.2.3, &lt;1.3.0</td>
+</tr>
+<tr>
+<td><code>"&gt;=1.2, &lt;2.0"</code></td>
+<td>Range</td>
+<td>Explicit range</td>
+</tr>
+<tr>
+<td><code>"*"</code></td>
+<td>Any</td>
+<td>Latest</td>
+</tr>
+</tbody>
+</table>
+<h3>3.2 Resolution Algorithm</h3>
+<ol>
+<li><strong>Parse</strong>: Read all <code>Flux.toml</code> files and build a dependency graph</li>
+<li><strong>Collect</strong>: For each dependency, fetch available versions from the registry</li>
+<li><strong>Resolve</strong>: Use a SAT-solver-based algorithm to find a compatible version set</li>
+<li><strong>Verify</strong>: Check that the resolved set satisfies all constraints</li>
+<li><strong>Lock</strong>: Write the resolved versions to <code>Flux.lock</code></li>
+</ol>
+<h3>3.3 Conflict Resolution</h3>
+<p>When multiple packages depend on different versions of the same package:</p>
+<ol>
+<li><strong>Compatible versions</strong>: Select the highest version that satisfies all constraints</li>
+<li><strong>Incompatible versions</strong>: Error with a clear explanation and suggestion to update constraints</li>
+<li><strong>Duplicate dependencies</strong>: Only one version of each package is allowed (no diamond dependency issues)</li>
+</ol>
+<hr />
+<h2>4. Package Sources</h2>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th><code>Flux.toml</code> Syntax</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Registry</td>
+<td><code>package = "1.0"</code></td>
+</tr>
+<tr>
+<td>Git</td>
+<td><code>package = { git = "url", branch = "main" }</code></td>
+</tr>
+<tr>
+<td>Git tag</td>
+<td><code>package = { git = "url", tag = "v1.0" }</code></td>
+</tr>
+<tr>
+<td>Git rev</td>
+<td><code>package = { git = "url", rev = "abc123" }</code></td>
+</tr>
+<tr>
+<td>Local path</td>
+<td><code>package = { path = "../local" }</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>5. Lock File (<code>Flux.lock</code>)</h2>
+<p>The lock file records exact resolved versions for reproducible builds:</p>
+<pre><code class="language-toml"># This file is auto-generated by flux. Do not edit manually.
+# Run `flux update` to refresh.
+
+[[package]]
+name = &quot;flux_http&quot;
+version = &quot;2.1.4&quot;
+source = &quot;registry+https://packages.flux-lang.org&quot;
+checksum = &quot;sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855&quot;
+dependencies = [
+    &quot;flux_io 1.0.1&quot;,
+    &quot;flux_async 1.2.0&quot;,
+]
+
+[[package]]
+name = &quot;flux_io&quot;
+version = &quot;1.0.1&quot;
+source = &quot;registry+https://packages.flux-lang.org&quot;
+checksum = &quot;sha256:a1b2c3d4...&quot;
+</code></pre>
+<p><strong>Rules:</strong>
+- Commit <code>Flux.lock</code> to version control for applications
+- Do NOT commit <code>Flux.lock</code> for libraries (let consumers resolve)</p>
+<hr />
+<h2>6. Publishing</h2>
+<h3>6.1 Workflow</h3>
+<pre><code class="language-bash"># 1. Authenticate
+flux login
+
+# 2. Verify the package
+flux publish --dry-run
+
+# 3. Publish
+flux publish
+</code></pre>
+<h3>6.2 Pre-Publish Checks</h3>
+<p>Before publishing, <code>flux publish</code> verifies:
+- <code>Flux.toml</code> has required fields (name, version, license, description)
+- All source files compile without errors
+- Tests pass
+- Version is not already published
+- Package size is under 10 MB (configurable)
+- No local path dependencies</p>
+<h3>6.3 Yanking</h3>
+<p>Published versions can be yanked (soft-deleted) but not removed:</p>
+<pre><code class="language-bash">flux yank --version 1.2.3
+flux yank --version 1.2.3 --undo   # Un-yank
+</code></pre>
+<p>Yanked versions:
+- Cannot be downloaded by new users
+- Continue to work for existing <code>Flux.lock</code> files</p>
+<hr />
+<h2>7. Package Signing</h2>
+<h3>7.1 Signing</h3>
+<p>Packages are cryptographically signed during publish:</p>
+<pre><code class="language-bash"># Generate a signing key
+flux key generate
+
+# Sign packages automatically on publish
+flux publish  # Uses stored key
+
+# Verify a package signature
+flux verify &lt;package&gt; &lt;version&gt;
+</code></pre>
+<h3>7.2 Trust Model</h3>
+<ul>
+<li>Publishers sign packages with their private key</li>
+<li>The registry stores the public key and signature</li>
+<li>Consumers verify signatures during <code>flux install</code></li>
+<li>The <code>flux audit</code> command checks for known vulnerabilities</li>
+</ul>
+<hr />
+<h2>8. Security</h2>
+<h3>8.1 Supply Chain Security</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Checksum verification</strong></td>
+<td>SHA-256 checksums verified on download</td>
+</tr>
+<tr>
+<td><strong>Package signing</strong></td>
+<td>Ed25519 signatures on all published packages</td>
+</tr>
+<tr>
+<td><strong>Audit</strong></td>
+<td><code>flux audit</code> checks for known vulnerabilities</td>
+</tr>
+<tr>
+<td><strong>Lock file</strong></td>
+<td>Ensures reproducible builds</td>
+</tr>
+<tr>
+<td><strong>Minimal permissions</strong></td>
+<td>Packages declare required permissions</td>
+</tr>
+<tr>
+<td><strong>Source verification</strong></td>
+<td>Registry verifies package source matches</td>
+</tr>
+</tbody>
+</table>
+<h3>8.2 Audit</h3>
+<pre><code class="language-bash">flux audit
+
+# Output:
+# ✅ No vulnerabilities found in 42 dependencies
+# 
+# Or:
+# ⚠️  1 vulnerability found:
+#   flux_xml 1.2.3 — CVE-2026-1234 (High)
+#   XXE vulnerability in XML parsing
+#   Fix: update to flux_xml &gt;= 1.2.4
+</code></pre>
+<hr />
+<h2>9. Caching</h2>
+<h3>9.1 Global Cache</h3>
+<p>Downloaded packages are cached in <code>~/.flux/cache/</code>:</p>
+<pre><code>~/.flux/cache/
+├── registry/
+│   └── packages.flux-lang.org/
+│       ├── flux_http-2.1.4.flux-pkg
+│       └── flux_json-1.0.2.flux-pkg
+├── git/
+│   └── github.com-abc123/
+└── src/
+    └── flux_http-2.1.4/    # Extracted source
+</code></pre>
+<h3>9.2 Cache Commands</h3>
+<pre><code class="language-bash">flux cache list     # Show cached packages
+flux cache clean    # Clear the cache
+flux cache size     # Show cache size
+</code></pre>
+<hr />
+<h2>10. Workspaces</h2>
+<p>For multi-package projects:</p>
+<pre><code class="language-toml"># Root Flux.toml
+[workspace]
+members = [
+    &quot;compiler/flux_lexer&quot;,
+    &quot;compiler/flux_parser&quot;,
+    &quot;compiler/flux_ast&quot;,
+    &quot;cli&quot;,
+]
+
+[workspace.dependencies]
+flux_ast = { path = &quot;compiler/flux_ast&quot; }
+serde = &quot;1.0&quot;
+
+[workspace.package]
+version = &quot;0.1.0&quot;
+edition = &quot;2026&quot;
+license = &quot;MIT&quot;
+</code></pre>
+<pre><code class="language-bash"># Build all workspace members
+flux build --workspace
+
+# Build a specific member
+flux build -p flux_lexer
+
+# Test everything
+flux test --workspace
+
+# Run a specific binary
+flux run -p cli
+</code></pre>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

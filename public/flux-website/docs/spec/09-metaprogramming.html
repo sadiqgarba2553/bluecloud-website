@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>09 Metaprogramming — Flux Documentation</title>
+    <link rel="icon" href="../assets/fluxlogo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="../index.html" class="nav-logo">
+            <img src="../assets/fluxlogo.png" alt="Flux">
+            Flux
+        </a>
+        <ul class="nav-links">
+            <li><a href="../examples.html">Examples</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../roadmap.html">Roadmap</a></li>
+            <li><a href="../docs.html" class="active">Documentation</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container docs-layout">
+    <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+            <div class="docs-nav-group-title">Documentation</div>
+            <ul class="docs-nav">
+                <li><a href="../docs.html">← Back to Index</a></li>
+            </ul>
+        </div>
+    </aside>
+    <main class="docs-content">
+<h1>Flux Language Specification — Metaprogramming</h1>
+<p><strong>Version:</strong> 0.1.0-draft<br />
+<strong>Status:</strong> Draft</p>
+<hr />
+<h2>1. Overview</h2>
+<p>Flux provides metaprogramming capabilities through <strong>compile-time evaluation</strong>, <strong>macros</strong>, <strong>attributes</strong>, and <strong>limited reflection</strong>. These features enable code generation, domain-specific languages, and compile-time optimization without sacrificing type safety.</p>
+<hr />
+<h2>2. Compile-Time Evaluation (<code>comptime</code>)</h2>
+<h3>2.1 Comptime Blocks</h3>
+<p><code>comptime</code> blocks execute during compilation. They can compute values, generate types, and perform static assertions:</p>
+<pre><code class="language-flux">const TABLE_SIZE = comptime {
+    let mut size = 1
+    while size &lt; 1000 {
+        size *= 2
+    }
+    size   // Result: 1024
+}
+
+// Compile-time string processing
+const VERSION_MAJOR = comptime {
+    let version = env(&quot;CARGO_PKG_VERSION&quot;)
+    let parts = version.split(&quot;.&quot;)
+    parts[0].parse_int().unwrap()
+}
+</code></pre>
+<h3>2.2 Comptime Functions</h3>
+<p>Functions marked with <code>comptime</code> can be called at compile time:</p>
+<pre><code class="language-flux">comptime fn fibonacci(n: Int) -&gt; Int {
+    if n &lt;= 1 { return n }
+    return fibonacci(n - 1) + fibonacci(n - 2)
+}
+
+const FIB_10 = fibonacci(10)   // Computed at compile time: 55
+
+// Comptime type generation
+comptime fn make_vector_type(n: Int) -&gt; Type {
+    // Returns a struct with n Float64 fields
+    // This is a simplified example of the API
+    let fields = (0..n).map(fn(i) {
+        Field { name: &quot;v{i}&quot;, type: Float64 }
+    })
+    return Struct { name: &quot;Vec{n}&quot;, fields: fields }
+}
+</code></pre>
+<h3>2.3 Static Assertions</h3>
+<pre><code class="language-flux">const _: () = comptime {
+    assert(size_of&lt;Int&gt;() &gt;= 4, &quot;Int must be at least 32 bits&quot;)
+    assert(align_of&lt;Pointer&gt;() == 8, &quot;Pointers must be 8-byte aligned&quot;)
+}
+
+// Shorthand
+static_assert(size_of&lt;Int&gt;() == 8)
+static_assert(MAX_BUFFER_SIZE &gt; 0, &quot;Buffer size must be positive&quot;)
+</code></pre>
+<hr />
+<h2>3. Macros</h2>
+<h3>3.1 Declarative Macros</h3>
+<p>Declarative macros use pattern matching on syntax to expand code:</p>
+<pre><code class="language-flux">macro vec!($($elem:expr),* $(,)?) {
+    {
+        let mut v = List.new()
+        $(v.append($elem))*
+        v
+    }
+}
+
+// Usage
+let numbers = vec![1, 2, 3, 4, 5]
+let names = vec![&quot;Alice&quot;, &quot;Bob&quot;, &quot;Carol&quot;]
+</code></pre>
+<pre><code class="language-flux">macro hashmap!($($key:expr =&gt; $value:expr),* $(,)?) {
+    {
+        let mut map = HashMap.new()
+        $(map.insert($key, $value))*
+        map
+    }
+}
+
+let scores = hashmap!{
+    &quot;Alice&quot; =&gt; 95,
+    &quot;Bob&quot; =&gt; 87,
+    &quot;Carol&quot; =&gt; 92,
+}
+</code></pre>
+<h3>3.2 Macro Pattern Syntax</h3>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Matches</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$name:expr</code></td>
+<td>Any expression</td>
+</tr>
+<tr>
+<td><code>$name:ident</code></td>
+<td>An identifier</td>
+</tr>
+<tr>
+<td><code>$name:type</code></td>
+<td>A type annotation</td>
+</tr>
+<tr>
+<td><code>$name:pat</code></td>
+<td>A pattern</td>
+</tr>
+<tr>
+<td><code>$name:stmt</code></td>
+<td>A statement</td>
+</tr>
+<tr>
+<td><code>$name:block</code></td>
+<td>A block <code>{ ... }</code></td>
+</tr>
+<tr>
+<td><code>$name:literal</code></td>
+<td>A literal value</td>
+</tr>
+<tr>
+<td><code>$name:tt</code></td>
+<td>A single token tree</td>
+</tr>
+<tr>
+<td><code>$($pattern)*</code></td>
+<td>Zero or more repetitions</td>
+</tr>
+<tr>
+<td><code>$($pattern)+</code></td>
+<td>One or more repetitions</td>
+</tr>
+<tr>
+<td><code>$($pattern),*</code></td>
+<td>Comma-separated repetitions</td>
+</tr>
+</tbody>
+</table>
+<h3>3.3 Procedural Macros</h3>
+<p>Procedural macros are functions that receive a token stream and produce a token stream. They are more powerful than declarative macros.</p>
+<h4>Derive Macros</h4>
+<pre><code class="language-flux">// Defining a derive macro (in a separate crate)
+#[proc_macro_derive(Serialize)]
+fn derive_serialize(input: TokenStream) -&gt; TokenStream {
+    let struct_def = parse_struct(input)
+
+    let fields = struct_def.fields.map(fn(field) {
+        quote! {
+            map.insert(&quot;{field.name}&quot;, self.{field.name}.serialize())
+        }
+    })
+
+    return quote! {
+        impl Serialize for {struct_def.name} {
+            fn serialize(self) -&gt; JsonValue {
+                let mut map = HashMap.new()
+                {fields}
+                return JsonValue.Object(map)
+            }
+        }
+    }
+}
+
+// Usage
+#[derive(Serialize)]
+struct User {
+    name: String
+    age: Int
+    email: String
+}
+</code></pre>
+<h4>Attribute Macros</h4>
+<pre><code class="language-flux">// Defining an attribute macro
+#[proc_macro_attribute]
+fn route(attr: TokenStream, item: TokenStream) -&gt; TokenStream {
+    let method_and_path = parse_route_attr(attr)
+    let function = parse_function(item)
+
+    return quote! {
+        #[http_route(method: {method_and_path.method}, path: {method_and_path.path})]
+        {function}
+    }
+}
+
+// Usage
+#[route(GET, &quot;/api/users&quot;)]
+fn list_users(req: Request) -&gt; Response {
+    // ...
+}
+
+#[route(POST, &quot;/api/users&quot;)]
+fn create_user(req: Request) -&gt; Response {
+    // ...
+}
+</code></pre>
+<h4>Function-Like Macros</h4>
+<pre><code class="language-flux">// Defining a function-like macro
+#[proc_macro]
+fn sql(input: TokenStream) -&gt; TokenStream {
+    let query = parse_sql(input)
+    validate_sql_syntax(query)
+
+    return quote! {
+        SqlQuery {
+            text: {query.text}
+            params: vec![{query.params}]
+        }
+    }
+}
+
+// Usage — compile-time SQL validation
+let query = sql!(SELECT name, email FROM users WHERE age &gt; 18)
+let results = db.execute(query)
+</code></pre>
+<hr />
+<h2>4. Attributes</h2>
+<h3>4.1 Built-in Attributes</h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Target</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>#[derive(...)]</code></td>
+<td>Types</td>
+<td>Auto-implement traits</td>
+</tr>
+<tr>
+<td><code>#[test]</code></td>
+<td>Functions</td>
+<td>Mark as test</td>
+</tr>
+<tr>
+<td><code>#[bench]</code></td>
+<td>Functions</td>
+<td>Mark as benchmark</td>
+</tr>
+<tr>
+<td><code>#[inline]</code></td>
+<td>Functions</td>
+<td>Hint to inline</td>
+</tr>
+<tr>
+<td><code>#[inline(always)]</code></td>
+<td>Functions</td>
+<td>Force inline</td>
+</tr>
+<tr>
+<td><code>#[inline(never)]</code></td>
+<td>Functions</td>
+<td>Prevent inline</td>
+</tr>
+<tr>
+<td><code>#[cfg(...)]</code></td>
+<td>Any item</td>
+<td>Conditional compilation</td>
+</tr>
+<tr>
+<td><code>#[allow(...)]</code></td>
+<td>Any item</td>
+<td>Suppress warnings</td>
+</tr>
+<tr>
+<td><code>#[warn(...)]</code></td>
+<td>Any item</td>
+<td>Enable warnings</td>
+</tr>
+<tr>
+<td><code>#[deny(...)]</code></td>
+<td>Any item</td>
+<td>Turn warnings into errors</td>
+</tr>
+<tr>
+<td><code>#[deprecated]</code></td>
+<td>Any item</td>
+<td>Mark as deprecated</td>
+</tr>
+<tr>
+<td><code>#[must_use]</code></td>
+<td>Functions/types</td>
+<td>Warn if result is unused</td>
+</tr>
+<tr>
+<td><code>#[no_mangle]</code></td>
+<td>Functions</td>
+<td>Preserve symbol name</td>
+</tr>
+<tr>
+<td><code>#[repr(...)]</code></td>
+<td>Types</td>
+<td>Control memory layout</td>
+</tr>
+<tr>
+<td><code>#[doc(...)]</code></td>
+<td>Any item</td>
+<td>Documentation metadata</td>
+</tr>
+<tr>
+<td><code>#[should_panic]</code></td>
+<td>Test functions</td>
+<td>Test expects a panic</td>
+</tr>
+<tr>
+<td><code>#[ignore]</code></td>
+<td>Test functions</td>
+<td>Skip test</td>
+</tr>
+<tr>
+<td><code>#[cold]</code></td>
+<td>Functions</td>
+<td>Hint: rarely called</td>
+</tr>
+<tr>
+<td><code>#[target_feature(...)]</code></td>
+<td>Functions</td>
+<td>Enable CPU features</td>
+</tr>
+</tbody>
+</table>
+<h3>4.2 Derive Attribute</h3>
+<pre><code class="language-flux">#[derive(Debug, Clone, Eq, Hash, Serialize, Deserialize)]
+struct Config {
+    name: String
+    version: Int
+    features: List&lt;String&gt;
+}
+</code></pre>
+<p>Available built-in derives:</p>
+<table>
+<thead>
+<tr>
+<th>Derive</th>
+<th>Trait</th>
+<th>Generated Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Debug</code></td>
+<td><code>Debug</code></td>
+<td>Debug string representation</td>
+</tr>
+<tr>
+<td><code>Clone</code></td>
+<td><code>Clone</code></td>
+<td>Deep copy</td>
+</tr>
+<tr>
+<td><code>Copy</code></td>
+<td><code>Copy</code></td>
+<td>Bitwise copy</td>
+</tr>
+<tr>
+<td><code>Eq</code></td>
+<td><code>Eq</code></td>
+<td>Equality comparison</td>
+</tr>
+<tr>
+<td><code>Ord</code></td>
+<td><code>Ord</code></td>
+<td>Ordering comparison</td>
+</tr>
+<tr>
+<td><code>Hash</code></td>
+<td><code>Hash</code></td>
+<td>Hash computation</td>
+</tr>
+<tr>
+<td><code>Default</code></td>
+<td><code>Default</code></td>
+<td>Default values</td>
+</tr>
+</tbody>
+</table>
+<h3>4.3 Custom Attributes</h3>
+<pre><code class="language-flux">// Custom attribute for web framework
+#[route(GET, &quot;/users/{id}&quot;)]
+#[authenticated]
+#[rate_limit(100, per: Duration.minutes(1))]
+fn get_user(req: Request) -&gt; Response {
+    // ...
+}
+</code></pre>
+<hr />
+<h2>5. Reflection</h2>
+<p>Flux provides <strong>limited, opt-in reflection</strong> for types that derive <code>Reflect</code>:</p>
+<pre><code class="language-flux">#[derive(Reflect)]
+struct User {
+    name: String
+    age: Int
+    email: String
+}
+
+fn inspect(value: &amp;dyn Reflect) {
+    let type_info = value.type_info()
+    print(&quot;Type: {type_info.name}&quot;)
+    print(&quot;Fields: {type_info.field_count}&quot;)
+
+    for field in type_info.fields() {
+        print(&quot;  {field.name}: {field.type_name} = {field.get(value)}&quot;)
+    }
+}
+
+let user = User { name: &quot;Alice&quot;, age: 30, email: &quot;alice@flux.dev&quot; }
+inspect(&amp;user)
+// Output:
+// Type: User
+// Fields: 3
+//   name: String = Alice
+//   age: Int = 30
+//   email: String = alice@flux.dev
+</code></pre>
+<h3>5.1 Reflection API</h3>
+<pre><code class="language-flux">trait Reflect {
+    fn type_info(self) -&gt; TypeInfo
+    fn field_value(self, name: String) -&gt; Option&lt;any&gt;
+    fn set_field_value(mut self, name: String, value: any) -&gt; Result&lt;Void, ReflectError&gt;
+}
+
+struct TypeInfo {
+    name: String
+    module: String
+    kind: TypeKind  // Struct, Class, Enum, etc.
+
+    fn fields(self) -&gt; List&lt;FieldInfo&gt;
+    fn methods(self) -&gt; List&lt;MethodInfo&gt;
+}
+
+struct FieldInfo {
+    name: String
+    type_name: String
+    is_public: Bool
+    attributes: List&lt;AttributeInfo&gt;
+}
+</code></pre>
+<h3>5.2 Reflection Limitations</h3>
+<p>Reflection is intentionally limited for performance:</p>
+<ol>
+<li>Only available for types that opt in with <code>#[derive(Reflect)]</code></li>
+<li>No arbitrary method invocation through reflection</li>
+<li>No runtime type creation</li>
+<li>No reflection on private fields (unless explicitly opted in)</li>
+<li>Reflection data is stripped in release builds by default (can be kept with <code>#[cfg(reflect)]</code>)</li>
+</ol>
+<hr />
+<h2>6. Code Generation</h2>
+<h3>6.1 Build-Time Code Generation</h3>
+<pre><code class="language-flux">// build.flux
+use flux.build.codegen
+
+fn main() {
+    // Generate Flux code from a schema file
+    codegen.from_file(&quot;schema.json&quot;)
+        .template(&quot;templates/model.flux.tmpl&quot;)
+        .output(&quot;src/generated/models.flux&quot;)
+        .generate()
+}
+</code></pre>
+<h3>6.2 Include Macros</h3>
+<pre><code class="language-flux">// Include file contents as a string at compile time
+const SHADER_SOURCE = include_str!(&quot;shaders/vertex.glsl&quot;)
+
+// Include file contents as bytes at compile time
+const ICON_DATA = include_bytes!(&quot;assets/icon.png&quot;)
+
+// Include and parse a file at compile time
+const CONFIG = include_toml!(&quot;default_config.toml&quot;)
+</code></pre>
+<hr />
+<h2>7. Annotations for Tooling</h2>
+<h3>7.1 Linter Annotations</h3>
+<pre><code class="language-flux">#[allow(unused_variables)]
+fn experimental() {
+    let x = 42   // No warning
+}
+
+#[deny(implicit_return)]
+fn strict_function() -&gt; Int {
+    return 42   // Must use explicit return
+}
+
+// Suppress specific warnings for a scope
+fn legacy_code() {
+    #[allow(deprecated)]
+    old_api_call()
+}
+</code></pre>
+<h3>7.2 Documentation Annotations</h3>
+<pre><code class="language-flux">/// A high-performance hash map implementation.
+///
+/// # Type Parameters
+/// - `K` — The key type, must implement `Hash + Eq`
+/// - `V` — The value type
+///
+/// # Examples
+/// ```flux
+/// let map = HashMap&lt;String, Int&gt;.new()
+/// map.insert(&quot;key&quot;, 42)
+/// assert(map.get(&quot;key&quot;) == Some(42))
+/// ```
+///
+/// # Performance
+/// - Insert: O(1) amortized
+/// - Lookup: O(1) average
+/// - Delete: O(1) average
+///
+/// # Thread Safety
+/// `HashMap` is not thread-safe. Use `ConcurrentHashMap` for concurrent access.
+pub struct HashMap&lt;K: Hash + Eq, V&gt; {
+    // ...
+}
+</code></pre>
+<h3>7.3 Optimization Hints</h3>
+<pre><code class="language-flux">#[inline(always)]
+fn hot_path(x: Int) -&gt; Int {
+    return x * 2 + 1
+}
+
+#[cold]
+fn error_handler(error: Error) {
+    // This function is rarely called — don't optimize for it
+    log.error(&quot;Critical error: {error}&quot;)
+    report_to_sentry(error)
+}
+
+#[target_feature(enable: &quot;avx2&quot;)]
+unsafe fn simd_operation(data: &amp;[Float32]) -&gt; Float32 {
+    // Uses AVX2 SIMD instructions
+    // ...
+}
+</code></pre>
+    </main>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                Flux Programming Language · MIT License · 2026<br>
+                Made by <a href="https://bluecloudai.online" target="_blank">BlueCloud Technologies</a>
+                <img src="../assets/bluecloud_logo.png" alt="BlueCloud Technologies" style="vertical-align: middle; margin-left: 8px;">
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/flux-bybluecloud/flux">GitHub</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../about.html">About BlueCloud</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
