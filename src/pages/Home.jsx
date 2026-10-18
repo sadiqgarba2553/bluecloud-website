@@ -168,12 +168,12 @@ const Home = () => {
               <img src="/tooldecklogo.png" alt="Tool Deck" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
               <div className="work-content">
                 <div className="work-tags">
-                  <span className="work-tag">Web</span>
+                  <span className="work-tag">Windows</span>
                   <span className="work-tag">Utility</span>
                 </div>
                 <h3>Tool Deck</h3>
-                <p className="mb-3">A comprehensive suite of utility tools accessible directly from your browser.</p>
-                <a href="/tool-deck/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch App</a>
+                <p className="mb-3">79 local PDF, image, video, audio, conversion and utility tools. Tooldeck 0.2.0-alpha.1 for Windows.</p>
+                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/tooldeck-v0.2.0-alpha.1/Tooldeck-Setup-0.2.0-alpha.1-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Download Tooldeck</a>
               </div>
             </div>
             <div className="work-card">
@@ -184,8 +184,8 @@ const Home = () => {
                   <span className="work-tag">Quran & Audio</span>
                 </div>
                 <h3>Quranly PC</h3>
-                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Read the Quran and listen to recitations in a dedicated Windows app. Install and update it through BlueCloud Launcher.</p>
-                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.3/BlueCloud-Launcher-Setup-0.1.0-alpha.3-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Get via Launcher</a>
+                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Read the Quran and listen to recitations on Windows. Version 0.1.0-alpha, installed and updated through BlueCloud Launcher.</p>
+                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.4/BlueCloud-Launcher-Setup-0.1.0-alpha.4-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Get via Launcher</a>
               </div>
             </div>
             <div className="work-card">
@@ -196,8 +196,8 @@ const Home = () => {
                   <span className="work-tag">Media Player</span>
                 </div>
                 <h3>Coneic Player</h3>
-                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>A desktop media player for your music and videos. Install and update the Windows app through BlueCloud Launcher.</p>
-                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.3/BlueCloud-Launcher-Setup-0.1.0-alpha.3-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Get via Launcher</a>
+                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>A Windows player for your music and videos. Version 0.2.1-alpha-r2, installed and updated through BlueCloud Launcher.</p>
+                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.4/BlueCloud-Launcher-Setup-0.1.0-alpha.4-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Get via Launcher</a>
               </div>
             </div>
             <div className="work-card">
@@ -208,8 +208,8 @@ const Home = () => {
                   <span className="work-tag">App Launcher</span>
                 </div>
                 <h3>BlueCloud Launcher</h3>
-                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Download, launch and update Quranly PC, Coneic Player and Tooldeck from one Windows app. Windows x64 alpha.</p>
-                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.3/BlueCloud-Launcher-Setup-0.1.0-alpha.3-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Download Launcher</a>
+                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Install, open and update all your BlueCloud apps. Automatic launcher updates and Windows Start shortcuts. Version 0.1.0-alpha.4 for Windows x64.</p>
+                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.4/BlueCloud-Launcher-Setup-0.1.0-alpha.4-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Download Launcher</a>
               </div>
             </div>
           </div>

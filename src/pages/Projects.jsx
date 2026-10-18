@@ -59,16 +59,16 @@ const PROJECTS_DATA = [
   },
   {
     id: 5,
-    title: 'Tool Deck Developer Suite',
+    title: 'Tooldeck',
     domain: 'tool-deck',
-    category: 'Web',
-    tags: ['Developer Tools', 'Browser Utilities'],
+    category: 'App',
+    tags: ['Windows', 'Local Utilities'],
     imgSrc: '/tooldecklogo.png',
-    roi: '10,000+ Active Monthly Users',
-    problem: 'No central, zero-latency browser suite existed for instant developer utilities and formatters.',
-    solution: 'Built a light, superfast web app packed with essential encoding, formatting, and debugging tools.',
-    impact: 'Adopted by over 10,000 active monthly developers worldwide for daily utility tasks.',
-    link: '/tool-deck/index.html'
+    roi: '79 local tools | Version 0.2.0-alpha.1',
+    problem: 'Everyday file tasks need a single focused workspace.',
+    solution: 'PDF, image, video, audio, conversion and utility tools in a clean card library. Files are processed locally on your PC.',
+    linkLabel: 'Download Tooldeck',
+    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/tooldeck-v0.2.0-alpha.1/Tooldeck-Setup-0.2.0-alpha.1-x64.exe'
   },
   {
     id: 6,
@@ -79,9 +79,9 @@ const PROJECTS_DATA = [
     imgSrc: '/quranlylogo.png',
     roi: 'Windows x64 | Alpha release',
     problem: 'A focused desktop space for Quran reading and listening.',
-    solution: 'Read the Quran and listen to recitations in a dedicated Windows app. Install and update it through BlueCloud Launcher.',
+    solution: 'Read the Quran and listen to recitations on Windows. Version 0.1.0-alpha, installed and updated through BlueCloud Launcher.',
     linkLabel: 'Get via Launcher',
-    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.3/BlueCloud-Launcher-Setup-0.1.0-alpha.3-x64.exe'
+    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.4/BlueCloud-Launcher-Setup-0.1.0-alpha.4-x64.exe'
   },
   {
     id: 7,
@@ -92,9 +92,9 @@ const PROJECTS_DATA = [
     imgSrc: '/coneic-player.png',
     roi: 'Windows x64 | Alpha release',
     problem: 'A dedicated Windows player for local music and video.',
-    solution: 'A desktop media player for your music and videos. Install and update the Windows app through BlueCloud Launcher.',
+    solution: 'A Windows player for your music and videos. Version 0.2.1-alpha-r2, installed and updated through BlueCloud Launcher.',
     linkLabel: 'Get via Launcher',
-    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.3/BlueCloud-Launcher-Setup-0.1.0-alpha.3-x64.exe'
+    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.4/BlueCloud-Launcher-Setup-0.1.0-alpha.4-x64.exe'
   },
   {
     id: 8,
@@ -105,9 +105,9 @@ const PROJECTS_DATA = [
     imgSrc: '/icon_no_background.PNG',
     roi: 'Windows x64 | Alpha release',
     problem: 'Users need one place to install and keep their BlueCloud apps up to date.',
-    solution: 'Download, launch and update Quranly PC, Coneic Player and Tooldeck from one Windows app. Windows x64 alpha.',
+    solution: 'Install, open and update all your BlueCloud apps. Automatic launcher updates and Windows Start shortcuts. Version 0.1.0-alpha.4 for Windows x64.',
     linkLabel: 'Download Launcher',
-    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.3/BlueCloud-Launcher-Setup-0.1.0-alpha.3-x64.exe'
+    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.4/BlueCloud-Launcher-Setup-0.1.0-alpha.4-x64.exe'
   }
 ];
 
