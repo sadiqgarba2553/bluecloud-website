@@ -185,7 +185,7 @@ const Home = () => {
                 </div>
                 <h3>Quranly PC</h3>
                 <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Read the Quran and listen to recitations in a dedicated Windows app. Install and update it through BlueCloud Launcher.</p>
-                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.2/BlueCloud-Launcher-Setup-0.1.0-alpha.2-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Get via Launcher</a>
+                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.3/BlueCloud-Launcher-Setup-0.1.0-alpha.3-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Get via Launcher</a>
               </div>
             </div>
             <div className="work-card">
@@ -197,7 +197,7 @@ const Home = () => {
                 </div>
                 <h3>Coneic Player</h3>
                 <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>A desktop media player for your music and videos. Install and update the Windows app through BlueCloud Launcher.</p>
-                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.2/BlueCloud-Launcher-Setup-0.1.0-alpha.2-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Get via Launcher</a>
+                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.3/BlueCloud-Launcher-Setup-0.1.0-alpha.3-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Get via Launcher</a>
               </div>
             </div>
             <div className="work-card">
@@ -209,7 +209,7 @@ const Home = () => {
                 </div>
                 <h3>BlueCloud Launcher</h3>
                 <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Download, launch and update Quranly PC, Coneic Player and Tooldeck from one Windows app. Windows x64 alpha.</p>
-                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.2/BlueCloud-Launcher-Setup-0.1.0-alpha.2-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Download Launcher</a>
+                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.3/BlueCloud-Launcher-Setup-0.1.0-alpha.3-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Download Launcher</a>
               </div>
             </div>
           </div>

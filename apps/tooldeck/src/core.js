@@ -1,20 +1,5 @@
-export const tools = [
-  ['json','JSON formatter','Developer','Format, validate or minify JSON.'],
-  ['base64','Base64 text','Developer','Encode or decode UTF-8 text.'],
-  ['url','URL encoder','Developer','Encode or decode a URL component.'],
-  ['text','Text utilities','Text','Count words and characters, change case or trim lines.'],
-  ['password','Password generator','Security','Generate random passwords with your device’s cryptographic random source.'],
-  ['uuid','UUID generator','Developer','Generate UUID v4 identifiers locally.'],
-  ['hash','File hash','Security','Calculate a SHA-256 fingerprint of a local file.'],
-  ['qr','QR code','Utilities','Create a downloadable PNG QR code for text or a link.'],
-  ['merge','Merge PDFs','PDF','Combine PDF files in the order you select them.'],
-  ['extract','Extract PDF pages','PDF','Save a selection of PDF pages into a new file.'],
-  ['rotate','Rotate PDF','PDF','Rotate all pages in a PDF.'],
-  ['images-pdf','Images to PDF','PDF','Place each PNG or JPEG on its own PDF page.'],
-  ['image','Image studio','Image','Resize, convert and compress PNG, JPEG or WebP images.'],
-  ['color','Color converter','Developer','Convert a hexadecimal color to RGB and HSL.'],
-  ['epoch','Timestamp converter','Developer','Convert Unix seconds or milliseconds into a readable date.'],
-];
+import {catalog} from './catalog.js';
+export const tools=catalog.map(t=>[t.id,t.name,t.category,t.description]);
 export function parsePages(input, total) {
   if (!Number.isInteger(total) || total < 1) throw Error('This PDF has no pages.');
   if (!input.trim()) throw Error('Enter pages, for example 1, 3-5.');
