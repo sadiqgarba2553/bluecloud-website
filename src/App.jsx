@@ -1,96 +1,34 @@
-import { Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Chatbot from './components/Chatbot';
-import CookieConsent from './components/CookieConsent';
-
-// Page Imports
-import Home from './pages/Home';
-import About from './pages/About';
-import Services from './pages/Services';
-import Projects from './pages/Projects';
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
-import AISolutions from './pages/AISolutions';
-import Careers from './pages/Careers';
-import Contact from './pages/Contact';
-import RateCard from './pages/RateCard';
-import Portfolio from './pages/Portfolio';
-import Platform from './pages/Platform';
-import Developers from './pages/Developers';
-import Enterprise from './pages/Enterprise';
-import Investors from './pages/Investors';
-
-// Legal & Compliance Imports
-import PrivacyPolicy from './pages/PrivacyPolicy';
+import { useEffect, useState } from 'react';
+import { Link, NavLink, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
+import { ArrowDownToLine, ArrowUpRight, ArrowRight, BookOpen, Cloud, Menu, Play, Wrench, X, Check, Monitor, ShieldCheck, RefreshCw, Mail } from 'lucide-react';
+import SEO from './components/SEO';
 import ConeicPrivacyPolicy from './pages/ConeicPrivacyPolicy';
 import ConeicInstallerCodes from './pages/ConeicInstallerCodes';
-import Terms from './pages/Terms';
-import RefundPolicy from './pages/RefundPolicy';
-import CookiesPolicy from './pages/CookiesPolicy';
+import products from '../packages/product-catalog/products.json';
+import './ecosystem.css';
 
-// Portal Imports
-import PortalLogin from './pages/PortalLogin';
-import PortalDashboard from './pages/PortalDashboard';
-import AdminDashboard from './pages/AdminDashboard';
-import AdminRoute from './components/AdminRoute';
-
-function App() {
-  return (
-    <div className="app-container">
-      <Header />
-      <main className="main-content">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-          <Route path="/ai-solutions" element={<AISolutions />} />
-          <Route path="/platform" element={<Platform />} />
-          <Route path="/developers" element={<Developers />} />
-          <Route path="/enterprise" element={<Enterprise />} />
-          <Route path="/investors" element={<Investors />} />
-          <Route path="/careers" element={<Careers />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/rate-card" element={<RateCard />} />
-          <Route path="/portfolio" element={<Portfolio />} />
-          <Route path="/port" element={<Portfolio />} />
-          <Route path="/port/index.html" element={<Portfolio />} />
-          <Route path="/portfolio.html" element={<Portfolio />} />
-
-          {/* Legal & Compliance Routes */}
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/coneic/privacy" element={<ConeicPrivacyPolicy />} />
-          <Route path="/coneic/privacy-policy" element={<ConeicPrivacyPolicy />} />
-          <Route path="/coneic-privacy" element={<ConeicPrivacyPolicy />} />
-          <Route path="/coneic/installer-codes" element={<ConeicInstallerCodes />} />
-          <Route path="/coneic/installer-exit-codes" element={<ConeicInstallerCodes />} />
-          <Route path="/coneic" element={<ConeicPrivacyPolicy />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/terms-and-conditions" element={<Terms />} />
-          <Route path="/refund" element={<RefundPolicy />} />
-          <Route path="/refund-policy" element={<RefundPolicy />} />
-          <Route path="/cookies" element={<CookiesPolicy />} />
-          <Route path="/cookies-policy" element={<CookiesPolicy />} />
-
-          {/* Portal Routes */}
-          <Route path="/portal/login" element={<PortalLogin />} />
-          <Route path="/portal/dashboard" element={<PortalDashboard />} />
-          <Route path="/portal/admin" element={
-            <AdminRoute>
-              <AdminDashboard />
-            </AdminRoute>
-          } />
-        </Routes>
-      </main>
-      <Footer />
-      <Chatbot />
-      <CookieConsent />
-    </div>
-  );
+const icons = { play: Play, book: BookOpen, tools: Wrench, cloud: Cloud };
+function ProductIcon({ product, large = false }) { const Icon = icons[product.icon]; return <div className={`product-icon ${large ? 'large' : ''}`} style={{ '--accent': product.accent }}><Icon aria-hidden="true" size={large ? 38 : 25} strokeWidth={1.6} /></div>; }
+function useReleases() {
+  const [state, setState] = useState({ releases: [], failed: false });
+  useEffect(() => { const controller = new AbortController(); fetch('/releases/catalog.json', { signal: controller.signal, cache: 'no-cache' }).then(r => { if (!r.ok) throw Error('Unavailable'); return r.json(); }).then(data => setState({ releases: data.releases || [], failed: false })).catch(e => { if (e.name !== 'AbortError') setState({ releases: [], failed: true }); }); return () => controller.abort(); }, []);
+  return state;
 }
-
-export default App;
+function Download({ id, releases }) { const r = releases.find(r => r.appId === id && r.platform === 'win32' && r.arch === 'x64' && r.websiteUrl); return r ? <a className="button primary" href={r.websiteUrl}><ArrowDownToLine size={17} /> Download for Windows</a> : <span className="availability">Download being prepared</span>; }
+function Header() {
+  const [open, setOpen] = useState(false); const location = useLocation();
+  useEffect(() => { setOpen(false); window.scrollTo(0, 0); }, [location.pathname]);
+  return <header className="site-header"><div className="shell header-inner"><Link className="brand" to="/" aria-label="BlueCloud home"><Cloud size={29} /><span>bluecloud<sup>®</sup></span></Link><button className="menu-toggle" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="main-navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button><nav id="main-navigation" className={open ? 'open' : ''} aria-label="Main navigation"><NavLink to="/apps">Our apps</NavLink><NavLink to="/launcher">The launcher</NavLink><NavLink to="/releases">What’s new</NavLink><NavLink to="/support">Support</NavLink></nav><Link to="/downloads" className="button secondary header-download">Get BlueCloud <ArrowDownToLine size={15} /></Link></div></header>;
+}
+function Footer() { return <footer className="site-footer shell"><div className="footer-top"><Link className="brand" to="/"><Cloud size={26} /> bluecloud</Link><p>Thoughtful software.<br />Made in Abuja, for wherever you are.</p><div><Link to="/apps">Our apps</Link><Link to="/support">Get in touch</Link><a href="https://github.com/sadiqgarba2553/bluecloud-website">Source on GitHub <ArrowUpRight size={13} /></a></div></div><div className="footer-bottom"><span>© {new Date().getFullYear()} BlueCloud</span><div><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><Link to="/coneic/privacy">Coneic privacy</Link></div><span>Built with care in Nigeria <i className="status-dot" /></span></div></footer>; }
+function ProductCard({ product: p, index }) { return <Link className="app-card" to={`/apps/${p.id}`} style={{ '--accent': p.accent }}><div className="card-top"><ProductIcon product={p} /><span className="pill">{p.status}</span></div><div className="card-art" aria-hidden="true">{p.id === 'coneic' ? <div className="media-art"><div className="media-sun" /><Play size={32} fill="currentColor" /><div className="media-progress"><i /></div><span>Make it a moment.</span></div> : p.id === 'quranly' ? <div className="quran-art"><span lang="ar" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span><div className="audio-bars">{Array.from({ length: 29 }, (_, i) => <i key={i} style={{ height: `${12 + ((i * 19 + 7) % 42)}px` }} />)}</div><small>Your daily moment of reflection</small></div> : <div className="tools-art">{['{ }', 'PDF', 'Aa', '↗', '#', 'PNG'].map(t => <span key={t}>{t}</span>)}</div>}</div><span className="eyebrow">0{index + 1} / {p.category}</span><h3>{p.name}<ArrowUpRight size={22} /></h3><p>{p.description}</p><span className="card-platform"><Monitor size={14} /> {p.platform}</span></Link>; }
+function LauncherBanner() { return <section className="launcher-banner shell"><div className="launcher-inner"><div><span className="eyebrow">INTRODUCING BLUECLOUD LAUNCHER</span><h2>One library.<br />Everything within reach.</h2><p>Your apps, their latest versions and what’s new.<br />A simpler way to keep your BlueCloud world together.</p><Link to="/launcher" className="button light">Explore the launcher <ArrowUpRight size={17} /></Link></div><div className="library-preview" aria-label="Launcher library preview"><div className="preview-title"><Cloud size={19} /> Your library <span>PREVIEW</span></div>{products.slice(0, 3).map(p => <div className="preview-row" key={p.id}><ProductIcon product={p} /><div><strong>{p.name}</strong><small>{p.category}</small></div><span>View app <ArrowRight size={13} /></span></div>)}</div></div></section>; }
+function Home() { return <><SEO title="BlueCloud — A home for your everyday apps" description="Meet Coneic Player, Quranly PC and Tooldeck. Thoughtful Windows apps, all under one cloud." path="/" /><section className="hero shell"><div><span className="eyebrow"><i className="status-dot" /> INDEPENDENT SOFTWARE, CONNECTED.</span><h1>A little more<br />possible.<br /><span>All under one cloud.</span></h1><p>Press play. Find your focus. Get things done.<br />Meet a family of apps built around your everyday.</p><div className="actions"><Link to="/apps" className="button primary">Find your next app <ArrowRight size={17} /></Link><Link to="/launcher" className="text-link">Meet the launcher <ArrowUpRight size={16} /></Link></div><span className="hero-footnote">Windows first. Free to explore. Made by BlueCloud.</span></div><div className="hero-visual" aria-label="BlueCloud apps connected through one launcher"><div className="orbit orbit-one" /><div className="orbit orbit-two" /><div className="orbit orbit-three" /><div className="cloud-core"><Cloud size={68} strokeWidth={1.4} /></div>{products.slice(0, 3).map((p, i) => <div className={`floating-app floating-${i}`} key={p.id}><ProductIcon product={p} large /><span>{p.name}</span></div>)}<div className="visual-caption"><i className="status-dot" /> YOUR APPS. A SHARED HOME.</div></div></section><section className="product-section shell"><div className="section-heading"><div><span className="eyebrow">THE BLUECLOUD COLLECTION</span><h2>Different things.<br />The same care.</h2></div><p>A few useful apps, each with a purpose.<br />Choose the ones that belong in your day.</p></div><div className="app-grid">{products.slice(0, 3).map((p, i) => <ProductCard product={p} index={i} key={p.id} />)}</div></section><LauncherBanner /><section className="principles shell"><div><ShieldCheck /><h3>Your files stay yours.</h3><p>Local tools work on your device. Optional online features explain what they need.</p></div><div><Monitor /><h3>A desktop that feels at home.</h3><p>Dedicated Windows apps with their own identity, brought together by BlueCloud.</p></div><div><RefreshCw /><h3>Less effort to stay current.</h3><p>The launcher brings app discovery and verified updates into one place.</p></div></section></>; }
+function Apps() { return <section className="shell page-section"><SEO title="Our apps — BlueCloud" description="Explore Coneic Player, Quranly PC and Tooldeck for Windows." path="/apps" /><span className="eyebrow">THE COLLECTION</span><h1>Find your everyday.</h1><p className="page-lead">Media, daily practice and useful little tools. All from BlueCloud.</p><div className="app-grid">{products.slice(0, 3).map((p, i) => <ProductCard product={p} index={i} key={p.id} />)}</div></section>; }
+function ProductPage({ launcher = false }) { const { id } = useParams(); const p = products.find(p => p.id === (launcher ? 'launcher' : id)); const { releases } = useReleases(); if (!p) return <NotFound />; return <section className="shell page-section"><SEO title={`${p.name} — BlueCloud`} description={p.description} path={launcher ? '/launcher' : `/apps/${p.id}`} /><Link className="text-link" to="/apps">← All apps</Link><div className="detail-hero"><ProductIcon product={p} large /><span className="eyebrow">{p.category} / {p.status}</span><h1>{p.name}</h1><h2>{p.tagline}</h2><p className="page-lead">{p.description}</p><div className="actions"><Download id={p.id} releases={releases} />{p.webUrl && <a className="button secondary" href={p.webUrl}>Open web tools <ArrowUpRight size={17} /></a>}</div><p className="subtle">{p.platform} · {p.version} · Development preview</p></div><div className="feature-grid">{p.features.map(f => <div key={f}><Check size={18} /><h3>{f}</h3></div>)}</div><div className="notice"><strong>Before you get started</strong><p>{p.note}</p>{p.id === 'launcher' && <p>Managed apps live in your local BlueCloud library. Existing standalone installs stay separate. Updates are checked when the launcher opens and installed when you choose.</p>}{p.id === 'coneic' && <p><Link to="/coneic/privacy">Privacy</Link> · <Link to="/coneic/installer-codes">Windows packaging details</Link> · VLC source and third-party notices accompany the release.</p>}</div></section>; }
+function Downloads() { const { releases, failed } = useReleases(); return <section className="shell page-section"><SEO title="Downloads — BlueCloud" description="Get the BlueCloud Launcher and individual Windows apps." path="/downloads" /><span className="eyebrow">MAKE YOURSELF AT HOME</span><h1>Your next download.</h1><p className="page-lead">Start with the launcher, or get an app on its own. Current releases are Windows x64 alpha builds.</p>{failed && <p role="status" className="notice">The download catalog could not load. Please refresh or contact support.</p>}<div className="download-list">{[products[3], ...products.slice(0, 3)].map(p => <article key={p.id}><ProductIcon product={p} /><div><h2><Link to={p.id === 'launcher' ? '/launcher' : `/apps/${p.id}`}>{p.name}</Link></h2><p>{p.platform} · {p.version}</p></div><Download id={p.id} releases={releases} />{p.webUrl && <a className="text-link" href={p.webUrl}>Open in browser <ArrowUpRight size={15} /></a>}</article>)}</div><p className="subtle">Alpha installers are unsigned and may show a Windows publisher warning. Use the downloads linked here. Your app data stays in your Windows user profile.</p></section>; }
+function Releases() { const { releases, failed } = useReleases(); return <section className="shell page-section"><SEO title="What’s new — BlueCloud" description="Release notes for BlueCloud apps." path="/releases" /><span className="eyebrow">WHAT’S NEW</span><h1>Always taking shape.</h1><p className="page-lead">Version notes for the apps you use, with alpha status kept in view.</p>{failed && <p role="status">Release downloads are temporarily unavailable.</p>}<div className="release-list">{products.map(p => { const r = releases.find(r => r.appId === p.id); return <article key={p.id}><span className="pill">{p.status}</span><h2>{p.name} <span className="subtle">{r?.version || p.version}</span></h2><p>{r?.notes || p.description}</p><ul>{p.features.map(f => <li key={f}>{f}</li>)}</ul><Link className="text-link" to={p.id === 'launcher' ? '/launcher' : `/apps/${p.id}`}>View app <ArrowUpRight size={15} /></Link></article>; })}</div></section>; }
+function Support() { return <section className="shell page-section narrow"><SEO title="Support — BlueCloud" description="Get help with BlueCloud apps." path="/support" /><span className="eyebrow">WE’RE HERE TO HELP</span><h1>A little support.</h1><p className="page-lead">Found a bug or have an idea? Tell us which app and version you’re using, your Windows version and what happened.</p><div className="actions"><a className="button primary" href="mailto:sadeeqsgi@icloud.com"><Mail size={17} /> Email BlueCloud</a><a className="button secondary" href="https://github.com/sadiqgarba2553/bluecloud-website/issues/new">Report an issue <ArrowUpRight size={17} /></a></div><h2>Common questions</h2><h3>Do I need an account?</h3><p>No account is needed for the launcher or Tooldeck. Quranly offers optional accounts for private backup and resume.</p><h3>Can I use my apps offline?</h3><p>Local media and Tooldeck’s bundled tools work offline. Quranly plays downloaded recitations; new content and cloud backup need a connection.</p><h3>How do updates work?</h3><p>The launcher checks the BlueCloud release feed and offers supported updates. It verifies packages before installing them. Existing standalone apps can still be used separately.</p><h3>What does alpha mean?</h3><p>These are early releases. Keep backups of important files and report problems. Platform support and known limitations are listed with each app.</p></section>; }
+function Policy({ terms = false }) { return <section className="shell page-section narrow"><SEO title={`${terms ? 'Terms' : 'Privacy'} — BlueCloud`} description="Information about using BlueCloud apps and this website." path={terms ? '/terms' : '/privacy'} /><h1>{terms ? 'Terms of use.' : 'Your privacy.'}</h1><p className="subtle">Updated 18 October 2026</p>{terms ? <><h2>Using our software</h2><p>BlueCloud apps are development releases. Features and availability may change. Use the apps responsibly, keep backups and respect the rights of content owners.</p><h2>Licenses</h2><p>Each app includes its own license and third-party notices. Coneic retains VLC’s notices and applicable licenses. Those licenses govern the components they cover.</p><h2>Support</h2><p>Contact us for help. No paid subscription or enterprise service agreement is offered through this website.</p></> : <><h2>This website</h2><p>This website does not require an account, use advertising scripts or include an analytics integration. Our hosting provider processes requests to deliver pages and downloads.</p><h2>Your apps</h2><p>Tooldeck processes files on your device. The launcher stores its library locally and contacts the release service to check versions and download packages. It does not upload documents or media.</p><h2>Optional online features</h2><p>Quranly uses Supabase for optional account services and private progress backup. Online recitations, content and optional AI features contact their respective providers. Consult the app’s account and data controls.</p><h2>Contacting us</h2><p>Support emails are used to respond to your request. Public GitHub issues are visible to others; do not include keys, passwords or private files.</p><p><Link to="/coneic/privacy">Coneic’s app-specific privacy policy</Link></p></>}<p>Contact: <a href="mailto:sadeeqsgi@icloud.com">sadeeqsgi@icloud.com</a></p></section>; }
+function NotFound() { return <section className="shell page-section narrow"><h1>A cloud out of place.</h1><p>This page isn’t available.</p><Link className="button primary" to="/apps">Explore our apps <ArrowRight size={17} /></Link></section>; }
+export default function App() { return <><a className="skip-link" href="#main">Skip to content</a><Header /><main id="main"><Routes><Route path="/" element={<Home />} /><Route path="/apps" element={<Apps />} /><Route path="/apps/:id" element={<ProductPage />} /><Route path="/launcher" element={<ProductPage launcher />} /><Route path="/downloads" element={<Downloads />} /><Route path="/releases" element={<Releases />} /><Route path="/support" element={<Support />} /><Route path="/privacy" element={<Policy />} /><Route path="/terms" element={<Policy terms />} /><Route path="/coneic/privacy" element={<ConeicPrivacyPolicy />} /><Route path="/coneic/installer-codes" element={<ConeicInstallerCodes />} /><Route path="/coneic" element={<Navigate to="/apps/coneic" replace />} />{['/projects','/platform','/quranly'].map(p => <Route path={p} element={<Navigate to={p === '/quranly' ? '/apps/quranly' : '/apps'} replace />} key={p} />)}{['/about','/contact','/services','/enterprise','/developers','/investors','/careers','/ai-solutions','/rate-card','/portfolio','/portal/*'].map(p => <Route path={p} element={<Navigate to="/support" replace />} key={p} />)}{['/privacy-policy','/cookies','/cookies-policy'].map(p => <Route path={p} element={<Navigate to="/privacy" replace />} key={p} />)}<Route path="/terms-and-conditions" element={<Navigate to="/terms" replace />} /><Route path="*" element={<NotFound />} /></Routes></main><Footer /></>; }

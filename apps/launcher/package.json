@@ -1,0 +1,6 @@
+{
+  "name":"bluecloud-launcher","version":"0.1.0-alpha","private":true,"description":"Install, open and update BlueCloud apps","author":"BLUECLOUD","main":"electron/main.cjs",
+  "scripts":{"desktop":"electron .","dist:win":"electron-builder --win nsis --x64"},
+  "dependencies":{"yauzl":"^3.4.0","semver":"7.7.4"},
+  "build":{"appId":"com.bluecloud.launcher","productName":"BlueCloud Launcher","electronVersion":"44.9.0","directories":{"output":"../../artifacts/launcher"},"files":["electron/**/*","ui/**/*","config.json","products.json","package.json"],"win":{"target":"nsis","icon":"../../public/icon_no_background.PNG","signExecutable":false},"nsis":{"oneClick":false,"perMachine":false,"allowToChangeInstallationDirectory":true,"artifactName":"BlueCloud-Launcher-Setup-${version}-${arch}.${ext}"}}
+}

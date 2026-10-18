@@ -1,0 +1,26 @@
+import {test,expect,_electron as electron} from '@playwright/test';
+import {generateKeyPairSync,sign,createHash} from 'node:crypto';
+import {mkdtemp,rm,writeFile,readFile,cp} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+import {zipSync} from 'fflate';
+test('launcher verifies signed releases, installs A then B, preserves data and rejects tampering',async()=>{
+  const profile=await mkdtemp(path.join(tmpdir(),'bluecloud-e2e-'));const keys=generateKeyPairSync('ed25519');const testApp=path.join(profile,'app');await cp('apps/launcher',testApp,{recursive:true});const cfg=JSON.parse(await readFile(path.join(testApp,'config.json'),'utf8'));cfg.publicKey=keys.publicKey.export({type:'spki',format:'pem'});await writeFile(path.join(testApp,'config.json'),JSON.stringify(cfg));const app=await electron.launch({args:[testApp],env:{...process.env,BLUECLOUD_TEST_PROFILE:profile}});
+  try{
+    const page=await app.firstWindow();await expect(page.getByRole('heading',{name:'Your app library.'})).toBeVisible();await page.getByRole('button',{name:'Table view'}).click();await expect(page.locator('#library')).toHaveClass('app-table');await page.getByRole('button',{name:'Grid view'}).click();await page.getByRole('tab',{name:/Installed/}).first().click();await expect(page.locator('#empty')).toBeVisible();await page.getByRole('button',{name:'Show all apps'}).click();await page.getByRole('searchbox',{name:'Search apps'}).fill('quran');await expect(page.locator('#library article')).toHaveCount(1);await page.getByRole('searchbox',{name:'Search apps'}).fill('');await page.getByRole('button',{name:'Launcher settings'}).click();await expect(page.getByRole('dialog')).toBeVisible();await page.getByRole('button',{name:'Done',exact:true}).click();
+    async function setRelease(version,tampered=false){const bytes=Buffer.from(`fixture version ${version}`);const zip=Buffer.from(zipSync({'Tooldeck.exe':bytes}));const payload=JSON.stringify({schemaVersion:1,channel:'alpha',publishedAt:new Date().toISOString(),expiresAt:new Date(Date.now()+3600000).toISOString(),releases:[{appId:'tooldeck',version,minimumLauncher:'0.1.0-alpha',platform:'win32',arch:'x64',packageType:'zip',executable:'Tooldeck.exe',size:zip.length,unpackedSize:bytes.length,sha256:tampered?'0'.repeat(64):createHash('sha256').update(zip).digest('hex'),url:'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/fixture/tooldeck.zip'}]});
+      const envelope={payload,signature:sign(null,Buffer.from(payload),keys.privateKey).toString('base64')};
+      await app.evaluate((_electron,data)=>{global.fetch=async url=>String(url).includes('/rest/v1/')?new Response(JSON.stringify([{envelope:data.envelope}]),{headers:{'content-type':'application/json'}}):new Response(Buffer.from(data.zip,'base64'));},{envelope,zip:zip.toString('base64')});
+      const refresh=await page.evaluate(()=>window.bluecloud.refresh());expect(refresh.ok).toBe(true);expect(refresh.state.releases[0].version).toBe(version);
+    }
+    await setRelease('0.1.0-alpha.1');let result=await page.evaluate(()=>window.bluecloud.install('tooldeck'));expect(result.ok).toBe(true);expect(result.state.installed.tooldeck.version).toBe('0.1.0-alpha.1');
+    await writeFile(path.join(profile,'user-notes.txt'),'keep my data');await setRelease('0.1.0-alpha.2');result=await page.evaluate(()=>window.bluecloud.install('tooldeck'));expect(result.ok).toBe(true);expect(result.state.installed.tooldeck.version).toBe('0.1.0-alpha.2');expect(await readFile(path.join(profile,'user-notes.txt'),'utf8')).toBe('keep my data');
+    const goodDirectory=result.state.installed.tooldeck.directory;await setRelease('0.1.0-alpha.3',true);result=await page.evaluate(()=>window.bluecloud.install('tooldeck'));expect(result.ok).toBe(false);expect(result.error).toContain('verification failed');const after=await page.evaluate(()=>window.bluecloud.state());expect(after.state.installed.tooldeck.directory).toBe(goodDirectory);
+    await page.getByRole('button',{name:'Check for updates'}).click();await expect(page.locator('.download-progress:visible')).toHaveCount(0);await page.screenshot({path:'artifacts/screenshots/launcher.png',fullPage:true});await page.getByRole('button',{name:'Table view'}).click();await page.screenshot({path:'artifacts/screenshots/launcher-table.png',fullPage:true});
+    expect(await page.evaluate(()=>typeof window.require)).toBe('undefined');
+  }finally{await app.close();await rm(profile,{recursive:true,force:true});}
+});
+test('packaged Tooldeck opens with renderer isolation and generates a password offline',async()=>{
+  const app=await electron.launch({executablePath:path.resolve('artifacts/tooldeck/win-unpacked/Tooldeck.exe'),args:[]});
+  try{const page=await app.firstWindow();await page.getByRole('button',{name:'Password generator',exact:true}).click();await page.locator('#run').click();expect((await page.locator('#output').inputValue()).length).toBe(20);expect(await page.evaluate(()=>typeof window.require)).toBe('undefined');const prefs=await app.evaluate(({BrowserWindow})=>{const p=BrowserWindow.getAllWindows()[0].webContents.getLastWebPreferences();return{node:p.nodeIntegration,isolation:p.contextIsolation,sandbox:p.sandbox};});expect(prefs).toEqual({node:false,isolation:true,sandbox:true});}finally{await app.close();}
+});

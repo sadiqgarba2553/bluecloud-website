@@ -1,0 +1,19 @@
+# Windows alpha release process
+
+The launcher reads a signed feed from the existing Supabase project. BlueCloud release rows are separate from Quranly account tables. Public clients have SELECT access only to published channels; RLS is enabled. The SQL migration is in `infrastructure/supabase/`.
+
+1. Update app versions, release notes and the shared product catalog. Install dependencies using the root README.
+2. Build and test the website, Tooldeck and launcher. Build Quranly from `apps/quranly`. Supply the validated native Coneic runtime in `artifacts/coneic/Coneic/` and the matching source in `apps/coneic/`.
+3. Run `npm run prepare:launcher`. It copies public catalog/trust configuration and app icons into the launcher. On first setup only, it creates an Ed25519 key in `artifacts/signing/release-private.pem`. **Back up this private key privately.** Never commit it, send it to clients or replace the pinned public key for routine releases. Signing-key rotation requires an explicit migration plan for installed launchers.
+4. Package apps using the root scripts. `node scripts/releases.mjs prepare` archives the managed apps, hashes packages, attaches corresponding Coneic source, and signs the alpha feed. The release tool currently uses the initial alpha tag; change the tag for a subsequent release. Published assets are immutable.
+5. Push the source commit. `node scripts/releases.mjs upload` uses Git's configured GitHub credential helper in memory to create a draft release and upload/verify its assets. It never writes or prints the token. Then `node scripts/releases.mjs publish` checks required assets, publishes the release and writes the website download catalog.
+6. Apply `artifacts/releases/promote-feed.sql` through authorized server-side Supabase tooling, after verifying the GitHub assets. Never expose a Supabase service key to the website or launcher. Push the updated `public/releases/catalog.json` and rebuild/deploy the website.
+7. Verify the public Supabase response, manifest signature, download URLs, a clean install and the previous-version update flow. Keep the previous release available for recovery.
+
+The feed authenticates the exact JSON payload and includes a publication and expiry time. Renew it before expiry even if no new app version is published. The initial alpha feed expires one year after publication. The launcher rejects expired feeds, tampered packages, unexpected download hosts, unsupported package paths and older installed-version updates. It preserves the last trusted feed for offline use until expiry; installed apps can still open without the service.
+
+Managed apps are installed into versioned directories beneath the launcher's Windows user-data directory. The registry switches to a new version only after extraction and executable validation succeed. The prior version is retained for manual recovery. Settings and app user data live separately. There is no automatic data-schema rollback. Removal deletes managed binaries after confirmation and retains user data. Existing standalone installs are intentionally not adopted automatically.
+
+The launcher checks for updates at startup by default; the setting can be disabled. Users choose installations and updates. Downloads can be cancelled/retried. The self-update path downloads the authenticated launcher installer, asks the user to run it, then closes the launcher. Automatic background installation, delta patches, resumed partial downloads, scheduled updates and channel switching are not part of the first alpha.
+
+Windows executables/installers are currently unsigned. Ed25519 feed verification authenticates releases to an already trusted launcher; it does not replace Windows publisher signing or protect the initial launcher download. Obtain publisher signing and complete a broader pilot before a stable public release.
