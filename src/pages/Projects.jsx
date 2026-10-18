@@ -81,7 +81,7 @@ const PROJECTS_DATA = [
     problem: 'A focused desktop space for Quran reading and listening.',
     solution: 'Read the Quran and listen to recitations in a dedicated Windows app. Install and update it through BlueCloud Launcher.',
     linkLabel: 'Get via Launcher',
-    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.1/BlueCloud-Launcher-Setup-0.1.0-alpha.1-x64.exe'
+    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.2/BlueCloud-Launcher-Setup-0.1.0-alpha.2-x64.exe'
   },
   {
     id: 7,
@@ -94,7 +94,7 @@ const PROJECTS_DATA = [
     problem: 'A dedicated Windows player for local music and video.',
     solution: 'A desktop media player for your music and videos. Install and update the Windows app through BlueCloud Launcher.',
     linkLabel: 'Get via Launcher',
-    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.1/BlueCloud-Launcher-Setup-0.1.0-alpha.1-x64.exe'
+    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.2/BlueCloud-Launcher-Setup-0.1.0-alpha.2-x64.exe'
   },
   {
     id: 8,
@@ -107,7 +107,7 @@ const PROJECTS_DATA = [
     problem: 'Users need one place to install and keep their BlueCloud apps up to date.',
     solution: 'Download, launch and update Quranly PC, Coneic Player and Tooldeck from one Windows app. Windows x64 alpha.',
     linkLabel: 'Download Launcher',
-    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.1/BlueCloud-Launcher-Setup-0.1.0-alpha.1-x64.exe'
+    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.2/BlueCloud-Launcher-Setup-0.1.0-alpha.2-x64.exe'
   }
 ];
 
@@ -122,7 +122,7 @@ const Projects = () => {
   return (
     <div className="section container">
       <SEO
-        title="Our Projects & Case Studies — BlueCloud Portfolio"
+        title="Our Projects & Case Studies â€” BlueCloud Portfolio"
         description="Explore our enterprise deployments, ROI metrics, and technical case studies including Cyberion, FastData, Flux Language, Prism Studio, Tool Deck, Quranly PC, Coneic Player, and BlueCloud Launcher."
         path="/projects"
         keywords="BlueCloud projects, web development portfolio Nigeria, case studies, Quranly PC, Coneic Player, BlueCloud Launcher, Cyberion, FastData, Flux programming language, Prism Studio, Tool Deck, Quranly, cybersecurity Nigeria, tech portfolio Abuja"
