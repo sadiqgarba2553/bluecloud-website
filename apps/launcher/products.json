@@ -42,8 +42,8 @@
     "name": "Tooldeck",
     "category": "Everyday utilities",
     "tagline": "Small tools. A lot less friction.",
-    "description": "PDF, image, text and developer utilities in one focused workspace. Process your files locally, without an account.",
-    "version": "0.1.0-alpha.1",
+    "description": "79 local PDF, image, video, audio, conversion and utility tools in a clean card library.",
+    "version": "0.2.0-alpha.1",
     "status": "Alpha",
     "platform": "Windows x64 · Web",
     "accent": "#85dfbb",
@@ -55,7 +55,7 @@
       "QR codes, passwords and file hashes"
     ],
     "webUrl": "/tool-deck/",
-    "note": "The initial release includes essential local tools. Advanced office conversions are outside this release."
+    "note": "Files are processed locally. Conversion limits are explained in each workspace."
   },
   {
     "id": "launcher",
@@ -63,7 +63,7 @@
     "category": "Your app library",
     "tagline": "One home for your BlueCloud apps.",
     "description": "Discover, install, open and update BlueCloud apps from a single Windows library. No account needed to manage your apps.",
-    "version": "0.1.0-alpha.1",
+    "version": "0.1.0-alpha.4",
     "status": "Alpha",
     "platform": "Windows x64",
     "accent": "#83aeff",

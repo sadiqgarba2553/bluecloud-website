@@ -9,6 +9,7 @@ const {extractPackage}=require('./extract.cjs');
 const semver=require('semver');
 const {safePath,trustedDownload,verifyFeed,validAppId}=require('./security.cjs');
 const {applyUpdate,verifyInstaller}=require('./updater.cjs');
+const {createShortcuts}=require('./shortcuts.cjs');
 const config=require('../config.json');
 const products=require('../products.json');
 const version=require('../package.json').version;
@@ -20,6 +21,10 @@ const feedCache=path.join(app.getPath('userData'),'feed.json');
 const start=pathToFileURL(path.join(__dirname,'../ui/index.html')).href;
 let win,feed=null,installed={},lastError='',highestPublished=0,bulkRemoving=false,pendingUpdate=null,autoUpdate=true,deferUpdate=false,updateTimer;
 const appErrors={},updateDirectory=path.join(app.getPath('userData'),'updates');
+const isolatedProfile=app.commandLine.hasSwitch('user-data-dir')||Boolean(process.env.BLUECLOUD_TEST_PROFILE);
+const shortcutRoot=isolatedProfile?path.join(app.getPath('userData'),'start-menu'):path.join(app.getPath('appData'),'Microsoft','Windows','Start Menu','Programs','BlueCloud Apps');
+const shortcuts=createShortcuts({fs,shell,root:shortcutRoot,library});
+async function syncShortcut(id){try{await shortcuts.sync(id,installed[id],productList().find(p=>p.id===id));}catch(error){await recordError(id,new Error(`App installed, but its Windows shortcut could not be created: ${error.message}`));}}
 const jobs=new Map(),children=new Map();let saveQueue=Promise.resolve();
 function saveRegistry(){saveQueue=saveQueue.catch(()=>{}).then(async()=>{await fs.mkdir(path.dirname(registryPath),{recursive:true});await fs.writeFile(registryPath+'.tmp',JSON.stringify(installed,null,2));await fs.rename(registryPath+'.tmp',registryPath);});return saveQueue;}
 function sender(event){if(event.sender!==win?.webContents||event.senderFrame?.url.split('#')[0]!==start)throw Error('Untrusted window');}
@@ -80,6 +85,7 @@ async function install(id){
     destination=safePath(library,`${id}/${r.version}-${crypto.randomUUID()}`);await fs.mkdir(path.dirname(destination),{recursive:true});await fs.rename(unpack,destination);
     installed[id]={version:r.version,directory:path.relative(library,destination).replaceAll('\\','/'),executable:r.executable,installedAt:new Date().toISOString()};
     try{await saveRegistry();}catch(error){if(old)installed[id]=old;else delete installed[id];await fs.rm(destination,{recursive:true,force:true});throw error;}
+    await syncShortcut(id);
     // Keep the previous version for manual recovery; never delete app profile data.
     emit(id,'Ready',100);
   }catch(error){await recordError(id,error);throw error;}finally{jobs.delete(id);await fs.rm(work,{recursive:true,force:true,maxRetries:5,retryDelay:200}).catch(()=>{});emit(id,'Finished',100);broadcast();scheduleUpdate();}
@@ -93,7 +99,7 @@ async function uninstall(id,confirmed=false){
     if(await running(id))throw Error('Close the app before removing it.');
     const answer=confirmed?{response:0}:await dialog.showMessageBox(win,{type:'question',message:`Uninstall ${productList().find(p=>p.id===id)?.name||id}?`,detail:'Managed app files will be removed. Your app settings and user data are retained.',buttons:['Uninstall app','Cancel'],defaultId:1,cancelId:1});
     if(answer.response!==0)return state();const dir=safePath(library,id),trash=safePath(library,`.removed-${id}-${crypto.randomUUID()}`),previous=installed[id];let moved=false;
-    try{await fs.rename(dir,trash);moved=true;}catch(error){if(error.code!=='ENOENT')throw error;}delete installed[id];try{await saveRegistry();}catch(error){installed[id]=previous;if(moved)await fs.rename(trash,dir);throw error;}delete appErrors[id];if(moved)await fs.rm(trash,{recursive:true,force:true,maxRetries:5,retryDelay:200}).catch(()=>{});
+    try{await fs.rename(dir,trash);moved=true;}catch(error){if(error.code!=='ENOENT')throw error;}delete installed[id];try{await saveRegistry();}catch(error){installed[id]=previous;if(moved)await fs.rename(trash,dir);throw error;}delete appErrors[id];await shortcuts.remove(id);if(moved)await fs.rm(trash,{recursive:true,force:true,maxRetries:5,retryDelay:200}).catch(()=>{});
   }catch(error){await recordError(id,error);throw error;}finally{jobs.delete(id);emit(id,'Finished',100);broadcast();}
   return state();
 }
@@ -102,6 +108,7 @@ if(!app.requestSingleInstanceLock())app.quit();
 else app.whenReady().then(async()=>{
   app.setAppUserModelId('com.bluecloud.launcher');await fs.mkdir(library,{recursive:true});
   try{const saved=JSON.parse(await fs.readFile(registryPath,'utf8'));for(const [id,e]of Object.entries(saved)){if(!validAppId(id)||id==='launcher'||!semver.valid(e.version)||!e.directory.startsWith(id+'/'))continue;const dir=safePath(library,e.directory),exe=safePath(dir,e.executable);installed[id]=e;try{if(!(await fs.lstat(exe)).isFile())throw Error();}catch{installed[id].broken=true;appErrors[id]='App files are missing. Choose Repair app to reinstall.';}}}catch(error){if(error.code!=='ENOENT')lastError='The library record could not be read. Contact support before reinstalling apps.';}
+  for(const id of Object.keys(installed))await syncShortcut(id);
   try{const envelope=JSON.parse(await fs.readFile(feedCache,'utf8'));feed=verifyFeed(envelope,config.publicKey,config.channel,version);highestPublished=Date.parse(feed.publishedAt);}catch{}
   win=new BrowserWindow({width:1380,height:860,minWidth:920,minHeight:620,titleBarStyle:'hidden',titleBarOverlay:{color:'#14171d',symbolColor:'#9da8b9',height:65},backgroundColor:'#0e1013',webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true}});Menu.setApplicationMenu(null);
   win.webContents.setWindowOpenHandler(()=>({action:'deny'}));win.webContents.on('will-navigate',(event,url)=>{if(url.split('#')[0]!==start)event.preventDefault();});win.webContents.on('will-attach-webview',e=>e.preventDefault());

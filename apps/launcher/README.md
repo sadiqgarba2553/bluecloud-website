@@ -13,3 +13,5 @@ The launcher checks the signed server catalog on startup and every 10 minutes, i
 Run `npm test` for integrity, extraction and updater checks, and `npm run test:desktop` after packaging Tooldeck for desktop integration checks. `node scripts/smoke-tooldeck-update.cjs` checks the real public Tooldeck update using disposable profiles under ignored artifacts; it requires the archived alpha.1 package locally and downloads the latest signed Tooldeck package.
 
 See `RELEASING.md` in this directory for the standalone publishing workflow, signing, recovery and alpha limits. The release backend is Supabase; no launcher account or database writes are available to clients. The website is outside this workflow.
+
+Managed apps appear in Windows Start/Search under BlueCloud Apps. Tooldeck uses the searchable name Tool Deck. Existing installations gain shortcuts when the launcher next starts; updates retarget shortcuts and uninstall removes them. Disposable test profiles use isolated shortcut folders.
