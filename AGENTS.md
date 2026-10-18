@@ -8,4 +8,6 @@ The owner explicitly requires `bluecloudai.online` to remain in its original sta
 - Package the existing validated Quranly and Coneic builds for launcher distribution. Preserve their original source and existing data; do not redesign them as part of this task.
 - Use Supabase if app backend work is needed. Keep credentials and private signing keys out of source control.
 
+The owner subsequently authorized replacing the five pictured website cards (old Quranly, Tunnel, Mods, CargoLedger and WiFi Master) with Quranly PC, Coneic Player and BlueCloud Launcher. Preserve the existing website design and all other sections.
+
 The owner's later explicit requests take precedence. Earlier ecosystem roadmap and release documents are historical where they conflict with this scope.

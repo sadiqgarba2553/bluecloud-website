@@ -72,68 +72,42 @@ const PROJECTS_DATA = [
   },
   {
     id: 6,
-    title: 'Quranly AI & Audio Platform',
-    domain: 'quranly',
+    title: 'Quranly PC',
+    domain: 'quranly-pc',
     category: 'App',
-    tags: ['AI & Audio', 'Mobile & PWA', 'Quran Platform'],
+    tags: ['Windows', 'Quran & Audio'],
     imgSrc: '/quranlylogo.png',
-    roi: '100+ Reciters | Sub-Second Audio CDN | Gemini AI Tafsir',
-    problem: 'Need for a peaceful, ad-free digital Quran application integrating real-time AI tafsir, global reciter streaming, and offline audio.',
-    solution: 'Engineered a high-performance cross-platform Progressive Web & Mobile App powered by Gemini AI, responsive audio playback engine, indexedDB caching, and tajweed study analytics.',
-    impact: 'Delivered sub-second audio streaming across global CDNs with seamless offline persistence and multi-device sync.',
-    link: '/quranly/'
+    roi: 'Windows x64 | Alpha release',
+    problem: 'A focused desktop space for Quran reading and listening.',
+    solution: 'Read the Quran and listen to recitations in a dedicated Windows app. Install and update it through BlueCloud Launcher.',
+    linkLabel: 'Get via Launcher',
+    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.1/BlueCloud-Launcher-Setup-0.1.0-alpha.1-x64.exe'
   },
   {
     id: 7,
-    title: 'Tunnel Arcade Gaming Platform',
-    domain: 'tunnel',
+    title: 'Coneic Player',
+    domain: 'coneic-player',
     category: 'App',
-    tags: ['Arcade Gaming', 'PWA & Web Audio', 'Retro Games'],
-    imgSrc: '/tunnel_icon.svg',
-    roi: '16 Games | 2P Versus & Co-Op | Global Leaderboards | Full Offline PWA',
-    problem: 'Web gaming portals are often cluttered with invasive ads, slow heavy bundles, and poor cross-device touch controls.',
-    solution: 'Built a next-generation 1980s-90s retro arcade web platform with 16 handcrafted vector games, 2-player local versus/co-op, retro chiptune jukebox, global leaderboards, real-time Web Audio API chiptune synthesis, and 1-click PWA installation.',
-    impact: 'Zero-latency 60 FPS performance across desktop, tablet, and mobile with complete offline standalone play capability.',
-    link: '/tunnel/index.html'
+    tags: ['Windows', 'Media Player'],
+    imgSrc: '/coneic-player.png',
+    roi: 'Windows x64 | Alpha release',
+    problem: 'A dedicated Windows player for local music and video.',
+    solution: 'A desktop media player for your music and videos. Install and update the Windows app through BlueCloud Launcher.',
+    linkLabel: 'Get via Launcher',
+    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.1/BlueCloud-Launcher-Setup-0.1.0-alpha.1-x64.exe'
   },
   {
     id: 8,
-    title: 'Mods Social & Creator Platform',
-    domain: 'mods-app',
+    title: 'BlueCloud Launcher',
+    domain: 'bluecloud-launcher',
     category: 'App',
-    tags: ['Social Media', 'Creator Economy', 'React Native & Web', 'Video Platform'],
-    imgSrc: '/mods_logo.png',
-    roi: 'Real-Time Feed & Video Streaming | Tiered Verification | Full Cross-Platform Web & Mobile',
-    problem: 'Modern creators and online communities require high-fidelity multimedia sharing with zero latency, transparent verification badges, and unified web and mobile apps.',
-    solution: 'Engineered a modern social and multimedia streaming platform featuring dynamic video feeds, multi-image carousels, tiered blue and gold verification systems, Supabase real-time database, and responsive dual-layer UI.',
-    impact: 'Delivered smooth 60 FPS media feeds with sub-second post distribution, real-time engagement notifications, and seamless cross-platform deployment.',
-    link: '/mods/index.html'
-  },
-  {
-    id: 9,
-    title: 'CargoLedger Logistics Operating System',
-    domain: 'cargoledger',
-    category: 'Web',
-    tags: ['Logistics & Freight', 'Supply Chain', 'Enterprise ERP', 'Next.js'],
-    imgSrc: '/cargoledger_logo.svg',
-    roi: 'End-to-End Shipment Tracking | Automated Manifests | 100% Paperless Logistics Pipeline',
-    problem: 'Small freight forwarders and logistics operators outgrow spreadsheets and fragmented WhatsApp threads without the budget or flexibility for legacy enterprise ERPs.',
-    solution: 'Architected an elegant shipment management platform for logistics operators featuring real-time status pipelines, automated customer updates, digital airway bills, invoice tracking, and bank-ledger precision UI.',
-    impact: 'Eliminated manual shipment tracking overhead, boosted manifest generation speed by 75%, and established automated customer milestone transparency.',
-    link: '/cargoledger/index.html'
-  },
-  {
-    id: 10,
-    title: 'WiFi Master Wireless Security Suite',
-    domain: 'wifi-master',
-    category: 'Tools',
-    tags: ['Cybersecurity', 'Wireless Audit', 'Penetration Testing', 'Python & Web Engine'],
-    imgSrc: '/wifi_master_icon.svg',
-    roi: 'Aircrack-ng Automation | Handshake Capture | Monitor Mode Toggle | 80% Faster Audit Setup',
-    problem: 'Wireless security audits and penetration testing workflows often require executing fragmented CLI commands across multiple separate tools, causing human error and slow diagnostic cycles.',
-    solution: 'Engineered an end-to-end Python and web-based automation suite for wireless security diagnostics, automated monitor mode toggling, WPA/WPA2 handshake interception, network scoping, and deauthentication analysis.',
-    impact: 'Accelerated wireless penetration testing setup time by 80% while standardizing capture formats and diagnostic logs for security teams.',
-    link: '/wifi-master/index.html'
+    tags: ['Windows', 'App Launcher'],
+    imgSrc: '/icon_no_background.PNG',
+    roi: 'Windows x64 | Alpha release',
+    problem: 'Users need one place to install and keep their BlueCloud apps up to date.',
+    solution: 'Download, launch and update Quranly PC, Coneic Player and Tooldeck from one Windows app. Windows x64 alpha.',
+    linkLabel: 'Download Launcher',
+    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.1/BlueCloud-Launcher-Setup-0.1.0-alpha.1-x64.exe'
   }
 ];
 
@@ -149,9 +123,9 @@ const Projects = () => {
     <div className="section container">
       <SEO
         title="Our Projects & Case Studies — BlueCloud Portfolio"
-        description="Explore our enterprise deployments, ROI metrics, and technical case studies including Cyberion, FastData, WiFi Master, CargoLedger, Mods App, Flux Language, Prism Studio, Tool Deck, and Quranly."
+        description="Explore our enterprise deployments, ROI metrics, and technical case studies including Cyberion, FastData, Flux Language, Prism Studio, Tool Deck, Quranly PC, Coneic Player, and BlueCloud Launcher."
         path="/projects"
-        keywords="BlueCloud projects, web development portfolio Nigeria, case studies, WiFi Master, CargoLedger, Mods App, Cyberion, FastData, Flux programming language, Prism Studio, Tool Deck, Quranly, cybersecurity Nigeria, tech portfolio Abuja"
+        keywords="BlueCloud projects, web development portfolio Nigeria, case studies, Quranly PC, Coneic Player, BlueCloud Launcher, Cyberion, FastData, Flux programming language, Prism Studio, Tool Deck, Quranly, cybersecurity Nigeria, tech portfolio Abuja"
       />
       <div className="text-center mb-6">
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--primary-blue)', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '8px' }}>
@@ -212,7 +186,7 @@ const Projects = () => {
 
               <div style={{ display: 'flex', gap: '8px' }}>
                 <a href={project.link} target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '6px 14px', fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  Visit Solution <ExternalLink size={14} />
+                  {project.linkLabel || 'Visit Solution'} <ExternalLink size={14} />
                 </a>
               </div>
             </div>

@@ -177,63 +177,39 @@ const Home = () => {
               </div>
             </div>
             <div className="work-card">
-              <img src="/quranlylogo.png" alt="Quranly AI & Audio Platform" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
+              <img src="/quranlylogo.png" alt="Quranly PC" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
               <div className="work-content">
                 <div className="work-tags">
-                  <span className="work-tag">App</span>
-                  <span className="work-tag">AI & Audio</span>
+                  <span className="work-tag">Windows</span>
+                  <span className="work-tag">Quran & Audio</span>
                 </div>
-                <h3>Quranly Platform</h3>
-                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>High-fidelity Quran audio streaming, 100+ reciters & AI Tafsir companion.</p>
-                <a href="/quranly/" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch App</a>
+                <h3>Quranly PC</h3>
+                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Read the Quran and listen to recitations in a dedicated Windows app. Install and update it through BlueCloud Launcher.</p>
+                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.1/BlueCloud-Launcher-Setup-0.1.0-alpha.1-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Get via Launcher</a>
               </div>
             </div>
             <div className="work-card">
-              <img src="/tunnel_icon.svg" alt="Tunnel Arcade Platform" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#0B0F1E', padding: '20px' }} />
+              <img src="/coneic-player.png" alt="Coneic Player" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
               <div className="work-content">
                 <div className="work-tags">
-                  <span className="work-tag">App</span>
-                  <span className="work-tag">Arcade Gaming</span>
+                  <span className="work-tag">Windows</span>
+                  <span className="work-tag">Media Player</span>
                 </div>
-                <h3>Tunnel Arcade</h3>
-                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Next-gen 80s-90s retro web arcade with 16 vector games, 2P local versus, leaderboards, chiptune sound studio & offline PWA.</p>
-                <a href="/tunnel/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch Arcade</a>
+                <h3>Coneic Player</h3>
+                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>A desktop media player for your music and videos. Install and update the Windows app through BlueCloud Launcher.</p>
+                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.1/BlueCloud-Launcher-Setup-0.1.0-alpha.1-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Get via Launcher</a>
               </div>
             </div>
             <div className="work-card">
-              <img src="/mods_logo.png" alt="Mods Social Platform" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
+              <img src="/icon_no_background.PNG" alt="BlueCloud Launcher" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
               <div className="work-content">
                 <div className="work-tags">
-                  <span className="work-tag">App</span>
-                  <span className="work-tag">Social Media</span>
+                  <span className="work-tag">Windows</span>
+                  <span className="work-tag">App Launcher</span>
                 </div>
-                <h3>Mods App</h3>
-                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Next-gen social platform with real-time video feeds, tiered verification & cross-platform PWA.</p>
-                <a href="/mods/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch App</a>
-              </div>
-            </div>
-            <div className="work-card">
-              <img src="/cargoledger_logo.svg" alt="CargoLedger Logistics OS" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F6F6F3', padding: '24px' }} />
-              <div className="work-content">
-                <div className="work-tags">
-                  <span className="work-tag">Web</span>
-                  <span className="work-tag">Logistics ERP</span>
-                </div>
-                <h3>CargoLedger</h3>
-                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Shipment management OS for freight forwarders with status pipelines, airway bills & tracking.</p>
-                <a href="/cargoledger/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch Platform</a>
-              </div>
-            </div>
-            <div className="work-card">
-              <img src="/wifi_master_icon.svg" alt="WiFi Master Security Suite" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#070C12', padding: '20px' }} />
-              <div className="work-content">
-                <div className="work-tags">
-                  <span className="work-tag">Tools</span>
-                  <span className="work-tag">Cybersecurity</span>
-                </div>
-                <h3>WiFi Master</h3>
-                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Automated wireless penetration testing suite with handshake interception & monitor mode diagnostics.</p>
-                <a href="/wifi-master/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch Suite</a>
+                <h3>BlueCloud Launcher</h3>
+                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Download, launch and update Quranly PC, Coneic Player and Tooldeck from one Windows app. Windows x64 alpha.</p>
+                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.1/BlueCloud-Launcher-Setup-0.1.0-alpha.1-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Download Launcher</a>
               </div>
             </div>
           </div>
