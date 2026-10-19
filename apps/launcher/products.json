@@ -5,7 +5,7 @@
     "category": "Media player",
     "tagline": "Your media. Your space.",
     "description": "A Windows media player built on VLC, with a personal library, saved moments, study notes and smart collections.",
-    "version": "0.2.1-alpha-r2",
+    "version": "0.5.0",
     "status": "Alpha",
     "platform": "Windows x64",
     "accent": "#ff9b65",
@@ -14,7 +14,8 @@
       "Local audio and video playback",
       "Saved moments and study notes",
       "Smart collections and command palette",
-      "Library backup and media relinking"
+      "Library backup and media relinking",
+      "Windows defaults and custom icons for 134 media formats"
     ],
     "note": "Development preview. Device and codec coverage varies; see the bundled validation notes."
   },
@@ -24,7 +25,7 @@
     "category": "Quran & daily practice",
     "tagline": "Make room for your daily practice.",
     "description": "Read the Quran, listen to recitations, save audio offline and continue your daily practice on Windows.",
-    "version": "0.1.0-alpha.1",
+    "version": "0.5.0",
     "status": "Alpha",
     "platform": "Windows x64",
     "accent": "#a4a5ff",
@@ -43,9 +44,9 @@
     "category": "Everyday utilities",
     "tagline": "Small tools. A lot less friction.",
     "description": "79 local PDF, image, video, audio, conversion and utility tools in a clean card library.",
-    "version": "0.2.0-alpha.1",
+    "version": "0.5.0",
     "status": "Alpha",
-    "platform": "Windows x64 · Web",
+    "platform": "Windows x64 Â· Web",
     "accent": "#85dfbb",
     "icon": "tools",
     "features": [
@@ -63,7 +64,7 @@
     "category": "Your app library",
     "tagline": "One home for your BlueCloud apps.",
     "description": "Discover, install, open and update BlueCloud apps from a single Windows library. No account needed to manage your apps.",
-    "version": "0.1.0-alpha.4",
+    "version": "0.5.0",
     "status": "Alpha",
     "platform": "Windows x64",
     "accent": "#83aeff",

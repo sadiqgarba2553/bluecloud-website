@@ -2,6 +2,8 @@
 
 # Coneic
 
+**Windows 0.5.0:** coordinated BlueCloud release with a standalone installer, portable ZIP, Windows default-player registration and custom icons for 134 media formats. The retained media engine remains VLC 3.0.24. See [Windows file associations](docs/WINDOWS-FILE-ASSOCIATIONS.md) and [build instructions](docs/BUILD.md).
+
 Coneic is a project of **[BLUECLOUD](https://bluecloudai.online)**, its parent company.
 
 Coneic is a desktop media player for Windows x64 and Ubuntu 24.04 x64 built as a source fork of **VideoLAN VLC 3.0.24**. It retains the existing media engine and workflows, adds the supplied Coneic logo and icon, and redesigns the native Qt interface around Juxtopposed's VLC Redesign, with the signature orange accent.

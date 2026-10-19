@@ -82,6 +82,7 @@ def main():
     p.add_argument('--app', type=Path, required=True)
     p.add_argument('--stage', type=Path, required=True)
     p.add_argument('--report', type=Path, required=True)
+    p.add_argument('--qt-plugin', type=Path, help='Explicit rebuilt Coneic presentation DLL; engine files stay unchanged')
     a = p.parse_args()
     source, stage = a.app.resolve(), a.stage.resolve()
     if stage.exists() or source == stage or source in stage.parents or stage in source.parents:
@@ -104,6 +105,14 @@ def main():
         if (stage / name).is_file():
             update_version(stage / name, product)
             changed.append(name)
+    if a.qt_plugin:
+        if not a.qt_plugin.is_file() or a.qt_plugin.suffix.lower() != '.dll':
+            raise SystemExit('The rebuilt Qt plugin must be a DLL file')
+        shutil.copyfile(a.qt_plugin, stage / 'plugins/gui/libqt_plugin.dll')
+        changed.append('plugins/gui/libqt_plugin.dll')
+        subprocess.run([str(stage / 'vlc-cache-gen.exe'), str(stage / 'plugins')],
+                       cwd=stage, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+        changed.append('plugins/plugins.dat')
     subprocess.run([sys.executable, str(Path(__file__).with_name('stage-shell.py')),
                     '--app', str(stage)], check=True)
     manifest = []
@@ -121,7 +130,8 @@ def main():
     result = {'passed': True, 'product': product, 'files': len(manifest),
               'shellIntegrationAdded': additions,
               'pluginDLLs': len(list((stage / 'plugins').rglob('*.dll'))),
-              'inputUnchanged': True, 'metadataUpdated': changed, 'manifest': manifest}
+              'inputUnchanged': True, 'metadataUpdated': [x for x in changed if x.endswith('.exe')],
+              'presentationUpdated': [x for x in changed if not x.endswith('.exe')], 'manifest': manifest}
     a.report.parent.mkdir(parents=True, exist_ok=True)
     a.report.write_bytes((json.dumps(result, indent=2) + '\n').encode('utf-8'))
     print(json.dumps({k: v for k, v in result.items() if k != 'manifest'}))

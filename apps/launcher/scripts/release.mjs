@@ -56,16 +56,17 @@ if(mode==='prepare-tooldeck'||mode==='prepare-quranly'){
   const checksum=path.join(out,'SHA256SUMS.txt');await writeFile(checksum,assets.map(a=>`${a.sha256}  ${a.name}`).join('\n')+'\n');assets.push({name:'SHA256SUMS.txt',file:checksum,size:(await stat(checksum)).size,sha256:await hash(checksum)});
   const previousTag=new URL(releases.find(r=>r.appId==='coneic').url).pathname.split('/')[5];
   const body=`Download **${name}** to install, open and update Coneic Player, Quranly PC and Tooldeck. This release adds Windows Start and Search entries for installed apps, repairs existing shortcuts on startup, updates shortcut targets after upgrades and removes shortcuts on uninstall. Includes reliable app installs, individual and bulk uninstall, and automatic verified launcher updates. Server checks continue while minimized.\n\nCurrent app packages: ${releases.filter(r=>r.appId!=='launcher').map(r=>`[${products.find(p=>p.id===r.appId)?.name||r.appId} ${r.version}](${r.url})`).join(', ')}. Tooldeck's latest standalone installer is available in its [current release](https://github.com/${config.repository}/releases/tag/tooldeck-v${releases.find(r=>r.appId==='tooldeck').version}). Corresponding Coneic source remains in the [original app release](https://github.com/${config.repository}/releases/tag/${previousTag}).\n\nStandalone Windows x64 alpha; Windows installers are unsigned. No account is required. App settings are retained during updates.`;
-  await writeFile(manifestFile,JSON.stringify({tag,version:pkg.version,assets,body},null,2)+'\n');
+  await writeFile(manifestFile,JSON.stringify({tag,version:pkg.version,title:`BlueCloud Launcher ${pkg.version} · Windows`,assets,body},null,2)+'\n');
   await writeFile(path.join(out,'promote-feed.sql'),`insert into public.bluecloud_release_channels(channel,envelope,published,updated_at) values ('${config.channel}','${JSON.stringify(envelope).replaceAll("'","''")}'::jsonb,true,now()) on conflict(channel) do update set envelope=excluded.envelope,published=true,updated_at=now();\n`);
   console.log(`Prepared launcher-only release ${tag}; existing app URLs retained.`);
 }else if(mode==='prepare'){
   const releases=[],assets=[];
   const add=async file=>{assets.push({file,name:path.basename(file),size:(await stat(file)).size,sha256:await hash(file)});};
   for(const id of ['coneic','quranly','tooldeck']){
-    const product=products.find(p=>p.id===id),version=id==='tooldeck'?tooldeck.version:product.version;
+    const product=products.find(p=>p.id===id),version=id==='tooldeck'?tooldeck.version:id==='quranly'?quranly.version:product.version;
+    if(version!==product.version)throw Error(`Catalog version differs from the ${id} package version`);
     const name=`${id}-${version}-win-x64.zip`,file=path.join(out,name);
-    const directory=path.join(root,id==='coneic'?'artifacts/coneic/Coneic':`artifacts/${id}/win-unpacked`);
+    const directory=path.join(root,id==='coneic'?'artifacts/coneic/Coneic':id==='quranly'?'apps/quranly/release/win-unpacked':`artifacts/${id}/win-unpacked`);
     const executable={coneic:'Coneic.exe',quranly:'Quranly.exe',tooldeck:'Tooldeck.exe'}[id];
     await stat(path.join(directory,executable));
     if(id==='coneic'){
@@ -84,13 +85,18 @@ if(mode==='prepare-tooldeck'||mode==='prepare-quranly'){
       const result=spawnSync(require('7zip-bin').path7za,['a','-tzip','-mx=5',file,'.'],{cwd:directory,windowsHide:true,encoding:'utf8'});if(result.status!==0)throw Error(`Could not package ${id}: ${result.stderr}`);
     }
     await add(file);const metadata=assets.at(-1);
-    releases.push({appId:id,version,minimumLauncher:'0.1.0-alpha',platform:'win32',arch:'x64',packageType:'zip',executable,size:metadata.size,unpackedSize:await sum(directory),sha256:metadata.sha256,url:assetUrl(name),notes:product.features.join(' · ')});
+    releases.push({appId:id,version,minimumLauncher:'0.5.0',platform:'win32',arch:'x64',packageType:'zip',executable,size:metadata.size,unpackedSize:await sum(directory),sha256:metadata.sha256,url:assetUrl(name),notes:product.features.join(' · ')});
     console.log(`Prepared ${id}: ${Math.round(metadata.size/1024/1024)} MB`);
   }
-  const installer=`${appName}-Setup-${appPackage.version}-x64.exe`;await copyFile(path.join(root,isQuranly?'apps/quranly/release':'artifacts/tooldeck',installer),path.join(out,installer));await add(path.join(out,installer));
+  for(const [name,version,directory] of [['Quranly',quranly.version,'apps/quranly/release'],['Tooldeck',tooldeck.version,'artifacts/tooldeck'],['Coneic',products.find(p=>p.id==='coneic').version,'artifacts/coneic']]){
+    const installer=`${name}-Setup-${version}-x64.exe`;await copyFile(path.join(root,directory,installer),path.join(out,installer));await add(path.join(out,installer));
+  }
   const launcher=`BlueCloud-Launcher-Setup-${pkg.version}-x64.exe`;await copyFile(path.join(root,'artifacts/launcher',launcher),path.join(out,launcher));await add(path.join(out,launcher));const launcherAsset=assets.at(-1);
   releases.push({appId:'launcher',version:pkg.version,minimumLauncher:'0.1.0-alpha',platform:'win32',arch:'x64',packageType:'nsis',size:launcherAsset.size,unpackedSize:await sum(path.join(root,'artifacts/launcher/win-unpacked')),sha256:launcherAsset.sha256,url:assetUrl(launcher),notes:'Standalone Windows launcher. Install Coneic, Quranly and Tooldeck; check and apply app updates; install all and update all controls.'});
   const source=`Coneic-${products.find(p=>p.id==='coneic').version}-source.zip`;await copyFile(path.join(root,'artifacts/releases',source),path.join(out,source));await add(path.join(out,source));
+  const suiteSource=path.join(out,`BlueCloud-apps-${pkg.version}-source.zip`);
+  const sourceResult=spawnSync('git',['archive','--format=zip',`--output=${suiteSource}`,'HEAD','apps/coneic','apps/quranly','apps/tooldeck','apps/launcher','AGENTS.md'],{cwd:root,encoding:'utf8',windowsHide:true});
+  if(sourceResult.status!==0)throw Error('Could not archive committed app source');await add(suiteSource);
   const published=new Date(),expires=new Date(published);expires.setUTCFullYear(expires.getUTCFullYear()+1);
   const payload=JSON.stringify({schemaVersion:1,channel:config.channel,publishedAt:published.toISOString(),expiresAt:expires.toISOString(),releases});
   const signingKeyPath=process.env.BLUECLOUD_SIGNING_KEY||path.join(process.env.LOCALAPPDATA||os.homedir(),'BlueCloud','ReleaseSigning','release-private.pem');
@@ -99,7 +105,8 @@ if(mode==='prepare-tooldeck'||mode==='prepare-quranly'){
   const {verifyFeed}=require('../electron/security.cjs');verifyFeed(envelope,config.publicKey,config.channel,pkg.version);
   await writeFile(path.join(out,'alpha-feed.json'),JSON.stringify(envelope,null,2)+'\n');await add(path.join(out,'alpha-feed.json'));
   await writeFile(path.join(out,'SHA256SUMS.txt'),assets.map(a=>`${a.sha256}  ${a.name}`).join('\n')+'\n');await add(path.join(out,'SHA256SUMS.txt'));
-  await writeFile(manifestFile,JSON.stringify({tag,version:pkg.version,assets},null,2)+'\n');
+  const body=`BlueCloud 0.5 brings all four Windows apps to version ${pkg.version}.\n\nInstall **BlueCloud-Launcher-Setup-${pkg.version}-x64.exe** to manage Coneic Player, Quranly PC and Tooldeck together, or use the individual installers below.\n\n- **Coneic Player ${pkg.version}:** native VLC-based player, personal media library, moments, study tools, Windows default-app registration and custom icons for 134 media formats.\n- **Quranly PC ${quranly.version}:** Quran reading, reciter collections, persistent offline downloads, local audio-quality options and optional account backup.\n- **Tooldeck ${tooldeck.version}:** 79 local PDF, image, video, audio and utility tools.\n- **BlueCloud Launcher ${pkg.version}:** verified app downloads, Windows shortcuts, coordinated app updates and automatic launcher updates.\n\nExisting settings and downloaded content stay in the apps' existing user profiles. Windows asks you to confirm your preferred default media player.\n\nWindows x64 preview builds; installers are unsigned. SHA-256 checksums, the signed update feed and corresponding source archives are included. This desktop release does not change bluecloudai.online.`;
+  await writeFile(manifestFile,JSON.stringify({tag,version:pkg.version,title:`BlueCloud ${pkg.version} · Windows app suite`,assets,body},null,2)+'\n');
   await writeFile(path.join(out,'promote-feed.sql'),`insert into public.bluecloud_release_channels(channel,envelope,published,updated_at) values ('${config.channel}','${JSON.stringify(envelope).replaceAll("'","''")}'::jsonb,true,now()) on conflict(channel) do update set envelope=excluded.envelope,published=true,updated_at=now();\n`);
   console.log(`Prepared standalone release ${tag}. No website files changed.`);
 }else if(mode==='verify'){
@@ -114,7 +121,7 @@ if(mode==='prepare-tooldeck'||mode==='prepare-quranly'){
   async function api(url,options={}){const r=await fetch(url,{...options,headers:{...headers,...options.headers}});if(!r.ok)throw Error(`GitHub request failed: ${r.status} ${(await r.text()).slice(0,300)}`);return r.status===204?null:r.json();}
   const base=`https://api.github.com/repos/${config.repository}`;const releases=await api(`${base}/releases?per_page=50`);let release=releases.find(r=>r.tag_name===tag);
   if(!release&&mode==='publish')throw Error('Upload a draft first');
-  if(!release){const commit=spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).stdout.trim();release=await api(`${base}/releases`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({tag_name:tag,target_commitish:commit,name:tag.startsWith('tooldeck-')?`Tooldeck ${manifest.version} · Windows`:`BlueCloud Launcher ${pkg.version} · Windows`,draft:true,prerelease:true,body:manifest.body||`Download **BlueCloud-Launcher-Setup-${pkg.version}-x64.exe**, run it, then install Coneic Player, Quranly PC and Tooldeck from the app library. The launcher checks for updates automatically; choose Update or Update all to apply them. A separate Tooldeck installer is also available.\n\nThis is a standalone Windows x64 alpha release. It does not replace or modify bluecloudai.online. Packages are currently unsigned Windows builds; the launcher authenticates its release feed and package hashes. Existing standalone installs stay separate from managed app copies. Settings and app data are retained during updates.\n\nConeic includes its full runtime and third-party notices. Corresponding source and SHA-256 checksums are attached. No account is required to manage apps.`})});}
+  if(!release){const commit=spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).stdout.trim();release=await api(`${base}/releases`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({tag_name:tag,target_commitish:commit,name:manifest.title||(tag.startsWith('tooldeck-')?`Tooldeck ${manifest.version} · Windows`:`BlueCloud Launcher ${pkg.version} · Windows`),draft:true,prerelease:true,body:manifest.body||`Download **BlueCloud-Launcher-Setup-${pkg.version}-x64.exe**, run it, then install Coneic Player, Quranly PC and Tooldeck from the app library. The launcher checks for updates automatically; choose Update or Update all to apply them. A separate Tooldeck installer is also available.\n\nThis is a standalone Windows x64 alpha release. It does not replace or modify bluecloudai.online. Packages are currently unsigned Windows builds; the launcher authenticates its release feed and package hashes. Existing standalone installs stay separate from managed app copies. Settings and app data are retained during updates.\n\nConeic includes its full runtime and third-party notices. Corresponding source and SHA-256 checksums are attached. No account is required to manage apps.`})});}
   if(mode==='upload'){
     if(!release.draft)throw Error('Published assets are immutable; use a new version');
     for(const asset of manifest.assets){
