@@ -15,3 +15,7 @@ Run `npm test` for integrity, extraction and updater checks, and `npm run test:d
 See `RELEASING.md` in this directory for the standalone publishing workflow, signing, recovery and alpha limits. The release backend is Supabase; no launcher account or database writes are available to clients. The website is outside this workflow.
 
 Managed apps appear in Windows Start/Search under BlueCloud Apps. Tooldeck uses the searchable name Tool Deck. Existing installations gain shortcuts when the launcher next starts; updates retarget shortcuts and uninstall removes them. Disposable test profiles use isolated shortcut folders.
+
+## App artifact cleanup
+
+From this directory, preview cleanup with `powershell -NoProfile -File scripts/clean-artifacts.ps1 -WhatIf`, then omit `-WhatIf` to apply it. The script removes app test caches, temporary packaging layouts and superseded installers. It checks every target stays inside this repository and refuses tracked files or linked paths. Current builds, dependencies, native runtime binaries, release-signing material, validation reports and previous app packages used by upgrade tests are retained. The cleanup report is written to `artifacts/app-cleanup-report.json`.

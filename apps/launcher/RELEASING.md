@@ -4,7 +4,7 @@ This workflow publishes desktop app downloads and a signed Supabase update feed.
 
 Run commands from this directory. Use Node.js 24 and Windows x64.
 
-1. `npm ci` here and in `../tooldeck/`.
+1. `npm ci` here and in `../tooldeck/`. Install the Coneic icon-generation dependency with `python -m pip install -r ../coneic/coneic/windows/requirements-build.txt` before preparing a full app release.
 2. Update the relevant app version. The launcher and Tooldeck versions are in their own `package.json`; Coneic and Quranly versions/descriptions are recorded in `products.json`. Build and validate changed apps before publishing.
 3. `npm run dist:win` builds the launcher installer. `npm --prefix ../tooldeck run dist:win` builds Tooldeck. Outputs are in the workspace's ignored `artifacts/launcher/` and `artifacts/tooldeck/` directories.
 4. Provide the validated complete Coneic runtime in `artifacts/coneic/Coneic/` and the validated Quranly unpacked app in `artifacts/quranly/win-unpacked/`. A complete corresponding Coneic source ZIP named `Coneic-VERSION-source.zip` must be in `artifacts/releases/`. Existing application source, data and website files are not modified by packaging.

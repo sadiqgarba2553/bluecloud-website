@@ -154,6 +154,11 @@ inline void schedule(QApplication &app, intf_thread_t *intf)
                             auto company=widget->findChild<QLabel*>("ConeicCompanyLink");const bool credited=company&&company->openExternalLinks()&&company->text().contains("https://bluecloudai.online");state->results.append(QJsonObject{{"name",QStringLiteral("Settings contains clickable BLUECLOUD credit")},{"passed",credited}});state->allPassed &= credited;
                             timer->stop();
                             QWidget *settings=widget->findChild<QWidget*>(QStringLiteral("ConeicGlobalSettings"));
+#ifdef _WIN32
+                            QPushButton *defaults=settings?settings->findChild<QPushButton*>(QStringLiteral("ConeicDefaultApps")):nullptr;
+                            const bool defaultApps=defaults && defaults->isVisible() && defaults->isEnabled();
+                            state->results.append(QJsonObject{{"name",QStringLiteral("Windows default-player control is available")},{"passed",defaultApps}});state->allPassed &= defaultApps;
+#endif
                             QListWidget *navigation=widget->findChild<QListWidget*>(QStringLiteral("ConeicSettingsNavigation"));
                             bool categories=settings && navigation && navigation->count()==13;
                             if(navigation)for(int page=0;page<navigation->count();page++) {

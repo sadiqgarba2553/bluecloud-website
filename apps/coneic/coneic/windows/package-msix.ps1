@@ -77,8 +77,15 @@ $publisher=XmlEscape $identity.Publisher
 $publisherDisplay=XmlEscape $identity.PublisherDisplayName
 $display='Coneic'
 if($Mode -eq 'Test'){$display='Coneic Alpha Validation'}
-$extensions=@('.3g2','.3gp','.aac','.aiff','.ape','.asf','.avi','.divx','.flac','.flv','.m2ts','.m4a','.m4v','.mka','.mkv','.mov','.mp3','.mp4','.mpeg','.mpg','.mts','.oga','.ogg','.ogm','.ogv','.opus','.ts','.vob','.wav','.webm','.wma','.wmv','.m3u','.m3u8','.pls','.xspf')
-$fileTypes=($extensions | ForEach-Object {"<uap:FileType>$_</uap:FileType>"}) -join "`n"
+$formats=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'file-types.json') -Raw | ConvertFrom-Json
+$fileAssociations=($formats | ForEach-Object {
+    $stem=$_.extension.Substring(1)
+    $associationName='coneic'+$stem.Replace('-','')
+    $label=XmlEscape ($stem.ToUpperInvariant()+' '+$_.kind+' file (Coneic)')
+    '<uap:Extension Category="windows.fileTypeAssociation"><uap3:FileTypeAssociation Name="'+$associationName+'" Parameters="--started-from-file &quot;%1&quot;">'+
+    '<uap:DisplayName>'+$label+'</uap:DisplayName><uap:Logo>Coneic\Coneic-shell\icons\'+$stem+'.png</uap:Logo>'+
+    '<uap:SupportedFileTypes><uap:FileType>'+$_.extension+'</uap:FileType></uap:SupportedFileTypes></uap3:FileTypeAssociation></uap:Extension>'
+}) -join "`n"
 $manifest=@"
 <?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -94,10 +101,7 @@ $manifest=@"
  <Applications><Application Id="Coneic" Executable="Coneic\Coneic.exe" EntryPoint="Windows.FullTrustApplication">
  <uap:VisualElements DisplayName="$display" Description="Coneic media player by BLUECLOUD" BackgroundColor="transparent"
  Square150x150Logo="Assets\Logo150.png" Square44x44Logo="Assets\Logo44.png" />
- <Extensions><uap:Extension Category="windows.fileTypeAssociation">
- <uap3:FileTypeAssociation Name="coneicmedia" Parameters="&quot;%1&quot;">
- <uap:DisplayName>Coneic media</uap:DisplayName><uap:SupportedFileTypes>$fileTypes</uap:SupportedFileTypes>
- </uap3:FileTypeAssociation></uap:Extension></Extensions>
+ <Extensions>$fileAssociations</Extensions>
  </Application></Applications>
  <Capabilities><rescap:Capability Name="runFullTrust" /></Capabilities>
 </Package>

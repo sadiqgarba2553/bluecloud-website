@@ -7,6 +7,7 @@
 #include "components/preferences_widgets.hpp"
 #include "components/simple_preferences.hpp"
 #include "coneic_design.hpp"
+#include "coneic_windows_associations.hpp"
 #include <vlc_modules.h>
 #include <vlc_plugin.h>
 #include <vlc_config_cat.h>
@@ -165,6 +166,15 @@ class ConeicGlobalSettings : public QWidget
         heading->setText(query.isEmpty() ? titles[category] + " " + qtr("Settings") : qtr("Search settings"));
         QString section;
         int count=0, advancedCount=0, matches=0;
+#ifdef _WIN32
+        if((query.isEmpty() && category==0) || (!query.isEmpty() && QStringLiteral("default apps file associations formats").contains(query,Qt::CaseInsensitive))) {
+            QPushButton *defaults=new QPushButton(qtr("Set Coneic as default player"),body);
+            defaults->setObjectName("ConeicDefaultApps");
+            defaults->setToolTip(qtr("Choose Coneic for audio, video and playlists in Windows Settings."));
+            connect(defaults,&QPushButton::clicked,this,[this](){coneicOpenDefaultApps(this);});
+            contents->addWidget(defaults);count++;
+        }
+#endif
         if(languageRow && ((query.isEmpty() && category==0) || (!query.isEmpty() && qtr("Interface language").contains(query,Qt::CaseInsensitive)))) {
             section=query.isEmpty()?qtr("Appearance"):qtr("General");
             QLabel *label=new QLabel(section,body);label->setObjectName("ConeicSectionTitle");contents->addWidget(label);

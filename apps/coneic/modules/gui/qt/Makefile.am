@@ -48,6 +48,7 @@ endif
 libqt_plugin_la_SOURCES = \
 	gui/qt/coneic_design.hpp \
 	gui/qt/coneic_settings.hpp \
+	gui/qt/coneic_windows_associations.hpp \
 	gui/qt/coneic_home.hpp \
 	gui/qt/coneic_personal.hpp \
 	gui/qt/coneic_personal_store.hpp \

@@ -10,6 +10,7 @@ const semver=require('semver');
 const {safePath,trustedDownload,verifyFeed,validAppId}=require('./security.cjs');
 const {applyUpdate,verifyInstaller}=require('./updater.cjs');
 const {createShortcuts}=require('./shortcuts.cjs');
+const {createAssociations}=require('./associations.cjs');
 const config=require('../config.json');
 const products=require('../products.json');
 const version=require('../package.json').version;
@@ -24,7 +25,8 @@ const appErrors={},updateDirectory=path.join(app.getPath('userData'),'updates');
 const isolatedProfile=app.commandLine.hasSwitch('user-data-dir')||Boolean(process.env.BLUECLOUD_TEST_PROFILE);
 const shortcutRoot=isolatedProfile?path.join(app.getPath('userData'),'start-menu'):path.join(app.getPath('appData'),'Microsoft','Windows','Start Menu','Programs','BlueCloud Apps');
 const shortcuts=createShortcuts({fs,shell,root:shortcutRoot,library});
-async function syncShortcut(id){try{await shortcuts.sync(id,installed[id],productList().find(p=>p.id===id));}catch(error){await recordError(id,new Error(`App installed, but its Windows shortcut could not be created: ${error.message}`));}}
+const associations=createAssociations({fs,library,enabled:process.platform==='win32'&&!isolatedProfile});
+async function syncShortcut(id){try{await shortcuts.sync(id,installed[id],productList().find(p=>p.id===id));await associations.sync(id,installed[id]);}catch(error){await recordError(id,new Error(`App installed, but its Windows integration could not be completed: ${error.message}`));}}
 const jobs=new Map(),children=new Map();let saveQueue=Promise.resolve();
 function saveRegistry(){saveQueue=saveQueue.catch(()=>{}).then(async()=>{await fs.mkdir(path.dirname(registryPath),{recursive:true});await fs.writeFile(registryPath+'.tmp',JSON.stringify(installed,null,2));await fs.rename(registryPath+'.tmp',registryPath);});return saveQueue;}
 function sender(event){if(event.sender!==win?.webContents||event.senderFrame?.url.split('#')[0]!==start)throw Error('Untrusted window');}
@@ -98,7 +100,7 @@ async function uninstall(id,confirmed=false){
   try{
     if(await running(id))throw Error('Close the app before removing it.');
     const answer=confirmed?{response:0}:await dialog.showMessageBox(win,{type:'question',message:`Uninstall ${productList().find(p=>p.id===id)?.name||id}?`,detail:'Managed app files will be removed. Your app settings and user data are retained.',buttons:['Uninstall app','Cancel'],defaultId:1,cancelId:1});
-    if(answer.response!==0)return state();const dir=safePath(library,id),trash=safePath(library,`.removed-${id}-${crypto.randomUUID()}`),previous=installed[id];let moved=false;
+    if(answer.response!==0)return state();await associations.remove(id,installed[id]);const dir=safePath(library,id),trash=safePath(library,`.removed-${id}-${crypto.randomUUID()}`),previous=installed[id];let moved=false;
     try{await fs.rename(dir,trash);moved=true;}catch(error){if(error.code!=='ENOENT')throw error;}delete installed[id];try{await saveRegistry();}catch(error){installed[id]=previous;if(moved)await fs.rename(trash,dir);throw error;}delete appErrors[id];await shortcuts.remove(id);if(moved)await fs.rm(trash,{recursive:true,force:true,maxRetries:5,retryDelay:200}).catch(()=>{});
   }catch(error){await recordError(id,error);throw error;}finally{jobs.delete(id);emit(id,'Finished',100);broadcast();}
   return state();

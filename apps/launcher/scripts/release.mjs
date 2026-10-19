@@ -68,6 +68,10 @@ if(mode==='prepare-tooldeck'||mode==='prepare-quranly'){
     const directory=path.join(root,id==='coneic'?'artifacts/coneic/Coneic':`artifacts/${id}/win-unpacked`);
     const executable={coneic:'Coneic.exe',quranly:'Quranly.exe',tooldeck:'Tooldeck.exe'}[id];
     await stat(path.join(directory,executable));
+    if(id==='coneic'){
+      const shellStage=spawnSync(process.env.PYTHON||'python',[path.join(root,'apps/coneic/coneic/windows/stage-shell.py'),'--app',directory],{windowsHide:true,encoding:'utf8'});
+      if(shellStage.status!==0)throw Error(`Could not stage Coneic file associations: ${shellStage.stderr}`);
+    }
     let reusable=false;
     if(id!=='tooldeck')try{
       const old=JSON.parse(await readFile(path.join(root,'artifacts/releases/alpha-feed.json'),'utf8'));const record=JSON.parse(old.payload).releases.find(r=>r.appId===id&&r.version===version);

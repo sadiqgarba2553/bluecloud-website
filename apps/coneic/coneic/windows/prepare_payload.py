@@ -11,6 +11,8 @@ import json
 from pathlib import Path
 import shutil
 import struct
+import subprocess
+import sys
 
 
 def sha(path):
@@ -102,15 +104,22 @@ def main():
         if (stage / name).is_file():
             update_version(stage / name, product)
             changed.append(name)
+    subprocess.run([sys.executable, str(Path(__file__).with_name('stage-shell.py')),
+                    '--app', str(stage)], check=True)
     manifest = []
     for rel, original in before.items():
         current = sha(stage / rel)
-        if rel not in changed and current != original:
+        shell_file = (rel.startswith('Coneic-shell/') or rel in
+                      ['Set Coneic as default.cmd', 'Remove Coneic file associations.cmd'])
+        if rel not in changed and not shell_file and current != original:
             raise SystemExit('Unexpected payload mutation: ' + rel)
         if sha(source / rel) != original:
             raise SystemExit('Input changed during packaging: ' + rel)
         manifest.append({'path': rel, 'inputSHA256': original, 'sha256': current})
+    additions = sorted(x.relative_to(stage).as_posix() for x in stage.rglob('*')
+                       if x.is_file() and x.relative_to(stage).as_posix() not in before)
     result = {'passed': True, 'product': product, 'files': len(manifest),
+              'shellIntegrationAdded': additions,
               'pluginDLLs': len(list((stage / 'plugins').rglob('*.dll'))),
               'inputUnchanged': True, 'metadataUpdated': changed, 'manifest': manifest}
     a.report.parent.mkdir(parents=True, exist_ok=True)
