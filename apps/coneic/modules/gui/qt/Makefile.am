@@ -47,6 +47,9 @@ endif
 
 libqt_plugin_la_SOURCES = \
 	gui/qt/coneic_design.hpp \
+	gui/qt/coneic_glass_material.hpp \
+	gui/qt/coneic_glass_player.hpp \
+	gui/qt/coneic_glass_smoke.hpp \
 	gui/qt/coneic_settings.hpp \
 	gui/qt/coneic_windows_associations.hpp \
 	gui/qt/coneic_home.hpp \

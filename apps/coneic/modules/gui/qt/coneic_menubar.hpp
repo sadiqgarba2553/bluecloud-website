@@ -7,6 +7,7 @@
 #include "dialogs_provider.hpp"
 #include "coneic_personal.hpp"
 #include "coneic_command_palette.hpp"
+#include "coneic_glass_material.hpp"
 #include <QMenuBar>
 #include <QMenu>
 #include <QPainter>
@@ -40,7 +41,7 @@ class ConeicMenuBar : public QMenuBar
         for(QAction *action:original)if(action->menu())complete->addMenu(action->menu());
     }
 protected:
-    void paintEvent(QPaintEvent *) override {QPainter p(this);p.fillRect(rect(),palette().color(QPalette::Window));}
+    void paintEvent(QPaintEvent *) override {QPainter p(this);if(qApp->property("coneicGlassEnabled").toBool())ConeicGlass::ambient(p,rect(),qApp->property("coneicDark").toBool());else p.fillRect(rect(),palette().color(QPalette::Window));}
     void resizeEvent(QResizeEvent *event) override
     {
         QMenuBar::resizeEvent(event);if(header){header->setGeometry(rect());header->raise();}

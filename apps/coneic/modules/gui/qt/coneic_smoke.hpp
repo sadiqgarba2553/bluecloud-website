@@ -28,6 +28,7 @@
 #include <functional>
 #include "dialogs_provider.hpp"
 #include "coneic_settings.hpp"
+#include "coneic_glass_smoke.hpp"
 #include "coneic_personal_smoke.hpp"
 #include "coneic_library_smoke.hpp"
 
@@ -37,6 +38,7 @@ inline void schedule(QApplication &app, intf_thread_t *intf)
     const QString directory = QString::fromLocal8Bit(qgetenv("CONEIC_TEST_OUTPUT"));
     if (directory.isEmpty())
         return;
+    if(!qgetenv("CONEIC_TEST_PLAYBACK_ONLY").isEmpty())return;
     QDir().mkpath(directory);
     ConeicPersonalSmoke::persistence(directory);
     const bool libraryTools=ConeicLibrarySmoke::run(directory);qApp->setProperty("coneicLibraryToolsPassed",libraryTools);
@@ -134,7 +136,7 @@ inline void schedule(QApplication &app, intf_thread_t *intf)
                             state->results.append(QJsonObject{{QStringLiteral("name"),QStringLiteral("Seek hover renders a real native VLC video thumbnail")},{QStringLiteral("passed"),preview}});state->allPassed &= preview;
                             const int thumbnails=app.property("coneicThumbnailCompleted").toInt()+app.property("coneicThumbnailCacheHits").toInt();
                             state->results.append(QJsonObject{{QStringLiteral("name"),QStringLiteral("Background video thumbnails generated or loaded")},{QStringLiteral("count"),thumbnails},{QStringLiteral("passed"),thumbnails>0}});state->allPassed &= thumbnails>0;
-                            ConeicPersonalSmoke::runtime(intf,directory,[state,complete](bool passed){state->results.append(QJsonObject{{"name",QStringLiteral("Personal features acceptance checks")},{"passed",passed}});state->allPassed &= passed;complete();});
+                            ConeicGlassSmoke::run(intf,directory,[state,directory,intf,complete](bool glass){state->results.append(QJsonObject{{"name",QStringLiteral("Native glass player controls and materials")},{"passed",glass}});state->allPassed &= glass;ConeicPersonalSmoke::runtime(intf,directory,[state,complete](bool passed){state->results.append(QJsonObject{{"name",QStringLiteral("Personal features acceptance checks")},{"passed",passed}});state->allPassed &= passed;complete();});});
                         });poll->start();
                     });
                 } else complete();
@@ -182,6 +184,17 @@ inline void schedule(QApplication &app, intf_thread_t *intf)
                             }
                             state->results.append(QJsonObject{{QStringLiteral("name"),QStringLiteral("Immediate light and dark theme selection")},{QStringLiteral("passed"),themes}});
                             state->allPassed &= themes;
+                            auto material=settings?settings->findChild<QComboBox*>("ConeicSurfaceMaterial"):nullptr;
+                            bool materials=material && material->count()==3;
+                            if(materials) {
+                                const int original=material->currentIndex();
+                                material->setCurrentIndex(2);app.processEvents();materials=!app.property("coneicTransparency").toBool();
+                                widget->grab().save(directory+QStringLiteral("/settings-solid.png"));
+                                material->setCurrentIndex(1);app.processEvents();materials &= app.property("coneicTransparency").toBool();
+                                widget->grab().save(directory+QStringLiteral("/settings-frosted.png"));
+                                material->setCurrentIndex(original);app.processEvents();
+                            }
+                            state->results.append(QJsonObject{{"name",QStringLiteral("App material switches between frosted glass and solid without changing Windows")},{"passed",materials}});state->allPassed &= materials;
                             state->results.append(QJsonObject{{QStringLiteral("name"),QStringLiteral("All 13 global settings categories render")},{QStringLiteral("passed"),categories}});
                             state->allPassed &= categories;
                             const int optionCount=settings?settings->property("coneicOptionCount").toInt():0;
