@@ -86,7 +86,15 @@ const Footer = () => {
             </div>
             <div className="contact-item">
               <Mail size={18} />
-              <span>sadeeqsgi@icloud.com</span>
+              <a href="mailto:info@bluecloudai.online" style={{ color: 'inherit' }}>info@bluecloudai.online</a>
+            </div>
+            <div className="contact-item">
+              <Mail size={18} />
+              <a href="mailto:support@bluecloudai.online" style={{ color: 'inherit' }}>support@bluecloudai.online</a>
+            </div>
+            <div className="contact-item">
+              <Mail size={18} />
+              <a href="mailto:ceo@bluecloudai.online" style={{ color: 'inherit' }}>ceo@bluecloudai.online</a>
             </div>
             <div className="contact-item">
               <Clock size={18} />

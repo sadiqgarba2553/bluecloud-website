@@ -110,7 +110,7 @@ const Terms = () => {
               </div>
               <div className="legal-contact-item">
                 <Mail size={18} color="var(--primary-blue)" />
-                <span>sadeeqsgi@icloud.com</span>
+                <span>support@bluecloudai.online</span>
               </div>
             </div>
 

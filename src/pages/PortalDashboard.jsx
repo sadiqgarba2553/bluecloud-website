@@ -366,7 +366,7 @@ const PortalDashboard = () => {
               <LifeBuoy size={64} style={{ opacity: 0.2, margin: '0 auto 20px', color: 'var(--slate-text)' }} />
               <h3 style={{ color: 'var(--deep-navy)', marginBottom: '10px' }}>Support Tickets Coming Soon</h3>
               <p style={{ color: 'var(--slate-text)', maxWidth: '400px', margin: '0 auto' }}>We are currently building out our dedicated support ticket system. For now, please email us directly with any issues.</p>
-              <a href="mailto:sadiqgarbaibrahimadeel@gmail.com" className="portal-btn" style={{ display: 'inline-block', marginTop: '20px', padding: '10px 20px', backgroundColor: 'var(--primary-blue)', color: 'white', borderRadius: '6px', textDecoration: 'none', fontWeight: 600 }}>Email Support</a>
+              <a href="mailto:support@bluecloudai.online" className="portal-btn" style={{ display: 'inline-block', marginTop: '20px', padding: '10px 20px', backgroundColor: 'var(--primary-blue)', color: 'white', borderRadius: '6px', textDecoration: 'none', fontWeight: 600 }}>Email Support</a>
             </div>
           )}
 

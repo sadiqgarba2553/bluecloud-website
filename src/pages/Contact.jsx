@@ -105,8 +105,28 @@ const Contact = () => {
                   <Mail size={24} />
                 </div>
                 <div className="contact-detail-text">
-                  <h4>Email</h4>
-                  <p>sadeeqsgi@icloud.com</p>
+                  <h4>General enquiries</h4>
+                  <p><a href="mailto:info@bluecloudai.online">info@bluecloudai.online</a></p>
+                </div>
+              </div>
+
+              <div className="contact-detail-item">
+                <div className="contact-icon-wrapper">
+                  <Mail size={24} />
+                </div>
+                <div className="contact-detail-text">
+                  <h4>Support</h4>
+                  <p><a href="mailto:support@bluecloudai.online">support@bluecloudai.online</a></p>
+                </div>
+              </div>
+
+              <div className="contact-detail-item">
+                <div className="contact-icon-wrapper">
+                  <Mail size={24} />
+                </div>
+                <div className="contact-detail-text">
+                  <h4>CEO</h4>
+                  <p><a href="mailto:ceo@bluecloudai.online">ceo@bluecloudai.online</a></p>
                 </div>
               </div>
               

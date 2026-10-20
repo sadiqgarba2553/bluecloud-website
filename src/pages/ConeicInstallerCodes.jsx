@@ -233,8 +233,8 @@ const ConeicInstallerCodes = () => {
                 <Mail size={18} color="var(--primary-blue)" />
                 <span>
                   <strong>Support Desk:</strong>{' '}
-                  <a href="mailto:sadeeqsgi@icloud.com">
-                    sadeeqsgi@icloud.com
+                  <a href="mailto:support@bluecloudai.online">
+                    support@bluecloudai.online
                   </a>
                 </span>
               </div>

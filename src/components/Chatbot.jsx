@@ -12,7 +12,9 @@ const genAI = new GoogleGenerativeAI(apiKey || 'MISSING_API_KEY');
 const systemInstruction = `You are Aura, the official AI assistant for BlueCloud Technologies. You are a friendly, highly intelligent, and professional guide. BlueCloud is an elite enterprise web development and AI solutions company based in Abuja, Nigeria. 
 
 CRITICAL COMPANY INFO:
-- Email: sadeeqsgi@icloud.com
+- General enquiries: info@bluecloudai.online
+- App and customer support: support@bluecloudai.online
+- CEO: ceo@bluecloudai.online
 - Phone: 08125531111
 - Address: Plot 1743, Cadastral Zone B, Mabushi, Abuja
 
@@ -132,7 +134,7 @@ const Chatbot = () => {
       speakText(botResponse);
     } catch (error) {
       console.error("Chat error:", error);
-      const errTxt = `BlueCloud AI Assistant: How can we assist you with your project today? Contact us directly at sadeeqsgi@icloud.com or 08125531111.`;
+      const errTxt = `BlueCloud AI Assistant: How can we assist you with your project today? Contact us directly at info@bluecloudai.online or 08125531111. For app or customer support, email support@bluecloudai.online.`;
       setMessages(prev => [...prev, { text: errTxt, sender: 'bot' }]);
     } finally {
       setIsLoading(false);
