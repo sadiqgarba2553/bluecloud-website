@@ -1,0 +1,12 @@
+name = "bluecloud-website-preview"
+account_id = "e8a6b4d511fc560c7130bee196b148d7"
+main = "worker.mjs"
+compatibility_date = "2025-06-04"
+workers_dev = true
+
+[assets]
+directory = "../../artifacts/cloudflare-website/assets"
+binding = "ASSETS"
+html_handling = "none"
+not_found_handling = "none"
+run_worker_first = ["/career-application", "/career-application/*"]
