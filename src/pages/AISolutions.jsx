@@ -13,19 +13,10 @@ const AISolutions = () => {
         path="/ai-solutions"
         keywords="AI solutions Nigeria, machine learning Abuja, automation services, AI chatbot development, predictive analytics, custom ML models, artificial intelligence company Nigeria, BlueCloud AI"
       />
-      <div style={{ backgroundColor: 'var(--deep-navy)', color: 'var(--white)', padding: 'var(--spacing-8) 0', textAlign: 'center' }}>
-        <div className="container">
-          <Cpu size={64} style={{ color: 'var(--cyan-accent)', margin: '0 auto var(--spacing-3)' }} />
-          <h1 style={{ color: 'var(--white)' }}>AI Solutions & Automation</h1>
-          <p style={{ fontSize: '1.25rem', maxWidth: '700px', margin: '0 auto', color: '#94A3B8' }}>
-            Harness the power of machine learning and intelligent automation to scale your business operations efficiently.
-          </p>
-        </div>
-      </div>
-
+      <header className="page-hero container"><p className="eyebrow">Applied AI</p><h1>A useful role for AI.</h1><p className="lead">Connect models to a specific task. Explore document processing, workflow automation and analysis, with requirements and data handling considered from the start.</p><div className="hero-actions"><a className="button" href="#playground">Try the playground →</a><Link className="text-link" to="/contact">Discuss an integration →</Link></div></header>
       <div className="section container">
         <h2 className="text-center mb-6">Our AI Capabilities</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--spacing-5)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: 'var(--spacing-5)' }}>
           <div style={{ backgroundColor: 'var(--light-gray)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
             <Zap size={32} style={{ color: 'var(--primary-blue)', marginBottom: 'var(--spacing-2)' }} />
             <h3>Intelligent Automation</h3>
@@ -47,7 +38,7 @@ const AISolutions = () => {
         <IndustryAIAccelerators />
 
         {/* Live AI Playground */}
-        <AIPlayground />
+        <div id="playground"><AIPlayground /></div>
       </div>
 
       <div className="section section-light text-center">

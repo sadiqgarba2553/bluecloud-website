@@ -1,3 +1,4 @@
+import Modal from './Modal';
 import { useState } from 'react';
 import { Award, ZoomIn, Calendar, X, CheckCircle } from 'lucide-react';
 import './CertificatesWall.css';
@@ -28,25 +29,25 @@ const CertificatesWall = () => {
     <div className="certs-wall-container">
       <div className="certs-header">
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--primary-blue)', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '8px' }}>
-          <Award size={18} /> Verified Credentials
+          <Award size={18} /> Professional learning
         </div>
-        <h2>Certifications & Technical Accreditations</h2>
+        <h2>Learning & certificates</h2>
         <p style={{ color: 'var(--slate-text)', maxWidth: '600px', margin: '0 auto' }}>
-          Official qualifications, professional certifications, and technical standards attained by BLUECLOUD leadership.
+          Certificates from courses completed by the founder. Select an image to view the source document.
         </p>
       </div>
 
       <div className="certs-grid">
         {CERTIFICATES.map((cert) => (
           <div key={cert.id} className="cert-card">
-            <div className="cert-img-box" onClick={() => setActiveImg(cert.imgSrc)}>
+            <button type="button" className="cert-img-box" aria-label={`View ${cert.title} certificate`} onClick={() => setActiveImg(cert.imgSrc)}>
               <img src={cert.imgSrc} alt={cert.title} className="cert-img" />
               <div className="cert-img-overlay">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 'bold' }}>
                   <ZoomIn size={20} /> Preview Credential
                 </div>
               </div>
-            </div>
+            </button>
             <div className="cert-content-box">
               <div className="cert-issuer-badge">{cert.issuer}</div>
               <h3 className="cert-card-title">{cert.title}</h3>
@@ -54,7 +55,7 @@ const CertificatesWall = () => {
                 <Calendar size={14} /> Issued: {cert.date}
               </div>
               <div style={{ fontSize: '0.75rem', color: 'var(--primary-blue)', marginTop: '8px', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: '600' }}>
-                <CheckCircle size={14} /> Verified Credential ID: {cert.credentialId}
+                <CheckCircle size={14} /> Course completion certificate
               </div>
             </div>
           </div>
@@ -63,14 +64,14 @@ const CertificatesWall = () => {
 
       {/* Lightbox Modal */}
       {activeImg && (
-        <div className="cert-lightbox-modal" onClick={() => setActiveImg(null)}>
+        <Modal label="Certificate preview" onClose={() => setActiveImg(null)} className="certificate-dialog">
           <div className="cert-lightbox-content" onClick={(e) => e.stopPropagation()}>
             <button className="cert-lightbox-close" onClick={() => setActiveImg(null)}>
               <X size={24} /> Close
             </button>
             <img src={activeImg} alt="Certificate Enlarged View" className="cert-lightbox-img" />
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   );

@@ -1,256 +1,252 @@
-:root {
-  /* Brand Colors */
-  --primary-blue: #0B5FFF;
-  --deep-navy: #0A1A2F;
-  --cyan-accent: #22D3EE;
-  --mint-accent: #5EEAD4;
-  --white: #FFFFFF;
-  --light-gray: #F4F6F9;
-  --slate-text: #4A5568;
+@import "./styles/tokens.css";
+@import "./styles/site.css";
+@import "./styles/legacy.css";
 
-  /* Typography */
-  --font-heading: 'Poppins', 'Sora', 'Space Grotesk', sans-serif;
-  --font-body: 'Inter', 'Manrope', sans-serif;
-
-  /* Spacing */
-  --spacing-1: 8px;
-  --spacing-2: 16px;
-  --spacing-3: 24px;
-  --spacing-4: 32px;
-  --spacing-5: 48px;
-  --spacing-6: 64px;
-  --spacing-8: 96px;
-
-  /* Other Tokens */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --shadow-sm: 0 2px 4px rgba(10, 26, 47, 0.05);
-  --shadow-md: 0 4px 12px rgba(10, 26, 47, 0.08);
-
-  /* Animation — Emil Kowalski's exact easing curves */
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
-
-  /* Duration scale */
-  --duration-press: 160ms;
-  --duration-fast: 200ms;
-  --duration-normal: 250ms;
-  --duration-slow: 400ms;
+/* Consistent superellipse silhouettes for company and app marks. */
+.brand-logo,
+.app-logo,
+.squircle-logo,
+.artwork {
+  clip-path: polygon(
+    100% 50%,
+    99.988% 58.862%,
+    99.951% 62.529%,
+    99.889% 65.339%,
+    99.802% 67.701%,
+    99.691% 69.776%,
+    99.555% 71.644%,
+    99.394% 73.353%,
+    99.208% 74.934%,
+    98.997% 76.41%,
+    98.761% 77.795%,
+    98.5% 79.101%,
+    98.212% 80.337%,
+    97.9% 81.51%,
+    97.561% 82.626%,
+    97.197% 83.689%,
+    96.806% 84.704%,
+    96.388% 85.674%,
+    95.944% 86.6%,
+    95.472% 87.486%,
+    94.973% 88.334%,
+    94.445% 89.144%,
+    93.889% 89.919%,
+    93.304% 90.661%,
+    92.69% 91.369%,
+    92.045% 92.045%,
+    91.369% 92.69%,
+    90.661% 93.304%,
+    89.919% 93.889%,
+    89.144% 94.445%,
+    88.334% 94.973%,
+    87.486% 95.472%,
+    86.6% 95.944%,
+    85.674% 96.388%,
+    84.704% 96.806%,
+    83.689% 97.197%,
+    82.626% 97.561%,
+    81.51% 97.9%,
+    80.337% 98.212%,
+    79.101% 98.5%,
+    77.795% 98.761%,
+    76.41% 98.997%,
+    74.934% 99.208%,
+    73.353% 99.394%,
+    71.644% 99.555%,
+    69.776% 99.691%,
+    67.701% 99.802%,
+    65.339% 99.889%,
+    62.529% 99.951%,
+    58.862% 99.988%,
+    50% 100%,
+    41.138% 99.988%,
+    37.471% 99.951%,
+    34.661% 99.889%,
+    32.299% 99.802%,
+    30.224% 99.691%,
+    28.356% 99.555%,
+    26.647% 99.394%,
+    25.066% 99.208%,
+    23.59% 98.997%,
+    22.205% 98.761%,
+    20.899% 98.5%,
+    19.663% 98.212%,
+    18.49% 97.9%,
+    17.374% 97.561%,
+    16.311% 97.197%,
+    15.296% 96.806%,
+    14.326% 96.388%,
+    13.4% 95.944%,
+    12.514% 95.472%,
+    11.666% 94.973%,
+    10.856% 94.445%,
+    10.081% 93.889%,
+    9.339% 93.304%,
+    8.631% 92.69%,
+    7.955% 92.045%,
+    7.31% 91.369%,
+    6.696% 90.661%,
+    6.111% 89.919%,
+    5.555% 89.144%,
+    5.027% 88.334%,
+    4.528% 87.486%,
+    4.056% 86.6%,
+    3.612% 85.674%,
+    3.194% 84.704%,
+    2.803% 83.689%,
+    2.439% 82.626%,
+    2.1% 81.51%,
+    1.788% 80.337%,
+    1.5% 79.101%,
+    1.239% 77.795%,
+    1.003% 76.41%,
+    0.792% 74.934%,
+    0.606% 73.353%,
+    0.445% 71.644%,
+    0.309% 69.776%,
+    0.198% 67.701%,
+    0.111% 65.339%,
+    0.049% 62.529%,
+    0.012% 58.862%,
+    0% 50%,
+    0.012% 41.138%,
+    0.049% 37.471%,
+    0.111% 34.661%,
+    0.198% 32.299%,
+    0.309% 30.224%,
+    0.445% 28.356%,
+    0.606% 26.647%,
+    0.792% 25.066%,
+    1.003% 23.59%,
+    1.239% 22.205%,
+    1.5% 20.899%,
+    1.788% 19.663%,
+    2.1% 18.49%,
+    2.439% 17.374%,
+    2.803% 16.311%,
+    3.194% 15.296%,
+    3.612% 14.326%,
+    4.056% 13.4%,
+    4.528% 12.514%,
+    5.027% 11.666%,
+    5.555% 10.856%,
+    6.111% 10.081%,
+    6.696% 9.339%,
+    7.31% 8.631%,
+    7.955% 7.955%,
+    8.631% 7.31%,
+    9.339% 6.696%,
+    10.081% 6.111%,
+    10.856% 5.555%,
+    11.666% 5.027%,
+    12.514% 4.528%,
+    13.4% 4.056%,
+    14.326% 3.612%,
+    15.296% 3.194%,
+    16.311% 2.803%,
+    17.374% 2.439%,
+    18.49% 2.1%,
+    19.663% 1.788%,
+    20.899% 1.5%,
+    22.205% 1.239%,
+    23.59% 1.003%,
+    25.066% 0.792%,
+    26.647% 0.606%,
+    28.356% 0.445%,
+    30.224% 0.309%,
+    32.299% 0.198%,
+    34.661% 0.111%,
+    37.471% 0.049%,
+    41.138% 0.012%,
+    50% 0%,
+    58.862% 0.012%,
+    62.529% 0.049%,
+    65.339% 0.111%,
+    67.701% 0.198%,
+    69.776% 0.309%,
+    71.644% 0.445%,
+    73.353% 0.606%,
+    74.934% 0.792%,
+    76.41% 1.003%,
+    77.795% 1.239%,
+    79.101% 1.5%,
+    80.337% 1.788%,
+    81.51% 2.1%,
+    82.626% 2.439%,
+    83.689% 2.803%,
+    84.704% 3.194%,
+    85.674% 3.612%,
+    86.6% 4.056%,
+    87.486% 4.528%,
+    88.334% 5.027%,
+    89.144% 5.555%,
+    89.919% 6.111%,
+    90.661% 6.696%,
+    91.369% 7.31%,
+    92.045% 7.955%,
+    92.69% 8.631%,
+    93.304% 9.339%,
+    93.889% 10.081%,
+    94.445% 10.856%,
+    94.973% 11.666%,
+    95.472% 12.514%,
+    95.944% 13.4%,
+    96.388% 14.326%,
+    96.806% 15.296%,
+    97.197% 16.311%,
+    97.561% 17.374%,
+    97.9% 18.49%,
+    98.212% 19.663%,
+    98.5% 20.899%,
+    98.761% 22.205%,
+    98.997% 23.59%,
+    99.208% 25.066%,
+    99.394% 26.647%,
+    99.555% 28.356%,
+    99.691% 30.224%,
+    99.802% 32.299%,
+    99.889% 34.661%,
+    99.951% 37.471%,
+    99.988% 41.138%
+  );
+  object-fit: contain;
+  aspect-ratio: 1;
+  background: #f4f6f9;
 }
-
-/* Base Reset & Styles */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  padding: 2px;
+  flex-shrink: 0;
 }
-
-body {
-  font-family: var(--font-body);
-  color: var(--slate-text);
-  background-color: var(--white);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
+.app-logo-stage {
+  height: 200px;
+  background: var(--light-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  color: var(--deep-navy);
-  line-height: 1.2;
-  margin-bottom: var(--spacing-2);
-  font-optical-sizing: auto;
-}
-
-/* Tighten tracking on large headings — small text stays near 0 */
-h1 {
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-}
-
-h2 {
-  letter-spacing: -0.015em;
-}
-
-a {
-  color: var(--primary-blue);
-  text-decoration: none;
-  transition: color var(--duration-fast) var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  a:hover {
-    color: var(--deep-navy);
-  }
-}
-
-img {
-  max-width: 100%;
-  height: auto;
+.app-logo-stage .app-logo {
+  width: 152px;
+  height: 152px;
   display: block;
 }
-
-/* Common Components */
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 var(--spacing-3);
-}
-
-/* === Buttons — press feedback on :active, named transitions === */
-.btn-primary {
-  display: inline-block;
-  background-color: var(--primary-blue);
-  color: var(--white);
-  padding: var(--spacing-2) var(--spacing-4);
-  border-radius: var(--radius-md);
+.coming-soon {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border: 1px solid #c7d6f7;
+  border-radius: 8px;
+  background: #edf3ff;
+  color: #174ea6;
+  font-size: 0.85rem;
   font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition:
-    transform var(--duration-press) var(--ease-out),
-    background-color var(--duration-fast) ease;
 }
 
-.btn-primary:active {
-  transform: scale(0.97);
+.artwork {
+  padding: 0;
+  background: transparent;
+  object-fit: contain;
+  aspect-ratio: 1;
+  height: auto;
 }
-
-@media (hover: hover) and (pointer: fine) {
-  .btn-primary:hover {
-    background-color: var(--deep-navy);
-    color: var(--white);
-  }
-}
-
-.btn-secondary {
-  display: inline-block;
-  background-color: transparent;
-  color: var(--primary-blue);
-  padding: var(--spacing-2) var(--spacing-4);
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  border: 2px solid var(--primary-blue);
-  cursor: pointer;
-  transition:
-    transform var(--duration-press) var(--ease-out),
-    background-color var(--duration-fast) ease,
-    color var(--duration-fast) ease,
-    border-color var(--duration-fast) ease;
-}
-
-.btn-secondary:active {
-  transform: scale(0.97);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .btn-secondary:hover {
-    background-color: var(--primary-blue);
-    color: var(--white);
-  }
-}
-
-.section {
-  padding: var(--spacing-8) 0;
-}
-
-.section-light {
-  background-color: var(--light-gray);
-}
-
-.section-dark {
-  background-color: var(--deep-navy);
-  color: var(--white);
-}
-
-.section-dark h1, .section-dark h2, .section-dark h3, .section-dark p {
-  color: var(--white);
-}
-
-/* Utility Classes */
-.text-center {
-  text-align: center;
-}
-
-.mb-2 {
-  margin-bottom: var(--spacing-2);
-}
-
-.mb-4 {
-  margin-bottom: var(--spacing-4);
-}
-
-.mb-6 {
-  margin-bottom: var(--spacing-6);
-}
-
-/* =========================================================
-   STAGGER ENTRANCE — reusable across all grids/cards
-   ========================================================= */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* =========================================================
-   ACCESSIBILITY — reduced motion & transparency
-   ========================================================= */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-  /* Keep opacity fades for comprehension */
-  .btn-primary,
-  .btn-secondary {
-    transition: opacity 200ms ease, background-color 200ms ease, color 200ms ease !important;
-    transform: none !important;
-  }
-}
-
-@media (prefers-reduced-transparency: reduce) {
-  .header {
-    background: var(--white) !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
-}
-
-/* =========================================================
-   KEYBOARD ACCESSIBILITY & FOCUS INDICATORS
-   ========================================================= */
-:focus-visible {
-  outline: 2.5px solid var(--primary-blue) !important;
-  outline-offset: 2px !important;
-}
-
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
-  outline: 2.5px solid var(--primary-blue) !important;
-  outline-offset: 2px !important;
-}
-
-/* Form input contrast and focus elevation */
-input, textarea, select {
-  border: 1px solid #cbd5e1;
-  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
-}
-
-input:focus, textarea:focus, select:focus {
-  border-color: var(--primary-blue);
-  box-shadow: 0 0 0 3px rgba(11, 95, 255, 0.15);
-}
-

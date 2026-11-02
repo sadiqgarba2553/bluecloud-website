@@ -1,203 +1,90 @@
-import { useState } from 'react';
-import { ExternalLink, TrendingUp, Award } from 'lucide-react';
-import SEO from '../components/SEO';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import SEO from "../components/SEO";
+import { PROJECTS_DATA } from "../data/projects";
 
-const PROJECTS_DATA = [
-  {
-    id: 1,
-    title: 'Cyberion Company',
-    domain: 'cyberioncompany.com.ng',
-    category: 'Web',
-    tags: ['Enterprise Web', 'Security Portal'],
-    bg: '#0A1A2F',
-    textColor: '#22D3EE',
-    roi: '100% Uptime since launch | 2x Faster Retrieval',
-    problem: 'Required a secure, highly scalable portal to manage complex enterprise operations without latency.',
-    solution: 'Architected a custom web platform with robust backend security protocols, multi-tier auth, and seamless React frontend.',
-    impact: 'Achieved 100% uptime with zero security flags and double the retrieval performance.',
-    link: 'https://cyberioncompany.com.ng'
-  },
-  {
-    id: 2,
-    title: 'FastData Platform',
-    domain: 'fastdata.com.ng',
-    category: 'Web',
-    tags: ['Data Pipeline', 'Web Engine'],
-    bg: '#0B5FFF',
-    textColor: '#FFFFFF',
-    roi: 'Processing Time Reduced from 4h to 15min',
-    problem: 'Analyzing high-volume data streams was taking hours and overloading legacy servers.',
-    solution: 'Engineered an asynchronous, highly optimized data processing pipeline for enterprise real-time querying.',
-    impact: 'Slashing data batch analysis time by 93.7% while maintaining enterprise precision.',
-    link: 'https://fastdata.com.ng'
-  },
-  {
-    id: 3,
-    title: 'Flux Programming Language',
-    domain: 'flux-language',
-    category: 'Tools',
-    tags: ['Compiler', 'Developer Tools'],
-    imgSrc: '/fluxlanguageimage.png',
-    roi: '40% Faster Business Logic Execution',
-    problem: 'Existing programming languages lacked specialized domain syntax for accelerated enterprise logic writing.',
-    solution: 'Engineered a custom compiler, AST parser, language toolchain, and developer ecosystem from the ground up.',
-    impact: 'Empowered internal software engineers to author robust business logic 40% faster.',
-    link: '/flux-website/index.html'
-  },
-  {
-    id: 4,
-    title: 'Prism Studio App',
-    domain: 'prism-studio',
-    category: 'App',
-    tags: ['Desktop App', 'Workspace Editor'],
-    imgSrc: '/prism_studio_icon.png',
-    roi: '+30% Developer Productivity Gain',
-    problem: 'Software engineering teams had to context-switch across 5 separate applications daily.',
-    solution: 'Created a unified, high-performance studio app integrating code editing, previewing, and asset management.',
-    impact: 'Increased team productivity by over 30% and unified developer workflows into one interface.',
-    link: '/prism-studio/index.html'
-  },
-  {
-    id: 5,
-    title: 'Tooldeck',
-    domain: 'tool-deck',
-    category: 'App',
-    tags: ['Windows', 'Local Utilities'],
-    imgSrc: '/tooldecklogo.png',
-    roi: '79 local tools | Version 0.2.0-alpha.1',
-    problem: 'Everyday file tasks need a single focused workspace.',
-    solution: 'PDF, image, video, audio, conversion and utility tools in a clean card library. Files are processed locally on your PC.',
-    linkLabel: 'Download Tooldeck',
-    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/tooldeck-v0.2.0-alpha.1/Tooldeck-Setup-0.2.0-alpha.1-x64.exe'
-  },
-  {
-    id: 6,
-    title: 'Quranly PC',
-    domain: 'quranly-pc',
-    category: 'App',
-    tags: ['Windows', 'Quran & Audio'],
-    imgSrc: '/quranlylogo.png',
-    roi: 'Windows x64 | Alpha release',
-    problem: 'A focused desktop space for Quran reading and listening.',
-    solution: 'Read the Quran and listen to recitations on Windows. Version 0.1.0-alpha, installed and updated through BlueCloud Launcher.',
-    linkLabel: 'Get via Launcher',
-    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.4/BlueCloud-Launcher-Setup-0.1.0-alpha.4-x64.exe'
-  },
-  {
-    id: 7,
-    title: 'Coneic Player',
-    domain: 'coneic-player',
-    category: 'App',
-    tags: ['Windows', 'Media Player'],
-    imgSrc: '/coneic-player.png',
-    roi: 'Windows x64 | Alpha release',
-    problem: 'A dedicated Windows player for local music and video.',
-    solution: 'A Windows player for your music and videos. Version 0.2.1-alpha-r2, installed and updated through BlueCloud Launcher.',
-    linkLabel: 'Get via Launcher',
-    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.4/BlueCloud-Launcher-Setup-0.1.0-alpha.4-x64.exe'
-  },
-  {
-    id: 8,
-    title: 'BlueCloud Launcher',
-    domain: 'bluecloud-launcher',
-    category: 'App',
-    tags: ['Windows', 'App Launcher'],
-    imgSrc: '/icon_no_background.PNG',
-    roi: 'Windows x64 | Alpha release',
-    problem: 'Users need one place to install and keep their BlueCloud apps up to date.',
-    solution: 'Install, open and update all your BlueCloud apps. Automatic launcher updates and Windows Start shortcuts. Version 0.1.0-alpha.4 for Windows x64.',
-    linkLabel: 'Download Launcher',
-    link: 'https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.4/BlueCloud-Launcher-Setup-0.1.0-alpha.4-x64.exe'
-  }
-];
-
-const Projects = () => {
-  const [filter, setFilter] = useState('All');
-
-  const filteredProjects = filter === 'All' 
-    ? PROJECTS_DATA 
-    : PROJECTS_DATA.filter(p => p.category === filter || p.tags.includes(filter));
-
-
+export default function Projects() {
+  const [filter, setFilter] = useState("All");
+  const projects =
+    filter === "All"
+      ? PROJECTS_DATA
+      : PROJECTS_DATA.filter((item) => item.category === filter);
   return (
-    <div className="section container">
+    <>
       <SEO
-        title="Our Projects & Case Studies — BlueCloud Portfolio"
-        description="Explore our enterprise deployments, ROI metrics, and technical case studies including Cyberion, FastData, Flux Language, Prism Studio, Tool Deck, Quranly PC, Coneic Player, and BlueCloud Launcher."
+        title="Projects & Software — BlueCloud"
+        description="Explore BlueCloud software, developer tools and web projects."
         path="/projects"
-        keywords="BlueCloud projects, web development portfolio Nigeria, case studies, Quranly PC, Coneic Player, BlueCloud Launcher, Cyberion, FastData, Flux programming language, Prism Studio, Tool Deck, Quranly, cybersecurity Nigeria, tech portfolio Abuja"
       />
-      <div className="text-center mb-6">
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--primary-blue)', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '8px' }}>
-          <TrendingUp size={18} /> Verified Case Studies & Impact Metrics
-        </div>
-        <h1>Our Case Studies & Portfolio</h1>
-        <p style={{ fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto', color: 'var(--slate-text)' }}>
-          Explore our recent enterprise software deployments, technical solutions, and verified ROI metrics.
+      <header className="page-hero container">
+        <p className="eyebrow">Selected work</p>
+        <h1>Ideas, put to work.</h1>
+        <p className="lead">
+          Explore our software, language tools and web projects. Available
+          releases and work in development are labelled separately.
         </p>
-      </div>
-
-      <div style={{ display: 'flex', gap: 'var(--spacing-2)', justifyContent: 'center', marginBottom: 'var(--spacing-5)', flexWrap: 'wrap' }}>
-        {['All', 'Web', 'App', 'Tools'].map((cat) => (
-          <button 
-            key={cat}
-            className={filter === cat ? 'btn-primary' : 'btn-secondary'}
-            onClick={() => setFilter(cat)}
-          >
-            {cat}
-          </button>
-        ))}
-        <a href="/portfolio.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-          Founder Portfolio <ExternalLink size={14} />
-        </a>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 'var(--spacing-4)' }}>
-        {filteredProjects.map((project) => (
-          <div key={project.id} style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--light-gray)', backgroundColor: 'var(--white)', boxShadow: 'var(--shadow-sm)' }}>
-            {project.imgSrc ? (
-              <img src={project.imgSrc} alt={project.title} style={{ width: '100%', height: '180px', objectFit: 'contain', backgroundColor: 'var(--light-gray)', padding: '20px' }} />
-            ) : (
-              <div style={{ height: '180px', backgroundColor: project.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: project.textColor, fontSize: '1.4rem', fontWeight: 'bold' }}>
-                {project.title}
+      </header>
+      <section className="section container">
+        <div
+          className="project-filters"
+          role="group"
+          aria-label="Filter projects"
+        >
+          {["All", "Web", "App", "Tools"].map((category) => (
+            <button
+              key={category}
+              type="button"
+              className={filter === category ? "btn-primary" : "btn-secondary"}
+              aria-pressed={filter === category}
+              onClick={() => setFilter(category)}
+            >
+              {category}
+            </button>
+          ))}
+          <Link className="text-link" to="/portfolio">
+            Founder portfolio →
+          </Link>
+        </div>
+        <div className="project-list" aria-live="polite">
+          {projects.map((project) => (
+            <article className="project-row" key={project.id}>
+              <div>
+                {project.imgSrc ? (
+                  <img
+                    className="artwork"
+                    src={project.imgSrc}
+                    alt=""
+                    width="72"
+                    height="72"
+                    loading="lazy"
+                  />
+                ) : (
+                  <span className="eyebrow">Web project</span>
+                )}
               </div>
-            )}
-
-            <div style={{ padding: 'var(--spacing-3)' }}>
-              <div style={{ display: 'flex', gap: '6px', marginBottom: '8px', flexWrap: 'wrap' }}>
-                {project.tags.map((t, idx) => (
-                  <span key={idx} style={{ backgroundColor: 'var(--light-gray)', color: 'var(--primary-blue)', fontSize: '0.75rem', fontWeight: 'bold', padding: '3px 8px', borderRadius: '4px' }}>
-                    {t}
-                  </span>
-                ))}
+              <div>
+                <p className="eyebrow muted">{project.tags.join(" / ")}</p>
+                <h2>{project.title}</h2>
               </div>
-
-              <h3 className="mb-2" style={{ fontSize: '1.2rem' }}>{project.title}</h3>
-
-              {/* ROI Metrics Tag */}
-              <div style={{ backgroundColor: 'rgba(11, 95, 255, 0.08)', border: '1px solid rgba(11, 95, 255, 0.2)', padding: '6px 10px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 'bold', color: 'var(--primary-blue)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Award size={14} /> {project.roi}
+              <div>
+                <p>{project.solution}</p>
+                {project.comingSoon ? (
+                  <span className="status status-soon">Coming soon</span>
+                ) : (
+                  <a
+                    className="text-link"
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {project.linkLabel || "Explore project"} ↗
+                  </a>
+                )}
               </div>
-
-              <div style={{ fontSize: '0.85rem', marginBottom: '1rem', color: 'var(--slate-text)' }}>
-                <p style={{ marginBottom: '4px' }}><strong>Problem:</strong> {project.problem}</p>
-                <p style={{ marginBottom: '4px' }}><strong>Solution:</strong> {project.solution}</p>
-              </div>
-
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <a href={project.link} target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '6px 14px', fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  {project.linkLabel || 'Visit Solution'} <ExternalLink size={14} />
-                </a>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </>
   );
-};
-
-export default Projects;
-
-
-
+}

@@ -86,7 +86,7 @@
   border: 1px solid #e2e8f0;
   overflow: hidden;
   margin-bottom: 30px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 
 .admin-card-header {
@@ -168,7 +168,7 @@
   right: 0;
   bottom: 0;
   background-color: rgba(15, 23, 42, 0.5);
-  backdrop-filter: blur(4px);
+  backdrop-filter: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -183,7 +183,7 @@
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: var(--shadow-lg);
+  box-shadow: none;
 }
 
 .admin-modal-header {

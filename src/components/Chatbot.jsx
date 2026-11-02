@@ -1,13 +1,21 @@
-import { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Mic, Volume2, VolumeX, CheckCircle } from 'lucide-react';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../firebase';
-import './Chatbot.css';
+import { useState, useRef, useEffect } from "react";
+import {
+  MessageSquare,
+  X,
+  Send,
+  Mic,
+  Volume2,
+  VolumeX,
+  CheckCircle,
+} from "lucide-react";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase";
+import "./Chatbot.css";
 
 // Initialize Gemini API
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey || 'MISSING_API_KEY');
+const genAI = new GoogleGenerativeAI(apiKey || "MISSING_API_KEY");
 
 const systemInstruction = `You are Aura, the official AI assistant for BlueCloud Technologies. You are a friendly, highly intelligent, and professional guide. BlueCloud is an elite enterprise web development and AI solutions company based in Abuja, Nigeria. 
 
@@ -20,12 +28,15 @@ CRITICAL COMPANY INFO:
 
 Your goal is to help visitors understand our core services (Enterprise Web Apps, Custom AI Solutions, and Cybersecurity), guide them to our portfolio, and encourage them to contact us for a quote using the factual contact info provided above. NEVER invent or hallucinate emails, phone numbers, or addresses. Keep your responses concise, engaging, and professional. Always refer to yourself as Aura. Do not use any emojis in your response.`;
 
-const Chatbot = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const Chatbot = ({ initiallyOpen = false }) => {
+  const [isOpen, setIsOpen] = useState(initiallyOpen);
   const [messages, setMessages] = useState([
-    { text: "Hi there! I'm Aura, the BlueCloud AI assistant. How can I help you today?", sender: 'bot' }
+    {
+      text: "Hi there! I'm Aura, the BlueCloud AI assistant. How can I help you today?",
+      sender: "bot",
+    },
   ]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [chatSession, setChatSession] = useState(null);
 
@@ -34,14 +45,29 @@ const Chatbot = () => {
   const [ttsEnabled, setTtsEnabled] = useState(false);
   const [showLeadForm, setShowLeadForm] = useState(false);
   const [leadSubmitted, setLeadSubmitted] = useState(false);
-  const [leadName, setLeadName] = useState('');
-  const [leadEmail, setLeadEmail] = useState('');
-  const [leadService, setLeadService] = useState('Web Development');
+  const [leadName, setLeadName] = useState("");
+  const [leadEmail, setLeadEmail] = useState("");
+  const [leadService, setLeadService] = useState("Web Development");
 
   const messagesEndRef = useRef(null);
+  const recognitionRef = useRef(null);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      document
+        .querySelector(isOpen ? ".chatbot-input input" : ".chatbot-toggle-btn")
+        ?.focus();
+    });
+    return () => cancelAnimationFrame(id);
+  }, [isOpen]);
+  useEffect(
+    () => () => {
+      recognitionRef.current?.abort();
+    },
+    [],
+  );
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -55,7 +81,7 @@ const Chatbot = () => {
     const initChat = async () => {
       try {
         const model = genAI.getGenerativeModel({
-          model: 'gemini-3.5-flash',
+          model: "gemini-3.5-flash",
           systemInstruction: systemInstruction,
         });
         const chat = model.startChat({
@@ -71,7 +97,7 @@ const Chatbot = () => {
 
   // Text to speech playback
   const speakText = (text) => {
-    if (!ttsEnabled || !('speechSynthesis' in window)) return;
+    if (!ttsEnabled || !("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 1.0;
@@ -80,21 +106,25 @@ const Chatbot = () => {
 
   // Speech Recognition (Mic)
   const handleMicClick = () => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert("Voice input is not supported in this browser. Please use Chrome or Edge.");
+      alert(
+        "Voice input is not supported in this browser. Please use Chrome or Edge.",
+      );
       return;
     }
 
     if (isListening) {
-      setIsListening(false);
+      recognitionRef.current?.stop();
       return;
     }
 
     const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
     recognition.continuous = false;
     recognition.interimResults = false;
-    recognition.lang = 'en-US';
+    recognition.lang = "en-US";
 
     recognition.onstart = () => setIsListening(true);
     recognition.onend = () => setIsListening(false);
@@ -112,30 +142,38 @@ const Chatbot = () => {
     if (!input.trim() || isLoading) return;
 
     const userMessage = input.trim();
-    setMessages(prev => [...prev, { text: userMessage, sender: 'user' }]);
-    setInput('');
+    setMessages((prev) => [...prev, { text: userMessage, sender: "user" }]);
+    setInput("");
     setIsLoading(true);
 
     // Check if user is asking for quote/contact
     const lower = userMessage.toLowerCase();
-    if (lower.includes('quote') || lower.includes('estimate') || lower.includes('price') || lower.includes('contact') || lower.includes('hire')) {
+    if (
+      lower.includes("quote") ||
+      lower.includes("estimate") ||
+      lower.includes("price") ||
+      lower.includes("contact") ||
+      lower.includes("hire")
+    ) {
       setShowLeadForm(true);
     }
 
     try {
-      if (!apiKey || apiKey === 'MISSING_API_KEY') {
-        throw new Error("Missing API Key. Please ensure VITE_GEMINI_API_KEY is in your .env.local file.");
+      if (!apiKey || apiKey === "MISSING_API_KEY") {
+        throw new Error(
+          "Missing API Key. Please ensure VITE_GEMINI_API_KEY is in your .env.local file.",
+        );
       }
-      
+
       const result = await chatSession.sendMessage(userMessage);
       const botResponse = result.response.text();
-      
-      setMessages(prev => [...prev, { text: botResponse, sender: 'bot' }]);
+
+      setMessages((prev) => [...prev, { text: botResponse, sender: "bot" }]);
       speakText(botResponse);
     } catch (error) {
       console.error("Chat error:", error);
-      const errTxt = `BlueCloud AI Assistant: How can we assist you with your project today? Contact us directly at info@bluecloudai.online or 08125531111. For app or customer support, email support@bluecloudai.online.`;
-      setMessages(prev => [...prev, { text: errTxt, sender: 'bot' }]);
+      const errTxt = `The AI service could not complete your request. Please try again or contact us directly at info@bluecloudai.online or 08125531111. For app or customer support, email support@bluecloudai.online.`;
+      setMessages((prev) => [...prev, { text: errTxt, sender: "bot" }]);
     } finally {
       setIsLoading(false);
     }
@@ -146,26 +184,38 @@ const Chatbot = () => {
     if (!leadName || !leadEmail) return;
 
     try {
-      await addDoc(collection(db, 'leads'), {
+      await addDoc(collection(db, "leads"), {
         name: leadName,
         email: leadEmail,
         service: leadService,
-        source: 'Chatbot Aura',
-        createdAt: serverTimestamp()
+        source: "Chatbot Aura",
+        createdAt: serverTimestamp(),
       });
       setLeadSubmitted(true);
-      setMessages(prev => [...prev, { text: `Thank you, ${leadName}! Your request has been recorded. Our team will contact you at ${leadEmail}.`, sender: 'bot' }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: `Thank you, ${leadName}! Your request has been recorded. Our team will contact you at ${leadEmail}.`,
+          sender: "bot",
+        },
+      ]);
     } catch (err) {
       console.error("Error submitting lead:", err);
-      setLeadSubmitted(true);
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: "Your request could not be saved. Please retry or email info@bluecloudai.online.",
+          sender: "bot",
+        },
+      ]);
     }
   };
 
   return (
     <div className="chatbot-container">
       {!isOpen && (
-        <button 
-          className="chatbot-toggle-btn" 
+        <button
+          className="chatbot-toggle-btn"
           onClick={() => setIsOpen(true)}
           aria-label="Open chat with BlueCloud AI Assistant Aura"
         >
@@ -174,23 +224,30 @@ const Chatbot = () => {
       )}
 
       {isOpen && (
-        <div className="chatbot-window" role="dialog" aria-label="BlueCloud AI Assistant chat window">
+        <div
+          className="chatbot-window"
+          onKeyDown={(event) => {
+            if (event.key === "Escape") setIsOpen(false);
+          }}
+          role="dialog"
+          aria-label="BlueCloud AI Assistant chat window"
+        >
           <div className="chatbot-header">
             <div className="chatbot-header-info">
               <h3>Aura</h3>
               <p>BlueCloud AI Assistant</p>
             </div>
             <div className="chatbot-header-actions">
-              <button 
-                className={`chatbot-voice-toggle-btn ${ttsEnabled ? 'active' : ''}`}
+              <button
+                className={`chatbot-voice-toggle-btn ${ttsEnabled ? "active" : ""}`}
                 onClick={() => setTtsEnabled(!ttsEnabled)}
                 title="Toggle Voice Speech Output"
                 aria-label="Toggle voice speech output"
               >
                 {ttsEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
               </button>
-              <button 
-                className="chatbot-close-btn" 
+              <button
+                className="chatbot-close-btn"
                 onClick={() => setIsOpen(false)}
                 aria-label="Close chat assistant"
               >
@@ -199,7 +256,7 @@ const Chatbot = () => {
             </div>
           </div>
 
-          <div className="chatbot-messages">
+          <div className="chatbot-messages" role="log" aria-live="polite">
             {messages.map((msg, idx) => (
               <div key={idx} className={`chat-msg ${msg.sender}`}>
                 {msg.text}
@@ -215,41 +272,72 @@ const Chatbot = () => {
             {showLeadForm && (
               <div className="chat-lead-card">
                 {leadSubmitted ? (
-                  <div style={{ textAlign: 'center', color: 'var(--primary-blue)', fontSize: '0.85rem' }}>
-                    <CheckCircle size={20} style={{ margin: '0 auto 4px', display: 'block' }} />
+                  <div
+                    style={{
+                      textAlign: "center",
+                      color: "var(--primary-blue)",
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    <CheckCircle
+                      size={20}
+                      style={{ margin: "0 auto 4px", display: "block" }}
+                    />
                     Request Logged Successfully!
                   </div>
                 ) : (
                   <form onSubmit={handleLeadSubmit}>
                     <h4>Quick Project Request</h4>
-                    <input 
-                      type="text" 
-                      placeholder="Your Name" 
+                    <input
+                      type="text"
+                      aria-label="Your Name"
+                      placeholder="Your Name"
                       value={leadName}
                       onChange={(e) => setLeadName(e.target.value)}
-                      aria-label="Your Name"
-                      required 
+                      required
                     />
-                    <input 
-                      type="email" 
-                      placeholder="Work Email" 
+                    <input
+                      type="email"
+                      aria-label="Work Email"
+                      placeholder="Work Email"
                       value={leadEmail}
                       onChange={(e) => setLeadEmail(e.target.value)}
-                      aria-label="Work Email"
-                      required 
+                      required
                     />
-                    <select 
-                      value={leadService} 
+                    <select
+                      value={leadService}
                       onChange={(e) => setLeadService(e.target.value)}
                       aria-label="Service of Interest"
                     >
                       <option value="Web Development">Web Development</option>
-                      <option value="AI Solutions">AI Solutions & Automation</option>
+                      <option value="AI Solutions">
+                        AI Solutions & Automation
+                      </option>
                       <option value="Cybersecurity">Cybersecurity</option>
                     </select>
-                    <button type="submit" aria-label="Submit quick project request">Submit Request</button>
-                    <p style={{ fontSize: '0.72rem', color: '#94A3B8', marginTop: '6px', textAlign: 'center' }}>
-                      Protected by BlueCloud <a href="/privacy" target="_blank" style={{ color: 'var(--cyan-accent)' }}>Privacy Policy</a>.
+                    <button
+                      type="submit"
+                      aria-label="Submit quick project request"
+                    >
+                      Submit Request
+                    </button>
+                    <p
+                      style={{
+                        fontSize: "0.72rem",
+                        color: "#94A3B8",
+                        marginTop: "6px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Protected by BlueCloud{" "}
+                      <a
+                        href="/privacy"
+                        target="_blank"
+                        style={{ color: "var(--cyan-accent)" }}
+                      >
+                        Privacy Policy
+                      </a>
+                      .
                     </p>
                   </form>
                 )}
@@ -260,25 +348,27 @@ const Chatbot = () => {
           </div>
 
           <div className="chatbot-input">
-            <button 
-              className={`chatbot-mic-btn ${isListening ? 'listening' : ''}`} 
-              onClick={handleMicClick} 
+            <button
+              className={`chatbot-mic-btn ${isListening ? "listening" : ""}`}
+              onClick={handleMicClick}
               title="Voice Input"
               aria-label="Voice input"
             >
               <Mic size={18} />
             </button>
-            <input 
-              type="text" 
-              placeholder={isListening ? "Listening..." : "Type your message..."}
+            <input
+              type="text"
+              placeholder={
+                isListening ? "Listening..." : "Type your message..."
+              }
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
               aria-label="Type your message"
               disabled={isLoading}
             />
-            <button 
-              onClick={handleSend} 
+            <button
+              onClick={handleSend}
               disabled={isLoading || !input.trim()}
               aria-label="Send message to Aura"
             >
@@ -292,4 +382,3 @@ const Chatbot = () => {
 };
 
 export default Chatbot;
-

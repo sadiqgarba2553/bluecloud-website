@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Layers, Code, Database, Cpu, Shield, Server } from 'lucide-react';
+import { Layers } from 'lucide-react';
 import './TechStackExplorer.css';
 
 const TECH_DATA = [
   // Frontend
   { id: 1, name: 'React 19 & Vite', category: 'Frontend', level: '100%', desc: 'Ultra-fast SPA frameworks, concurrent rendering, and dynamic components.' },
   { id: 2, name: 'JavaScript & HTML5', category: 'Frontend', level: '100%', desc: 'Clean semantic structure, DOM optimization, and modern ESNext logic.' },
-  { id: 3, name: 'Vanilla CSS Design', category: 'Frontend', level: '100%', desc: 'Custom CSS tokens, responsive layouts, glassmorphism, and dark/light modes.' },
+  { id: 3, name: 'Vanilla CSS Design', category: 'Frontend', level: '100%', desc: 'Custom CSS tokens, responsive layouts, accessible interaction states, and reusable components.' },
   
   // Backend & DB
   { id: 4, name: 'Firebase & Firestore', category: 'Backend & DB', level: '95%', desc: 'Real-time NoSQL databases, Firebase Auth, Security Rules, and App Hosting.' },
@@ -64,9 +64,6 @@ const TechStackExplorer = () => {
               <span className="tech-card-badge">{tech.category}</span>
             </div>
             <div className="tech-card-desc">{tech.desc}</div>
-            <div className="tech-progress-bar">
-              <div className="tech-progress-fill" style={{ width: tech.level }}></div>
-            </div>
           </div>
         ))}
       </div>

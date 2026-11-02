@@ -1,46 +1,168 @@
-import { Link } from 'react-router-dom';
-import SEO from '../components/SEO';
-import CertificatesWall from '../components/CertificatesWall';
-
-const About = () => {
+import { Link } from "react-router-dom";
+import SEO from "../components/SEO";
+import CertificatesWall from "../components/CertificatesWall";
+export default function About() {
   return (
-    <div className="section container">
+    <>
       <SEO
-        title="About BlueCloud Technologies — Nigerian Software Engineering Company"
-        description="BlueCloud Technologies is a Nigerian technology company focused on premium web development, AI solutions, and enterprise software. Founded by Sadiq Garba Ibrahim."
+        title="About BlueCloud AI Technologies"
+        description="Software, development, applied AI and creative services from BlueCloud in Abuja, Nigeria. Founded by Sadiq Garba Ibrahim."
         path="/about"
-        keywords="about BlueCloud Technologies, Nigerian tech company, Sadiq Garba Ibrahim, software engineering Abuja, technology company Nigeria, BlueCloud founder, Abuja software company"
       />
-      <h1 className="mb-4">About BlueCloud</h1>
-      <p className="mb-4" style={{ fontSize: '1.2rem', maxWidth: '800px' }}>
-        BlueCloud is a Nigerian technology company focused on delivering premium web development, AI solutions, applications, and general technical services to forward-thinking enterprises.
-      </p>
-      
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-6)' }}>
-        <div style={{ backgroundColor: 'var(--light-gray)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
-          <h3 className="mb-2">Our Mission</h3>
-          <p>To empower businesses through robust software engineering and applied artificial intelligence, creating solutions that are precise, innovative, and dependable.</p>
+      <section className="page-hero container">
+        <span className="eyebrow">About BlueCloud</span>
+        <h1>Grounded in useful work.</h1>
+        <p className="lead">
+          BlueCloud AI Technologies is a technology company in Abuja, Nigeria.
+          We make Windows desktop software and provide development, applied AI,
+          technical consulting and creative services.
+        </p>
+      </section>
+      <section className="section container">
+        <div className="services-layout">
+          <div className="section-intro">
+            <span className="eyebrow">Our focus</span>
+            <h2>
+              Practical thinking.
+              <br />
+              Considered execution.
+            </h2>
+          </div>
+          <div>
+            <p className="lead muted">
+              Some needs call for a small, focused tool. Others need a complete
+              digital product, an integration or a clearer technical plan. The
+              starting point is understanding what the work needs to achieve.
+            </p>
+            <p className="muted" style={{ marginTop: "var(--space-3)" }}>
+              Our software and services sit alongside creative design, video and
+              social media work — bringing technical and visual thinking to the
+              same conversation.
+            </p>
+            <Link className="text-link" to="/services">
+              See what we do
+              <svg
+                className="od-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4 12h16m-6-6 6 6-6 6" />
+              </svg>
+            </Link>
+          </div>
         </div>
-        <div style={{ backgroundColor: 'var(--light-gray)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
-          <h3 className="mb-2">Our Vision</h3>
-          <p>To be the premier technical partner for enterprises across Africa, recognized for our technical depth and uncompromising quality standards.</p>
+      </section>
+      <section className="section approach" aria-labelledby="approach-heading">
+        <div className="container approach-grid">
+          <div className="section-intro">
+            <span className="eyebrow">03 / How we approach it</span>
+            <h2 id="approach-heading">
+              Clarity first.
+              <br />
+              Then the build.
+            </h2>
+          </div>
+          <ol className="approach-steps">
+            <li className="approach-step">
+              <span className="eyebrow">01</span>
+              <h3>Understand</h3>
+              <p>
+                Get clear on the people, the problem and what a useful result
+                looks like.
+              </p>
+            </li>
+            <li className="approach-step">
+              <span className="eyebrow">02</span>
+              <h3>Make</h3>
+              <p>
+                Shape the solution, make deliberate choices and build around
+                real needs.
+              </p>
+            </li>
+            <li className="approach-step">
+              <span className="eyebrow">03</span>
+              <h3>Refine</h3>
+              <p>
+                Review the details together and agree the practical next steps.
+              </p>
+            </li>
+          </ol>
         </div>
+      </section>
+      <section className="section container">
+        <div className="list-grid">
+          <div className="editorial-block">
+            <span className="eyebrow">Made by BlueCloud</span>
+            <h2>Software you can explore.</h2>
+            <p>Get to know our work through the apps available today.</p>
+            <Link className="text-link" to="/products">
+              Explore our products
+              <svg
+                className="od-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4 12h16m-6-6 6 6-6 6" />
+              </svg>
+            </Link>
+          </div>
+          <div className="editorial-block">
+            <span className="eyebrow">Based in Abuja, Nigeria</span>
+            <h2>Let’s start a conversation.</h2>
+            <p>
+              Tell us about your project and the support you’re looking for.
+            </p>
+            <Link className="text-link" to="/contact">
+              Contact BlueCloud
+              <svg
+                className="od-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4 12h16m-6-6 6 6-6 6" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </section>
+      <section className="section container founder-section">
+        <div>
+          <p className="eyebrow">The founder</p>
+          <h2>Sadiq Garba Ibrahim</h2>
+          <p>
+            BlueCloud brings together Sadiq’s work in software engineering,
+            graphic design and video editing.
+          </p>
+          <Link className="text-link" to="/portfolio">
+            View founder portfolio →
+          </Link>
+        </div>
+        <img
+          src="/imageofceo.PNG"
+          alt="Sadiq Garba Ibrahim, founder of BlueCloud"
+          width="280"
+          height="320"
+          loading="lazy"
+        />
+      </section>
+      <div className="container">
+        <CertificatesWall />
       </div>
-
-      {/* Leadership Section */}
-      <div className="text-center" style={{ marginTop: 'var(--spacing-8)', padding: 'var(--spacing-6)', backgroundColor: 'var(--deep-navy)', color: 'var(--white)', borderRadius: 'var(--radius-lg)' }}>
-        <h2 style={{ color: 'var(--white)' }} className="mb-3">Meet the Leadership</h2>
-        <img src="/imageofceo.PNG" alt="Sadiq Garba, Founder and CEO of BlueCloud Technologies" style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '50%', margin: '0 auto var(--spacing-3)', display: 'block' }} />
-        <h3 style={{ color: 'var(--white)', marginBottom: '8px' }}>Sadiq Garba <span style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--mint-accent)' }}>— Founder / CEO</span></h3>
-        <p style={{ color: '#94A3B8', marginBottom: '16px' }}>Software Engineer, Professional Graphics Designer & Video Editor driving innovation at BlueCloud.</p>
-        <a href="/portfolio.html" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ display: 'inline-block', padding: '8px 24px', fontSize: '0.9rem' }}>View Founder Portfolio</a>
-      </div>
-
-      {/* Verified Certificates & Accreditation Wall */}
-      <CertificatesWall />
-    </div>
+    </>
   );
-};
-
-export default About;
-
+}

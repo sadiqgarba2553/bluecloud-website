@@ -15,18 +15,18 @@
   padding: var(--spacing-6);
   width: 100%;
   max-width: 440px;
-  box-shadow: var(--shadow-md);
-  animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-shadow: none;
+  animation: none;
 }
 
 @keyframes slideUpFade {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: none;
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
 
@@ -88,7 +88,7 @@
   outline: none;
   border-color: var(--primary-blue);
   background-color: var(--white);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  box-shadow: none;
 }
 
 .portal-form-group input::placeholder {
@@ -139,7 +139,7 @@
 
 .portal-btn:hover:not(:disabled) {
   background-color: var(--deep-navy);
-  transform: translateY(-1px);
+  transform: none;
 }
 
 .portal-btn:disabled {
@@ -154,7 +154,7 @@
 }
 
 .spinner {
-  animation: spin 1s linear infinite;
+  animation: none;
   margin-right: 8px;
 }
 

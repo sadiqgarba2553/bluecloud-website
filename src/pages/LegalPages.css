@@ -6,7 +6,7 @@
 }
 
 .legal-header {
-  background: linear-gradient(135deg, var(--deep-navy) 0%, #15253e 100%);
+  background: var(--deep-navy);
   color: var(--white);
   padding: var(--spacing-6) 0;
   margin-bottom: var(--spacing-6);

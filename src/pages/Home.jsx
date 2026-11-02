@@ -1,321 +1,478 @@
-import { Link } from 'react-router-dom';
-import { Monitor, Cpu, Smartphone, Briefcase, Lightbulb, ShieldCheck, Target, Users } from 'lucide-react';
-import SEO from '../components/SEO';
-import './Home.css';
+import { Link } from "react-router-dom";
+import SEO from "../components/SEO";
 
-const Home = () => {
+export default function Home() {
   return (
-    <div>
+    <>
       <SEO
-        title="BlueCloud Technologies — Enterprise Web Development, AI Solutions & Software Engineering"
-        description="BlueCloud delivers premium web development, AI-powered solutions, and enterprise software engineering. Based in Abuja, Nigeria — serving clients worldwide."
+        title="BlueCloud AI Technologies — Software & Digital Services"
+        description="Windows apps, web and application development, applied AI integrations and creative services from BlueCloud in Abuja, Nigeria."
         path="/"
-        keywords="BlueCloud Technologies, web development Nigeria, AI solutions Abuja, enterprise software engineering, build website Nigeria, app development Africa, tech company Abuja, software company Nigeria, React developer Nigeria, hire web developer Nigeria"
       />
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="container">
-          <div className="hero-content">
-            <h1 className="hero-title">
-              Engineering the <span>Future</span> of Your Business
-            </h1>
-            <p className="hero-subtitle">
-              BlueCloud delivers premium web development, AI solutions, and enterprise applications built for modern scale and absolute reliability.
+      <section className="hero container" aria-labelledby="hero-title">
+        <div className="hero-labels">
+          <span className="eyebrow">Software &amp; digital services</span>
+          <span className="eyebrow">Abuja, Nigeria</span>
+        </div>
+        <div className="hero-grid">
+          <h1 id="hero-title">
+            <span>Thoughtful software.</span>
+            <span>Practical technology.</span>
+          </h1>
+          <div className="hero-aside">
+            <p>
+              Windows apps, websites and useful AI integrations. Technical
+              thinking and creative work, brought together by BlueCloud.
             </p>
-            <div className="hero-cta-group">
-              <Link to="/contact" className="btn-primary">Request a Quote</Link>
-              <Link to="/projects" className="btn-secondary">View Our Work</Link>
-            </div>
+            <Link className="text-link" to="/about">
+              Get to know BlueCloud
+              <svg
+                className="od-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4 12h16m-6-6 6 6-6 6" />
+              </svg>
+            </Link>
           </div>
         </div>
-      </section>
-
-      {/* World Youth Day Announcement Banner */}
-      <div className="wyd-home-banner">
-        <div className="container">
-          <Link to="/blog/world-youth-day-2026" className="wyd-home-inner">
-            <div className="wyd-home-logo-wrap">
-              <img
-                src="/worldsyouthdaylogo.svg"
-                alt="World Youth Day 2026 Logo"
-                className="wyd-home-logo"
-              />
-            </div>
-            <div className="wyd-home-text">
-              <span className="wyd-home-label">Tomorrow · July 15th</span>
-              <h3 className="wyd-home-title">World Youth Day 2026</h3>
-              <p className="wyd-home-desc">
-                BlueCloud marks the day. Read our piece on the global gathering, what it means,
-                and why it matters to us.
-              </p>
-            </div>
-            <div className="wyd-home-cta">
-              Read Article
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </div>
+        <div className="hero-actions">
+          <Link className="button " to="/contact">
+            Discuss your project
+            <svg
+              className="od-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M4 12h16m-6-6 6 6-6 6" />
+            </svg>
+          </Link>
+          <Link className="text-link" to="/products">
+            Explore our products
+            <svg
+              className="od-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M4 12h16m-6-6 6 6-6 6" />
+            </svg>
           </Link>
         </div>
-      </div>
-
-      {/* Services Overview */}
-      <section className="section">
-        <div className="container">
-          <div className="text-center mb-6">
-            <h2>Our Core Capabilities</h2>
-            <p>Comprehensive technical solutions bridging software engineering and applied AI.</p>
-          </div>
-          <div className="services-grid">
-            <div className="service-card">
-              <div className="service-icon-wrapper">
-                <Monitor size={28} />
-              </div>
-              <h3>Web Development</h3>
-              <p>Scalable, high-performance web applications and corporate sites tailored to your enterprise.</p>
-            </div>
-            <div className="service-card">
-              <div className="service-icon-wrapper">
-                <Cpu size={28} />
-              </div>
-              <h3>AI Solutions</h3>
-              <p>Intelligent automation and integrations that streamline workflows and drive data-backed decisions.</p>
-            </div>
-            <div className="service-card">
-              <div className="service-icon-wrapper">
-                <Smartphone size={28} />
-              </div>
-              <h3>App Development</h3>
-              <p>Cross-platform mobile and desktop applications designed for seamless user experiences.</p>
-            </div>
-            <div className="service-card">
-              <div className="service-icon-wrapper">
-                <Briefcase size={28} />
-              </div>
-              <h3>Technical Consulting</h3>
-              <p>Strategic IT guidance to optimize your architecture, security, and digital transformation.</p>
-            </div>
-          </div>
-        </div>
       </section>
-
-      {/* Why BlueCloud */}
-      <section className="section why-section">
-        <div className="container">
-          <div className="text-center mb-6">
-            <h2>Why Choose BlueCloud</h2>
-            <p>The technical depth and reliability modern enterprises require.</p>
+      <section className="section container" aria-labelledby="products-heading">
+        <div className="section-header">
+          <div>
+            <span className="eyebrow">01 / Selected software</span>
+            <h2 id="products-heading">Built for everyday work.</h2>
           </div>
-          <div className="why-grid">
-            <div className="why-item">
-              <Lightbulb size={32} className="why-icon" />
-              <h3>Innovation-First</h3>
-              <p>We blend cutting-edge AI capabilities with proven engineering principles to build solutions that outpace the competition.</p>
-            </div>
-            <div className="why-item">
-              <ShieldCheck size={32} className="why-icon" />
-              <h3>Unshakable Reliability</h3>
-              <p>Our systems are architected for absolute stability, ensuring your business stays online and secure 24/7.</p>
-            </div>
-            <div className="why-item">
-              <Target size={32} className="why-icon" />
-              <h3>Technical Precision</h3>
-              <p>We write clean, semantic code and build resilient infrastructures that scale flawlessly as you grow.</p>
-            </div>
-            <div className="why-item">
-              <Users size={32} className="why-icon" />
-              <h3>Client-Centric</h3>
-              <p>We operate as an extension of your team, providing transparent communication and dedicated ongoing support.</p>
-            </div>
-          </div>
+          <Link className="text-link" to="/products">
+            All products
+            <svg
+              className="od-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M4 12h16m-6-6 6 6-6 6" />
+            </svg>
+          </Link>
         </div>
-      </section>
-
-      {/* Featured Work Teaser */}
-      <section className="section">
-        <div className="container">
-          <div className="text-center mb-6">
-            <h2>Featured Work</h2>
-            <p>A glimpse into the robust solutions we've deployed.</p>
-          </div>
-                    <div className="work-grid">
-            <div className="work-card">
-              <img src="/fluxlanguageimage.png" alt="Flux Programming Language" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
-              <div className="work-content">
-                <div className="work-tags">
-                  <span className="work-tag">Language</span>
-                  <span className="work-tag">Tools</span>
-                </div>
-                <h3>Flux Programming Language</h3>
-                <p className="mb-3">A custom programming language engineered with its own unique toolchain.</p>
-                <a href="/flux-website/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>View Website</a>
+        <div className="product-layout">
+          <article className="product-feature launcher-feature">
+            <div className="feature-top">
+              <span className="eyebrow">BlueCloud Launcher</span>
+              <span className="status">Available · Windows</span>
+            </div>
+            <div className="flagship">
+              <div>
+                <h3>
+                  Your apps.
+                  <br />
+                  One starting point.
+                </h3>
+                <p>Install and update Windows apps with BlueCloud Launcher.</p>
               </div>
-            </div>
-            <div className="work-card">
-              <img src="/prism_studio_icon.png" alt="Prism Studio" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
-              <div className="work-content">
-                <div className="work-tags">
-                  <span className="work-tag">App</span>
-                  <span className="work-tag">Editor</span>
-                </div>
-                <h3>Prism Studio</h3>
-                <p className="mb-3">A powerful studio application built for seamless developer workflows.</p>
-                <a href="/prism-studio/index.html" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Launch App</a>
-              </div>
-            </div>
-            <div className="work-card">
-              <img src="/tooldecklogo.png" alt="Tool Deck" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
-              <div className="work-content">
-                <div className="work-tags">
-                  <span className="work-tag">Windows</span>
-                  <span className="work-tag">Utility</span>
-                </div>
-                <h3>Tool Deck</h3>
-                <p className="mb-3">79 local PDF, image, video, audio, conversion and utility tools. Tooldeck 0.2.0-alpha.1 for Windows.</p>
-                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/tooldeck-v0.2.0-alpha.1/Tooldeck-Setup-0.2.0-alpha.1-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Download Tooldeck</a>
-              </div>
-            </div>
-            <div className="work-card">
-              <img src="/quranlylogo.png" alt="Quranly PC" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
-              <div className="work-content">
-                <div className="work-tags">
-                  <span className="work-tag">Windows</span>
-                  <span className="work-tag">Quran & Audio</span>
-                </div>
-                <h3>Quranly PC</h3>
-                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Read the Quran and listen to recitations on Windows. Version 0.1.0-alpha, installed and updated through BlueCloud Launcher.</p>
-                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.4/BlueCloud-Launcher-Setup-0.1.0-alpha.4-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Get via Launcher</a>
-              </div>
-            </div>
-            <div className="work-card">
-              <img src="/coneic-player.png" alt="Coneic Player" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
-              <div className="work-content">
-                <div className="work-tags">
-                  <span className="work-tag">Windows</span>
-                  <span className="work-tag">Media Player</span>
-                </div>
-                <h3>Coneic Player</h3>
-                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>A Windows player for your music and videos. Version 0.2.1-alpha-r2, installed and updated through BlueCloud Launcher.</p>
-                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.4/BlueCloud-Launcher-Setup-0.1.0-alpha.4-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Get via Launcher</a>
-              </div>
-            </div>
-            <div className="work-card">
-              <img src="/icon_no_background.PNG" alt="BlueCloud Launcher" style={{ width: '100%', height: '200px', objectFit: 'contain', backgroundColor: '#F4F6F9', padding: '20px' }} />
-              <div className="work-content">
-                <div className="work-tags">
-                  <span className="work-tag">Windows</span>
-                  <span className="work-tag">App Launcher</span>
-                </div>
-                <h3>BlueCloud Launcher</h3>
-                <p style={{ fontSize: '0.9rem', color: 'var(--slate-text)', marginBottom: '1rem' }}>Install, open and update all your BlueCloud apps. Automatic launcher updates and Windows Start shortcuts. Version 0.1.0-alpha.4 for Windows x64.</p>
-                <a href="https://github.com/sadiqgarba2553/bluecloud-website/releases/download/launcher-v0.1.0-alpha.4/BlueCloud-Launcher-Setup-0.1.0-alpha.4-x64.exe" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>Download Launcher</a>
-              </div>
-            </div>
-          </div>
-          <div className="text-center" style={{ marginTop: 'var(--spacing-5)' }}>
-            <Link to="/projects" className="btn-secondary">Explore All Projects</Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Engineering Standards & Trust Section */}
-      <section className="section stats-section">
-        <div className="container">
-          <h2>Engineered for Scale & Reliability</h2>
-          <div className="stats-grid">
-            <div className="stat-item">
-              <h3>8+</h3>
-              <p>Production Apps & Tools</p>
-            </div>
-            <div className="stat-item">
-              <h3>High-Avail</h3>
-              <p>Resilient Architecture</p>
-            </div>
-            <div className="stat-item">
-              <h3>NDPA</h3>
-              <p>Data Protection Standard</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Engineering Commitments (Authentic replacement for fabricated reviews) */}
-      <section className="section" style={{ backgroundColor: 'var(--white)' }}>
-        <div className="container">
-          <div className="text-center mb-6">
-            <h2>Our Core Engineering Commitments</h2>
-            <p style={{ maxWidth: '650px', margin: '0 auto' }}>
-              We believe in demonstrable technical delivery, radical transparency, and zero unsupported marketing hype.
-            </p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 'var(--spacing-4)' }}>
-            <div style={{ background: 'var(--light-gray)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
-              <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Milestone-Based Billing</h3>
-              <p style={{ color: 'var(--slate-text)', fontSize: '0.95rem' }}>
-                You inspect and approve verifiable deliverables before payments are released. No opaque retainers or surprise fees.
-              </p>
-            </div>
-            <div style={{ background: 'var(--light-gray)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
-              <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Zero Vendor Lock-In</h3>
-              <p style={{ color: 'var(--slate-text)', fontSize: '0.95rem' }}>
-                Full ownership of custom code, documentation, and cloud configurations is transferred directly to your organization.
-              </p>
-            </div>
-            <div style={{ background: 'var(--light-gray)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
-              <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Security by Design</h3>
-              <p style={{ color: 'var(--slate-text)', fontSize: '0.95rem' }}>
-                Zero-trust authentication, TLS 256-bit encryption, and NDPA/GDPR compliance baked in from sprint zero.
-              </p>
-            </div>
-            <div style={{ background: 'var(--light-gray)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
-              <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Direct Lead Engineer Access</h3>
-              <p style={{ color: 'var(--slate-text)', fontSize: '0.95rem' }}>
-                Collaborate directly with our senior software architects in Abuja without middlemen or outsourced layers.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Newsletter Section */}
-      <section className="newsletter-section">
-        <div className="container">
-          <div className="newsletter-content">
-            <h2>Stay Ahead of the Curve</h2>
-            <p>Get technical deep-dives on AI, Web Engineering, and Enterprise Tech delivered straight to your inbox.</p>
-            <form className="newsletter-form" onSubmit={(e) => { e.preventDefault(); alert('Thank you for subscribing! You will receive our next engineering briefing.'); }}>
-              <input 
-                type="email" 
-                placeholder="Enter your work email" 
-                className="newsletter-input" 
-                aria-label="Work email address for engineering briefing"
-                required 
+              <img
+                className="artwork od-media "
+                src="/bluecloud.svg"
+                alt="BlueCloud Launcher squircle artwork"
+                width="1080"
+                height="1080"
+                decoding="async"
+                loading="lazy"
               />
-              <button type="submit" className="newsletter-btn" aria-label="Subscribe to briefing">
-                Subscribe
-              </button>
-            </form>
-            <p style={{ fontSize: '0.8rem', color: '#94A3B8', marginTop: '10px' }}>
-              We respect your inbox. Unsubscribe anytime in accordance with our <Link to="/privacy" style={{ color: 'var(--cyan-accent)' }}>Privacy Policy</Link>.
+            </div>
+            <div className="feature-bottom">
+              <span className="small muted">Version 0.7.0</span>
+              <Link className="text-link" to="/products#launcher">
+                Explore Launcher
+                <svg
+                  className="od-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M4 12h16m-6-6 6 6-6 6" />
+                </svg>
+              </Link>
+            </div>
+          </article>
+          <article className="product-feature tooldeck-feature">
+            <div className="feature-top">
+              <span className="eyebrow">Local file tools</span>
+              <span className="status">Available · 0.5.1</span>
+            </div>
+            <div className="tooldeck-heading">
+              <img
+                className="artwork od-media "
+                src="/tooldeck.svg"
+                alt="Tooldeck squircle artwork"
+                width="1080"
+                height="1080"
+                decoding="async"
+                loading="lazy"
+              />
+              <div>
+                <h3>Tooldeck</h3>
+                <p>Everyday files. Handled locally.</p>
+              </div>
+            </div>
+            <p>
+              A practical set of local tools for working with your documents and
+              media.
             </p>
+            <ul className="file-types" aria-label="Supported tool categories">
+              <li>PDF</li>
+              <li>Images</li>
+              <li>Audio</li>
+              <li>Video</li>
+            </ul>
+            <div className="feature-bottom">
+              <span className="small muted">For your file workflow</span>
+              <Link className="text-link" to="/products#tooldeck">
+                Explore Tooldeck
+                <svg
+                  className="od-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M4 12h16m-6-6 6 6-6 6" />
+                </svg>
+              </Link>
+            </div>
+          </article>
+        </div>
+        <div
+          className="companion-products"
+          aria-label="More apps available through Launcher"
+        >
+          <Link className="companion" to="/products#coneic-player">
+            <img
+              className="artwork od-media "
+              src="/coneic-player.png"
+              alt=""
+              width="128"
+              height="128"
+              decoding="async"
+              loading="lazy"
+            />
+            <div className="od-field">
+              <strong>Coneic Player</strong>
+              <span className="small">Available through Launcher</span>
+            </div>
+            <svg
+              className="od-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M4 12h16m-6-6 6 6-6 6" />
+            </svg>
+          </Link>
+          <Link className="companion" to="/products#quranly">
+            <img
+              className="artwork od-media "
+              src="/quranlylogo.png"
+              alt=""
+              width="2000"
+              height="2000"
+              decoding="async"
+              loading="lazy"
+            />
+            <div className="od-field">
+              <strong>Quranly PC</strong>
+              <span className="small">Available through Launcher</span>
+            </div>
+            <svg
+              className="od-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M4 12h16m-6-6 6 6-6 6" />
+            </svg>
+          </Link>
+        </div>
+        <div className="upcoming">
+          <div className="upcoming-intro">
+            <span className="eyebrow">In development</span>
+            <p className="small muted">More from BlueCloud, coming soon.</p>
+          </div>
+          <div className="upcoming-item">
+            <img
+              className="artwork od-media "
+              src="/doc-cloud.svg"
+              alt=""
+              width="1080"
+              height="1080"
+              decoding="async"
+              loading="lazy"
+            />
+            <div className="od-field">
+              <strong>Doc Cloud</strong>
+              <span className="small">Coming soon</span>
+            </div>
+          </div>
+          <div className="upcoming-item">
+            <img
+              className="artwork od-media "
+              src="/sheet-cloud.svg"
+              alt=""
+              width="1080"
+              height="1080"
+              decoding="async"
+              loading="lazy"
+            />
+            <div className="od-field">
+              <strong>Sheet Cloud</strong>
+              <span className="small">Coming soon</span>
+            </div>
           </div>
         </div>
       </section>
-
-      {/* CTA Banner */}
-      <div className="container">
-        <div className="cta-banner">
-          <h2>Ready to Transform Your Digital Infrastructure?</h2>
-          <p className="mb-4">Partner with BlueCloud to build scalable, AI-powered solutions.</p>
-          <Link to="/contact" className="btn-primary">Start a Conversation</Link>
+      <section className="section container" aria-labelledby="services-heading">
+        <div className="services-layout">
+          <div className="section-intro">
+            <span className="eyebrow">02 / What we do</span>
+            <h2 id="services-heading">
+              Technology,
+              <br />
+              made useful.
+            </h2>
+            <p>
+              From a focused piece of software to a complete digital project.
+              Bring us the problem you’re trying to solve.
+            </p>
+            <Link className="text-link" to="/services">
+              Explore our services
+              <svg
+                className="od-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4 12h16m-6-6 6 6-6 6" />
+              </svg>
+            </Link>
+          </div>
+          <div>
+            <Link className="service-row" to="/services#web">
+              <span className="number">01</span>
+              <div>
+                <h3>Software &amp; web development</h3>
+                <p>
+                  Websites, web apps and Windows desktop software, built around
+                  the work you need to do.
+                </p>
+              </div>
+              <svg
+                className="od-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 19 19 5M5 5h14v14" />
+              </svg>
+            </Link>
+            <Link className="service-row" to="/ai-solutions">
+              <span className="number">02</span>
+              <div>
+                <h3>Applied AI integrations</h3>
+                <p>
+                  Connect AI to a useful workflow. Start with the problem, then
+                  choose the technology.
+                </p>
+              </div>
+              <svg
+                className="od-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 19 19 5M5 5h14v14" />
+              </svg>
+            </Link>
+            <Link className="service-row" to="/services#consulting">
+              <span className="number">03</span>
+              <div>
+                <h3>Technical consulting</h3>
+                <p>
+                  Work through technical decisions, system requirements and the
+                  next steps for your project.
+                </p>
+              </div>
+              <svg
+                className="od-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 19 19 5M5 5h14v14" />
+              </svg>
+            </Link>
+            <Link className="service-row" to="/services#graphics">
+              <span className="number">04</span>
+              <div>
+                <h3>Design, video &amp; social</h3>
+                <p>
+                  A considered visual identity, a clear story and creative
+                  content for your digital presence.
+                </p>
+              </div>
+              <svg
+                className="od-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 19 19 5M5 5h14v14" />
+              </svg>
+            </Link>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+      <section className="section approach" aria-labelledby="approach-heading">
+        <div className="container approach-grid">
+          <div className="section-intro">
+            <span className="eyebrow">03 / How we approach it</span>
+            <h2 id="approach-heading">
+              Clarity first.
+              <br />
+              Then the build.
+            </h2>
+          </div>
+          <ol className="approach-steps">
+            <li className="approach-step">
+              <span className="eyebrow">01</span>
+              <h3>Understand</h3>
+              <p>
+                Get clear on the people, the problem and what a useful result
+                looks like.
+              </p>
+            </li>
+            <li className="approach-step">
+              <span className="eyebrow">02</span>
+              <h3>Make</h3>
+              <p>
+                Shape the solution, make deliberate choices and build around
+                real needs.
+              </p>
+            </li>
+            <li className="approach-step">
+              <span className="eyebrow">03</span>
+              <h3>Refine</h3>
+              <p>
+                Review the details together and agree the practical next steps.
+              </p>
+            </li>
+          </ol>
+        </div>
+      </section>
+      <section className="contact-band" aria-labelledby="contact-heading">
+        <div className="container contact-grid">
+          <div>
+            <span className="eyebrow">Let’s talk</span>
+            <h2 id="contact-heading">What are you working on?</h2>
+          </div>
+          <div>
+            <p>
+              A new product, a better workflow, or a problem that needs a fresh
+              technical perspective. Let’s start there.
+            </p>
+            <Link className="button button-inverse" to="/contact">
+              Tell us about your project
+              <svg
+                className="od-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4 12h16m-6-6 6 6-6 6" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </section>
+    </>
   );
-};
-
-export default Home;
-
-
-
+}

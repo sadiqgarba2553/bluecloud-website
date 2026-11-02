@@ -14,7 +14,7 @@
 
 .inv-roadmap-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: var(--spacing-4);
   margin-bottom: var(--spacing-6);
 }
@@ -24,7 +24,7 @@
   border: 1px solid var(--light-gray);
   border-radius: var(--radius-lg);
   padding: var(--spacing-4);
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 
 .inv-roadmap-phase {
@@ -79,3 +79,5 @@
 .inv-form-card textarea:focus {
   border-color: var(--cyan-accent);
 }
+
+.inv-portal-header h1{font-size:var(--text-display);line-height:var(--leading-heading);letter-spacing:var(--tracking-display);text-align:left;max-width:20ch}

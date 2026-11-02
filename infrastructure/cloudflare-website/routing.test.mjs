@@ -11,7 +11,7 @@ const env = { ASSETS: { async fetch(request) {
 } } };
 const get = (p, method = 'GET') => worker.fetch(new Request('https://bluecloudai.online' + p, { method }), env);
 test('React routes retain the website entry and company email metadata', async () => {
-  for (const route of ['/', '/contact', '/projects', '/portal/login', '/portal/dashboard', '/coneic-player']) {
+  for (const route of ['/', '/products', '/services', '/developers', '/about', '/platform', '/ai-solutions', '/enterprise', '/contact', '/projects', '/portal/login', '/portal/dashboard', '/coneic-player']) {
     const r = await get(route); assert.equal(r.status, 200); assert.equal(r.headers.get('X-Test-Asset'), 'index.html'); assert.match(await r.text(), /info@bluecloudai\.online/);
   }
 });

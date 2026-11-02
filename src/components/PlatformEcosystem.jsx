@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Cpu, Terminal, Layout, Wrench, CheckCircle, Zap, Shield, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Cpu, Terminal, Layout, Wrench, CheckCircle, Zap, ArrowRight } from 'lucide-react';
+
 import './PlatformEcosystem.css';
 
 const PLATFORM_NODES = [
@@ -10,7 +10,7 @@ const PLATFORM_NODES = [
     role: 'Core Execution Engine',
     icon: <Terminal size={24} style={{ color: 'var(--cyan-accent)' }} />,
     shortDesc: 'Domain-specific language compiler engineered for high-speed AI logic and deterministic execution.',
-    details: 'Flux is BLUECLOUD\'s proprietary programming language built from scratch. It features AST parsing, custom memory management, and dynamic AI token bindings designed to write complex business logic 40% faster than standard scripting languages.',
+    details: 'Flux is BLUECLOUD\'s programming language project. It features AST parsing, custom memory management, and dynamic AI token bindings for experimenting with domain-specific business logic.',
     link: '/flux-website/index.html'
   },
   {
@@ -19,7 +19,7 @@ const PLATFORM_NODES = [
     role: 'Autonomous Intelligence',
     icon: <Cpu size={24} style={{ color: 'var(--cyan-accent)' }} />,
     shortDesc: 'Enterprise multimodal generative AI pipeline for real-time document analysis, code audit, and chat.',
-    details: 'Aura powers BLUECLOUD\'s intelligent automation pipeline using Gemini 3.5 models. It offers structured JSON outputs, zero-data retention security rules, and real-time voice speech synthesis.',
+    details: 'Aura powers BLUECLOUD\'s intelligent automation pipeline using Gemini 3.5 models. It offers structured JSON outputs, project-specific data handling, and real-time voice speech synthesis.',
     link: '/ai-solutions'
   },
   {
@@ -36,37 +36,17 @@ const PLATFORM_NODES = [
     name: 'Tool Deck Developer Suite',
     role: 'Browser Utilities Suite',
     icon: <Wrench size={24} style={{ color: 'var(--cyan-accent)' }} />,
-    shortDesc: 'High-performance browser-native developer utilities used by over 10,000 active monthly engineers.',
-    details: 'Tool Deck provides instant zero-latency tools including JSON formatters, base64 coders, PDF signers, color pickers, and UUID generators optimized for modern web browsers.',
+    shortDesc: 'Browser utilities for formatting data and common file tasks.',
+    details: 'Tool Deck provides instant local utilities including JSON formatters, base64 coders, PDF signers, color pickers, and UUID generators optimized for modern web browsers.',
     link: '/tool-deck/index.html'
   }
 ];
 
 const BENCHMARKS = [
-  {
-    category: 'AI Pipeline Execution Speed',
-    bluecloud: '< 280ms',
-    legacy: '1,200ms',
-    unit: 'Avg Latency'
-  },
-  {
-    category: 'System Uptime Guarantee',
-    bluecloud: '99.999%',
-    legacy: '99.9%',
-    unit: 'Annual SLA'
-  },
-  {
-    category: 'Logic Authoring Speed',
-    bluecloud: '+ 40%',
-    legacy: 'Baseline',
-    unit: 'Developer Velocity'
-  },
-  {
-    category: 'Security Compliance Audit',
-    bluecloud: 'Zero-Trust SSL',
-    legacy: 'Standard CORS',
-    unit: 'Rule Auditing'
-  }
+  { category: 'Language tooling', description: 'Explore Flux syntax, its compiler and language tools.' },
+  { category: 'AI workflows', description: 'Discuss model integration, document processing and assistants.' },
+  { category: 'Developer workspace', description: 'Explore editing, preview and asset workflows in Prism Studio.' },
+  { category: 'Local utilities', description: 'Use the browser toolkit or download Tooldeck for Windows.' }
 ];
 
 const PlatformEcosystem = () => {
@@ -78,7 +58,7 @@ const PlatformEcosystem = () => {
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--primary-blue)', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '8px' }}>
           <Zap size={18} /> Enterprise Cloud & Software Platform
         </div>
-        <h1>The BLUECLOUD Platform Ecosystem</h1>
+        <h1>The BlueCloud platform</h1>
         <p className="platform-subtitle">
           An integrated technology stack uniting custom compilers, autonomous AI engines, developer workspaces, and high-performance cloud infrastructure.
         </p>
@@ -97,6 +77,8 @@ const PlatformEcosystem = () => {
               key={node.id}
               className={`platform-node-card ${selectedNode.id === node.id ? 'active' : ''}`}
               onClick={() => setSelectedNode(node)}
+              role="button" tabIndex={0} aria-pressed={selectedNode.id === node.id}
+              onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setSelectedNode(node); } }}
             >
               <div className="platform-node-header">
                 {node.icon}
@@ -132,18 +114,12 @@ const PlatformEcosystem = () => {
 
       {/* Platform Benchmarks */}
       <div className="section container">
-        <h2 className="text-center mb-6">Platform Technical Benchmarks</h2>
+        <h2 className="text-center mb-6">Platform capabilities</h2>
         <div className="platform-benchmarks-grid">
           {BENCHMARKS.map((bm, i) => (
             <div key={i} className="platform-benchmark-card">
               <h3>{bm.category}</h3>
-              <div className="benchmark-row">
-                <span className="benchmark-val-legacy">Legacy Stack: {bm.legacy}</span>
-                <span className="benchmark-val-bc">BLUECLOUD: {bm.bluecloud}</span>
-              </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--slate-text)', marginTop: '6px', textAlign: 'right', fontWeight: 'bold' }}>
-                Metric: {bm.unit}
-              </div>
+              <p>{bm.description}</p>
             </div>
           ))}
         </div>

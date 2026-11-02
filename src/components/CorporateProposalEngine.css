@@ -3,7 +3,7 @@
   border: 1px solid var(--light-gray);
   border-radius: var(--radius-lg);
   padding: var(--spacing-5);
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
   margin-top: var(--spacing-6);
 }
 
@@ -56,3 +56,5 @@
 .proposal-form-grid select:focus {
   border-color: var(--primary-blue);
 }
+
+.proposal-form-grid>.form-group{min-width:0}.proposal-form-grid input,.proposal-form-grid select{width:100%}@media(max-width:767px){.proposal-engine-card{padding:24px}.proposal-body{padding:0}.proposal-form-grid{grid-template-columns:minmax(0,1fr)}}

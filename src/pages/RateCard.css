@@ -1,6 +1,6 @@
 /* ─── Rate Card Header ─── */
 .rate-card-header {
-  background: linear-gradient(135deg, var(--deep-navy) 0%, #0d2a50 100%);
+  background: var(--deep-navy);
   padding: var(--spacing-8) 0;
   color: var(--white);
 }
@@ -102,7 +102,7 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-lg);
   padding: var(--spacing-4);
-  backdrop-filter: blur(8px);
+  backdrop-filter: none;
 }
 
 .doc-preview-header {
@@ -200,3 +200,5 @@
     justify-content: center;
   }
 }
+
+.rate-card-hero-left,.rate-card-hero-right{min-width:0}@media(max-width:767px){.rate-card-dl-btn{padding:12px 16px;white-space:normal;text-align:center;min-width:0;max-width:100%}.rate-card-actions{min-width:0}}

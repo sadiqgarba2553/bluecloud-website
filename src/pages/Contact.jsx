@@ -1,18 +1,19 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { MapPin, Phone, Mail, Clock, ShieldCheck } from 'lucide-react';
-import SEO from '../components/SEO';
-import './Contact.css';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import SEO from "../components/SEO";
+import "./Contact.css";
 
 const Contact = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [consentAgreed, setConsentAgreed] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
   });
 
   const handleChange = (e) => {
@@ -21,38 +22,46 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setSubmitError("");
+    setIsSubmitted(false);
     if (!consentAgreed) {
-      alert("Please agree to the Terms & Conditions and Privacy Policy to submit.");
+      setSubmitError(
+        "Please agree to the terms and privacy policy before sending.",
+      );
       return;
     }
     setIsSubmitting(true);
-    
+
     try {
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify({
-          access_key: '0ec62a62-2bec-47cb-9e5f-cb2ac429f907',
+          access_key: "0ec62a62-2bec-47cb-9e5f-cb2ac429f907",
           ...formData,
-          consent: 'Agreed to Terms and Privacy Policy'
-        })
+          consent: "Agreed to Terms and Privacy Policy",
+        }),
       });
 
       const result = await response.json();
-      
-      if (result.success) {
+
+      if (response.ok && result.success) {
         setIsSubmitted(true);
-        setFormData({ name: '', email: '', subject: '', message: '' });
+        setFormData({ name: "", email: "", subject: "", message: "" });
         setConsentAgreed(false);
-        setTimeout(() => setIsSubmitted(false), 5000);
       } else {
-        alert("Something went wrong. Please try again.");
+        setSubmitError(
+          "Your message could not be sent. Please retry or email info@bluecloudai.online.",
+        );
       }
-    } catch (error) {
-      alert("Error sending message.");
+    } catch {
+      setSubmitError(
+        "We could not connect. Your message is still here; retry or email info@bluecloudai.online.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -68,14 +77,16 @@ const Contact = () => {
       />
       <div className="contact-header">
         <div className="container">
-          <h1>Get in Touch</h1>
-          <p>Ready to start a project? Reach out to our technical team today.</p>
+          <h1>Tell us what you have in mind.</h1>
+          <p>
+            A product, an integration, a creative brief or a technical question.
+            Give us a little context to start the conversation.
+          </p>
         </div>
       </div>
 
       <div className="container">
         <div className="contact-content">
-          
           {/* Contact Information */}
           <div className="contact-info-panel">
             <h3>Contact Information</h3>
@@ -89,14 +100,16 @@ const Contact = () => {
                   <p>Plot 1743, Cadastral Zone B, Mabushi, Abuja</p>
                 </div>
               </div>
-              
+
               <div className="contact-detail-item">
                 <div className="contact-icon-wrapper">
                   <Phone size={24} />
                 </div>
                 <div className="contact-detail-text">
                   <h4>Phone</h4>
-                  <p>08125531111</p>
+                  <p>
+                    <a href="tel:+2348125531111">+234 812 553 1111</a>
+                  </p>
                 </div>
               </div>
 
@@ -106,7 +119,11 @@ const Contact = () => {
                 </div>
                 <div className="contact-detail-text">
                   <h4>General enquiries</h4>
-                  <p><a href="mailto:info@bluecloudai.online">info@bluecloudai.online</a></p>
+                  <p>
+                    <a href="mailto:info@bluecloudai.online">
+                      info@bluecloudai.online
+                    </a>
+                  </p>
                 </div>
               </div>
 
@@ -116,7 +133,11 @@ const Contact = () => {
                 </div>
                 <div className="contact-detail-text">
                   <h4>Support</h4>
-                  <p><a href="mailto:support@bluecloudai.online">support@bluecloudai.online</a></p>
+                  <p>
+                    <a href="mailto:support@bluecloudai.online">
+                      support@bluecloudai.online
+                    </a>
+                  </p>
                 </div>
               </div>
 
@@ -126,10 +147,14 @@ const Contact = () => {
                 </div>
                 <div className="contact-detail-text">
                   <h4>CEO</h4>
-                  <p><a href="mailto:ceo@bluecloudai.online">ceo@bluecloudai.online</a></p>
+                  <p>
+                    <a href="mailto:ceo@bluecloudai.online">
+                      ceo@bluecloudai.online
+                    </a>
+                  </p>
                 </div>
               </div>
-              
+
               <div className="contact-detail-item">
                 <div className="contact-icon-wrapper">
                   <Clock size={24} />
@@ -141,65 +166,188 @@ const Contact = () => {
               </div>
             </div>
 
-            <div className="map-wrapper" style={{ marginTop: 'var(--spacing-4)', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid #CBD5E1' }}>
-              <iframe 
+            <div
+              className="map-wrapper"
+              style={{
+                marginTop: "var(--spacing-4)",
+                borderRadius: "var(--radius-md)",
+                overflow: "hidden",
+                border: "1px solid #CBD5E1",
+              }}
+            >
+              <iframe
                 title="BlueCloud Technologies Office Location, Mabushi, Abuja"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15882.355152541347!2d7.4332906!3d9.0664539!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x104e0b38c2380327%3A0xc0dbbf33dfc2789!2sMabushi%2C%20Abuja!5e0!3m2!1sen!2sng!4v1700000000000!5m2!1sen!2sng" 
-                width="100%" 
-                height="250" 
-                style={{ border: 0, display: 'block' }} 
-                allowFullScreen="" 
-                loading="lazy" 
-                referrerPolicy="no-referrer-when-downgrade">
-              </iframe>
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15882.355152541347!2d7.4332906!3d9.0664539!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x104e0b38c2380327%3A0xc0dbbf33dfc2789!2sMabushi%2C%20Abuja!5e0!3m2!1sen!2sng!4v1700000000000!5m2!1sen!2sng"
+                width="100%"
+                height="250"
+                style={{ border: 0, display: "block" }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
             </div>
           </div>
 
           {/* Contact Form */}
           <div className="contact-form-panel">
             <h3 className="mb-4">Send us a message</h3>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} aria-busy={isSubmitting}>
+              {submitError && (
+                <p className="form-feedback error" role="alert">
+                  {submitError}
+                </p>
+              )}
+              {isSubmitted && (
+                <p className="form-feedback" role="status">
+                  Your message has been sent. Thank you for contacting
+                  BlueCloud.
+                </p>
+              )}
               <div className="form-group">
-                <label htmlFor="name" className="form-label">Full Name</label>
-                <input type="text" id="name" value={formData.name} onChange={handleChange} className="form-control" placeholder="John Doe" required />
+                <label htmlFor="name" className="form-label">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  autoComplete="name"
+                  maxLength={120}
+                  id="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="form-control"
+                  placeholder="John Doe"
+                  required
+                />
               </div>
-              
+
               <div className="form-group">
-                <label htmlFor="email" className="form-label">Email Address</label>
-                <input type="email" id="email" value={formData.email} onChange={handleChange} className="form-control" placeholder="john@example.com" required />
+                <label htmlFor="email" className="form-label">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  autoComplete="email"
+                  maxLength={254}
+                  id="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="form-control"
+                  placeholder="john@example.com"
+                  required
+                />
               </div>
-              
+
               <div className="form-group">
-                <label htmlFor="subject" className="form-label">Subject</label>
-                <input type="text" id="subject" value={formData.subject} onChange={handleChange} className="form-control" placeholder="How can we help?" required />
+                <label htmlFor="subject" className="form-label">
+                  Subject
+                </label>
+                <input
+                  type="text"
+                  id="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  className="form-control"
+                  placeholder="How can we help?"
+                  required
+                />
               </div>
-              
+
               <div className="form-group">
-                <label htmlFor="message" className="form-label">Message</label>
-                <textarea id="message" value={formData.message} onChange={handleChange} className="form-control" placeholder="Describe your project requirements..." required></textarea>
+                <label htmlFor="message" className="form-label">
+                  Message
+                </label>
+                <textarea
+                  maxLength={5000}
+                  id="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  className="form-control"
+                  placeholder="Describe your project requirements..."
+                  required
+                ></textarea>
               </div>
 
               {/* Form Consent Checkbox */}
-              <div className="form-group" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', margin: '16px 0 20px 0' }}>
-                <input 
-                  type="checkbox" 
-                  id="consentCheckbox" 
-                  checked={consentAgreed} 
-                  onChange={(e) => setConsentAgreed(e.target.checked)} 
-                  required 
-                  style={{ marginTop: '3px', width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--primary-blue)' }}
+              <div
+                className="form-group"
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "10px",
+                  margin: "16px 0 20px 0",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  id="consentCheckbox"
+                  checked={consentAgreed}
+                  onChange={(e) => setConsentAgreed(e.target.checked)}
+                  required
+                  style={{
+                    marginTop: "3px",
+                    width: "18px",
+                    height: "18px",
+                    cursor: "pointer",
+                    accentColor: "var(--primary-blue)",
+                  }}
                 />
-                <label htmlFor="consentCheckbox" style={{ fontSize: '0.88rem', color: 'var(--slate-text)', cursor: 'pointer', lineHeight: '1.4' }}>
-                  I agree to the <Link to="/terms" target="_blank" style={{ color: 'var(--primary-blue)', textDecoration: 'underline' }}>Terms & Conditions</Link> and consent to BlueCloud Technologies processing my details according to the <Link to="/privacy" target="_blank" style={{ color: 'var(--primary-blue)', textDecoration: 'underline' }}>Privacy Policy</Link>.
+                <label
+                  htmlFor="consentCheckbox"
+                  style={{
+                    fontSize: "0.88rem",
+                    color: "var(--slate-text)",
+                    cursor: "pointer",
+                    lineHeight: "1.4",
+                  }}
+                >
+                  I agree to the{" "}
+                  <Link
+                    to="/terms"
+                    target="_blank"
+                    style={{
+                      color: "var(--primary-blue)",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    Terms & Conditions
+                  </Link>{" "}
+                  and consent to BlueCloud Technologies processing my details
+                  according to the{" "}
+                  <Link
+                    to="/privacy"
+                    target="_blank"
+                    style={{
+                      color: "var(--primary-blue)",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    Privacy Policy
+                  </Link>
+                  .
                 </label>
               </div>
-              
-              <button type="submit" className="btn-primary" disabled={isSubmitting} style={{ width: '100%', backgroundColor: isSubmitted ? 'var(--mint-accent)' : 'var(--primary-blue)', color: isSubmitted ? 'var(--deep-navy)' : 'var(--white)', opacity: isSubmitting ? 0.7 : 1 }}>
-                {isSubmitting ? 'Sending...' : isSubmitted ? 'Message Sent successfully!' : 'Send Message'}
+
+              <button
+                type="submit"
+                className="btn-primary"
+                disabled={isSubmitting}
+                style={{
+                  width: "100%",
+                  backgroundColor: isSubmitted
+                    ? "var(--mint-accent)"
+                    : "var(--primary-blue)",
+                  color: isSubmitted ? "var(--deep-navy)" : "var(--white)",
+                  opacity: isSubmitting ? 0.7 : 1,
+                }}
+              >
+                {isSubmitting
+                  ? "Sending..."
+                  : isSubmitted
+                    ? "Message Sent successfully!"
+                    : "Send Message"}
               </button>
             </form>
           </div>
-
         </div>
       </div>
     </div>

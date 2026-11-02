@@ -32,7 +32,7 @@
 
 .ent-matrix-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: var(--spacing-4);
   margin-bottom: var(--spacing-6);
 }
@@ -42,7 +42,7 @@
   border: 1px solid var(--light-gray);
   border-radius: var(--radius-lg);
   padding: var(--spacing-4);
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 
 .ent-matrix-card h3 {
@@ -68,3 +68,5 @@
     grid-template-columns: 1fr;
   }
 }
+
+.ent-hub-header h1{font-size:var(--text-display);line-height:var(--leading-heading);letter-spacing:var(--tracking-display);text-align:left;max-width:20ch}

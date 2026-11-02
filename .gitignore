@@ -39,3 +39,9 @@ test-results/
 *.njsproj
 *.sln
 *.sw?
+
+# Local browser verification artifacts
+.playwright-cli/
+
+# Local redesign screenshots and browser checks
+output/playwright/

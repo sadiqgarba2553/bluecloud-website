@@ -51,9 +51,10 @@ const CookieConsent = () => {
         </div>
 
         <p className="cookie-text">
-          We use essential cookies and lightweight browser storage to ensure site reliability, secure client portals, and analyze performance. By clicking "Accept All", you agree to our storage practices as described in our{' '}
-          <Link to="/cookies" onClick={() => setVisible(false)}>Cookie Policy</Link> and{' '}
-          <Link to="/privacy" onClick={() => setVisible(false)}>Privacy Policy</Link>.
+          We use browser storage for site preferences and client access. Read our{' '}
+          <Link to="/cookies" onClick={() => setVisible(false)}>cookie policy</Link> and{' '}
+          <Link to="/privacy" onClick={() => setVisible(false)}>privacy policy</Link>.
+
         </p>
 
         <div className="cookie-actions">

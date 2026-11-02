@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Cpu, ShieldAlert, Truck, HeartPulse, Flame, Play, CheckCircle, Activity } from 'lucide-react';
+import { Cpu, ShieldAlert, Truck, HeartPulse, Flame, Play, CheckCircle } from 'lucide-react';
 import './IndustryAIAccelerators.css';
 
 const INDUSTRY_DATA = {
@@ -8,9 +8,9 @@ const INDUSTRY_DATA = {
     icon: ShieldAlert,
     description: "Detect anomalous transaction patterns and execute automated compliance audits for credit risk and anti-money laundering (AML).",
     metrics: [
-      { label: "Fraud Detection Speed", val: "Sub-45ms" },
-      { label: "False Positive Reduction", val: "-76%" },
-      { label: "Compliance Benchmark", val: "ISO 27001 Certified" }
+      { label: "Status", val: "Illustrative workflow" },
+      { label: "Data", val: "Sample payload" },
+      { label: "Deployment", val: "Requires project scoping" }
     ],
     sampleOutput: {
       auditResult: "NO_ANOMALIES_DETECTED",
@@ -24,9 +24,9 @@ const INDUSTRY_DATA = {
     icon: Truck,
     description: "Optimize multi-stop vehicle routing, fuel consumption, and predictive maintenance schedules for logistics fleets.",
     metrics: [
-      { label: "Fuel Cost Savings", val: "-24% Annual" },
-      { label: "Dispatch Accuracy", val: "99.8%" },
-      { label: "Fleet Telemetry Delay", val: "< 100ms" }
+      { label: "Status", val: "Illustrative workflow" },
+      { label: "Data", val: "Sample payload" },
+      { label: "Deployment", val: "Requires project scoping" }
     ],
     sampleOutput: {
       routeOptimization: "COMPLETED",
@@ -38,11 +38,11 @@ const INDUSTRY_DATA = {
   healthcare: {
     title: "Healthcare & BioTech EHR Security Guard",
     icon: HeartPulse,
-    description: "Encrypt patient health records with zero-trust protocol enforcement and HIPAA-compliant automated audit logging.",
+    description: "Encrypt patient health records with zero-trust protocol enforcement and access controls and automated audit logging.",
     metrics: [
-      { label: "Encryption Grade", val: "AES-256 GCM" },
-      { label: "HIPAA Audit Pass Rate", val: "100%" },
-      { label: "Access Latency", val: "115ms" }
+      { label: "Status", val: "Illustrative workflow" },
+      { label: "Data", val: "Sample payload" },
+      { label: "Deployment", val: "Requires project scoping" }
     ],
     sampleOutput: {
       securityScan: "ZERO_VULNERABILITIES",
@@ -56,9 +56,9 @@ const INDUSTRY_DATA = {
     icon: Flame,
     description: "Predictive asset maintenance monitoring for energy grids, pipelines, and industrial machinery using sensor AI telemetry.",
     metrics: [
-      { label: "Downtime Prevented", val: "-92% Failure Rate" },
-      { label: "Sensor Polling", val: "1,000 Hertz" },
-      { label: "ROI Payback", val: "under 60 Days" }
+      { label: "Status", val: "Illustrative workflow" },
+      { label: "Data", val: "Sample payload" },
+      { label: "Deployment", val: "Requires project scoping" }
     ],
     sampleOutput: {
       pipelineVibrationAudit: "NORMAL_OPERATING_RANGE",
@@ -94,7 +94,7 @@ const IndustryAIAccelerators = () => {
         </div>
         <h2>BLUECLOUD Industry-Specific AI Accelerators</h2>
         <p style={{ color: 'var(--slate-text)', fontSize: '0.95rem' }}>
-          Purpose-built artificial intelligence models tuned for high-stakes corporate sectors.
+          Explore example workflows. These simulations use fixed sample data and do not demonstrate live deployment or measured performance.
         </p>
 
         {/* Industry Selector Buttons */}
@@ -127,13 +127,13 @@ const IndustryAIAccelerators = () => {
             </p>
 
             <button className="btn-primary" onClick={handleSimulate} disabled={isSimulating} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem' }}>
-              <Play size={16} /> {isSimulating ? 'Running AI Diagnostics...' : 'Simulate Industry AI Payload'}
+              <Play size={16} /> {isSimulating ? 'Preparing example...' : 'View sample payload'}
             </button>
 
             {simOutput && (
               <div className="sim-output-box">
                 <div style={{ fontSize: '0.78rem', fontWeight: 'bold', color: 'var(--cyan-accent)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <CheckCircle size={14} /> Telemetry Output Verified
+                  <CheckCircle size={14} /> Illustrative output — sample data
                 </div>
                 <pre>{simOutput}</pre>
               </div>
@@ -142,7 +142,7 @@ const IndustryAIAccelerators = () => {
 
           <div className="ind-metrics-col">
             <h4 style={{ fontSize: '0.9rem', color: 'var(--deep-navy)', marginBottom: '12px', borderBottom: '1px solid var(--light-gray)', paddingBottom: '6px' }}>
-              Sector Performance Benchmarks
+              Implementation context
             </h4>
             {active.metrics.map((m, idx) => (
               <div key={idx} className="ind-metric-card">

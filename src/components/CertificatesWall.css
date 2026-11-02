@@ -4,7 +4,7 @@
 }
 
 .certs-header {
-  text-align: center;
+  text-align: left;
   margin-bottom: var(--spacing-5);
 }
 
@@ -15,7 +15,7 @@
 
 .certs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: var(--spacing-4);
 }
 
@@ -24,11 +24,11 @@
   border: 1px solid var(--light-gray);
   border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
   /* Stagger entrance */
-  opacity: 0;
-  transform: translateY(8px);
-  animation: fadeInUp 300ms var(--ease-out) forwards;
+  opacity: 1;
+  transform: none;
+  animation: none;
   transition:
     transform var(--duration-fast) var(--ease-out),
     box-shadow var(--duration-fast) var(--ease-out);
@@ -41,8 +41,8 @@
 
 @media (hover: hover) and (pointer: fine) {
   .cert-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    transform: none;
+    box-shadow: none;
   }
 }
 
@@ -128,7 +128,7 @@
   padding: var(--spacing-4);
   /* Modal entrance — centered origin (modals are exempt from trigger-anchoring) */
   opacity: 1;
-  transform: scale(1);
+  transform: none;
   transition:
     opacity var(--duration-normal) var(--ease-out),
     transform var(--duration-normal) var(--ease-out);
@@ -137,7 +137,7 @@
 @starting-style {
   .cert-lightbox-modal {
     opacity: 0;
-    transform: scale(0.96);
+    transform: none;
   }
 }
 

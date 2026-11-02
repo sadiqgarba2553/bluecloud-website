@@ -1,7 +1,7 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock } from 'lucide-react';
 import SEO from '../components/SEO';
-import { blogPosts } from './Blog';
+import { blogPosts } from '../data/blog';
 import './Blog.css';
 
 const postContent = {
@@ -559,8 +559,8 @@ const BlogPost = () => {
         {isWYD ? (
           <div className="wyd-post-hero-wrap">
             <img src={post.image} alt={post.title} className="post-hero-image" />
-            <div className="wyd-post-logo-block">
-              <img src={post.logo} alt="World Youth Day Logo" className="wyd-post-logo-overlay" />
+            <div className="wyd-post-logo-block squircle-logo">
+              <img src={post.logo} alt="World Youth Day Logo" className="wyd-post-logo-overlay squircle-logo" />
             </div>
           </div>
         ) : (

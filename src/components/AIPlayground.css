@@ -44,7 +44,7 @@
 }
 
 .ai-tab-btn:active {
-  transform: scale(0.97);
+  transform: none;
 }
 
 @media (hover: hover) and (pointer: fine) {

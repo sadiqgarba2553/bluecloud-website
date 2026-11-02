@@ -8,8 +8,8 @@ const Enterprise = () => {
   return (
     <div>
       <SEO
-        title="Enterprise Infrastructure & 99.999% SLA — BLUECLOUD"
-        description="Zero-Trust cloud security, 99.999% SLA availability guarantees, and high-performance cloud architecture for global enterprises."
+        title="Enterprise Infrastructure & Business Systems — BLUECLOUD"
+        description="Cloud architecture, security planning, business systems and project proposals from BlueCloud."
         path="/enterprise"
         keywords="enterprise software Nigeria, SLA guarantee, Zero-Trust security, cloud infrastructure Abuja, enterprise solutions Africa, high availability, BlueCloud enterprise"
       />

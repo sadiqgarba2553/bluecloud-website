@@ -1,0 +1,65 @@
+/* BlueCloud reference tokens. Canonical source; index.html embeds a copy for portability. */
+@font-face {
+  font-family: "Manrope";
+  src: url("/fonts/Manrope-Variable.ttf") format("truetype");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+:root {
+  color-scheme: light;
+  --color-paper: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-ink: #171c26;
+  --color-muted: #545d6d;
+  --color-blue: #0b5fff;
+  --color-blue-hover: #004bd6;
+  --color-blue-soft: #edf2fc;
+  --color-line: #d8dde5;
+  --color-control: #7b8493;
+  --color-inverse-muted: #bfc7d4;
+  --color-error: #ae2538;
+  --color-error-soft: #fff3f4;
+  --color-success: #17613f;
+  --color-success-soft: #eff8f3;
+  --color-disabled: #e5e8ed;
+  --font-sans: "Manrope", "Segoe UI", sans-serif;
+  --weight-read: 400;
+  --weight-emphasize: 550;
+  --weight-announce: 600;
+  --text-caption: 0.75rem;
+  --text-small: 0.875rem;
+  --text-body: 1rem;
+  --text-lead: 1.25rem;
+  --text-title: 1.5rem;
+  --text-section: clamp(2rem, 3.4vw, 3rem);
+  --text-display: clamp(2.5rem, 5.35vw, 4.75rem);
+  --leading-body: 1.6;
+  --leading-heading: 1.12;
+  --tracking-display: -0.03em;
+  --tracking-heading: -0.02em;
+  --tracking-label: 0.02em;
+  --tracking-caps: 0.08em;
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 2.5rem;
+  --space-6: 3rem;
+  --space-8: 4rem;
+  --space-10: 5rem;
+  --space-12: 6rem;
+  --space-14: 7rem;
+  --grid-max: 72.5rem;
+  --gutter: clamp(1.5rem, 4vw, 3rem);
+  --measure: 65ch;
+  --radius-control: 0.25rem;
+  --radius-panel: 0.5rem;
+  --border-width: 1px;
+  --focus-width: 3px;
+  --control-min: 3rem;
+  --duration-enter: 180ms;
+  --duration-exit: 120ms;
+  --ease-enter: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+}

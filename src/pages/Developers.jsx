@@ -17,8 +17,8 @@ const Developers = () => {
 
       <section className="section section-light text-center">
         <div className="container">
-          <h2 className="mb-2">Looking for High-Scale Enterprise Infrastructure?</h2>
-          <p className="mb-4">Read our 99.999% SLA uptime guarantees and Zero-Trust cloud security blueprint.</p>
+          <h2 className="mb-2">Planning a business system?</h2>
+          <p className="mb-4">Discuss cloud architecture, business systems and deployment requirements.</p>
           <Link to="/enterprise" className="btn-primary">
             Explore Enterprise Solutions
           </Link>

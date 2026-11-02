@@ -4,7 +4,7 @@
   background-color: var(--white);
   border: 1px solid var(--light-gray);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 
 .tech-explorer-header {
@@ -27,7 +27,7 @@
 
 .tech-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
   gap: var(--spacing-3);
 }
 
@@ -40,7 +40,7 @@
 }
 
 .tech-card:hover {
-  transform: translateY(-2px);
+  transform: none;
   border-color: var(--primary-blue);
   background-color: var(--white);
 }

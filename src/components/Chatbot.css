@@ -13,7 +13,7 @@
   background: var(--primary-blue);
   color: white;
   border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: none;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -24,13 +24,13 @@
 }
 
 .chatbot-toggle-btn:active {
-  transform: scale(0.93);
+  transform: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .chatbot-toggle-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    transform: none;
+    box-shadow: none;
   }
 }
 
@@ -42,7 +42,7 @@
   height: 500px;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -51,7 +51,7 @@
   transform-origin: bottom right;
   /* Transition instead of keyframes — interruptible for rapid open/close */
   opacity: 1;
-  transform: scale(1);
+  transform: none;
   transition:
     opacity var(--duration-normal) var(--ease-out),
     transform var(--duration-normal) var(--ease-out);
@@ -61,7 +61,7 @@
 @starting-style {
   .chatbot-window {
     opacity: 0;
-    transform: scale(0.96);
+    transform: none;
   }
 }
 
@@ -168,7 +168,7 @@
 }
 
 .chatbot-input button:active {
-  transform: scale(0.93);
+  transform: none;
 }
 
 .chatbot-header-actions {
@@ -213,12 +213,12 @@
 
 .chatbot-mic-btn.listening {
   color: #ef4444;
-  animation: pulseMic 1s infinite alternate;
+  animation: none;
 }
 
 @keyframes pulseMic {
-  from { transform: scale(1); }
-  to { transform: scale(1.15); }
+  from { transform: none; }
+  to { transform: none; }
 }
 
 .chat-lead-card {

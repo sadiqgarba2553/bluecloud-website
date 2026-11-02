@@ -1,0 +1,122 @@
+export const PROJECTS_DATA = [
+  {
+    id: 9, title: 'Doc Cloud', domain: 'doc-cloud', category: 'App',
+    tags: ['Documents', 'Desktop App'], imgSrc: '/doc-cloud.svg',
+    roi: 'Free word processor', comingSoon: true,
+    problem: 'Writing deserves a focused workspace.',
+    solution: 'A free word processor for creating, editing and organizing your documents.'
+  },
+  {
+    id: 10, title: 'Sheet Cloud', domain: 'sheet-cloud', category: 'App',
+    tags: ['Spreadsheets', 'Desktop App'], imgSrc: '/sheet-cloud.svg',
+    roi: 'Free spreadsheet workspace', comingSoon: true,
+    problem: 'Working with data should feel straightforward.',
+    solution: 'A free spreadsheet workspace for formulas, tables, charts and everyday planning.'
+  },
+  {
+    id: 1,
+    title: 'Cyberion Company',
+    domain: 'cyberioncompany.com.ng',
+    category: 'Web',
+    tags: ['Enterprise Web', 'Security Portal'],
+    bg: '#0A1A2F',
+    textColor: '#22D3EE',
+    roi: 'Web platform',
+    problem: 'Required a secure, highly scalable portal to manage complex enterprise operations without latency.',
+    solution: 'Architected a custom web platform with robust backend security protocols, multi-tier auth, and seamless React frontend.',
+    impact: 'Custom portal implementation.',
+    link: 'https://cyberioncompany.com.ng'
+  },
+  {
+    id: 2,
+    title: 'FastData Platform',
+    domain: 'fastdata.com.ng',
+    category: 'Web',
+    tags: ['Data Pipeline', 'Web Engine'],
+    bg: '#0B5FFF',
+    textColor: '#FFFFFF',
+    roi: 'Data platform',
+    problem: 'Analyzing high-volume data streams was taking hours and overloading legacy servers.',
+    solution: 'Engineered an asynchronous, highly optimized data processing pipeline for enterprise real-time querying.',
+    impact: 'Asynchronous data processing and querying.',
+    link: 'https://fastdata.com.ng'
+  },
+  {
+    id: 3,
+    title: 'Flux Programming Language',
+    domain: 'flux-language',
+    category: 'Tools',
+    tags: ['Compiler', 'Developer Tools'],
+    imgSrc: '/fluxlanguageimage.png',
+    roi: 'Custom language toolchain',
+    problem: 'Existing programming languages lacked specialized domain syntax for accelerated enterprise logic writing.',
+    solution: 'Engineered a custom compiler, AST parser, language toolchain, and developer ecosystem from the ground up.',
+    impact: 'Compiler, parser and language tooling.',
+    link: '/flux-website/index.html'
+  },
+  {
+    id: 4,
+    title: 'Prism Studio App',
+    domain: 'prism-studio',
+    category: 'App',
+    tags: ['Desktop App', 'Workspace Editor'],
+    imgSrc: '/prism_studio_icon.png',
+    roi: 'Workspace editor',
+    problem: 'Software engineering teams had to context-switch across 5 separate applications daily.',
+    solution: 'Created a unified, high-performance studio app integrating code editing, previewing, and asset management.',
+    impact: 'Editing, preview and asset management in one workspace.',
+    link: '/prism-studio/index.html'
+  },
+  {
+    id: 5,
+    title: 'Tooldeck',
+    domain: 'tool-deck',
+    category: 'App',
+    tags: ['Windows', 'Local Utilities'],
+    imgSrc: '/tooldeck.svg',
+    roi: 'Windows x64 | Version 0.5.1',
+    problem: 'Everyday file tasks need a single focused workspace.',
+    solution: 'PDF, image, video, audio, conversion and utility tools in a clean card library. Files are processed locally on your PC.',
+    linkLabel: 'Download Tooldeck',
+    link: 'https://github.com/sadiqgarba2553/tooldeck/releases/download/v0.5.1/Tooldeck-Setup-0.5.1-x64.exe'
+  },
+  {
+    id: 6,
+    title: 'Quranly PC',
+    domain: 'quranly-pc',
+    category: 'App',
+    tags: ['Windows', 'Quran & Audio'],
+    imgSrc: '/quranlylogo.png',
+    roi: 'Windows x64 | Alpha release',
+    problem: 'A focused desktop space for Quran reading and listening.',
+    solution: 'Read the Quran and listen to recitations on Windows. Installed and updated through BlueCloud Launcher.',
+    linkLabel: 'Get via Launcher',
+    link: 'https://github.com/sadiqgarba2553/bluecloud-launcher/releases/download/v0.7.0/BlueCloud-Launcher-Setup-0.7.0-x64.exe'
+  },
+  {
+    id: 7,
+    title: 'Coneic Player',
+    domain: 'coneic-player',
+    category: 'App',
+    tags: ['Windows', 'Media Player'],
+    imgSrc: '/coneic-player.png',
+    roi: 'Windows x64 | Alpha release',
+    problem: 'A dedicated Windows player for local music and video.',
+    solution: 'A Windows player for your music and videos. Installed and updated through BlueCloud Launcher.',
+    linkLabel: 'Get via Launcher',
+    link: 'https://github.com/sadiqgarba2553/bluecloud-launcher/releases/download/v0.7.0/BlueCloud-Launcher-Setup-0.7.0-x64.exe'
+  },
+  {
+    id: 8,
+    title: 'BlueCloud Launcher',
+    domain: 'bluecloud-launcher',
+    category: 'App',
+    tags: ['Windows', 'App Launcher'],
+    imgSrc: '/bluecloud.png',
+    roi: 'Windows x64 | Alpha release',
+    problem: 'Users need one place to install and keep their BlueCloud apps up to date.',
+    solution: 'Install, open and update all your BlueCloud apps. Automatic launcher updates and Windows Start shortcuts. Version 0.7.0 for Windows x64. A simpler library with the new BlueCloud logo and coming-soon previews.',
+    linkLabel: 'Download Launcher',
+    link: 'https://github.com/sadiqgarba2553/bluecloud-launcher/releases/download/v0.7.0/BlueCloud-Launcher-Setup-0.7.0-x64.exe'
+  }
+];

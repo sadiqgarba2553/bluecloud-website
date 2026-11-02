@@ -1,25 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { auth, db } from '../firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { 
-  LayoutDashboard, 
-  FolderKanban, 
-  Receipt, 
-  LifeBuoy, 
-  Settings, 
-  LogOut,
-  CheckCircle2,
-  Clock,
-  Menu,
-  X,
-  Bell,
-  Search,
-  Download,
-  FolderOpen
-} from 'lucide-react';
+import { LayoutDashboard, FolderKanban, Receipt, LifeBuoy, Settings, LogOut, CheckCircle2, Clock, Menu, X, Bell, Search, Download, FolderOpen } from 'lucide-react';
 import './PortalDashboard.css';
 
 const PortalDashboard = () => {
