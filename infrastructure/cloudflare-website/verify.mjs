@@ -17,7 +17,13 @@ const index = await fetch(new URL('/', base)).then(r => r.text());
 const entry = index.match(/src="([^"\s]+\.js)"/)?.[1];
 assert(entry, 'Website script entry');
 const bundle = await fetch(new URL(entry, base)).then(r => r.text());
-for (const address of ['info@bluecloudai.online', 'support@bluecloudai.online', 'ceo@bluecloudai.online']) assert(bundle.includes(address), address + ' in website');
+// Contact details now live in a lazy-loaded page rather than the homepage bundle.
+const contactChunk = bundle.match(/(?:\.\/|assets\/)?(Contact-[A-Za-z0-9_-]+\.js)/)?.[1];
+assert(contactChunk, 'Contact page module referenced by website entry');
+const contactPath = new URL(contactChunk, new URL(entry, base)).pathname;
+const contactResponse = await check(contactPath, { type: /javascript/ });
+const contactBundle = await contactResponse.text();
+for (const address of ['info@bluecloudai.online', 'support@bluecloudai.online', 'ceo@bluecloudai.online']) assert(contactBundle.includes(address), address + ' in contact page');
 await check('/portal/login', { text: /<div id="root">/ });
 await check('/projects', { text: /<div id="root">/ });
 await check('/coneic/privacy', { text: /support@bluecloudai\.online/ });

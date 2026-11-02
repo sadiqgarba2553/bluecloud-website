@@ -2,6 +2,8 @@
 
 ## Delivery state
 
+The owner subsequently authorized publication to the main domain. The redesign is now live at `https://bluecloudai.online/` (Cloudflare version `07b510eb-9517-4547-99a4-7fdefb567f47`). All 18 deployment checks passed on preview and production. The five primary pages and mobile menu passed live browser checks without page errors or overflow. The served entry bundle matches the local build SHA-256; www redirects to the root domain. The repository was retained at the owner's request. The earlier local-only review record below describes the pre-publication phase.
+
 Implementation is local on `design/bluecloud-premium-redesign`. Existing uncommitted changes were retained. No deployment, production database update, real enquiry, password-reset email or live AI request was made during verification.
 
 The local production preview is served at `http://127.0.0.1:5173/`. Run `npm run build` and `npm run preview -- --host 127.0.0.1 --port 5173 --strictPort` from this checkout to recreate it.
