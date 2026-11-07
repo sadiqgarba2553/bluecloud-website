@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import SEO from "../components/SEO";
+import CloudApps from "../components/CloudApps";
 import { PROJECTS_DATA } from "../data/projects";
 
 export default function Products() {
@@ -11,7 +12,7 @@ export default function Products() {
     <>
       <SEO
         title="Products — BlueCloud Apps & Developer Tools"
-        description="Download BlueCloud Launcher and Tooldeck for Windows. Explore Coneic Player, Quranly PC, developer tools and upcoming apps."
+        description="Download BlueCloud Launcher and Tooldeck for Windows and Linux. Get Doc Cloud, Sheet Cloud, Slide Cloud and Canvas Cloud for Linux."
         path="/products"
       />
       <section className="page-hero container">
@@ -21,8 +22,8 @@ export default function Products() {
           <br />A considered toolkit.
         </h1>
         <p className="lead">
-          Windows apps and local file tools from BlueCloud. Explore what’s
-          available today, and what’s still in development.
+          Windows and Linux apps and local file tools from BlueCloud. Choose your
+          platform and explore the apps available today.
         </p>
       </section>
       <section
@@ -32,15 +33,16 @@ export default function Products() {
       >
         <div className="wide-art-section">
           <div className="product-copy">
-            <span className="status">Available · Windows · 0.7.0</span>
+            <span className="status">Available · Windows & Linux · Alpha</span>
             <h2 id="launcher-title">BlueCloud Launcher</h2>
             <p>
-              One place to install and update Windows apps. Start here to find
-              BlueCloud software, including Coneic Player and Quranly PC.
+              One place to install and update your BlueCloud apps. On Linux, get
+              Doc Cloud, Sheet Cloud, Slide Cloud, Canvas Cloud and Tooldeck.
+              Coneic Player and Quranly PC are available on Windows.
             </p>
             <div className="hero-actions">
               <a className="button" href={launcher.link}>
-                Download Launcher{" "}
+                Download for Windows{" "}
                 <svg
                   className="od-icon"
                   viewBox="0 0 24 24"
@@ -54,8 +56,10 @@ export default function Products() {
                   <path d="M4 12h16m-6-6 6 6-6 6" />
                 </svg>
               </a>
-              <Link className="text-link" to="#launcher-apps">
-                Apps in Launcher
+              <a className="button" href="https://github.com/sadiqgarba2553/bluecloud-launcher/releases/download/linux-v0.8.0/BlueCloud-Launcher-0.8.0-x86_64.AppImage">Download for Linux ↓</a>
+              <a className="text-link" href="/linux/">Linux apps &amp; packages →</a>
+              <a className="text-link" href="#launcher-apps">
+                Windows apps in Launcher
                 <svg
                   className="od-icon"
                   viewBox="0 0 24 24"
@@ -68,7 +72,7 @@ export default function Products() {
                 >
                   <path d="M4 12h16m-6-6 6 6-6 6" />
                 </svg>
-              </Link>
+              </a>
             </div>
           </div>
           <div className="art-stage">
@@ -114,7 +118,7 @@ export default function Products() {
             </ul>
             <div className="hero-actions">
               <a className="button" href={tooldeck.link}>
-                Download Tooldeck{" "}
+                Download for Windows{" "}
                 <svg
                   className="od-icon"
                   viewBox="0 0 24 24"
@@ -128,6 +132,7 @@ export default function Products() {
                   <path d="M4 12h16m-6-6 6 6-6 6" />
                 </svg>
               </a>
+              <a className="button" href="/linux/#tooldeck">Download for Linux →</a>
             </div>
           </div>
         </div>
@@ -231,51 +236,10 @@ export default function Products() {
           </article>
         </div>
       </section>
-      <section className="section container">
-        <div className="section-header">
-          <div>
-            <span className="eyebrow">In development</span>
-            <h2>Next on the horizon.</h2>
-          </div>
-        </div>
-        <div className="list-grid">
-          <article className="editorial-block">
-            <div className="tooldeck-heading">
-              <img
-                className="artwork od-media "
-                src="/doc-cloud.svg"
-                alt="Doc Cloud full squircle artwork"
-                width="1080"
-                height="1080"
-                decoding="async"
-              />
-              <div>
-                <h3>Doc Cloud</h3>
-                <span className="status status-soon">Coming soon</span>
-              </div>
-            </div>
-          </article>
-          <article className="editorial-block">
-            <div className="tooldeck-heading">
-              <img
-                className="artwork od-media "
-                src="/sheet-cloud.svg"
-                alt="Sheet Cloud full squircle artwork"
-                width="1080"
-                height="1080"
-                decoding="async"
-              />
-              <div>
-                <h3>Sheet Cloud</h3>
-                <span className="status status-soon">Coming soon</span>
-              </div>
-            </div>
-          </article>
-        </div>
-        <p className="small muted" style={{ marginTop: "var(--space-4)" }}>
-          These apps are in development. Downloads will be available when they
-          are released.
-        </p>
+      <section className="section container" id="cloud-apps">
+        <div className="section-header"><div><span className="eyebrow">Available for Linux</span><h2>Your Cloud apps are ready.</h2></div><a className="text-link" href="/linux/">All Linux downloads →</a></div>
+        <CloudApps />
+        <p className="small muted" style={{ marginTop: 'var(--space-4)' }}>Linux x86_64 alpha releases. Install and keep these apps updated with BlueCloud Launcher.</p>
       </section>
       <section className="section container">
         <div className="section-header">

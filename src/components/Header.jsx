@@ -63,6 +63,7 @@ const Header = () => {
       path: "/services",
       sections: ["/enterprise", "/rate-card"],
     },
+    { name: "Linux", path: "/linux/" },
     { name: "Developers", path: "/developers" },
     { name: "About", path: "/about" },
   ];
@@ -113,6 +114,7 @@ const Header = () => {
               <Link
                 key={link.name}
                 to={link.path}
+                reloadDocument={link.path === "/linux/"}
                 className={`nav-link ${active ? "active" : ""}`}
                 aria-current={
                   active

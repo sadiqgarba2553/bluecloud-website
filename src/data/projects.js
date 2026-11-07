@@ -10,16 +10,18 @@ export const PROJECTS_DATA = [
   {
     id: 9, title: 'Doc Cloud', domain: 'doc-cloud', category: 'App',
     tags: ['Documents', 'Desktop App'], imgSrc: '/doc-cloud.svg',
-    roi: 'Free word processor', comingSoon: true,
+    roi: 'Linux x86_64 | Alpha', comingSoon: false,
     problem: 'Writing deserves a focused workspace.',
-    solution: 'A free word processor for creating, editing and organizing your documents.'
+    solution: 'A free word processor for creating, editing and organizing your documents.',
+    linkLabel: 'Download for Linux', link: '/linux/#doc-cloud'
   },
   {
     id: 10, title: 'Sheet Cloud', domain: 'sheet-cloud', category: 'App',
     tags: ['Spreadsheets', 'Desktop App'], imgSrc: '/sheet-cloud.svg',
-    roi: 'Free spreadsheet workspace', comingSoon: true,
+    roi: 'Linux x86_64 | Alpha', comingSoon: false,
     problem: 'Working with data should feel straightforward.',
-    solution: 'A free spreadsheet workspace for formulas, tables, charts and everyday planning.'
+    solution: 'A free spreadsheet workspace for formulas, tables, charts and everyday planning.',
+    linkLabel: 'Download for Linux', link: '/linux/#sheet-cloud'
   },
   {
     id: 1,
@@ -119,11 +121,11 @@ export const PROJECTS_DATA = [
     title: 'BlueCloud Launcher',
     domain: 'bluecloud-launcher',
     category: 'App',
-    tags: ['Windows', 'App Launcher'],
+    tags: ['Windows', 'Linux', 'App Launcher'],
     imgSrc: '/bluecloud.png',
     roi: 'Windows x64 | Alpha release',
     problem: 'Users need one place to install and keep their BlueCloud apps up to date.',
-    solution: 'Install, open and update all your BlueCloud apps. Automatic launcher updates and Windows Start shortcuts. Version 0.7.0 for Windows x64. A simpler library with the new BlueCloud logo and coming-soon previews.',
+    solution: 'Install, open and update BlueCloud apps on Windows or Linux, with verified downloads and version checks.',
     linkLabel: 'Download Launcher',
     link: 'https://github.com/sadiqgarba2553/bluecloud-launcher/releases/download/v0.7.0/BlueCloud-Launcher-Setup-0.7.0-x64.exe'
   }

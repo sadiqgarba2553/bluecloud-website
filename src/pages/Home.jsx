@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import SEO from "../components/SEO";
+import CloudApps from "../components/CloudApps";
 
 export default function Home() {
   return (
     <>
       <SEO
         title="BlueCloud AI Technologies — Software & Digital Services"
-        description="Windows apps, web and application development, applied AI integrations and creative services from BlueCloud in Abuja, Nigeria."
+        description="Windows and Linux apps, web and application development, applied AI integrations and creative services from BlueCloud in Abuja, Nigeria."
         path="/"
       />
       <section className="hero container" aria-labelledby="hero-title">
@@ -21,7 +22,7 @@ export default function Home() {
           </h1>
           <div className="hero-aside">
             <p>
-              Windows apps, websites and useful AI integrations. Technical
+              Windows and Linux apps, websites and useful AI integrations. Technical
               thinking and creative work, brought together by BlueCloud.
             </p>
             <Link className="text-link" to="/about">
@@ -57,6 +58,7 @@ export default function Home() {
               <path d="M4 12h16m-6-6 6 6-6 6" />
             </svg>
           </Link>
+          <a className="button button-secondary" href="/linux/">Download Linux apps →</a>
           <Link className="text-link" to="/products">
             Explore our products
             <svg
@@ -100,7 +102,7 @@ export default function Home() {
           <article className="product-feature launcher-feature">
             <div className="feature-top">
               <span className="eyebrow">BlueCloud Launcher</span>
-              <span className="status">Available · Windows</span>
+              <span className="status">Available · Windows &amp; Linux</span>
             </div>
             <div className="flagship">
               <div>
@@ -109,7 +111,7 @@ export default function Home() {
                   <br />
                   One starting point.
                 </h3>
-                <p>Install and update Windows apps with BlueCloud Launcher.</p>
+                <p>Install and update your Windows or Linux apps with BlueCloud Launcher.</p>
               </div>
               <img
                 className="artwork od-media "
@@ -122,7 +124,7 @@ export default function Home() {
               />
             </div>
             <div className="feature-bottom">
-              <span className="small muted">Version 0.7.0</span>
+              <span className="small muted">Windows &amp; Linux</span>
               <Link className="text-link" to="/products#launcher">
                 Explore Launcher
                 <svg
@@ -249,41 +251,9 @@ export default function Home() {
             </svg>
           </Link>
         </div>
-        <div className="upcoming">
-          <div className="upcoming-intro">
-            <span className="eyebrow">In development</span>
-            <p className="small muted">More from BlueCloud, coming soon.</p>
-          </div>
-          <div className="upcoming-item">
-            <img
-              className="artwork od-media "
-              src="/doc-cloud.svg"
-              alt=""
-              width="1080"
-              height="1080"
-              decoding="async"
-              loading="lazy"
-            />
-            <div className="od-field">
-              <strong>Doc Cloud</strong>
-              <span className="small">Coming soon</span>
-            </div>
-          </div>
-          <div className="upcoming-item">
-            <img
-              className="artwork od-media "
-              src="/sheet-cloud.svg"
-              alt=""
-              width="1080"
-              height="1080"
-              decoding="async"
-              loading="lazy"
-            />
-            <div className="od-field">
-              <strong>Sheet Cloud</strong>
-              <span className="small">Coming soon</span>
-            </div>
-          </div>
+        <div style={{ marginTop: 'var(--space-6)' }}>
+          <div className="section-header"><div><span className="eyebrow">Available for Linux</span><h2>Your Cloud workspace is ready.</h2></div><a className="text-link" href="/linux/">All Linux downloads →</a></div>
+          <CloudApps />
         </div>
       </section>
       <section className="section container" aria-labelledby="services-heading">
