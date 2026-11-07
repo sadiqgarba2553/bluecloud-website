@@ -7,7 +7,7 @@ const careerRedirects = new Set([
 ]);
 const staticSites = [
   '/career-application', '/port', '/flux-website', '/prism-studio', '/tool-deck',
-  '/tunnel', '/mods', '/cargoledger', '/wifi-master', '/coneic', '/assets',
+  '/linux', '/releases', '/tunnel', '/mods', '/cargoledger', '/wifi-master', '/coneic', '/assets',
 ];
 const isWithin = (pathname, prefix) => pathname === prefix || pathname.startsWith(prefix + '/');
 
@@ -21,6 +21,7 @@ export default {
     if (!['GET', 'HEAD'].includes(request.method)) return new Response('Method not allowed', { status: 405, headers: { Allow: 'GET, HEAD' } });
     let pathname;
     try { pathname = decodeURIComponent(url.pathname); } catch { return new Response('Invalid path', { status: 400 }); }
+    if(pathname==='/linux'){url.pathname='/linux/';return Response.redirect(url,301);}
     if (careerRedirects.has(pathname.toLowerCase())) {
       url.pathname = '/career-application/interview.html';
       return Response.redirect(url, 301);

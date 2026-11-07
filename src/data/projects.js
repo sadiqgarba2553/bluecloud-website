@@ -1,5 +1,13 @@
 export const PROJECTS_DATA = [
   {
+    id: 11, title: 'BlueCloud for Linux', domain: 'bluecloud-linux', category: 'App',
+    tags: ['Linux', 'Cloud Apps'], imgSrc: '/bluecloud.png',
+    roi: 'Linux x86_64 | Alpha',
+    problem: 'Your Cloud workspace, on Linux.',
+    solution: 'Discover the Linux launcher, Cloud editors and Tooldeck. Verified downloads appear as releases become available.',
+    linkLabel: 'Explore Linux apps', link: '/linux/'
+  },
+  {
     id: 9, title: 'Doc Cloud', domain: 'doc-cloud', category: 'App',
     tags: ['Documents', 'Desktop App'], imgSrc: '/doc-cloud.svg',
     roi: 'Free word processor', comingSoon: true,
